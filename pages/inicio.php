@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
+<html lang="<?=$languaje?>">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
   <meta charset="utf-8">
+  <title><?=$title?></title>
+  <meta name="description" content="<?=$description?>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ARAMed - Simuladores Médicos</title>
-  <meta name="description" content="Simuladores médicos para la enseñanza y formación profesional">
   
-  <!-- UIkit CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/css/uikit.min.css" />
-  <!-- FontAwesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <!-- CSS Moderno -->
-  <link rel="stylesheet" href="css/modern-styles.css">
-  
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="<?=$title?>">
+  <meta property="og:description" content="<?=$description?>">
+  <meta property="og:url" content="<?=$rutaEstaPagina?>">
+  <meta property="og:image" content="<?=$ruta?>img/design/logo-og.jpg">
+  <meta property="fb:app_id" content="<?=$appID?>">
+
+  <?=$headGNRL?>
+
   <style>
     /* Estilos modernos para la página de inicio */
     .hero-section {
@@ -238,24 +240,7 @@
 </head>
 <body>
 
-<!-- Header -->
-<nav class="uk-navbar-container" uk-navbar>
-  <div class="uk-container">
-    <div class="uk-navbar-left">
-      <ul class="uk-navbar-nav">
-        <li><a href="index.php">ARAMed</a></li>
-      </ul>
-    </div>
-    <div class="uk-navbar-right">
-      <ul class="uk-navbar-nav">
-        <li><a href="pages/productos-root.php">Productos</a></li>
-        <li><a href="pages/servicios.php">Servicios</a></li>
-        <li><a href="pages/contacto.php">Contacto</a></li>
-        <li><a href="pages/cotizar.php">Cotizar</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
+<?=$header?>
 
 <!-- Hero Section -->
 <section class="hero-section">
@@ -269,41 +254,39 @@
   </div>
 </section>
 
+<!-- Carousel Section -->
+<div class="uk-position-relative">
+  <?=carouselInicio("carousel")?>
+</div>
+
 <!-- Features Section -->
 <section class="features-section">
   <div class="uk-container">
     <h2 class="section-title">Nuestros Servicios</h2>
     <div uk-grid class="uk-child-width-1-3@m uk-child-width-1-2@s uk-child-width-1-1">
-      <div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-medical-kit"></i>
+      <?php
+      $consulta = $CONEXION -> query("SELECT * FROM servicios WHERE estatus = 1 ORDER BY orden");
+      while($rowConsulta = $consulta -> fetch_assoc()){
+        $picTxt='img/design/blank.png';
+        $pic='img/contenido/servicios/'.$rowConsulta['imagen1'];
+        if(file_exists($pic) AND strlen($rowConsulta['imagen1'])>0){
+          $picTxt=$pic;
+        }
+        echo '
+        <div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-medical-kit"></i>
+            </div>
+            <h3 style="color: #333; margin-bottom: 15px;">'.$rowConsulta['titulo'].'</h3>
+            <p style="color: #666; line-height: 1.6;">'.substr($rowConsulta['txt'], 0, 150).'...</p>
           </div>
-          <h3 style="color: #333; margin-bottom: 15px;">Simuladores de Pacientes</h3>
-          <p style="color: #666; line-height: 1.6;">Simuladores avanzados para entrenamiento médico con tecnología de última generación.</p>
-        </div>
-      </div>
-      <div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-graduation-cap"></i>
-          </div>
-          <h3 style="color: #333; margin-bottom: 15px;">Capacitación Profesional</h3>
-          <p style="color: #666; line-height: 1.6;">Programas de entrenamiento especializados para profesionales de la salud.</p>
-        </div>
-      </div>
-      <div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-tools"></i>
-          </div>
-          <h3 style="color: #333; margin-bottom: 15px;">Soporte Técnico</h3>
-          <p style="color: #666; line-height: 1.6;">Mantenimiento y soporte técnico especializado para todos nuestros equipos.</p>
-        </div>
-      </div>
+        </div>';
+      }
+      ?>
     </div>
     <div class="uk-text-center" style="margin-top: 50px;">
-      <a href="pages/servicios.php" class="btn-primary-modern">Ver Todos los Servicios</a>
+      <a href="<?=$rutaServicios?>" class="btn-primary-modern">Ver Todos los Servicios</a>
     </div>
   </div>
 </section>
@@ -312,62 +295,64 @@
 <section class="categories-section" id="productos">
   <div class="uk-container">
     <h2 class="section-title">Categorías de Productos</h2>
-    <div uk-grid class="uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l">
-      <div>
-        <div class="category-card">
-          <img src="img/design/blank.png" alt="Simuladores de Emergencia">
-          <div class="category-overlay">
-            <h3>Simuladores de Emergencia</h3>
-            <p>Equipos para entrenamiento en situaciones críticas</p>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="category-card">
-          <img src="img/design/blank.png" alt="Simuladores de Cirugía">
-          <div class="category-overlay">
-            <h3>Simuladores de Cirugía</h3>
-            <p>Entrenamiento especializado en procedimientos quirúrgicos</p>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="category-card">
-          <img src="img/design/blank.png" alt="Simuladores de Parto">
-          <div class="category-overlay">
-            <h3>Simuladores de Parto</h3>
-            <p>Equipos para obstetricia y ginecología</p>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="category-card">
-          <img src="img/design/blank.png" alt="Simuladores de Pediatría">
-          <div class="category-overlay">
-            <h3>Simuladores de Pediatría</h3>
-            <p>Entrenamiento especializado en atención pediátrica</p>
-          </div>
-        </div>
-      </div>
+    <div uk-slider="sets:true;" class="uk-margin-large">
+      <ul class="uk-slider-items uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-light uk-text-center">
+        <?php
+        $consulta = $CONEXION -> query("SELECT id FROM productoscat WHERE parent = 0 AND estatus = 1 ORDER BY orden,id");
+        while ($rowConsulta = $consulta -> fetch_assoc()) {
+          echo '
+          <li>
+            <div class="category-card">
+              '.catInicio($rowConsulta['id']).'
+            </div>
+          </li>
+          ';
+        }
+        ?>
+      </ul>
+      <ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>
     </div>
     <div class="uk-text-center" style="margin-top: 30px;">
-      <a href="pages/productos-root.php" class="btn-primary-modern">Ver Todas las Categorías</a>
+      <a href="<?=$rutaCategoria?>" class="btn-primary-modern">Ver Todas las Categorías</a>
     </div>
   </div>
 </section>
 
 <!-- Video Section -->
-<section style="background: url('img/design/blank.png') no-repeat center; background-size: cover; min-height: 600px; position: relative;">
-  <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6);"></div>
-  <div class="uk-container uk-height-1-1 uk-flex uk-flex-middle uk-flex-center">
-    <div class="uk-text-center" style="position: relative; z-index: 2; color: white;">
-      <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Conoce Nuestros Simuladores</h2>
-      <a href="#" class="hero-cta" style="background: rgba(255,255,255,0.2);">
-        <i class="fas fa-play" style="margin-right: 10px;"></i>Ver Video
-      </a>
+<?php
+$CONSULTA = $CONEXION -> query("SELECT video,videotxt,imagen5 FROM configuracion WHERE id = 1");
+$rowConsulta = $CONSULTA -> fetch_assoc();
+if (strlen($rowConsulta['video'])>0) {
+  $videoUrl=$rowConsulta['video'];
+  $videoPic=$videoUrl;
+  if (strpos($videoPic, 'youtube')) {
+    $pos=strpos($videoPic, 'v');
+    $videoPic=substr($videoPic, ($pos+2));
+  }elseif (strpos($videoPic, 'youtu.be')) {
+    $pos=strrpos($videoPic, '/');
+    $videoPic=substr($videoPic, ($pos+1));
+  }
+  $pic='https://img.youtube.com/vi/'.$videoPic.'/0.jpg';
+  $picPersonal='img/contenido/varios/'.$rowConsulta['imagen5'];
+  if (strlen($rowConsulta['imagen5'])>0 AND file_exists($picPersonal)) {
+    $pic=$picPersonal;
+  }
+  echo '
+  <section style="background: url('.$pic.') no-repeat center; background-size: cover; min-height: 600px; position: relative;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6);"></div>
+    <div class="uk-container uk-height-1-1 uk-flex uk-flex-middle uk-flex-center">
+      <div class="uk-text-center" style="position: relative; z-index: 2; color: white;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 20px;">'.$rowConsulta['videotxt'].'</h2>
+        <div uk-lightbox>
+          <a href="'.$videoUrl.'" class="hero-cta" style="background: rgba(255,255,255,0.2);">
+            <i class="fas fa-play" style="margin-right: 10px;"></i>Reproducir Video
+          </a>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>';
+}
+?>
 
 <!-- Best Sellers Section -->
 <section style="background: #2d4e76; color: white; padding: 80px 0;">
@@ -375,43 +360,20 @@
     <h2 class="section-title" style="color: white;">Productos Destacados</h2>
     <p class="uk-text-center" style="font-size: 1.2rem; margin-bottom: 50px;">Ofrecemos una solución integral con productos de calidad.</p>
     
-    <div uk-grid class="uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l">
-      <div>
-        <div class="feature-card" style="background: rgba(255,255,255,0.1); color: white;">
-          <div class="feature-icon">
-            <i class="fas fa-heartbeat"></i>
-          </div>
-          <h3 style="margin-bottom: 15px;">Simulador de RCP</h3>
-          <p>Entrenamiento en reanimación cardiopulmonar</p>
-        </div>
-      </div>
-      <div>
-        <div class="feature-card" style="background: rgba(255,255,255,0.1); color: white;">
-          <div class="feature-icon">
-            <i class="fas fa-stethoscope"></i>
-          </div>
-          <h3 style="margin-bottom: 15px;">Simulador de Auscultación</h3>
-          <p>Práctica de auscultación cardiaca y pulmonar</p>
-        </div>
-      </div>
-      <div>
-        <div class="feature-card" style="background: rgba(255,255,255,0.1); color: white;">
-          <div class="feature-icon">
-            <i class="fas fa-baby"></i>
-          </div>
-          <h3 style="margin-bottom: 15px;">Simulador de Parto</h3>
-          <p>Entrenamiento en obstetricia</p>
-        </div>
-      </div>
-      <div>
-        <div class="feature-card" style="background: rgba(255,255,255,0.1); color: white;">
-          <div class="feature-icon">
-            <i class="fas fa-user-md"></i>
-          </div>
-          <h3 style="margin-bottom: 15px;">Simulador de Cirugía</h3>
-          <p>Práctica de procedimientos quirúrgicos</p>
-        </div>
-      </div>
+    <div uk-slider="sets: true" class="uk-margin-large">
+      <ul class="uk-slider-items uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l uk-light uk-text-center">
+        <?php
+        $consulta = $CONEXION -> query("SELECT id FROM productos WHERE destacado = 1 AND estatus = 1 ORDER BY orden,id");
+        while ($rowConsulta = $consulta -> fetch_assoc()) {
+          echo '
+          <li>
+            '.itemInicio($rowConsulta['id']).'
+          </li>
+          ';
+        }
+        ?>
+      </ul>
+      <ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>
     </div>
   </div>
 </section>
@@ -423,18 +385,19 @@
     <div uk-slider="autoplay: true;autoplay-interval:3000;" class="uk-margin-large">
       <div class="uk-position-relative uk-visible-toggle uk-light">
         <ul class="uk-slider-items uk-child-width-1-4@m uk-child-width-1-2@s uk-grid uk-flex-middle">
-          <li class="uk-flex uk-flex-center uk-flex-middle" style="height: 100px;">
-            <img src="img/design/blank.png" class="brand-logo" alt="Marca 1">
-          </li>
-          <li class="uk-flex uk-flex-center uk-flex-middle" style="height: 100px;">
-            <img src="img/design/blank.png" class="brand-logo" alt="Marca 2">
-          </li>
-          <li class="uk-flex uk-flex-center uk-flex-middle" style="height: 100px;">
-            <img src="img/design/blank.png" class="brand-logo" alt="Marca 3">
-          </li>
-          <li class="uk-flex uk-flex-center uk-flex-middle" style="height: 100px;">
-            <img src="img/design/blank.png" class="brand-logo" alt="Marca 4">
-          </li>
+          <?php  
+          $consulta = $CONEXION -> query("SELECT id FROM empresas WHERE estatus=0 ORDER BY orden");
+          while ($rowConsulta = $consulta -> fetch_assoc()){
+            $pic='img/contenido/empresas/'.$rowConsulta['id'].'.png';
+            if(strlen($rowConsulta['id'])>0){
+              echo '
+              <li class="uk-flex uk-flex-center uk-flex-middle" style="height: 100px;">
+                <img src="'.$pic.'" class="brand-logo">
+              </li>
+              ';
+            }
+          }
+          ?>
         </ul>
         <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
         <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
@@ -449,75 +412,35 @@
     <h2 class="section-title" style="color: white;">Lo que Dicen Nuestros Clientes</h2>
     <div uk-slider="autoplay:true;autoplay-interval:4000;" class="uk-margin-large">
       <ul class="uk-slider-items uk-child-width-1-2@s uk-child-width-1-3@m">
-        <li>
-          <div class="testimonial-card">
-            <img src="img/design/blank.png" class="testimonial-avatar" alt="Cliente 1">
-            <h3 style="margin-bottom: 15px;">Dr. Juan Pérez</h3>
-            <p style="font-style: italic; margin-bottom: 10px;">"Excelente calidad en los simuladores, han mejorado significativamente nuestro programa de entrenamiento."</p>
-            <small style="opacity: 0.8;">Hospital General</small>
-          </div>
-        </li>
-        <li>
-          <div class="testimonial-card">
-            <img src="img/design/blank.png" class="testimonial-avatar" alt="Cliente 2">
-            <h3 style="margin-bottom: 15px;">Dra. María García</h3>
-            <p style="font-style: italic; margin-bottom: 10px;">"El soporte técnico es excepcional y los equipos son muy confiables para nuestro centro de simulación."</p>
-            <small style="opacity: 0.8;">Universidad Médica</small>
-          </div>
-        </li>
-        <li>
-          <div class="testimonial-card">
-            <img src="img/design/blank.png" class="testimonial-avatar" alt="Cliente 3">
-            <h3 style="margin-bottom: 15px;">Dr. Carlos López</h3>
-            <p style="font-style: italic; margin-bottom: 10px;">"Los simuladores han transformado la forma en que entrenamos a nuestros residentes."</p>
-            <small style="opacity: 0.8;">Centro Médico</small>
-          </div>
-        </li>
+        <?php 
+        $productos = $CONEXION -> query("SELECT * FROM testimonios ORDER BY orden LIMIT 6");
+        while ($row_productos = $productos -> fetch_assoc()) {
+          $prodID=$row_productos['id'];
+          $picTxt='img/contenido/varios/default.jpg';
+          $pic='img/contenido/testimonios/'.$row_productos['imagen'];
+          if(file_exists($pic) AND strlen($row_productos['imagen'])>0){
+            $picTxt=$pic;
+          }
+          echo '
+          <li>
+            <div class="testimonial-card">
+              <img src="'.$picTxt.'" class="testimonial-avatar" alt="'.$row_productos['titulo'].'">
+              <h3 style="margin-bottom: 15px;">'.$row_productos['titulo'].'</h3>
+              <p style="font-style: italic; margin-bottom: 10px;">"'.$row_productos['txt'].'"</p>
+              <small style="opacity: 0.8;">'.$row_productos['email'].'</small>
+            </div>
+          </li>';
+        }
+        ?>
       </ul>
       <ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>
     </div>
   </div>
 </section>
 
-<!-- Footer -->
-<footer class="uk-section uk-section-secondary uk-light">
-  <div class="uk-container">
-    <div uk-grid class="uk-child-width-1-4@m uk-child-width-1-2@s">
-      <div>
-        <h4>ARAMed</h4>
-        <p>Simuladores médicos para la enseñanza y formación profesional.</p>
-      </div>
-      <div>
-        <h4>Contacto</h4>
-        <p><i class="fas fa-phone"></i> +52 55 1234 5678</p>
-        <p><i class="fas fa-envelope"></i> info@aramed.com</p>
-      </div>
-      <div>
-        <h4>Enlaces</h4>
-        <ul class="uk-list">
-          <li><a href="pages/productos-root.php">Productos</a></li>
-          <li><a href="pages/servicios.php">Servicios</a></li>
-          <li><a href="pages/contacto.php">Contacto</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Síguenos</h4>
-        <div class="uk-margin">
-          <a href="#" class="uk-icon-button uk-margin-small-right" uk-icon="facebook"></a>
-          <a href="#" class="uk-icon-button uk-margin-small-right" uk-icon="twitter"></a>
-          <a href="#" class="uk-icon-button uk-margin-small-right" uk-icon="instagram"></a>
-        </div>
-      </div>
-    </div>
-    <div class="uk-text-center uk-margin-large-top">
-      <p>&copy; 2024 ARAmed. Todos los derechos reservados.</p>
-    </div>
-  </div>
-</footer>
+<?=$footer?>
 
-<!-- UIkit JS -->
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit-icons.min.js"></script>
+<?=$scriptGNRL?>
 
 </body>
 </html>

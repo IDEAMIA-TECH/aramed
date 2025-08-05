@@ -27,6 +27,7 @@ $navPedidos=($seccion=='pedidos')?'uk-active':'';
 $navProductos=($seccion=='productos')?'uk-active':'';
 $navPro=($seccion=='proyectos')?'uk-active':'';
 $navCarousel=($seccion=='carousel')?'uk-active':'';
+$navs=($seccion=='servicios')?'uk-active':'';
 $navUsuarios=($seccion=='usuarios')?'uk-active':'';
 $navtestimonios=($seccion=='testimonios')?'uk-active':'';
 
