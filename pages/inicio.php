@@ -40,14 +40,14 @@ $rutaSubcategoria = $ruta.'subcategoria';
 
 // Definir menú
 $menu = '
-<li class="'.$nav1.'"><a href="'.$rutaInicio.'">Inicio</a></li>
-<li class="'.$nav2.'"><a href="'.$rutaAbout.'">Acerca de Aramed</a></li>
-<li class="'.$nav3.'"><a href="'.$rutaCategoria.'">Productos</a></li>
-<li class="'.$nav9.'"><a href="'.$rutaCatalogos.'">Catálogos</a></li>
-<li class="'.$nav5.'"><a href="'.$rutaServicios.'">Servicios</a></li>
-<li class="'.$nav6.'"><a href="'.$rutaProyectos.'">Proyectos</a></li>
-<li class="'.$nav7.'"><a href="'.$rutaNoticias.'">Noticias</a></li>
-<li class="'.$nav8.'"><a href="'.$rutaContacto.'">Contacto</a></li>
+<li class="'.$nav1.'"><a href="'.$rutaInicio.'">INICIO</a></li>
+<li class="'.$nav2.'"><a href="'.$rutaAbout.'">ACERCA DE</a></li>
+<li class="'.$nav3.'"><a href="'.$rutaCategoria.'">PRODUCTOS</a></li>
+<li class="'.$nav9.'"><a href="'.$rutaCatalogos.'">CATÁLOGOS</a></li>
+<li class="'.$nav5.'"><a href="'.$rutaServicios.'">SERVICIOS</a></li>
+<li class="'.$nav6.'"><a href="'.$rutaProyectos.'">PROYECTOS</a></li>
+<li class="'.$nav7.'"><a href="'.$rutaNoticias.'">NOTICIAS</a></li>
+<li class="'.$nav8.'"><a href="'.$rutaContacto.'">CONTACTO</a></li>
 ';
 
 $menuMovil = '
@@ -61,39 +61,45 @@ $menuMovil = '
 <li><a class="'.$nav8.'" href="'.$rutaContacto.'">Contacto</a></li>
 ';
 
-// Definir header
+// Definir header moderno
 $header = '
-<header class="padding-v-5">
-  <div uk-grid class="uk-grid-collapse">
-    <div class="uk-width-expand" style="margin-left: 40px;">
-      <img src="img/design/logo.png" style="max-height: 100px; padding: 10px 0;">
-    </div>
-    <div class="uk-width-auto uk-hidden@s" style="padding: 20px 20px 0 0;">
-      <button type="button" uk-toggle="target: #offcanvas-flip" uk-icon="icon: menu; ratio: 2;"></button>
-    </div>
-    <div class="uk-width-auto@s uk-flex uk-text-right@s uk-text-center">
-      <div class="uk-width-1-1 login-padding">
-        <div class="padding-v-20 uk-width-1-1">
-          <div class="padding-top-10 color-primary text-lg">
-            Tel: '.$telefono.'
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="uk-width-1-1 uk-visible@s" style="background: #0066ad;" uk-sticky>
+<header class="uk-section uk-section-small uk-background-default" uk-sticky="show-on-up: true; animation: uk-animation-slide-top">
+  <div class="uk-container">
     <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
-      <div class="uk-navbar-right ">
+      <div class="uk-navbar-left">
+        <a class="uk-navbar-item uk-logo" href="'.$rutaInicio.'">
+          <div class="uk-flex uk-flex-middle">
+            <div class="uk-margin-small-right" style="width: 40px; height: 40px; background: linear-gradient(135deg, #00a2e8, #0066ad); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-plus" style="color: white; font-size: 18px;"></i>
+            </div>
+            <span style="font-weight: 600; color: #333; font-size: 1.2rem;">ARAMed</span>
+          </div>
+        </a>
+      </div>
+      
+      <div class="uk-navbar-center uk-visible@m">
         <ul class="uk-navbar-nav">
           '.$menu.'
         </ul>
       </div>
+      
+      <div class="uk-navbar-right">
+        <div class="uk-navbar-item uk-visible@m">
+          <div class="uk-text-right">
+            <div style="font-size: 0.9rem; color: #666;">Teléfono</div>
+            <div style="font-weight: 600; color: #00a2e8;">'.$telefono.'</div>
+          </div>
+        </div>
+        <a class="uk-navbar-toggle uk-hidden@m" uk-navbar-toggle-icon href="#" uk-toggle="target: #mobile-menu"></a>
+      </div>
     </nav>
   </div>
-  <div id="offcanvas-flip" uk-offcanvas="flip: true; overlay: true">
+  
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" uk-offcanvas="mode: push; overlay: true">
     <div class="uk-offcanvas-bar">
       <button class="uk-offcanvas-close" type="button" uk-close></button>
-      <ul class="uk-nav uk-nav-primary uk-nav-parent-icon uk-nav-center uk-margin-auto-vertical" style="padding-top: 20px;" uk-nav>
+      <ul class="uk-nav uk-nav-primary uk-nav-center uk-margin-auto-vertical" uk-nav>
         '.$menuMovil.'
       </ul>
     </div>
@@ -120,39 +126,44 @@ $scriptGNRL = '
 <script src="js/general.js"></script>
 ';
 
-// Definir footer
+// Definir footer moderno
 $footer = '
-<footer class="uk-section uk-section-secondary uk-light">
+<footer class="uk-section uk-section-secondary uk-light" style="background: #2c3e50;">
   <div class="uk-container">
     <div uk-grid class="uk-child-width-1-4@m uk-child-width-1-2@s">
       <div>
-        <h4>ARAMed</h4>
-        <p>Simuladores médicos para la enseñanza y formación profesional.</p>
+        <h4 style="color: #00a2e8; margin-bottom: 20px;">ARAMed</h4>
+        <p style="color: #bdc3c7; line-height: 1.6;">Simuladores médicos para la enseñanza y formación profesional. Comprometidos con la excelencia en la educación médica.</p>
+        <div class="uk-margin-top">
+          <a href="'.$socialFace.'" class="uk-icon-button uk-margin-small-right" uk-icon="facebook" style="background: #00a2e8; color: white;"></a>
+          <a href="'.$socialInst.'" class="uk-icon-button uk-margin-small-right" uk-icon="instagram" style="background: #00a2e8; color: white;"></a>
+          <a href="'.$socialYout.'" class="uk-icon-button uk-margin-small-right" uk-icon="youtube" style="background: #00a2e8; color: white;"></a>
+        </div>
       </div>
       <div>
-        <h4>Contacto</h4>
-        <p><i class="fas fa-phone"></i> '.$telefono.'</p>
-        <p><i class="fas fa-envelope"></i> info@aramed.com</p>
+        <h4 style="color: #00a2e8; margin-bottom: 20px;">Contacto</h4>
+        <p style="color: #bdc3c7;"><i class="fas fa-phone" style="color: #00a2e8; margin-right: 10px;"></i> '.$telefono.'</p>
+        <p style="color: #bdc3c7;"><i class="fas fa-envelope" style="color: #00a2e8; margin-right: 10px;"></i> info@aramed.com</p>
+        <p style="color: #bdc3c7;"><i class="fas fa-map-marker-alt" style="color: #00a2e8; margin-right: 10px;"></i> Ciudad de México, México</p>
       </div>
       <div>
-        <h4>Enlaces</h4>
-        <ul class="uk-list">
-          <li><a href="'.$rutaProducto.'">Productos</a></li>
-          <li><a href="'.$rutaServicios.'">Servicios</a></li>
-          <li><a href="'.$rutaContacto.'">Contacto</a></li>
+        <h4 style="color: #00a2e8; margin-bottom: 20px;">Enlaces</h4>
+        <ul class="uk-list" style="color: #bdc3c7;">
+          <li><a href="'.$rutaProducto.'" style="color: #bdc3c7; text-decoration: none;">Productos</a></li>
+          <li><a href="'.$rutaServicios.'" style="color: #bdc3c7; text-decoration: none;">Servicios</a></li>
+          <li><a href="'.$rutaCategoria.'" style="color: #bdc3c7; text-decoration: none;">Categorías</a></li>
+          <li><a href="'.$rutaContacto.'" style="color: #bdc3c7; text-decoration: none;">Contacto</a></li>
         </ul>
       </div>
       <div>
-        <h4>Síguenos</h4>
-        <div class="uk-margin">
-          <a href="'.$socialFace.'" class="uk-icon-button uk-margin-small-right" uk-icon="facebook"></a>
-          <a href="'.$socialInst.'" class="uk-icon-button uk-margin-small-right" uk-icon="instagram"></a>
-          <a href="'.$socialYout.'" class="uk-icon-button uk-margin-small-right" uk-icon="youtube"></a>
-        </div>
+        <h4 style="color: #00a2e8; margin-bottom: 20px;">Horarios</h4>
+        <p style="color: #bdc3c7;">Lunes - Viernes: 9:00 - 18:00</p>
+        <p style="color: #bdc3c7;">Sábado: 9:00 - 14:00</p>
+        <p style="color: #bdc3c7;">Domingo: Cerrado</p>
       </div>
     </div>
-    <div class="uk-text-center uk-margin-large-top">
-      <p>&copy; '.date('Y').' ARAmed. Todos los derechos reservados.</p>
+    <div class="uk-text-center uk-margin-large-top" style="border-top: 1px solid #34495e; padding-top: 20px;">
+      <p style="color: #95a5a6;">&copy; '.date('Y').' ARAmed. Todos los derechos reservados.</p>
     </div>
   </div>
 </footer>
@@ -182,10 +193,27 @@ $mensajes = '';
   <link rel="stylesheet" href="css/modern-styles.css">
 
   <style>
-    /* Estilos modernos para la página de inicio */
+    /* Estilos modernos inspirados en el template médico */
+    :root {
+      --primary-color: #00a2e8;
+      --secondary-color: #0066ad;
+      --accent-color: #f39c12;
+      --text-dark: #2c3e50;
+      --text-light: #7f8c8d;
+      --bg-light: #f8f9fa;
+      --white: #ffffff;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+    
+    /* Hero Section Moderno */
     .hero-section {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: var(--white);
       padding: 120px 0 80px;
       position: relative;
       overflow: hidden;
@@ -223,8 +251,8 @@ $mensajes = '';
     
     .hero-cta {
       background: rgba(255,255,255,0.2);
-      border: 2px solid white;
-      color: white;
+      border: 2px solid var(--white);
+      color: var(--white);
       padding: 15px 40px;
       border-radius: 50px;
       text-decoration: none;
@@ -234,25 +262,92 @@ $mensajes = '';
     }
     
     .hero-cta:hover {
-      background: white;
-      color: #667eea;
+      background: var(--white);
+      color: var(--primary-color);
       transform: translateY(-2px);
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
     
+    /* Info Cards */
+    .info-cards {
+      margin-top: -50px;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .info-card {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+    
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .info-card.emergency {
+      background: var(--primary-color);
+      color: var(--white);
+    }
+    
+    .info-card.timetable {
+      background: var(--secondary-color);
+      color: var(--white);
+    }
+    
+    .info-card.hours {
+      background: var(--white);
+      color: var(--text-dark);
+    }
+    
+    .info-card h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .info-card p {
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+    
+    .info-card .btn {
+      background: var(--accent-color);
+      color: var(--white);
+      padding: 8px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .info-card .btn:hover {
+      background: #e67e22;
+      transform: translateY(-2px);
+    }
+    
+    /* Features Section */
     .features-section {
       padding: 80px 0;
-      background: #f8f9fa;
+      background: var(--bg-light);
     }
     
     .feature-card {
-      background: white;
+      background: var(--white);
       border-radius: 15px;
-      padding: 30px;
+      padding: 40px 30px;
       text-align: center;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
       height: 100%;
+      position: relative;
     }
     
     .feature-card:hover {
@@ -263,19 +358,31 @@ $mensajes = '';
     .feature-icon {
       width: 80px;
       height: 80px;
-      margin: 0 auto 20px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      margin: 0 auto 25px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
+      color: var(--white);
       font-size: 2rem;
     }
     
+    .feature-card h3 {
+      color: var(--text-dark);
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    
+    .feature-card p {
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    
+    /* Categories Section */
     .categories-section {
       padding: 80px 0;
-      background: white;
+      background: var(--white);
     }
     
     .category-card {
@@ -304,14 +411,64 @@ $mensajes = '';
       left: 0;
       right: 0;
       background: linear-gradient(transparent, rgba(0,0,0,0.8));
-      color: white;
+      color: var(--white);
       padding: 30px 20px 20px;
       text-align: center;
     }
     
+    /* Video Section */
+    .video-section {
+      position: relative;
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      text-align: center;
+    }
+    
+    .video-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1;
+    }
+    
+    .video-content {
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Products Section */
+    .products-section {
+      padding: 80px 0;
+      background: var(--secondary-color);
+      color: var(--white);
+    }
+    
+    .product-card {
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .product-card:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-3px);
+    }
+    
+    /* Brands Section */
     .brands-section {
       padding: 80px 0;
-      background: #f8f9fa;
+      background: var(--bg-light);
     }
     
     .brand-logo {
@@ -327,10 +484,11 @@ $mensajes = '';
       transform: scale(1.1);
     }
     
+    /* Testimonials Section */
     .testimonials-section {
       padding: 80px 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: var(--white);
     }
     
     .testimonial-card {
@@ -350,6 +508,7 @@ $mensajes = '';
       border: 3px solid rgba(255,255,255,0.3);
     }
     
+    /* Section Titles */
     .section-title {
       font-size: 2.5rem;
       font-weight: 700;
@@ -366,14 +525,19 @@ $mensajes = '';
       transform: translateX(-50%);
       width: 80px;
       height: 4px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       border-radius: 2px;
     }
     
+    .section-title.white::after {
+      background: var(--white);
+    }
+    
+    /* Buttons */
     .btn-primary-modern {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       border: none;
-      color: white;
+      color: var(--white);
       padding: 12px 30px;
       border-radius: 25px;
       font-weight: 600;
@@ -384,11 +548,12 @@ $mensajes = '';
     
     .btn-primary-modern:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-      color: white;
+      box-shadow: 0 10px 25px rgba(0, 162, 232, 0.4);
+      color: var(--white);
       text-decoration: none;
     }
     
+    /* Responsive */
     @media (max-width: 768px) {
       .hero-title {
         font-size: 2.5rem;
@@ -400,6 +565,10 @@ $mensajes = '';
       
       .section-title {
         font-size: 2rem;
+      }
+      
+      .info-cards {
+        margin-top: 0;
       }
     }
   </style>
@@ -419,6 +588,35 @@ $mensajes = '';
     </div>
   </div>
 </section>
+
+<!-- Info Cards -->
+<div class="uk-container info-cards">
+  <div uk-grid class="uk-child-width-1-3@m uk-child-width-1-1@s">
+    <div>
+      <div class="info-card emergency">
+        <h3>Servicio de Emergencia</h3>
+        <p>Si necesitas asistencia técnica urgente fuera del horario normal, contáctanos inmediatamente.</p>
+        <a href="<?=$rutaContacto?>" class="btn">Contactar →</a>
+      </div>
+    </div>
+    <div>
+      <div class="info-card timetable">
+        <h3>Horarios de Atención</h3>
+        <p>Estamos disponibles para brindarte el mejor servicio y asesoría técnica especializada.</p>
+        <a href="<?=$rutaContacto?>" class="btn">Ver Horarios →</a>
+      </div>
+    </div>
+    <div>
+      <div class="info-card hours">
+        <h3>Horarios de Oficina</h3>
+        <p>Lunes - Viernes: 9:00 - 18:00<br>
+        Sábado: 9:00 - 14:00<br>
+        Domingo: Cerrado</p>
+        <a href="<?=$rutaContacto?>" class="btn">Contactar →</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Carousel Section -->
 <div class="uk-position-relative">
@@ -444,8 +642,8 @@ $mensajes = '';
             <div class="feature-icon">
               <i class="fas fa-medical-kit"></i>
             </div>
-            <h3 style="color: #333; margin-bottom: 15px;">'.$rowConsulta['titulo'].'</h3>
-            <p style="color: #666; line-height: 1.6;">'.substr($rowConsulta['txt'], 0, 150).'...</p>
+            <h3>'.$rowConsulta['titulo'].'</h3>
+            <p>'.substr($rowConsulta['txt'], 0, 150).'...</p>
           </div>
         </div>';
       }
@@ -504,16 +702,13 @@ if (strlen($rowConsulta['video'])>0) {
     $pic=$picPersonal;
   }
   echo '
-  <section style="background: url('.$pic.') no-repeat center; background-size: cover; min-height: 600px; position: relative;">
-    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6);"></div>
-    <div class="uk-container uk-height-1-1 uk-flex uk-flex-middle uk-flex-center">
-      <div class="uk-text-center" style="position: relative; z-index: 2; color: white;">
-        <h2 style="font-size: 2.5rem; margin-bottom: 20px;">'.$rowConsulta['videotxt'].'</h2>
-        <div uk-lightbox>
-          <a href="'.$videoUrl.'" class="hero-cta" style="background: rgba(255,255,255,0.2);">
-            <i class="fas fa-play" style="margin-right: 10px;"></i>Reproducir Video
-          </a>
-        </div>
+  <section class="video-section" style="background: url('.$pic.') no-repeat center; background-size: cover;">
+    <div class="video-content">
+      <h2 style="font-size: 2.5rem; margin-bottom: 20px;">'.$rowConsulta['videotxt'].'</h2>
+      <div uk-lightbox>
+        <a href="'.$videoUrl.'" class="hero-cta" style="background: rgba(255,255,255,0.2);">
+          <i class="fas fa-play" style="margin-right: 10px;"></i>Reproducir Video
+        </a>
       </div>
     </div>
   </section>';
@@ -521,9 +716,9 @@ if (strlen($rowConsulta['video'])>0) {
 ?>
 
 <!-- Best Sellers Section -->
-<section style="background: #2d4e76; color: white; padding: 80px 0;">
+<section class="products-section">
   <div class="uk-container">
-    <h2 class="section-title" style="color: white;">Productos Destacados</h2>
+    <h2 class="section-title white">Productos Destacados</h2>
     <p class="uk-text-center" style="font-size: 1.2rem; margin-bottom: 50px;">Ofrecemos una solución integral con productos de calidad.</p>
     
     <div uk-slider="sets: true" class="uk-margin-large">
@@ -533,7 +728,9 @@ if (strlen($rowConsulta['video'])>0) {
         while ($rowConsulta = $consulta -> fetch_assoc()) {
           echo '
           <li>
-            '.itemInicio($rowConsulta['id']).'
+            <div class="product-card">
+              '.itemInicio($rowConsulta['id']).'
+            </div>
           </li>
           ';
         }
@@ -575,7 +772,7 @@ if (strlen($rowConsulta['video'])>0) {
 <!-- Testimonials Section -->
 <section class="testimonials-section">
   <div class="uk-container">
-    <h2 class="section-title" style="color: white;">Lo que Dicen Nuestros Clientes</h2>
+    <h2 class="section-title white">Lo que Dicen Nuestros Clientes</h2>
     <div uk-slider="autoplay:true;autoplay-interval:4000;" class="uk-margin-large">
       <ul class="uk-slider-items uk-child-width-1-2@s uk-child-width-1-3@m">
         <?php 
@@ -608,37 +805,42 @@ if (strlen($rowConsulta['video'])>0) {
 // Definir footer si no está definido
 if (!isset($footer)) {
   $footer = '
-  <footer class="uk-section uk-section-secondary uk-light">
+  <footer class="uk-section uk-section-secondary uk-light" style="background: #2c3e50;">
     <div class="uk-container">
       <div uk-grid class="uk-child-width-1-4@m uk-child-width-1-2@s">
         <div>
-          <h4>ARAMed</h4>
-          <p>Simuladores médicos para la enseñanza y formación profesional.</p>
+          <h4 style="color: #00a2e8; margin-bottom: 20px;">ARAMed</h4>
+          <p style="color: #bdc3c7; line-height: 1.6;">Simuladores médicos para la enseñanza y formación profesional. Comprometidos con la excelencia en la educación médica.</p>
+          <div class="uk-margin-top">
+            <a href="#" class="uk-icon-button uk-margin-small-right" uk-icon="facebook" style="background: #00a2e8; color: white;"></a>
+            <a href="#" class="uk-icon-button uk-margin-small-right" uk-icon="instagram" style="background: #00a2e8; color: white;"></a>
+            <a href="#" class="uk-icon-button uk-margin-small-right" uk-icon="youtube" style="background: #00a2e8; color: white;"></a>
+          </div>
         </div>
         <div>
-          <h4>Contacto</h4>
-          <p><i class="fas fa-phone"></i> +52 55 1234 5678</p>
-          <p><i class="fas fa-envelope"></i> info@aramed.com</p>
+          <h4 style="color: #00a2e8; margin-bottom: 20px;">Contacto</h4>
+          <p style="color: #bdc3c7;"><i class="fas fa-phone" style="color: #00a2e8; margin-right: 10px;"></i> +52 55 1234 5678</p>
+          <p style="color: #bdc3c7;"><i class="fas fa-envelope" style="color: #00a2e8; margin-right: 10px;"></i> info@aramed.com</p>
+          <p style="color: #bdc3c7;"><i class="fas fa-map-marker-alt" style="color: #00a2e8; margin-right: 10px;"></i> Ciudad de México, México</p>
         </div>
         <div>
-          <h4>Enlaces</h4>
-          <ul class="uk-list">
-            <li><a href="productos">Productos</a></li>
-            <li><a href="servicios">Servicios</a></li>
-            <li><a href="contacto">Contacto</a></li>
+          <h4 style="color: #00a2e8; margin-bottom: 20px;">Enlaces</h4>
+          <ul class="uk-list" style="color: #bdc3c7;">
+            <li><a href="productos" style="color: #bdc3c7; text-decoration: none;">Productos</a></li>
+            <li><a href="servicios" style="color: #bdc3c7; text-decoration: none;">Servicios</a></li>
+            <li><a href="categorias" style="color: #bdc3c7; text-decoration: none;">Categorías</a></li>
+            <li><a href="contacto" style="color: #bdc3c7; text-decoration: none;">Contacto</a></li>
           </ul>
         </div>
         <div>
-          <h4>Síguenos</h4>
-          <div class="uk-margin">
-            <a href="#" class="uk-icon-button uk-margin-small-right" uk-icon="facebook"></a>
-            <a href="#" class="uk-icon-button uk-margin-small-right" uk-icon="instagram"></a>
-            <a href="#" class="uk-icon-button uk-margin-small-right" uk-icon="youtube"></a>
-          </div>
+          <h4 style="color: #00a2e8; margin-bottom: 20px;">Horarios</h4>
+          <p style="color: #bdc3c7;">Lunes - Viernes: 9:00 - 18:00</p>
+          <p style="color: #bdc3c7;">Sábado: 9:00 - 14:00</p>
+          <p style="color: #bdc3c7;">Domingo: Cerrado</p>
         </div>
       </div>
-      <div class="uk-text-center uk-margin-large-top">
-        <p>&copy; '.date('Y').' ARAmed. Todos los derechos reservados.</p>
+      <div class="uk-text-center uk-margin-large-top" style="border-top: 1px solid #34495e; padding-top: 20px;">
+        <p style="color: #95a5a6;">&copy; '.date('Y').' ARAmed. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>
