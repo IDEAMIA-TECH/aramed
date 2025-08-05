@@ -44,41 +44,46 @@
 	$cat = (isset($_REQUEST['cat'])) ? cleanInput($_REQUEST['cat']) : $cat=false;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-//                             LOGIN 
+//                             DETERMINAR SI ES ADMIN O SITIO PÚBLICO
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	try {
-		require_once("modulos/varios/login_proceso.php");
-		require_once('modulos/varios/includes.php');
-		if(!isset($acceso) or $acceso==false){ 
-			require_once("modulos/varios/login.php");
-		} 
-	} catch (Exception $e) {
-		logActivity('ERROR_LOGIN', $e->getMessage());
-		if (IS_DEVELOPMENT) {
-			devLog('Error en login: ' . $e->getMessage(), 'ERROR');
-		}
-		header("HTTP/1.1 500 Internal Server Error");
-		include_once('pages/500.php');
-		exit;
-	}
-
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-//                             Mostrando el diseño interior
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	if(isset($acceso) and $acceso==1){ 
+	$isAdmin = (isset($_REQUEST['admin']) || strpos($_SERVER['REQUEST_URI'], '/admin/') !== false);
+	
+	if ($isAdmin) {
+		// RUTA DE ADMINISTRACIÓN
 		try {
-			require_once('modulos/'.$seccion.'/acciones.php');
-			require_once('modulos/'.$seccion.'/inicio.php');
+			require_once("modulos/varios/login_proceso.php");
+			require_once('modulos/varios/includes.php');
+			if(!isset($acceso) or $acceso==false){ 
+				require_once("modulos/varios/login.php");
+			} else {
+				// Usuario autenticado, mostrar panel de administración
+				require_once('modulos/'.$seccion.'/acciones.php');
+				require_once('modulos/'.$seccion.'/inicio.php');
+			}
 		} catch (Exception $e) {
-			logActivity('ERROR_MODULE', $e->getMessage() . ' - Sección: ' . $seccion);
+			logActivity('ERROR_LOGIN', $e->getMessage());
 			if (IS_DEVELOPMENT) {
-				devLog('Error en módulo: ' . $e->getMessage() . ' - Sección: ' . $seccion, 'ERROR');
+				devLog('Error en login: ' . $e->getMessage(), 'ERROR');
 			}
 			header("HTTP/1.1 500 Internal Server Error");
 			include_once('pages/500.php');
 			exit;
 		}
-	} 
+	} else {
+		// RUTA DEL SITIO PÚBLICO - Mostrar página de inicio
+		try {
+			// Cargar la página de inicio pública
+			include_once('pages/inicio.php');
+		} catch (Exception $e) {
+			logActivity('ERROR_PUBLIC_PAGE', $e->getMessage());
+			if (IS_DEVELOPMENT) {
+				devLog('Error en página pública: ' . $e->getMessage(), 'ERROR');
+			}
+			header("HTTP/1.1 500 Internal Server Error");
+			include_once('pages/500.php');
+			exit;
+		}
+	}
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //							Borrar Error_log si existe
