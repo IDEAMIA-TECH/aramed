@@ -46,9 +46,9 @@ define('IS_DEVELOPMENT', $isDevelopment);
 // Configuración de base de datos según entorno
 if ($isDevelopment) {
     define('DB_HOST', 'localhost');
-    define('DB_NAME', 'aramed');
-    define('DB_USER', 'root');
-    define('DB_PASS', 'minimusa2000');
+    define('DB_NAME', 'ideamiadev_aramed');
+    define('DB_USER', 'ideamiadev_aramed');
+    define('DB_PASS', 'xS@A5Pm3EDc3BEdj');
 } else {
     define('DB_HOST', 'localhost');
     define('DB_NAME', 'ideamiadev_aramed');

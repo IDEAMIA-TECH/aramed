@@ -14,9 +14,9 @@
 	$username = 'ideamiadev_aramed';
 	$password = 'xS@A5Pm3EDc3BEdj';
 
-	$databaseLocal 	= 'aramed';
-	$usernameLocal 	= 'root';
-	$passwordLocal 	= 'minimusa2000';
+	$databaseLocal 	= 'ideamiadev_aramed';
+	$usernameLocal 	= 'ideamiadev_aramed';
+	$passwordLocal 	= 'xS@A5Pm3EDc3BEdj';
 
 	$previewDomain   = 'wozialmarketinglovers.com';
 	$databasePreview = 'wozialma_aramed';
