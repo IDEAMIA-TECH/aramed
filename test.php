@@ -168,7 +168,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 }
 echo "</div>";
 
-// Test 8: Verificar headers de seguridad
+// Test 8: Verificar headers de seguridad (versión corregida)
 echo "<div class='test-section'>
     <h2>8. Headers de Seguridad</h2>
     <ul>";
@@ -179,7 +179,10 @@ $security_headers = [
 ];
 
 foreach ($security_headers as $header => $expected_value) {
-    $header_value = apache_getenv($header) ?: 'No configurado';
+    // Usar getallheaders() en lugar de apache_getenv()
+    $headers = function_exists('getallheaders') ? getallheaders() : [];
+    $header_value = isset($headers[$header]) ? $headers[$header] : 'No configurado';
+    
     if ($header_value === $expected_value) {
         echo "<li class='success'>✓ $header: $header_value</li>";
     } else {
