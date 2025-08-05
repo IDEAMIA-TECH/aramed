@@ -86,13 +86,6 @@ if (isDevEnvironment()) {
     devLog('Sistema iniciado en modo desarrollo', 'SYSTEM');
 }
 
-// Configuración de sesión específica para desarrollo
-if (isDevEnvironment()) {
-    ini_set('session.cookie_secure', 0); // Permitir HTTP en desarrollo
-    ini_set('session.cookie_httponly', 1);
-    ini_set('session.use_strict_mode', 1);
-}
-
 // Función para mostrar información del entorno
 function showDevInfo() {
     if (isDevEnvironment()) {
