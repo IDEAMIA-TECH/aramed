@@ -14,6 +14,9 @@
   <meta property="fb:app_id" content="<?=$appID?>">
 
   <?=$headGNRL?>
+  
+  <!-- CSS Moderno para ARAmed -->
+  <link rel="stylesheet" href="css/modern-styles.css">
 
   <style>
     /* Estilos modernos para la página de inicio */
