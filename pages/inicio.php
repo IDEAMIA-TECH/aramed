@@ -188,15 +188,18 @@ $mensajes = '';
   <link rel="stylesheet" href="css/modern-styles.css">
 
   <style>
-    /* Estilos modernos inspirados en el template médico */
+    /* Estilos corporativos basados en el logo */
     :root {
-      --primary-color: #00a2e8;
-      --secondary-color: #0066ad;
-      --accent-color: #f39c12;
-      --text-dark: #2c3e50;
-      --text-light: #7f8c8d;
-      --bg-light: #f8f9fa;
+      --primary-color: #1e3a8a;
+      --secondary-color: #3b82f6;
+      --accent-color: #f59e0b;
+      --text-dark: #1f2937;
+      --text-light: #6b7280;
+      --bg-light: #f8fafc;
       --white: #ffffff;
+      --gray-light: #e5e7eb;
+      --gray-medium: #9ca3af;
+      --black: #000000;
     }
     
     body {
@@ -205,11 +208,11 @@ $mensajes = '';
       line-height: 1.6;
     }
     
-    /* Hero Section Moderno */
+    /* Hero Section Corporativo */
     .hero-section {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      background: linear-gradient(135deg, var(--black) 0%, var(--primary-color) 50%, var(--secondary-color) 100%);
       color: var(--white);
-      padding: 120px 0 80px;
+      padding: 140px 0 100px;
       position: relative;
       overflow: hidden;
     }
@@ -221,7 +224,7 @@ $mensajes = '';
       left: 0;
       right: 0;
       bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="rgba(255,255,255,0.1)" points="0,1000 1000,0 1000,1000"/></svg>');
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="rgba(255,255,255,0.05)" points="0,1000 1000,0 1000,1000"/><circle fill="rgba(59,130,246,0.1)" cx="200" cy="200" r="100"/><circle fill="rgba(30,58,138,0.1)" cx="800" cy="300" r="150"/></svg>');
       background-size: cover;
     }
     
@@ -231,67 +234,84 @@ $mensajes = '';
     }
     
     .hero-title {
-      font-size: 3.5rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      font-size: 4rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+      letter-spacing: -0.02em;
     }
     
     .hero-subtitle {
-      font-size: 1.5rem;
-      font-weight: 300;
-      margin-bottom: 2rem;
-      opacity: 0.9;
+      font-size: 1.8rem;
+      font-weight: 400;
+      margin-bottom: 2.5rem;
+      opacity: 0.95;
+      line-height: 1.4;
     }
     
     .hero-cta {
-      background: rgba(255,255,255,0.2);
-      border: 2px solid var(--white);
+      background: linear-gradient(135deg, var(--accent-color), #f97316);
+      border: none;
       color: var(--white);
-      padding: 15px 40px;
+      padding: 18px 45px;
       border-radius: 50px;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 1.1rem;
       transition: all 0.3s ease;
       display: inline-block;
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
     }
     
     .hero-cta:hover {
-      background: var(--white);
-      color: var(--primary-color);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      background: linear-gradient(135deg, #f97316, var(--accent-color));
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(245, 158, 11, 0.6);
+      color: var(--white);
     }
     
-    /* Info Cards */
+    /* Info Cards Corporativas */
     .info-cards {
-      margin-top: -50px;
+      margin-top: -60px;
       position: relative;
       z-index: 10;
     }
     
     .info-card {
       background: var(--white);
-      border-radius: 10px;
-      padding: 30px;
+      border-radius: 15px;
+      padding: 35px 25px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+      transition: all 0.4s ease;
       height: 100%;
+      border: 1px solid var(--gray-light);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .info-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     }
     
     .info-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      transform: translateY(-8px);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
     }
     
     .info-card.emergency {
-      background: var(--primary-color);
+      background: linear-gradient(135deg, var(--primary-color), #1e40af);
       color: var(--white);
     }
     
     .info-card.timetable {
-      background: var(--secondary-color);
+      background: linear-gradient(135deg, var(--secondary-color), #2563eb);
       color: var(--white);
     }
     
@@ -328,39 +348,52 @@ $mensajes = '';
       transform: translateY(-2px);
     }
     
-    /* Features Section */
+    /* Features Section Corporativa */
     .features-section {
-      padding: 80px 0;
-      background: var(--bg-light);
+      padding: 100px 0;
+      background: linear-gradient(135deg, var(--bg-light) 0%, var(--white) 100%);
     }
     
     .feature-card {
       background: var(--white);
-      border-radius: 15px;
-      padding: 40px 30px;
+      border-radius: 20px;
+      padding: 45px 30px;
       text-align: center;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      transition: all 0.4s ease;
       height: 100%;
       position: relative;
+      border: 1px solid var(--gray-light);
+      overflow: hidden;
+    }
+    
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     }
     
     .feature-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+      transform: translateY(-10px);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.15);
     }
     
     .feature-icon {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 25px;
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 30px;
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--white);
-      font-size: 2rem;
+      font-size: 2.2rem;
+      box-shadow: 0 10px 25px rgba(30, 58, 138, 0.3);
     }
     
     .feature-card h3 {
@@ -438,26 +471,52 @@ $mensajes = '';
       z-index: 2;
     }
     
-    /* Products Section */
+    /* Products Section Corporativa */
     .products-section {
-      padding: 80px 0;
-      background: var(--secondary-color);
+      padding: 100px 0;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
       color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .products-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><circle fill="rgba(255,255,255,0.05)" cx="200" cy="200" r="100"/><circle fill="rgba(255,255,255,0.03)" cx="800" cy="300" r="150"/></svg>');
+      background-size: cover;
     }
     
     .product-card {
-      background: rgba(255,255,255,0.1);
-      border-radius: 15px;
-      padding: 20px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 25px;
       text-align: center;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2);
-      transition: all 0.3s ease;
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255,255,255,0.3);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(135deg, var(--accent-color), #f97316);
     }
     
     .product-card:hover {
-      background: rgba(255,255,255,0.2);
-      transform: translateY(-3px);
+      background: rgba(255,255,255,0.25);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
     }
     
     /* Brands Section */
@@ -479,81 +538,126 @@ $mensajes = '';
       transform: scale(1.1);
     }
     
-    /* Testimonials Section */
+    /* Testimonials Section Corporativa */
     .testimonials-section {
-      padding: 80px 0;
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      padding: 100px 0;
+      background: linear-gradient(135deg, var(--black) 0%, var(--primary-color) 50%, var(--secondary-color) 100%);
       color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .testimonials-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="rgba(255,255,255,0.03)" points="0,1000 1000,0 1000,1000"/><circle fill="rgba(255,255,255,0.05)" cx="300" cy="300" r="100"/></svg>');
+      background-size: cover;
     }
     
     .testimonial-card {
-      background: rgba(255,255,255,0.1);
-      border-radius: 15px;
-      padding: 30px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 35px;
       text-align: center;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255,255,255,0.3);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .testimonial-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, var(--accent-color), #f97316);
+    }
+    
+    .testimonial-card:hover {
+      background: rgba(255,255,255,0.25);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
     }
     
     .testimonial-avatar {
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
       border-radius: 50%;
-      margin: 0 auto 20px;
-      border: 3px solid rgba(255,255,255,0.3);
+      margin: 0 auto 25px;
+      border: 4px solid rgba(255,255,255,0.4);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     }
     
-    /* Section Titles */
+    /* Section Titles Corporativos */
     .section-title {
-      font-size: 2.5rem;
-      font-weight: 700;
+      font-size: 3rem;
+      font-weight: 800;
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 4rem;
       position: relative;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
     }
     
     .section-title::after {
       content: '';
       position: absolute;
-      bottom: -10px;
+      bottom: -15px;
       left: 50%;
       transform: translateX(-50%);
-      width: 80px;
-      height: 4px;
+      width: 100px;
+      height: 5px;
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      border-radius: 2px;
+      border-radius: 3px;
+      box-shadow: 0 2px 10px rgba(30, 58, 138, 0.3);
+    }
+    
+    .section-title.white {
+      color: var(--white);
     }
     
     .section-title.white::after {
       background: var(--white);
+      box-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
     }
     
-    /* Buttons */
+    /* Buttons Corporativos */
     .btn-primary-modern {
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       border: none;
       color: var(--white);
-      padding: 12px 30px;
-      border-radius: 25px;
-      font-weight: 600;
-      transition: all 0.3s ease;
+      padding: 15px 35px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.4s ease;
       text-decoration: none;
       display: inline-block;
+      box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3);
+      letter-spacing: 0.5px;
     }
     
     .btn-primary-modern:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0, 162, 232, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(30, 58, 138, 0.5);
       color: var(--white);
       text-decoration: none;
     }
     
-    /* Header y Navegación */
+    /* Header y Navegación Corporativa */
     .uk-navbar-container {
-      background: rgba(255, 255, 255, 0.95) !important;
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.98) !important;
+      backdrop-filter: blur(15px);
+      border-bottom: 2px solid var(--gray-light);
       width: 100%;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
     }
     
     .uk-navbar-nav {
@@ -563,24 +667,27 @@ $mensajes = '';
     }
     
     .uk-navbar-nav > li > a {
-      color: #333 !important;
-      font-weight: 500;
+      color: var(--text-dark) !important;
+      font-weight: 600;
       text-transform: uppercase;
-      font-size: 0.9rem;
-      padding: 0 15px;
+      font-size: 0.85rem;
+      padding: 0 18px;
       transition: all 0.3s ease;
       white-space: nowrap;
+      letter-spacing: 0.5px;
     }
     
     .uk-navbar-nav > li > a:hover {
-      color: #00a2e8 !important;
-      background: rgba(0, 162, 232, 0.1);
+      color: var(--primary-color) !important;
+      background: rgba(30, 58, 138, 0.1);
+      border-radius: 8px;
     }
     
     .uk-navbar-nav > li.uk-active > a {
-      color: #00a2e8 !important;
-      background: rgba(0, 162, 232, 0.1);
-      border-radius: 5px;
+      color: var(--white) !important;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
     }
     
     .uk-navbar-right {
@@ -589,8 +696,9 @@ $mensajes = '';
     }
     
     .uk-logo img {
-      max-height: 60px;
+      max-height: 65px;
       width: auto;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
     }
     
     /* Mobile Menu */
