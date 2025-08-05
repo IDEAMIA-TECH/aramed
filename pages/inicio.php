@@ -1,3 +1,29 @@
+<?php
+// Definir variables necesarias antes de incluir includes.php
+$ruta = '';
+$telefono = '+52 55 1234 5678';
+$uikitVersion = '3.17.11';
+$mensaje = '';
+$mensajeClase = '';
+
+// Variables de navegación
+$nav1 = 'uk-active';
+$nav2 = '';
+$nav3 = '';
+$nav5 = '';
+$nav6 = '';
+$nav7 = '';
+$nav8 = '';
+$nav9 = '';
+
+// Variables de redes sociales
+$socialFace = '#';
+$socialInst = '#';
+$socialYout = '#';
+
+// Incluir archivo de variables y funciones
+require_once('../includes/includes.php');
+?>
 <!DOCTYPE html>
 <html lang="<?=$languaje?>">
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
