@@ -22,7 +22,7 @@ $socialInst = '#';
 $socialYout = '#';
 
 // Incluir archivo de variables y funciones
-require_once('../includes/includes.php');
+require_once('includes/includes.php');
 ?>
 <!DOCTYPE html>
 <html lang="<?=$languaje?>">
