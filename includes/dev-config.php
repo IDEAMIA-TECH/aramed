@@ -11,9 +11,9 @@ define('DEV_SUBDIR', '/aramed/');
 
 // Configuración de base de datos para desarrollo
 define('DEV_DB_HOST', 'localhost');
-define('DEV_DB_NAME', 'aramed');
-define('DEV_DB_USER', 'root');
-define('DEV_DB_PASS', 'minimusa2000');
+define('DEV_DB_NAME', 'ideamiadev_aramed');
+define('DEV_DB_USER', 'ideamiadev_aramed');
+define('DEV_DB_PASS', 'xS@A5Pm3EDc3BEdj');
 
 // Configuración de URLs para desarrollo
 define('DEV_SITE_URL', 'https://' . DEV_DOMAIN . DEV_SUBDIR);
