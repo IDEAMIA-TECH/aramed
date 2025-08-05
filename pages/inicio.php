@@ -68,29 +68,24 @@ $header = '
     <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
       <div class="uk-navbar-left">
         <a class="uk-navbar-item uk-logo" href="'.$rutaInicio.'">
-          <div class="uk-flex uk-flex-middle">
-            <div class="uk-margin-small-right" style="width: 40px; height: 40px; background: linear-gradient(135deg, #00a2e8, #0066ad); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-              <i class="fas fa-plus" style="color: white; font-size: 18px;"></i>
-            </div>
-            <span style="font-weight: 600; color: #333; font-size: 1.2rem;">ARAMed</span>
-          </div>
+          <img src="img/design/logo.png" style="max-height: 60px; padding: 10px 0;">
         </a>
       </div>
       
-      <div class="uk-navbar-center uk-visible@m">
+      <div class="uk-navbar-right uk-visible@m">
         <ul class="uk-navbar-nav">
           '.$menu.'
         </ul>
-      </div>
-      
-      <div class="uk-navbar-right">
-        <div class="uk-navbar-item uk-visible@m">
+        <div class="uk-navbar-item">
           <div class="uk-text-right">
             <div style="font-size: 0.9rem; color: #666;">Teléfono</div>
             <div style="font-weight: 600; color: #00a2e8;">'.$telefono.'</div>
           </div>
         </div>
-        <a class="uk-navbar-toggle uk-hidden@m" uk-navbar-toggle-icon href="#" uk-toggle="target: #mobile-menu"></a>
+      </div>
+      
+      <div class="uk-navbar-right uk-hidden@m">
+        <a class="uk-navbar-toggle" uk-navbar-toggle-icon href="#" uk-toggle="target: #mobile-menu"></a>
       </div>
     </nav>
   </div>
@@ -554,6 +549,19 @@ $mensajes = '';
     }
     
     /* Header y Navegación */
+    .uk-navbar-container {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
+    
+    .uk-navbar-nav {
+      width: 100%;
+      justify-content: flex-end;
+      margin-right: 20px;
+    }
+    
     .uk-navbar-nav > li > a {
       color: #333 !important;
       font-weight: 500;
@@ -561,6 +569,7 @@ $mensajes = '';
       font-size: 0.9rem;
       padding: 0 15px;
       transition: all 0.3s ease;
+      white-space: nowrap;
     }
     
     .uk-navbar-nav > li > a:hover {
@@ -574,10 +583,14 @@ $mensajes = '';
       border-radius: 5px;
     }
     
-    .uk-navbar-container {
-      background: rgba(255, 255, 255, 0.95) !important;
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    .uk-navbar-right {
+      flex: 1;
+      justify-content: flex-end;
+    }
+    
+    .uk-logo img {
+      max-height: 60px;
+      width: auto;
     }
     
     /* Mobile Menu */
