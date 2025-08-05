@@ -61,10 +61,13 @@
 	$logo=$ruta.$logo;
 
 	$hostname = 'localhost';
-	if($dominio=='localhost' or $ip=='192.168.100'){
+	
+	// Detección mejorada del entorno
+	if($dominio=='localhost' or $ip=='216.18.195.84' or $dominio=='ideamia-dev.com'){
 		$database 	= $databaseLocal;
 		$username 	= $usernameLocal;
 		$password 	= $passwordLocal;
+		$debug = 1; // Habilitar debug para desarrollo
 	}elseif($dominio==$previewDomain){
 		$database = $databasePreview;
 		$username = $usernamePreview;

@@ -1,9 +1,20 @@
 <?php
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//                             Configuración del sistema
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	require_once('includes/config.php');
+	
+	// Cargar configuración específica de desarrollo si es necesario
+	if (IS_DEVELOPMENT) {
+		require_once('includes/dev-config.php');
+		showDevInfo(); // Mostrar información de desarrollo
+	}
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //                             Conectando con la base de datos
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	require_once('../includes/connection.php');
-	require_once('../includes/widgets.php');
+	require_once('includes/connection.php');
+	require_once('includes/widgets.php');
 
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -19,7 +30,7 @@
 	$legendSuccess='';
 	$legendFail='';
 	$debug=0;
-	if($dominio=='localhost'){
+	if($dominio=='localhost' or $dominio=='ideamia-dev.com'){
 		$debug=1;
 	}
 
@@ -27,26 +38,46 @@
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //                             Obteniendo variables
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	$id = (isset($_REQUEST['id'])) ? $_REQUEST['id'] : $id=false;
-	$seccion = (isset($_REQUEST['seccion'])) ? $_REQUEST['seccion'] : $seccion='noticias';
-	$subseccion = (isset($_REQUEST['subseccion'])) ? $_REQUEST['subseccion'] : $subseccion='contenido';
-	$cat = (isset($_REQUEST['cat'])) ? $_REQUEST['cat'] : $cat=false;
+	$id = (isset($_REQUEST['id'])) ? cleanInput($_REQUEST['id']) : $id=false;
+	$seccion = (isset($_REQUEST['seccion'])) ? cleanInput($_REQUEST['seccion']) : $seccion='noticias';
+	$subseccion = (isset($_REQUEST['subseccion'])) ? cleanInput($_REQUEST['subseccion']) : $subseccion='contenido';
+	$cat = (isset($_REQUEST['cat'])) ? cleanInput($_REQUEST['cat']) : $cat=false;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //                             LOGIN 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	require_once("modulos/varios/login_proceso.php");
-	require_once('modulos/varios/includes.php');
-	if(!isset($acceso) or $acceso==false){ 
-		require_once("modulos/varios/login.php");
-	} 
+	try {
+		require_once("modulos/varios/login_proceso.php");
+		require_once('modulos/varios/includes.php');
+		if(!isset($acceso) or $acceso==false){ 
+			require_once("modulos/varios/login.php");
+		} 
+	} catch (Exception $e) {
+		logActivity('ERROR_LOGIN', $e->getMessage());
+		if (IS_DEVELOPMENT) {
+			devLog('Error en login: ' . $e->getMessage(), 'ERROR');
+		}
+		header("HTTP/1.1 500 Internal Server Error");
+		include_once('pages/500.php');
+		exit;
+	}
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //                             Mostrando el diseño interior
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	if(isset($acceso) and $acceso==1){ 
-		require_once('modulos/'.$seccion.'/acciones.php');
-		require_once('modulos/'.$seccion.'/inicio.php');
+		try {
+			require_once('modulos/'.$seccion.'/acciones.php');
+			require_once('modulos/'.$seccion.'/inicio.php');
+		} catch (Exception $e) {
+			logActivity('ERROR_MODULE', $e->getMessage() . ' - Sección: ' . $seccion);
+			if (IS_DEVELOPMENT) {
+				devLog('Error en módulo: ' . $e->getMessage() . ' - Sección: ' . $seccion, 'ERROR');
+			}
+			header("HTTP/1.1 500 Internal Server Error");
+			include_once('pages/500.php');
+			exit;
+		}
 	} 
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -55,5 +86,14 @@
 	//if (file_exists('error_log')) {
 		//unlink('error_log');
 	//}
-	mysqli_close($CONEXION);
+	
+	if (isset($CONEXION)) {
+		mysqli_close($CONEXION);
+	}
+	
+	// Mostrar estadísticas de desarrollo al final si es necesario
+	if (IS_DEVELOPMENT) {
+		showDevStats();
+	}
+	
 	flush();

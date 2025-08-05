@@ -1,0 +1,46 @@
+# ========================================
+# CONFIGURACIÓN .htaccess PARA ARAmed
+# ========================================
+
+# Habilitar rewrite engine
+RewriteEngine On
+
+# Configuración de seguridad básica
+ServerSignature Off
+Options -Indexes
+
+# Configuración de PHP básica
+<IfModule mod_php.c>
+    php_value upload_max_filesize 64M
+    php_value post_max_size 64M
+    php_value max_execution_time 300
+    php_value max_input_vars 3000
+    php_value memory_limit 256M
+</IfModule>
+
+# Configuración de caracteres
+AddDefaultCharset UTF-8
+
+# Configuración de directorios
+<Directory "/">
+    Options -Indexes +FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
+
+# Configuración específica para archivos PHP
+<FilesMatch "\.php$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+
+# Configuración de timezone
+php_value date.timezone "America/Mexico_City"
+
+# Configuración de logs de error
+php_value log_errors On
+php_value error_log /path/to/error.log
+
+# Configuración de display errors (solo para desarrollo)
+php_flag display_errors On
+php_flag display_startup_errors On
+php_value error_reporting E_ALL 
