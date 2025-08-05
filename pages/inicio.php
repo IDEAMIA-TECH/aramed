@@ -72,14 +72,17 @@ $header = '
         </a>
       </div>
       
-      <div class="uk-navbar-right uk-visible@m">
-        <ul class="uk-navbar-nav">
+      <div class="uk-navbar-center uk-visible@m" style="flex: 1;">
+        <ul class="uk-navbar-nav uk-flex uk-flex-center">
           '.$menu.'
         </ul>
+      </div>
+      
+      <div class="uk-navbar-right uk-visible@m">
         <div class="uk-navbar-item">
           <div class="uk-text-right">
             <div style="font-size: 0.9rem; color: #666;">Teléfono</div>
-            <div style="font-weight: 600; color: #00a2e8;">'.$telefono.'</div>
+            <div style="font-weight: 600; color: var(--primary-color);">'.$telefono.'</div>
           </div>
         </div>
       </div>
@@ -662,31 +665,30 @@ $mensajes = '';
     
     .uk-navbar-nav {
       width: 100%;
-      justify-content: flex-end;
-      margin-right: 20px;
+      justify-content: center;
+      gap: 10px;
     }
     
     .uk-navbar-nav > li > a {
       color: var(--text-dark) !important;
       font-weight: 600;
       text-transform: uppercase;
-      font-size: 0.85rem;
-      padding: 0 18px;
+      font-size: 0.9rem;
+      padding: 12px 20px;
       transition: all 0.3s ease;
       white-space: nowrap;
       letter-spacing: 0.5px;
+      border-radius: 8px;
     }
     
     .uk-navbar-nav > li > a:hover {
       color: var(--primary-color) !important;
       background: rgba(30, 58, 138, 0.1);
-      border-radius: 8px;
     }
     
     .uk-navbar-nav > li.uk-active > a {
       color: var(--white) !important;
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      border-radius: 8px;
       box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
     }
     
