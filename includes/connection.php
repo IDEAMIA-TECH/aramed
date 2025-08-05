@@ -10,9 +10,9 @@
 	$googleMaps		= 'AIzaSyAA_lgquFXipMbdNCXe5EFDxbUdoHZBBlg';
 	$efra			= 'info@efra.biz';
 
-	$database = 'aramed2025_site';
-	$username = 'aramed2025_admin';
-	$password = 'FW2cZeuSw1IY';
+	$database = 'ideamiadev_aramed';
+	$username = 'ideamiadev_aramed';
+	$password = 'xS@A5Pm3EDc3BEdj';
 
 	$databaseLocal 	= 'aramed';
 	$usernameLocal 	= 'root';
