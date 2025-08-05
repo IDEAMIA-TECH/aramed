@@ -77,20 +77,20 @@ $header = '
         </a>
       </div>
       
-      <div class="uk-navbar-center uk-visible@m">
+      <div class="uk-navbar-right uk-visible@m">
         <ul class="uk-navbar-nav">
           '.$menu.'
         </ul>
-      </div>
-      
-      <div class="uk-navbar-right">
-        <div class="uk-navbar-item uk-visible@m">
+        <div class="uk-navbar-item">
           <div class="uk-text-right">
             <div style="font-size: 0.9rem; color: #666;">Teléfono</div>
             <div style="font-weight: 600; color: #00a2e8;">'.$telefono.'</div>
           </div>
         </div>
-        <a class="uk-navbar-toggle uk-hidden@m" uk-navbar-toggle-icon href="#" uk-toggle="target: #mobile-menu"></a>
+      </div>
+      
+      <div class="uk-navbar-right uk-hidden@m">
+        <a class="uk-navbar-toggle" uk-navbar-toggle-icon href="#" uk-toggle="target: #mobile-menu"></a>
       </div>
     </nav>
   </div>
@@ -551,6 +551,50 @@ $mensajes = '';
       box-shadow: 0 10px 25px rgba(0, 162, 232, 0.4);
       color: var(--white);
       text-decoration: none;
+    }
+    
+    /* Header y Navegación */
+    .uk-navbar-nav > li > a {
+      color: #333 !important;
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      padding: 0 15px;
+      transition: all 0.3s ease;
+    }
+    
+    .uk-navbar-nav > li > a:hover {
+      color: #00a2e8 !important;
+      background: rgba(0, 162, 232, 0.1);
+    }
+    
+    .uk-navbar-nav > li.uk-active > a {
+      color: #00a2e8 !important;
+      background: rgba(0, 162, 232, 0.1);
+      border-radius: 5px;
+    }
+    
+    .uk-navbar-container {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Mobile Menu */
+    .uk-offcanvas-bar {
+      background: #2c3e50;
+    }
+    
+    .uk-offcanvas-bar .uk-nav-primary > li > a {
+      color: #fff;
+      font-size: 1.1rem;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .uk-offcanvas-bar .uk-nav-primary > li > a:hover {
+      color: #00a2e8;
+      background: rgba(0, 162, 232, 0.1);
     }
     
     /* Responsive */
