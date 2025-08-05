@@ -604,9 +604,57 @@ if (strlen($rowConsulta['video'])>0) {
   </div>
 </section>
 
-<?=$footer?>
+<?php
+// Definir footer si no está definido
+if (!isset($footer)) {
+  $footer = '
+  <footer class="uk-section uk-section-secondary uk-light">
+    <div class="uk-container">
+      <div uk-grid class="uk-child-width-1-4@m uk-child-width-1-2@s">
+        <div>
+          <h4>ARAMed</h4>
+          <p>Simuladores médicos para la enseñanza y formación profesional.</p>
+        </div>
+        <div>
+          <h4>Contacto</h4>
+          <p><i class="fas fa-phone"></i> +52 55 1234 5678</p>
+          <p><i class="fas fa-envelope"></i> info@aramed.com</p>
+        </div>
+        <div>
+          <h4>Enlaces</h4>
+          <ul class="uk-list">
+            <li><a href="productos">Productos</a></li>
+            <li><a href="servicios">Servicios</a></li>
+            <li><a href="contacto">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Síguenos</h4>
+          <div class="uk-margin">
+            <a href="#" class="uk-icon-button uk-margin-small-right" uk-icon="facebook"></a>
+            <a href="#" class="uk-icon-button uk-margin-small-right" uk-icon="instagram"></a>
+            <a href="#" class="uk-icon-button uk-margin-small-right" uk-icon="youtube"></a>
+          </div>
+        </div>
+      </div>
+      <div class="uk-text-center uk-margin-large-top">
+        <p>&copy; '.date('Y').' ARAmed. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+  ';
+}
 
-<?=$scriptGNRL?>
+// Definir scriptGNRL si no está definido
+if (!isset($scriptGNRL)) {
+  $scriptGNRL = '
+  <script src="js/general.js"></script>
+  ';
+}
+
+echo $footer;
+echo $scriptGNRL;
+?>
 
 </body>
 </html>
