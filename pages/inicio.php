@@ -77,20 +77,20 @@ $header = '
         </a>
       </div>
       
-      <div class="uk-navbar-right uk-visible@m">
+      <div class="uk-navbar-center uk-visible@m">
         <ul class="uk-navbar-nav">
           '.$menu.'
         </ul>
-        <div class="uk-navbar-item">
+      </div>
+      
+      <div class="uk-navbar-right">
+        <div class="uk-navbar-item uk-visible@m">
           <div class="uk-text-right">
             <div style="font-size: 0.9rem; color: #666;">Teléfono</div>
             <div style="font-weight: 600; color: #00a2e8;">'.$telefono.'</div>
           </div>
         </div>
-      </div>
-      
-      <div class="uk-navbar-right uk-hidden@m">
-        <a class="uk-navbar-toggle" uk-navbar-toggle-icon href="#" uk-toggle="target: #mobile-menu"></a>
+        <a class="uk-navbar-toggle uk-hidden@m" uk-navbar-toggle-icon href="#" uk-toggle="target: #mobile-menu"></a>
       </div>
     </nav>
   </div>
