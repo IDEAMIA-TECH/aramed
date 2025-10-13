@@ -1048,7 +1048,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-primary">
-                                <i class="bi bi-tools"></i>
+                                <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Diseño y Desarrollo" class="service-icon-image">
                             </div>
                         </div>
                         <h3 class="service-title">Diseño y Desarrollo</h3>
@@ -1078,7 +1078,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         </div>
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-success">
-                                <i class="bi bi-wrench-adjustable"></i>
+                                <img src="<?php echo imageUrl('iconos/iconos-02.png'); ?>" alt="Mantenimiento Preventivo" class="service-icon-image">
                             </div>
                         </div>
                         <h3 class="service-title">Mantenimiento Preventivo</h3>
@@ -1104,7 +1104,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-info">
-                                <i class="bi bi-book"></i>
+                                <img src="<?php echo imageUrl('iconos/iconos-03.png'); ?>" alt="Asesoría Curricular" class="service-icon-image">
                             </div>
                         </div>
                         <h3 class="service-title">Asesoría Curricular</h3>
@@ -1130,7 +1130,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-warning">
-                                <i class="bi bi-people-fill"></i>
+                                <img src="<?php echo imageUrl('iconos/iconos-04.png'); ?>" alt="Capacitación y Entrenamiento" class="service-icon-image">
                             </div>
                         </div>
                         <h3 class="service-title">Capacitación y Entrenamiento</h3>
@@ -1156,7 +1156,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-danger">
-                                <i class="bi bi-credit-card-2-front"></i>
+                                <img src="<?php echo imageUrl('iconos/iconos-05.png'); ?>" alt="Opciones de Financiamiento" class="service-icon-image">
                             </div>
                         </div>
                         <h3 class="service-title">Opciones de Financiamiento</h3>
