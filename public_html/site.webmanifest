@@ -1,0 +1,26 @@
+{
+    "name": "Aramed y Laboratorio",
+    "short_name": "Aramed",
+    "description": "Simuladores médicos para la enseñanza. Líder en tecnología educativa para salud en México.",
+    "icons": [
+        {
+            "src": "/assets/images/design/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/assets/images/design/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "theme_color": "#0B9FD9",
+    "background_color": "#FFFFFF",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "start_url": "/",
+    "scope": "/"
+}
+

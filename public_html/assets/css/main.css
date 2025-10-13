@@ -15,18 +15,18 @@
    ======================================== */
 
 :root {
-    /* Colores Principales */
-    --color-primary: #0066CC;
-    --color-primary-dark: #004C99;
-    --color-primary-light: #3385D6;
+    /* Colores Principales - Basados en el Logo de Aramed */
+    --color-primary: #0B9FD9;        /* Azul Aramed (del logo) */
+    --color-primary-dark: #0988BA;   /* Azul oscuro (hover states) */
+    --color-primary-light: #3DB5E0;  /* Azul claro (highlights) */
     
-    --color-secondary: #2C3E50;
-    --color-secondary-dark: #1A252F;
-    --color-secondary-light: #34495E;
+    --color-secondary: #1A1A1A;      /* Negro Aramed (estetoscopio) */
+    --color-secondary-dark: #000000; /* Negro profundo */
+    --color-secondary-light: #343A40;/* Gris oscuro */
     
-    --color-accent: #FF6B35;
-    --color-accent-dark: #E5522A;
-    --color-accent-light: #FF8555;
+    --color-accent: #0B9FD9;         /* Mismo azul como accent */
+    --color-accent-dark: #0988BA;    /* Azul oscuro */
+    --color-accent-light: #66CBE9;   /* Azul muy claro */
     
     /* Colores de Estado */
     --color-success: #27AE60;

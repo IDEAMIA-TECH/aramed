@@ -71,7 +71,10 @@ $pageImage = imageUrl('design/logo-og.jpg');
          FAVICON & TOUCH ICONS
          ======================================== -->
     <link rel="icon" type="image/x-icon" href="<?php echo imageUrl('design/favicon.ico'); ?>">
-    <link rel="apple-touch-icon" href="<?php echo imageUrl('design/logo-og.png'); ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo imageUrl('design/favicon-32x32.png'); ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo imageUrl('design/favicon-16x16.png'); ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo imageUrl('design/apple-touch-icon.png'); ?>">
+    <link rel="manifest" href="<?php echo siteUrl('site.webmanifest'); ?>">
     
     <!-- ========================================
          PRECONNECT & DNS-PREFETCH

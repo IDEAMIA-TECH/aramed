@@ -1,0 +1,307 @@
+/**
+ * ========================================
+ * LOGO VARIATIONS - CSS Filters
+ * ========================================
+ * 
+ * Variaciones del logo usando CSS filters
+ * No requiere imágenes adicionales
+ * 
+ * @package    Aramed
+ * @author     IDEAMIA Tech
+ * @copyright  2025 Aramed y Laboratorios
+ */
+
+/* ========================================
+   LOGO EN BLANCO (para fondos oscuros)
+   ======================================== */
+
+.logo-white,
+.logo-inverse {
+    filter: brightness(0) invert(1);
+}
+
+/* ========================================
+   LOGO ESCALA DE GRISES
+   ======================================== */
+
+.logo-grayscale {
+    filter: grayscale(100%);
+}
+
+/* ========================================
+   LOGO CON BRILLO AJUSTADO
+   ======================================== */
+
+.logo-bright {
+    filter: brightness(1.2);
+}
+
+.logo-dark {
+    filter: brightness(0.8);
+}
+
+/* ========================================
+   LOGO OPTIMIZADO VISUALMENTE
+   ======================================== */
+
+.logo-sharp {
+    filter: contrast(1.1) brightness(1.05);
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+/* ========================================
+   HOVER EFFECTS
+   ======================================== */
+
+.logo-hover-glow:hover {
+    filter: drop-shadow(0 0 10px rgba(11, 159, 217, 0.6));
+    transition: filter 0.3s ease;
+}
+
+.logo-hover-scale:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+/* ========================================
+   LOGO PARA FONDOS OSCUROS (Automático)
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    .logo-auto-theme {
+        filter: brightness(0) invert(1);
+    }
+}
+
+/* ========================================
+   LOGO RESPONSIVE (Optimización)
+   ======================================== */
+
+.logo-responsive {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+/* Tamaños específicos */
+.logo-xs { height: 30px; }
+.logo-sm { height: 40px; }
+.logo-md { height: 50px; }
+.logo-lg { height: 70px; }
+.logo-xl { height: 100px; }
+
+/* ========================================
+   LOGO CON FONDO
+   ======================================== */
+
+.logo-with-bg {
+    padding: 10px 20px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.logo-with-bg-dark {
+    padding: 10px 20px;
+    background: #1A1A1A;
+    border-radius: 5px;
+}
+
+.logo-with-bg-dark img {
+    filter: brightness(0) invert(1);
+}
+
+/* ========================================
+   LOGO CON DEGRADADO DE FONDO
+   ======================================== */
+
+.logo-gradient-bg {
+    padding: 15px 30px;
+    background: linear-gradient(135deg, #0B9FD9 0%, #0988BA 100%);
+    border-radius: 8px;
+}
+
+.logo-gradient-bg img {
+    filter: brightness(0) invert(1);
+}
+
+/* ========================================
+   EFECTOS ESPECIALES
+   ======================================== */
+
+/* Efecto blur-to-focus al cargar */
+@keyframes focusIn {
+    from {
+        filter: blur(5px);
+        opacity: 0;
+    }
+    to {
+        filter: blur(0);
+        opacity: 1;
+    }
+}
+
+.logo-animate-load {
+    animation: focusIn 0.6s ease-out;
+}
+
+/* Efecto pulse suave */
+@keyframes logoPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+.logo-pulse {
+    animation: logoPulse 3s ease-in-out infinite;
+}
+
+/* ========================================
+   LOGO PARA IMPRESIÓN
+   ======================================== */
+
+@media print {
+    .logo-print {
+        filter: grayscale(100%) contrast(1.2);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+/* ========================================
+   COMBINACIONES ÚTILES
+   ======================================== */
+
+/* Logo en navbar oscuro */
+.navbar-dark .navbar-brand img {
+    filter: brightness(0) invert(1);
+}
+
+/* Logo en footer oscuro */
+.footer-dark .footer-logo img {
+    filter: brightness(0) invert(1);
+}
+
+/* Logo sticky con sombra */
+.navbar.sticky .navbar-brand img {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* ========================================
+   SOPORTE PARA WebP CON FALLBACK
+   ======================================== */
+
+/* Usando <picture> element automáticamente selecciona el mejor formato */
+picture {
+    display: inline-block;
+    line-height: 0;
+}
+
+picture img {
+    width: 100%;
+    height: auto;
+}
+
+/* ========================================
+   LAZY LOADING PLACEHOLDER
+   ======================================== */
+
+img[loading="lazy"] {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s ease-in-out infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+img[loading="lazy"].loaded {
+    animation: none;
+    background: none;
+}
+
+/* ========================================
+   OPTIMIZACIÓN DE RENDIMIENTO
+   ======================================== */
+
+/* will-change para animaciones suaves */
+.logo-animated {
+    will-change: transform, filter;
+}
+
+/* Reducir motion para usuarios con preferencias de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    .logo-animate-load,
+    .logo-pulse,
+    .logo-hover-scale {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* ========================================
+   CLASES UTILITY
+   ======================================== */
+
+.logo-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.logo-inline {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.logo-float-left {
+    float: left;
+    margin-right: 15px;
+}
+
+.logo-float-right {
+    float: right;
+    margin-left: 15px;
+}
+
+/* ========================================
+   EJEMPLOS DE USO
+   ======================================== */
+
+/*
+
+1. Logo en fondo oscuro:
+   <img src="logo.png" class="logo-white" alt="...">
+
+2. Logo con hover effect:
+   <img src="logo.png" class="logo-hover-glow" alt="...">
+
+3. Logo responsive:
+   <img src="logo.png" class="logo-responsive logo-md" alt="...">
+
+4. Logo con fondo:
+   <div class="logo-with-bg">
+       <img src="logo.png" alt="...">
+   </div>
+
+5. Logo optimizado:
+   <img src="logo.png" class="logo-sharp" alt="...">
+
+6. Logo con animación:
+   <img src="logo.png" class="logo-animate-load" alt="...">
+
+7. Logo con WebP fallback:
+   <picture>
+       <source srcset="logo.webp" type="image/webp">
+       <img src="logo.png" alt="..." class="logo-responsive">
+   </picture>
+
+*/
+
