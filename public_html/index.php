@@ -389,7 +389,10 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 
                 <!-- Slide 2: VICTORIA® S2200 -->
                 <div class="swiper-slide hero-slide">
-                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(142, 68, 173, 0.9) 0%, rgba(74, 35, 90, 0.9) 100%), url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1920 1080%22><rect fill=%22%23e8d5f2%22 width=%221920%22 height=%221080%22/></svg>') center/cover;">
+                    <div class="hero-slide-image">
+                        <img src="<?php echo imageUrl('hero/hero-victoria-s2200.jpg'); ?>" alt="VICTORIA S2200 Simulador Obstétrico" loading="lazy">
+                    </div>
+                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(142, 68, 173, 0.9) 0%, rgba(74, 35, 90, 0.9) 100%);">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
@@ -428,7 +431,10 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 
                 <!-- Slide 3: HAL® S5301 -->
                 <div class="swiper-slide hero-slide">
-                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(52, 152, 219, 0.9) 0%, rgba(41, 128, 185, 0.9) 100%), url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1920 1080%22><rect fill=%22%23d6eaf8%22 width=%221920%22 height=%221080%22/></svg>') center/cover;">
+                    <div class="hero-slide-image">
+                        <img src="<?php echo imageUrl('hero/hero-hal-s5301.jpg'); ?>" alt="HAL S5301 Simulador Avanzado" loading="lazy">
+                    </div>
+                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(52, 152, 219, 0.9) 0%, rgba(41, 128, 185, 0.9) 100%);">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
@@ -467,7 +473,11 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 
                 <!-- Slide 4: HAL® S3201 -->
                 <div class="swiper-slide hero-slide">
-                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(46, 204, 113, 0.9) 0%, rgba(39, 174, 96, 0.9) 100%), url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1920 1080%22><rect fill=%22%23d5f4e6%22 width=%221920%22 height=%221080%22/></svg>') center/cover;">
+                    <picture class="hero-slide-image">
+                        <source srcset="<?php echo imageUrl('hero/hero-hal-s3201.webp'); ?>" type="image/webp">
+                        <img src="<?php echo imageUrl('hero/hero-hal-s3201.jpg'); ?>" alt="HAL S3201 UCI y Emergencias" loading="lazy">
+                    </picture>
+                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(46, 204, 113, 0.9) 0%, rgba(39, 174, 96, 0.9) 100%);">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
@@ -506,7 +516,11 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 
                 <!-- Slide 5: Super TORY® S2220 -->
                 <div class="swiper-slide hero-slide">
-                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(230, 126, 34, 0.9) 0%, rgba(211, 84, 0, 0.9) 100%), url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1920 1080%22><rect fill=%22%23fdebd0%22 width=%221920%22 height=%221080%22/></svg>') center/cover;">
+                    <picture class="hero-slide-image">
+                        <source srcset="<?php echo imageUrl('hero/hero-super-tory-s2220.webp'); ?>" type="image/webp">
+                        <img src="<?php echo imageUrl('hero/hero-super-tory-s2220.jpg'); ?>" alt="Super TORY S2220 Simulador Neonatal" loading="lazy">
+                    </picture>
+                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(230, 126, 34, 0.9) 0%, rgba(211, 84, 0, 0.9) 100%);">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
@@ -545,7 +559,11 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 
                 <!-- Slide 6: SUSIE® S2400 -->
                 <div class="swiper-slide hero-slide">
-                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(231, 76, 60, 0.9) 0%, rgba(192, 57, 43, 0.9) 100%), url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1920 1080%22><rect fill=%22%23fadbd8%22 width=%221920%22 height=%221080%22/></svg>') center/cover;">
+                    <picture class="hero-slide-image">
+                        <source srcset="<?php echo imageUrl('hero/hero-susie-s2400.webp'); ?>" type="image/webp">
+                        <img src="<?php echo imageUrl('hero/hero-susie-s2400.jpg'); ?>" alt="SUSIE S2400 Simulador de Enfermería" loading="lazy">
+                    </picture>
+                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(231, 76, 60, 0.9) 0%, rgba(192, 57, 43, 0.9) 100%);">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">

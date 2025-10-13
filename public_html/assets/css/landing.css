@@ -35,7 +35,25 @@
     position: relative;
 }
 
-/* Hero Slide Background */
+/* Hero Slide Image (Picture Element) */
+.hero-slide-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    display: block;
+}
+
+.hero-slide-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Hero Slide Background (Gradient Overlay) */
 .hero-slide-bg {
     position: absolute;
     top: 0;
@@ -45,6 +63,7 @@
     background-size: cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
+    z-index: 1;
 }
 
 .hero-slide-bg::before {
