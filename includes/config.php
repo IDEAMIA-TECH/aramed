@@ -21,7 +21,7 @@ if (!defined('ARAMED_SITE')) {
 // ========================================
 
 // Entorno: 'development' o 'production'
-define('ENVIRONMENT', 'production');
+define('ENVIRONMENT', 'development');
 
 // Mostrar errores en desarrollo
 if (ENVIRONMENT === 'development') {
