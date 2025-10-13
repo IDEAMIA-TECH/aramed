@@ -1477,6 +1477,379 @@ $pageImage = imageUrl('design/logo-og.jpg');
     </section>
     
     <!-- ========================================
+         ALIADOS ESTRATÉGICOS - DETALLE
+         ======================================== -->
+    <section id="aliados-detalle" class="section-aliados-detalle py-5 bg-light">
+        <div class="container">
+            <!-- Header -->
+            <div class="text-center mb-5" data-aos="fade-up">
+                <span class="section-tag">
+                    <i class="bi bi-award-fill me-2"></i>
+                    Nuestros Aliados
+                </span>
+                <h2 class="section-title mb-3">Aliados Estratégicos</h2>
+                <p class="section-subtitle mx-auto" style="max-width: 800px;">
+                    Trabajamos con los líderes mundiales en simulación médica para ofrecerte 
+                    las mejores soluciones educativas y tecnología de vanguardia.
+                </p>
+            </div>
+            
+            <!-- Grid de Aliados -->
+            <div class="row g-4">
+                
+                <!-- Aliado 1: GAUMARD -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/gaumard.webp'); ?>" 
+                                 alt="Gaumard Scientific" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">GAUMARD</h4>
+                            <p class="aliado-description">
+                                Gaumard Scientific desarrolla simuladores médicos de alta fidelidad que transforman 
+                                la enseñanza clínica. Su innovación tecnológica complementa nuestra misión de ofrecer 
+                                experiencias de aprendizaje realistas y seguras en salud.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 2: MEDICAL X -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/medical-x.webp'); ?>" 
+                                 alt="Medical-X" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">MEDICAL X</h4>
+                            <p class="aliado-description">
+                                Medical-X desarrolla simuladores médicos de alta fidelidad para entrenamiento clínico. 
+                                Su tecnología avanzada potencia a Aramed en formación realista y segura.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 3: ANATOMAGE -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/anatomage.webp'); ?>" 
+                                 alt="Anatomage" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">ANATOMAGE</h4>
+                            <p class="aliado-description">
+                                Anatomage crea plataformas 3D interactivas que revolucionan la enseñanza anatómica 
+                                mediante visualizaciones precisas del cuerpo humano. Su innovación eleva nuestros 
+                                estándares en simulación médica educativa.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 4: SARATOGA -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/saratoga.webp'); ?>" 
+                                 alt="Saratoga Dental" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">SARATOGA</h4>
+                            <p class="aliado-description">
+                                Saratoga Dental diseña y fabrica equipos dentales, laboratorios técnicos y 
+                                simuladores formativos. Su enfoque "a medida" refuerza nuestra oferta educativa 
+                                con soluciones profesionales y personalizadas.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 5: 3B SCIENTIFIC -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/3b-scientific.webp'); ?>" 
+                                 alt="3B Scientific" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">3B SCIENTIFIC</h4>
+                            <p class="aliado-description">
+                                3B Scientific fabrica modelos anatómicos y simuladores médicos para educación en salud. 
+                                Su calidad global refuerza nuestra oferta educativa y credibilidad como aliado estratégico.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 6: 3D Med -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/3d-med.webp'); ?>" 
+                                 alt="3-Dmed" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">3D MED</h4>
+                            <p class="aliado-description">
+                                3-Dmed diseña simuladores quirúrgicos y entrenadores médicos de alta precisión. 
+                                Su enfoque en realismo y desempeño mejora nuestras soluciones para la práctica 
+                                clínica y educativa.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 7: SIMBODIES (SafeGuard) -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/safeguard.webp'); ?>" 
+                                 alt="Safeguard Medical - SimBodies" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">SAFEGUARD / SIMBODIES</h4>
+                            <p class="aliado-description">
+                                Safeguard Medical provee tecnología, equipamiento y entrenamiento en medicina de emergencia. 
+                                Su enfoque en salvamento y realismo fortalece nuestro respaldo en formación crítica.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 8: STRATEGIC OPERATIONS -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/strategic-operations.webp'); ?>" 
+                                 alt="Strategic Operations" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">STRATEGIC OPERATIONS</h4>
+                            <p class="aliado-description">
+                                Strategic Operations desarrolla simuladores quirúrgicos de alta fidelidad que replican 
+                                con exactitud la anatomía humana y las condiciones del quirófano. Gracias a esta alianza, 
+                                potenciamos nuestra capacidad para brindar capacitación avanzada en entornos controlados.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 9: KYOTO KAGAKU -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/kyoto-kagaku.webp'); ?>" 
+                                 alt="Kyoto Kagaku" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">KYOTO KAGAKU</h4>
+                            <p class="aliado-description">
+                                Kyoto Kagaku fabrica modelos anatómicos, simuladores y "phantoms" para imagen médica. 
+                                Su precisión e innovación fortalecen nuestra excelencia educativa y liderazgo en simulación.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 10: SIMX -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/simx.webp'); ?>" 
+                                 alt="SimX" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">SIMX</h4>
+                            <p class="aliado-description">
+                                SimX desarrolla simulaciones médicas en realidad virtual inmersiva que entrenan juicio 
+                                clínico realista. Su innovación potencia nuestra oferta formativa de alto impacto.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 11: NASCO -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/nasco.webp'); ?>" 
+                                 alt="Nasco Healthcare" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">NASCO</h4>
+                            <p class="aliado-description">
+                                Nasco Healthcare provee simuladores clínicos, maniquíes y herramientas de entrenamiento 
+                                para emergencias y cuidados avanzados. Su oferta robustece nuestra formación con 
+                                tecnología confiable.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 12: TRUCORP -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/trucorp.webp'); ?>" 
+                                 alt="TruCorp" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">TRUCORP</h4>
+                            <p class="aliado-description">
+                                TruCorp fabrica maniquíes y simuladores médicos con retroalimentación en tiempo real 
+                                para entrenamiento clínico. Su realismo y precisión elevan nuestra formación práctica 
+                                y eficacia educativa.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 13: ERLER ZIMMER -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/erler-zimmer.webp'); ?>" 
+                                 alt="Erler-Zimmer" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">ERLER ZIMMER</h4>
+                            <p class="aliado-description">
+                                Erler-Zimmer diseña modelos anatómicos y simuladores médicos con altísima calidad histórica. 
+                                Su innovación y rigor elevan nuestra formación práctica con precisión educativa.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 14: VATA -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/vata.webp'); ?>" 
+                                 alt="VATA Inc." 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">VATA</h4>
+                            <p class="aliado-description">
+                                VATA Inc. desarrolla herramientas de simulación médica realistas (acceso vascular, heridas, 
+                                modelos de ultrasonido). Su precisión eleva nuestras prácticas clínicas y fortalece 
+                                nuestra formación.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 15: ADAM ROUILLY -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/adam-rouilly.webp'); ?>" 
+                                 alt="Adam Rouilly" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">ADAM ROUILLY</h4>
+                            <p class="aliado-description">
+                                AdamRouilly diseña desde 1918 modelos anatómicos, simuladores clínicos y herramientas 
+                                formativas. Su legado, innovación y versatilidad enriquecen nuestro portafolio educativo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 16: RUDIGER -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/rudiger.webp'); ?>" 
+                                 alt="Rüdiger Anatomie" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">RUDIGER</h4>
+                            <p class="aliado-description">
+                                Rüdiger Anatomie produce modelos anatómicos y pósters educativos "Made in Germany" con 
+                                manufactura artesanal. Su precisión y autenticidad enriquecen nuestra enseñanza de 
+                                ciencias de la salud.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 17: ECHO HEALTHCARE -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/echo-healthcare.webp'); ?>" 
+                                 alt="Echo Healthcare" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">ECHO HEALTHCARE</h4>
+                            <p class="aliado-description">
+                                Echo Healthcare desarrolla soluciones inmersivas y realistas para simulación médica 
+                                (maniquíes, máscaras, entornos interactivos). Su innovación eleva nuestra oferta 
+                                formativa con un enfoque de alto impacto.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!-- CTA -->
+            <div class="text-center mt-5" data-aos="fade-up">
+                <p class="lead text-muted mb-4">
+                    ¿Quieres conocer más sobre nuestras alianzas y productos?
+                </p>
+                <button type="button" 
+                        class="btn btn-primary btn-lg px-5"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#contactModal">
+                    <i class="bi bi-envelope-fill me-2"></i>
+                    Contáctanos
+                </button>
+            </div>
+            
+        </div>
+    </section>
+    
+    <!-- ========================================
          NEWSLETTER
          ======================================== -->
     <section id="newsletter" class="section-newsletter py-5 bg-primary text-white">
