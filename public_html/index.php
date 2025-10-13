@@ -448,30 +448,611 @@ $pageImage = imageUrl('design/logo-og.jpg');
     <!-- ========================================
          SOCIAL PROOF (ALIADOS)
          ======================================== -->
-    <section id="aliados" class="section-aliados py-5">
+    <section id="aliados" class="section-aliados py-5 bg-light">
         <div class="container">
+            <!-- Header -->
             <div class="text-center mb-5" data-aos="fade-up">
-                <h2 class="section-title">Nuestros Aliados</h2>
-                <p class="section-subtitle">Trabajamos con las mejores marcas del mundo</p>
+                <span class="badge bg-primary text-white px-3 py-2 mb-3">
+                    <i class="bi bi-building-fill-check me-2"></i>
+                    Partners Globales
+                </span>
+                <h2 class="section-title mb-3">Nuestros Aliados Estratégicos</h2>
+                <p class="section-subtitle text-muted">
+                    Trabajamos con las marcas más reconocidas en tecnología de simulación médica
+                </p>
             </div>
-            <div class="aliados-placeholder">
-                <p class="text-center text-muted">Carrusel de logos de aliados (Próximamente)</p>
+            
+            <!-- Logos Carousel -->
+            <div class="aliados-carousel-wrapper mb-5" data-aos="fade-up" data-aos-delay="100">
+                <div class="swiper aliados-swiper">
+                    <div class="swiper-wrapper align-items-center">
+                        
+                        <!-- Logo 1: Gaumard Scientific -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/0.png'); ?>" 
+                                         alt="Gaumard Scientific" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EGaumard%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Gaumard Scientific</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 2: Medical-X -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/1.png'); ?>" 
+                                         alt="Medical-X" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EMedical-X%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Medical-X</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 3: Anatomage -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/2.png'); ?>" 
+                                         alt="Anatomage" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EAnatomage%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Anatomage</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 4: 3B Scientific -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/3.png'); ?>" 
+                                         alt="3B Scientific" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3E3B Scientific%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">3B Scientific</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 5: Saratoga -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/4.png'); ?>" 
+                                         alt="Saratoga Dental" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3ESaratoga%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Saratoga Dental</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 6: SimX -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/6.png'); ?>" 
+                                         alt="SimX" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3ESimX%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">SimX</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 7: Nasco Healthcare -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/7.png'); ?>" 
+                                         alt="Nasco Healthcare" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3ENasco%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Nasco Healthcare</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 8: TruCorp -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/9.png'); ?>" 
+                                         alt="TruCorp" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3ETruCorp%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">TruCorp</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 9: Kyoto Kagaku -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/14.png'); ?>" 
+                                         alt="Kyoto Kagaku" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EKyoto%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Kyoto Kagaku</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 10: Echo Healthcare -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/15.png'); ?>" 
+                                         alt="Echo Healthcare" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EEcho%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Echo Healthcare</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 11: Adam Rouilly -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/16.png'); ?>" 
+                                         alt="Adam Rouilly" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EAdam Rouilly%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Adam Rouilly</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 12: Strategic Operations -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/18.png'); ?>" 
+                                         alt="Strategic Operations" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EStrategic Ops%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Strategic Operations</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 13: VATA Inc -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/19.png'); ?>" 
+                                         alt="VATA Inc" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EVATA Inc%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">VATA Inc</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 14: 3-Dmed -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/20.png'); ?>" 
+                                         alt="3-Dmed" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3E3-Dmed%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">3-Dmed</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 15: Lifecast -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/22.png'); ?>" 
+                                         alt="Lifecast" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3ELifecast%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Lifecast</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 16: Erler-Zimmer -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('contenido/empresas/23.png'); ?>" 
+                                         alt="Erler-Zimmer" 
+                                         class="aliado-logo"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EErler-Zimmer%3C/text%3E%3C/svg%3E';">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Erler-Zimmer</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
             </div>
+            
+            <!-- Testimonios -->
+            <div class="testimonios-section mt-5 pt-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="row justify-content-center mb-4">
+                    <div class="col-lg-8 text-center">
+                        <h3 class="h4 fw-bold mb-3">Lo que dicen nuestros clientes</h3>
+                        <p class="text-muted">Experiencias reales de instituciones que confían en nosotros</p>
+                    </div>
+                </div>
+                
+                <div class="swiper testimonios-swiper">
+                    <div class="swiper-wrapper pb-4">
+                        
+                        <!-- Testimonio 1 -->
+                        <div class="swiper-slide">
+                            <div class="testimonio-card">
+                                <div class="testimonio-header mb-3">
+                                    <div class="testimonio-stars mb-2">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    </div>
+                                    <i class="bi bi-quote quote-icon text-primary"></i>
+                                </div>
+                                <p class="testimonio-text">
+                                    "Los simuladores de Aramed han transformado completamente nuestra forma de enseñar medicina. 
+                                    El nivel de realismo y la calidad del soporte técnico son excepcionales. 
+                                    Nuestros estudiantes ahora tienen la confianza necesaria antes de practicar con pacientes reales."
+                                </p>
+                                <div class="testimonio-footer">
+                                    <div class="testimonio-author">
+                                        <strong class="d-block">Dr. Roberto Martínez</strong>
+                                        <span class="text-muted small">Director de Simulación Clínica</span>
+                                        <span class="text-primary small d-block mt-1">Universidad Nacional Autónoma de México</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonio 2 -->
+                        <div class="swiper-slide">
+                            <div class="testimonio-card">
+                                <div class="testimonio-header mb-3">
+                                    <div class="testimonio-stars mb-2">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    </div>
+                                    <i class="bi bi-quote quote-icon text-primary"></i>
+                                </div>
+                                <p class="testimonio-text">
+                                    "La asesoría y el acompañamiento de Aramed fueron fundamentales para el desarrollo de nuestro 
+                                    centro de simulación. No solo nos vendieron equipos, nos ayudaron a crear un programa educativo 
+                                    completo. Su experiencia de más de 20 años marca la diferencia."
+                                </p>
+                                <div class="testimonio-footer">
+                                    <div class="testimonio-author">
+                                        <strong class="d-block">Dra. Ana Gutiérrez</strong>
+                                        <span class="text-muted small">Coordinadora de Enfermería</span>
+                                        <span class="text-primary small d-block mt-1">Instituto Tecnológico de Monterrey</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonio 3 -->
+                        <div class="swiper-slide">
+                            <div class="testimonio-card">
+                                <div class="testimonio-header mb-3">
+                                    <div class="testimonio-stars mb-2">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    </div>
+                                    <i class="bi bi-quote quote-icon text-primary"></i>
+                                </div>
+                                <p class="testimonio-text">
+                                    "El mantenimiento preventivo y la capacitación continua que ofrece Aramed garantizan que nuestros 
+                                    simuladores siempre estén en óptimas condiciones. Su servicio posventa es incomparable. 
+                                    Son verdaderos socios en la educación médica."
+                                </p>
+                                <div class="testimonio-footer">
+                                    <div class="testimonio-author">
+                                        <strong class="d-block">Dr. Carlos Hernández</strong>
+                                        <span class="text-muted small">Jefe de Enseñanza</span>
+                                        <span class="text-primary small d-block mt-1">Hospital General de México</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+            
+            <!-- Stats Bar -->
+            <div class="stats-bar mt-5 pt-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="row g-4 text-center">
+                    <div class="col-6 col-md-3">
+                        <div class="stat-box">
+                            <h3 class="stat-number text-primary mb-2" data-target="500">0</h3>
+                            <p class="stat-label text-muted mb-0">Instituciones Equipadas</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-box">
+                            <h3 class="stat-number text-primary mb-2" data-target="20">0</h3>
+                            <p class="stat-label text-muted mb-0">Años de Experiencia</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-box">
+                            <h3 class="stat-number text-primary mb-2" data-target="16">0</h3>
+                            <p class="stat-label text-muted mb-0">Marcas Representadas</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-box">
+                            <h3 class="stat-number text-primary mb-2" data-target="100">0</h3>
+                            <p class="stat-label text-muted mb-0">% Satisfacción</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </section>
     
     <!-- ========================================
          OFERTA (SERVICES)
          ======================================== -->
-    <section id="servicios" class="section-services py-5 bg-light">
+    <section id="servicios" class="section-services py-5">
         <div class="container">
+            <!-- Header -->
             <div class="text-center mb-5" data-aos="fade-up">
-                <h2 class="section-title">Por la dignidad del paciente, reduciendo el error humano</h2>
-                <p class="section-subtitle">Empresa mexicana con +20 años equipando instituciones de salud</p>
+                <span class="badge bg-primary text-white px-3 py-2 mb-3">
+                    <i class="bi bi-gear-fill me-2"></i>
+                    Nuestros Servicios
+                </span>
+                <h2 class="section-title mb-3">Soluciones Integrales para Educación Médica</h2>
+                <p class="section-subtitle text-muted mx-auto" style="max-width: 700px;">
+                    Más de 20 años de experiencia ofreciendo servicios especializados que garantizan 
+                    el éxito de su centro de simulación médica
+                </p>
             </div>
-            <div class="services-placeholder">
-                <p class="text-center text-muted">5 Cards de servicios (Próximamente)</p>
+            
+            <!-- Services Grid -->
+            <div class="row g-4">
+                
+                <!-- Service 1: Diseño y Desarrollo -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-card h-100">
+                        <div class="service-icon-wrapper">
+                            <div class="service-icon bg-primary">
+                                <i class="bi bi-tools"></i>
+                            </div>
+                        </div>
+                        <h3 class="service-title">Diseño y Desarrollo</h3>
+                        <p class="service-description">
+                            Diseñamos y construimos centros de simulación médica completos, desde la conceptualización 
+                            hasta la implementación. Incluye planificación arquitectónica, distribución de espacios y 
+                            selección de equipamiento.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="bi bi-check-circle-fill text-primary"></i> Diseño arquitectónico especializado</li>
+                            <li><i class="bi bi-check-circle-fill text-primary"></i> Distribución óptima de espacios</li>
+                            <li><i class="bi bi-check-circle-fill text-primary"></i> Selección de equipamiento</li>
+                            <li><i class="bi bi-check-circle-fill text-primary"></i> Instalación y puesta en marcha</li>
+                        </ul>
+                        <a href="#contacto" class="btn btn-outline-primary w-100 mt-auto service-cta">
+                            Solicitar Cotización
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Service 2: Mantenimiento Preventivo -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-card h-100 featured">
+                        <div class="featured-badge">
+                            <i class="bi bi-star-fill me-1"></i> Más Solicitado
+                        </div>
+                        <div class="service-icon-wrapper">
+                            <div class="service-icon bg-success">
+                                <i class="bi bi-wrench-adjustable"></i>
+                            </div>
+                        </div>
+                        <h3 class="service-title">Mantenimiento Preventivo</h3>
+                        <p class="service-description">
+                            Programas de mantenimiento preventivo y correctivo que aseguran el funcionamiento óptimo 
+                            de sus simuladores. Extendemos la vida útil de su inversión con servicios técnicos especializados.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Revisiones periódicas programadas</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Reparaciones y refacciones</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Actualización de software</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Soporte técnico prioritario</li>
+                        </ul>
+                        <a href="#contacto" class="btn btn-success w-100 mt-auto service-cta">
+                            Agendar Mantenimiento
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Service 3: Asesoría Curricular -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-card h-100">
+                        <div class="service-icon-wrapper">
+                            <div class="service-icon bg-info">
+                                <i class="bi bi-book"></i>
+                            </div>
+                        </div>
+                        <h3 class="service-title">Asesoría Curricular</h3>
+                        <p class="service-description">
+                            Apoyo integral en el diseño e implementación de programas educativos de simulación médica. 
+                            Desarrollamos currículos basados en competencias adaptados a sus necesidades institucionales.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="bi bi-check-circle-fill text-info"></i> Diseño de currículos por competencias</li>
+                            <li><i class="bi bi-check-circle-fill text-info"></i> Escenarios clínicos personalizados</li>
+                            <li><i class="bi bi-check-circle-fill text-info"></i> Metodología de evaluación</li>
+                            <li><i class="bi bi-check-circle-fill text-info"></i> Certificación de programas</li>
+                        </ul>
+                        <a href="#contacto" class="btn btn-outline-info w-100 mt-auto service-cta">
+                            Consultar Programa
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Service 4: Capacitación -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="service-card h-100">
+                        <div class="service-icon-wrapper">
+                            <div class="service-icon bg-warning">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                        </div>
+                        <h3 class="service-title">Capacitación y Entrenamiento</h3>
+                        <p class="service-description">
+                            Programas de capacitación técnica y pedagógica para instructores y personal técnico. 
+                            Certificaciones en el uso de simuladores y metodologías de enseñanza basadas en simulación.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="bi bi-check-circle-fill text-warning"></i> Formación de instructores</li>
+                            <li><i class="bi bi-check-circle-fill text-warning"></i> Capacitación técnica especializada</li>
+                            <li><i class="bi bi-check-circle-fill text-warning"></i> Certificaciones oficiales</li>
+                            <li><i class="bi bi-check-circle-fill text-warning"></i> Talleres y seminarios</li>
+                        </ul>
+                        <a href="#contacto" class="btn btn-outline-warning w-100 mt-auto service-cta">
+                            Ver Calendario
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Service 5: Financiamiento -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                    <div class="service-card h-100">
+                        <div class="service-icon-wrapper">
+                            <div class="service-icon bg-danger">
+                                <i class="bi bi-credit-card-2-front"></i>
+                            </div>
+                        </div>
+                        <h3 class="service-title">Opciones de Financiamiento</h3>
+                        <p class="service-description">
+                            Facilitamos el acceso a tecnología de simulación médica con opciones de financiamiento flexibles. 
+                            Planes de pago personalizados que se adaptan al presupuesto de su institución.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="bi bi-check-circle-fill text-danger"></i> Planes de pago flexibles</li>
+                            <li><i class="bi bi-check-circle-fill text-danger"></i> Arrendamiento de equipos</li>
+                            <li><i class="bi bi-check-circle-fill text-danger"></i> Financiamiento a largo plazo</li>
+                            <li><i class="bi bi-check-circle-fill text-danger"></i> Asesoría financiera especializada</li>
+                        </ul>
+                        <a href="#contacto" class="btn btn-outline-danger w-100 mt-auto service-cta">
+                            Solicitar Información
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Service 6: Soporte 24/7 (Bonus) -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+                    <div class="service-card h-100">
+                        <div class="service-icon-wrapper">
+                            <div class="service-icon bg-secondary">
+                                <i class="bi bi-headset"></i>
+                            </div>
+                        </div>
+                        <h3 class="service-title">Soporte Técnico 24/7</h3>
+                        <p class="service-description">
+                            Disponibilidad total para resolver cualquier eventualidad. Equipo técnico especializado 
+                            disponible 24 horas, los 7 días de la semana para garantizar la continuidad de sus operaciones.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Línea directa de soporte</li>
+                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Atención remota inmediata</li>
+                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Visitas técnicas de emergencia</li>
+                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Base de conocimientos online</li>
+                        </ul>
+                        <a href="#contacto" class="btn btn-outline-secondary w-100 mt-auto service-cta">
+                            Activar Soporte
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
             </div>
+            
+            <!-- CTA Section -->
+            <div class="row mt-5 pt-4">
+                <div class="col-lg-10 mx-auto" data-aos="fade-up" data-aos-delay="700">
+                    <div class="services-cta-box">
+                        <div class="row align-items-center g-4">
+                            <div class="col-lg-8">
+                                <h3 class="h4 mb-2 fw-bold">¿Necesitas una solución personalizada?</h3>
+                                <p class="text-muted mb-0">
+                                    Contáctanos para diseñar un paquete de servicios adaptado a las necesidades 
+                                    específicas de tu institución educativa.
+                                </p>
+                            </div>
+                            <div class="col-lg-4 text-lg-end">
+                                <a href="#contacto" class="btn btn-primary btn-lg px-4">
+                                    <i class="bi bi-chat-dots-fill me-2"></i>
+                                    Hablar con un Asesor
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </section>
     

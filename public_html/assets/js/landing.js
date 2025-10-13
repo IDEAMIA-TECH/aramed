@@ -220,9 +220,13 @@
          * Animación de Contadores (Números que suben)
          */
         initCounters: function() {
-            const counters = document.querySelectorAll('.counter');
+            // Buscar todos los contadores (.counter y .stat-number con data-target)
+            const counters = document.querySelectorAll('.counter, .stat-number[data-target]');
             
-            if (counters.length === 0) return;
+            if (counters.length === 0) {
+                console.log('ℹ️ No se encontraron contadores para animar');
+                return;
+            }
             
             const animateCounter = (counter) => {
                 const target = parseInt(counter.getAttribute('data-target'));
@@ -230,13 +234,18 @@
                 const increment = target / (duration / 16); // 60 FPS
                 let current = 0;
                 
+                // Detectar si hay sufijo (ej: "20+", "100%")
+                const originalText = counter.textContent;
+                const hasSuffix = originalText.match(/[+%]/);
+                const suffix = hasSuffix ? hasSuffix[0] : '';
+                
                 const updateCounter = () => {
                     current += increment;
                     if (current < target) {
-                        counter.textContent = Math.ceil(current);
+                        counter.textContent = Math.ceil(current) + suffix;
                         requestAnimationFrame(updateCounter);
                     } else {
-                        counter.textContent = target;
+                        counter.textContent = target + suffix;
                     }
                 };
                 
@@ -249,6 +258,7 @@
                     if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
                         animateCounter(entry.target);
                         entry.target.classList.add('animated');
+                        console.log('✅ Contador animado:', entry.target.getAttribute('data-target'));
                     }
                 });
             }, {
@@ -256,6 +266,7 @@
             });
             
             counters.forEach(counter => observer.observe(counter));
+            console.log(`✅ ${counters.length} contadores inicializados`);
         },
         
         /**
