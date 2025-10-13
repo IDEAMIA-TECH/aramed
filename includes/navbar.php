@@ -29,22 +29,6 @@ $nav_items = [
             </span>
         </a>
         
-        <!-- Info de contacto en desktop -->
-        <div class="navbar-contact d-none d-xl-flex align-items-center me-auto ms-4">
-            <div class="d-flex align-items-center text-muted small">
-                <i class="bi bi-telephone-fill text-primary me-2"></i>
-                <a href="tel:<?php echo esc(PHONE_FORMATTED); ?>" class="text-decoration-none text-dark fw-medium">
-                    <?php echo esc(PHONE_MAIN); ?>
-                </a>
-            </div>
-            <div class="d-flex align-items-center text-muted small ms-4">
-                <i class="bi bi-envelope-fill text-primary me-2"></i>
-                <a href="mailto:<?php echo esc(CONTACT_EMAIL); ?>" class="text-decoration-none text-dark fw-medium">
-                    <?php echo esc(CONTACT_EMAIL); ?>
-                </a>
-            </div>
-        </div>
-        
         <!-- Toggler para móvil con animación -->
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
