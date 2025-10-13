@@ -39,10 +39,10 @@ if (ENVIRONMENT === 'development') {
 // CONFIGURACIÓN DE BASE DE DATOS
 // ========================================
 
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'aramed_db');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_HOST', '173.231.22.109');
+define('DB_NAME', 'aramed2025_produccion');
+define('DB_USER', 'aramed2025_prod');
+define('DB_PASS', 'pmDLi&PB$zntrzJ4');
 define('DB_CHARSET', 'utf8mb4');
 
 // ========================================
@@ -66,6 +66,7 @@ define('UPLOADS_PATH', ROOT_PATH . '/public_html/uploads');
 
 // Información del sitio
 define('SITE_NAME', 'Aramed y Laboratorios');
+define('SITE_DOMAIN', 'aramedylaboratorio.com'); // Dominio del sitio
 define('SITE_TAGLINE', 'Simuladores médicos para la enseñanza');
 define('SITE_DESCRIPTION', 'Distribuidores líderes de tecnología educativa en salud. Simuladores médicos de alta fidelidad para instituciones educativas y de salud.');
 define('SITE_KEYWORDS', 'simuladores médicos, educación médica, simulación clínica, tecnología educativa, maniquíes médicos, entrenamiento médico');
@@ -76,6 +77,7 @@ define('SITE_KEYWORDS', 'simuladores médicos, educación médica, simulación c
 
 // Emails
 define('CONTACT_EMAIL', 'atencionacliente@aramedylaboratorio.com');
+define('CONTACT_PHONE', '+52 (55) 1234-5678'); // Teléfono de contacto principal
 define('MARKETING_EMAIL', 'marketing@aramedylaboratorio.com');
 define('SUPPORT_EMAIL', 'soporte@ideamia.com.mx');
 

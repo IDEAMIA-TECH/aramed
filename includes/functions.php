@@ -401,3 +401,87 @@ function renderPagination($pagination) {
     return $html;
 }
 
+/**
+ * Sanitizar input general (texto)
+ * Elimina tags HTML y espacios extra
+ */
+function sanitizeInput($input) {
+    if (is_null($input)) {
+        return null;
+    }
+    
+    // Eliminar tags HTML
+    $input = strip_tags($input);
+    
+    // Trim espacios
+    $input = trim($input);
+    
+    // Convertir caracteres especiales
+    $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+    
+    return $input;
+}
+
+/**
+ * Sanitizar y validar email
+ * Retorna el email limpio o null si no es válido
+ */
+function sanitizeEmail($email) {
+    if (empty($email)) {
+        return null;
+    }
+    
+    // Trim y lowercase
+    $email = strtolower(trim($email));
+    
+    // Sanitizar
+    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+    
+    // Validar formato
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return null;
+    }
+    
+    return $email;
+}
+
+/**
+ * Sanitizar teléfono
+ * Permite solo números, espacios, paréntesis y guiones
+ */
+function sanitizePhone($phone) {
+    if (empty($phone)) {
+        return null;
+    }
+    
+    // Eliminar todo excepto números, espacios, paréntesis, guiones y el símbolo +
+    $phone = preg_replace('/[^0-9\s\(\)\-\+]/', '', $phone);
+    
+    return trim($phone);
+}
+
+/**
+ * Sanitizar URL
+ */
+function sanitizeUrl($url) {
+    if (empty($url)) {
+        return null;
+    }
+    
+    $url = filter_var($url, FILTER_SANITIZE_URL);
+    
+    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        return null;
+    }
+    
+    return $url;
+}
+
+/**
+ * Validar si un string es una fecha válida
+ */
+function isValidDate($date, $format = 'Y-m-d') {
+    $d = DateTime::createFromFormat($format, $date);
+    return $d && $d->format($format) === $date;
+}
+

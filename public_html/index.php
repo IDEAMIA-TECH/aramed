@@ -78,6 +78,9 @@ $pageImage = imageUrl('design/logo-og.jpg');
          ======================================== -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
     <link rel="dns-prefetch" href="https://www.google.com">
     
     <!-- ========================================
@@ -148,6 +151,157 @@ $pageImage = imageUrl('design/logo-og.jpg');
          ======================================== -->
     <script src="https://www.google.com/recaptcha/api.js?render=<?php echo RECAPTCHA_SITE_KEY; ?>" defer></script>
     <?php endif; ?>
+    
+    <!-- ========================================
+         STRUCTURED DATA (Schema.org JSON-LD)
+         ======================================== -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Organization",
+                "@id": "<?php echo SITE_URL; ?>#organization",
+                "name": "<?php echo esc(SITE_NAME); ?>",
+                "url": "<?php echo SITE_URL; ?>",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "<?php echo imageUrl('design/logo.png'); ?>",
+                    "width": 250,
+                    "height": 100
+                },
+                "image": "<?php echo esc($pageImage); ?>",
+                "description": "<?php echo esc($pageDescription); ?>",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressCountry": "MX",
+                    "addressRegion": "Ciudad de México"
+                },
+                "contactPoint": {
+                    "@type": "ContactPoint",
+                    "telephone": "<?php echo PHONE_MAIN; ?>",
+                    "contactType": "customer service",
+                    "areaServed": "MX",
+                    "availableLanguage": ["Spanish"]
+                },
+                "sameAs": [
+                    "<?php echo SOCIAL_FACEBOOK; ?>",
+                    "<?php echo SOCIAL_INSTAGRAM; ?>",
+                    "<?php echo SOCIAL_LINKEDIN; ?>"
+                ]
+            },
+            {
+                "@type": "WebSite",
+                "@id": "<?php echo SITE_URL; ?>#website",
+                "url": "<?php echo SITE_URL; ?>",
+                "name": "<?php echo esc(SITE_NAME); ?>",
+                "description": "<?php echo esc($pageDescription); ?>",
+                "publisher": {
+                    "@id": "<?php echo SITE_URL; ?>#organization"
+                },
+                "inLanguage": "es-MX"
+            },
+            {
+                "@type": "WebPage",
+                "@id": "<?php echo esc($pageUrl); ?>#webpage",
+                "url": "<?php echo esc($pageUrl); ?>",
+                "name": "<?php echo esc($pageTitle); ?>",
+                "isPartOf": {
+                    "@id": "<?php echo SITE_URL; ?>#website"
+                },
+                "about": {
+                    "@id": "<?php echo SITE_URL; ?>#organization"
+                },
+                "description": "<?php echo esc($pageDescription); ?>",
+                "inLanguage": "es-MX"
+            },
+            {
+                "@type": "LocalBusiness",
+                "@id": "<?php echo SITE_URL; ?>#localbusiness",
+                "name": "<?php echo esc(SITE_NAME); ?>",
+                "image": "<?php echo esc($pageImage); ?>",
+                "priceRange": "$$",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressCountry": "MX",
+                    "addressRegion": "Ciudad de México"
+                },
+                "geo": {
+                    "@type": "GeoCoordinates",
+                    "latitude": 19.4326,
+                    "longitude": -99.1332
+                },
+                "url": "<?php echo SITE_URL; ?>",
+                "telephone": "<?php echo PHONE_MAIN; ?>",
+                "email": "<?php echo CONTACT_EMAIL; ?>",
+                "openingHoursSpecification": {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                    "opens": "09:00",
+                    "closes": "18:00"
+                },
+                "hasOfferCatalog": {
+                    "@type": "OfferCatalog",
+                    "name": "Simuladores Médicos",
+                    "itemListElement": [
+                        {
+                            "@type": "OfferCatalog",
+                            "name": "Simuladores Maternales",
+                            "itemListElement": [
+                                {
+                                    "@type": "Offer",
+                                    "itemOffered": {
+                                        "@type": "Product",
+                                        "name": "Simulador Maternal Avanzado"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "@type": "OfferCatalog",
+                            "name": "Simuladores RCP y Emergencias",
+                            "itemListElement": [
+                                {
+                                    "@type": "Offer",
+                                    "itemOffered": {
+                                        "@type": "Product",
+                                        "name": "Simulador RCP Profesional"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "@type": "OfferCatalog",
+                            "name": "Simuladores Pediátricos",
+                            "itemListElement": [
+                                {
+                                    "@type": "Offer",
+                                    "itemOffered": {
+                                        "@type": "Product",
+                                        "name": "Simulador Pediátrico de Alta Fidelidad"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "@type": "OfferCatalog",
+                            "name": "Anatomage Table",
+                            "itemListElement": [
+                                {
+                                    "@type": "Offer",
+                                    "itemOffered": {
+                                        "@type": "Product",
+                                        "name": "Mesa de Disección Virtual Anatomage"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+    </script>
 </head>
 
 <body id="home" class="landing-page">
@@ -1628,26 +1782,140 @@ $pageImage = imageUrl('design/logo-og.jpg');
     </section>
     
     <!-- ========================================
-         FOOTER
-         ======================================== -->
-    <?php include INCLUDES_PATH . '/footer.php'; ?>
-    
-    <!-- ========================================
-         MODAL: CONTACTO
+         CONTACT MODAL
          ======================================== -->
     <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="contactModalLabel">Contáctanos</h5>
+                    <h5 class="modal-title" id="contactModalLabel">
+                        <i class="bi bi-envelope-fill me-2"></i>
+                        Contáctanos
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="text-center text-muted">Formulario de contacto (Próximamente)</p>
+                    <!-- Success Alert -->
+                    <div id="contact-success" class="alert alert-success d-none" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <strong>¡Mensaje enviado!</strong> Gracias por contactarnos, te responderemos pronto.
+                    </div>
+                    
+                    <!-- Error Alert -->
+                    <div id="contact-error" class="alert alert-danger d-none" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Error:</strong> <span id="contact-error-message"></span>
+                    </div>
+                    
+                    <!-- Contact Form -->
+                    <form id="contactForm" action="<?php echo siteUrl('includes/contact_handler.php'); ?>" method="POST" novalidate>
+                        <div class="row g-3">
+                            
+                            <!-- Nombre -->
+                            <div class="col-md-6">
+                                <label for="contact_nombre" class="form-label">
+                                    Nombre Completo <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="contact_nombre" 
+                                       name="nombre" 
+                                       required>
+                                <div class="invalid-feedback">Por favor ingresa tu nombre.</div>
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label for="contact_email" class="form-label">
+                                    Correo Electrónico <span class="text-danger">*</span>
+                                </label>
+                                <input type="email" 
+                                       class="form-control" 
+                                       id="contact_email" 
+                                       name="email" 
+                                       required>
+                                <div class="invalid-feedback">Por favor ingresa un correo válido.</div>
+                            </div>
+                            
+                            <!-- Teléfono -->
+                            <div class="col-md-6">
+                                <label for="contact_telefono" class="form-label">
+                                    Teléfono <span class="text-danger">*</span>
+                                </label>
+                                <input type="tel" 
+                                       class="form-control" 
+                                       id="contact_telefono" 
+                                       name="telefono" 
+                                       required>
+                                <div class="invalid-feedback">Por favor ingresa tu teléfono.</div>
+                            </div>
+                            
+                            <!-- Institución -->
+                            <div class="col-md-6">
+                                <label for="contact_institucion" class="form-label">
+                                    Institución <span class="text-muted">(Opcional)</span>
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="contact_institucion" 
+                                       name="institucion">
+                            </div>
+                            
+                            <!-- Asunto -->
+                            <div class="col-12">
+                                <label for="contact_asunto" class="form-label">
+                                    Asunto <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" 
+                                        id="contact_asunto" 
+                                        name="asunto" 
+                                        required>
+                                    <option value="" selected disabled>Selecciona un asunto</option>
+                                    <option value="Cotización">Solicitar Cotización</option>
+                                    <option value="Información de Productos">Información de Productos</option>
+                                    <option value="Soporte Técnico">Soporte Técnico</option>
+                                    <option value="Asesoría">Asesoría para Centro de Simulación</option>
+                                    <option value="Capacitación">Capacitación y Entrenamiento</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                                <div class="invalid-feedback">Por favor selecciona un asunto.</div>
+                            </div>
+                            
+                            <!-- Mensaje -->
+                            <div class="col-12">
+                                <label for="contact_mensaje" class="form-label">
+                                    Mensaje <span class="text-danger">*</span>
+                                </label>
+                                <textarea class="form-control" 
+                                          id="contact_mensaje" 
+                                          name="mensaje" 
+                                          rows="5" 
+                                          required></textarea>
+                                <div class="invalid-feedback">Por favor ingresa tu mensaje.</div>
+                            </div>
+                            
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="contactForm" class="btn btn-primary" id="contact-submit-btn">
+                        <i class="bi bi-send-fill me-2"></i>
+                        Enviar Mensaje
+                    </button>
+                    <button type="button" class="btn btn-primary d-none" id="contact-loading-btn" disabled>
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                        Enviando...
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- ========================================
+         FOOTER
+         ======================================== -->
+    <?php include INCLUDES_PATH . '/footer.php'; ?>
     
     <!-- ========================================
          JAVASCRIPT LIBRARIES
