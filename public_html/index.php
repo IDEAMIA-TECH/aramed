@@ -1501,7 +1501,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/gaumard.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/1-Gaumard.webp'); ?>" 
                                  alt="Gaumard Scientific" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1521,7 +1521,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/medical-x.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/13-Medical X.webp'); ?>" 
                                  alt="Medical-X" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1540,7 +1540,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/anatomage.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/3-Anatomage.webp'); ?>" 
                                  alt="Anatomage" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1560,7 +1560,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/saratoga.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/15-Saratoga.webp'); ?>" 
                                  alt="Saratoga Dental" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1580,7 +1580,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/3b-scientific.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/7-3B Scientific.webp'); ?>" 
                                  alt="3B Scientific" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1599,7 +1599,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/3d-med.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/6-3D-Med.webp'); ?>" 
                                  alt="3-Dmed" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1619,7 +1619,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/safeguard.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/17-Safeguard Medical (Simbodies).webp'); ?>" 
                                  alt="Safeguard Medical - SimBodies" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1638,7 +1638,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/strategic-operations.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/5-Simulab.webp'); ?>" 
                                  alt="Strategic Operations" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1658,7 +1658,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/kyoto-kagaku.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/2-Kyoto-Kagaku.webp'); ?>" 
                                  alt="Kyoto Kagaku" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1677,7 +1677,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/simx.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/11-SimX.webp'); ?>" 
                                  alt="SimX" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1696,7 +1696,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/nasco.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/16-Nasco Healthcare.webp'); ?>" 
                                  alt="Nasco Healthcare" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1716,7 +1716,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/trucorp.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/10-TrueCorp.webp'); ?>" 
                                  alt="TruCorp" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1736,7 +1736,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/erler-zimmer.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/9-Erler-Zimmer.webp'); ?>" 
                                  alt="Erler-Zimmer" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1755,7 +1755,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/vata.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/12-VATA.webp'); ?>" 
                                  alt="VATA Inc." 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1775,7 +1775,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/adam-rouilly.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/8-Adam Rouilly.webp'); ?>" 
                                  alt="Adam Rouilly" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1794,7 +1794,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/rudiger.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/4-Rudiger.webp'); ?>" 
                                  alt="Rüdiger Anatomie" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1814,7 +1814,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/echo-healthcare.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/7-Echo Healthcare.webp'); ?>" 
                                  alt="Echo Healthcare" 
                                  class="aliado-logo"
                                  loading="lazy">
