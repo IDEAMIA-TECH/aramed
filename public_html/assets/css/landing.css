@@ -1670,13 +1670,34 @@
     border: 2px solid rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     transition: all 0.3s ease;
-    color: var(--aramed-text);
+    color: #1a1a1a !important;
+    background-color: #ffffff !important;
+}
+
+.newsletter-form-wrapper .form-control::placeholder {
+    color: #6c757d !important;
+    opacity: 1;
+}
+
+.newsletter-form-wrapper textarea.form-control {
+    color: #1a1a1a !important;
+}
+
+.newsletter-form-wrapper .form-select {
+    color: #1a1a1a !important;
+    background-color: #ffffff !important;
+}
+
+.newsletter-form-wrapper .form-select option {
+    color: #1a1a1a !important;
+    background-color: #ffffff !important;
 }
 
 .newsletter-form-wrapper .form-control:focus,
 .newsletter-form-wrapper .form-select:focus {
     border-color: var(--aramed-primary);
     box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.15);
+    color: #1a1a1a !important;
 }
 
 .newsletter-form-wrapper .form-control.is-invalid,
