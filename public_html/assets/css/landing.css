@@ -1095,7 +1095,19 @@
 .service-icon i {
     color: white !important;
     font-size: 2.5rem !important;
-    display: block;
+    display: inline-block !important;
+    line-height: 1;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.service-icon i.bi {
+    color: #ffffff !important;
+    font-size: 2.5rem !important;
+}
+
+.service-icon i::before {
+    color: white !important;
 }
 
 .service-card:hover .service-icon {
