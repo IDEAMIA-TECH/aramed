@@ -31,7 +31,7 @@
             this.setupLazyLoading();
             this.setupBackToTop();
             this.setupExternalLinks();
-            // console.log('✅ ARAMED Main JS initialized');
+            console.log('✅ ARAMED Main JS initialized');
         },
         
         /**

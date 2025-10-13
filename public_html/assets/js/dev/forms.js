@@ -23,7 +23,7 @@
             this.setupFormValidation();
             this.setupContactForm();
             this.setupNewsletterForm();
-            // console.log('✅ Forms JS initialized');
+            console.log('✅ Forms JS initialized');
         },
         
         /**
@@ -51,7 +51,7 @@
             const contactForm = document.getElementById('contactForm');
             
             if (!contactForm) {
-                // console.log('ℹ️ Formulario de contacto no encontrado');
+                console.log('ℹ️ Formulario de contacto no encontrado');
                 return;
             }
             
@@ -133,7 +133,7 @@
                 }
             });
             
-            // console.log('✅ Contact form configured');
+            console.log('✅ Contact form configured');
         },
         
         /**
@@ -143,7 +143,7 @@
             const newsletterForm = document.getElementById('newsletterForm');
             
             if (!newsletterForm) {
-                // console.log('ℹ️ Formulario de newsletter no encontrado');
+                console.log('ℹ️ Formulario de newsletter no encontrado');
                 return;
             }
             
@@ -249,7 +249,7 @@
                 }
             });
             
-            // console.log('✅ Newsletter form configured');
+            console.log('✅ Newsletter form configured');
         },
         
         /**

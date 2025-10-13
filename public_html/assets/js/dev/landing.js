@@ -24,7 +24,7 @@
             this.initAliadosCarousel();
             this.initTestimonios();
             this.initCounters();
-            // console.log('✅ Landing Page JS initialized');
+            console.log('✅ Landing Page JS initialized');
         },
         
         /**
@@ -35,7 +35,7 @@
             const heroSlider = document.querySelector('.hero-swiper');
             
             if (!heroSlider) {
-                // console.log('ℹ️ Hero slider no encontrado');
+                console.log('ℹ️ Hero slider no encontrado');
                 return;
             }
             
@@ -78,7 +78,7 @@
                 // Callbacks
                 on: {
                     init: function() {
-                        // console.log('✅ Hero Swiper initialized');
+                        console.log('✅ Hero Swiper initialized');
                         // Animar el primer slide
                         const firstSlide = document.querySelector('.hero-swiper .swiper-slide-active .hero-content');
                         if (firstSlide) {
@@ -150,7 +150,7 @@
             const aliadosCarousel = document.querySelector('.aliados-swiper');
             
             if (!aliadosCarousel) {
-                // console.log('ℹ️ Carrusel de aliados pendiente de implementación');
+                console.log('ℹ️ Carrusel de aliados pendiente de implementación');
                 return;
             }
             
@@ -188,7 +188,7 @@
             const testimoniosSlider = document.querySelector('.testimonios-swiper');
             
             if (!testimoniosSlider) {
-                // console.log('ℹ️ Slider de testimonios pendiente de implementación');
+                console.log('ℹ️ Slider de testimonios pendiente de implementación');
                 return;
             }
             
@@ -224,7 +224,7 @@
             const counters = document.querySelectorAll('.counter, .stat-number[data-target]');
             
             if (counters.length === 0) {
-                // console.log('ℹ️ No se encontraron contadores para animar');
+                console.log('ℹ️ No se encontraron contadores para animar');
                 return;
             }
             
@@ -258,7 +258,7 @@
                     if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
                         animateCounter(entry.target);
                         entry.target.classList.add('animated');
-                        // console.log('✅ Contador animado:', entry.target.getAttribute('data-target'));
+                        console.log('✅ Contador animado:', entry.target.getAttribute('data-target'));
                     }
                 });
             }, {
@@ -266,7 +266,7 @@
             });
             
             counters.forEach(counter => observer.observe(counter));
-            // console.log(`✅ ${counters.length} contadores inicializados`);
+            console.log(`✅ ${counters.length} contadores inicializados`);
         },
         
         /**
