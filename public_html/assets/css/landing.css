@@ -1687,6 +1687,7 @@
     height: 1.25rem;
     border: 2px solid var(--aramed-primary);
     margin-top: 0.125rem;
+    cursor: pointer;
 }
 
 .newsletter-form-wrapper .form-check-input:checked {
@@ -1695,25 +1696,41 @@
 }
 
 .newsletter-form-wrapper .form-check-label {
-    color: var(--aramed-text) !important;
+    color: #1a1a1a !important;  /* Color oscuro para visibilidad */
     margin-left: 0.5rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.newsletter-form-wrapper .form-check-label a {
+    color: var(--aramed-primary) !important;
+    text-decoration: underline;
+}
+
+.newsletter-form-wrapper .form-check-label a:hover {
+    color: var(--aramed-primary-dark) !important;
 }
 
 /* Submit Button */
 .newsletter-form-wrapper .btn-light {
-    background: var(--aramed-primary);
-    color: white;
-    border: none;
+    background: #0B9FD9 !important;  /* Azul Aramed */
+    color: white !important;
+    border: none !important;
     font-weight: 700;
     border-radius: 50px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(11, 159, 217, 0.4);
+    font-size: 1.125rem;
 }
 
 .newsletter-form-wrapper .btn-light:hover {
-    background: var(--aramed-primary-dark);
+    background: #0988BA !important;  /* Azul oscuro */
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+    box-shadow: 0 8px 25px rgba(11, 159, 217, 0.5);
+}
+
+.newsletter-form-wrapper .btn-light i {
+    color: white !important;
 }
 
 /* Alerts */

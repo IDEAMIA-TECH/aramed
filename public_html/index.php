@@ -1788,8 +1788,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                                id="privacidad" 
                                                name="privacidad" 
                                                required>
-                                        <label class="form-check-label text-white-75" for="privacidad">
-                                            Acepto la <a href="#" class="text-white text-decoration-underline">política de privacidad</a> 
+                                        <label class="form-check-label" for="privacidad">
+                                            Acepto la <a href="#">política de privacidad</a> 
                                             y el tratamiento de mis datos personales. <span class="text-danger">*</span>
                                         </label>
                                         <div class="invalid-feedback">Debes aceptar la política de privacidad.</div>
