@@ -1289,13 +1289,341 @@ $pageImage = imageUrl('design/logo-og.jpg');
          ======================================== -->
     <section id="newsletter" class="section-newsletter py-5 bg-primary text-white">
         <div class="container">
-            <div class="text-center mb-4" data-aos="fade-up">
-                <h2 class="section-title text-white">Mantente informado</h2>
-                <p class="section-subtitle text-white-50">Conoce todas las soluciones que podemos ofrecerte en tu área de enseñanza médica</p>
+            <!-- Header -->
+            <div class="text-center mb-5" data-aos="fade-up">
+                <span class="badge bg-white text-primary px-3 py-2 mb-3">
+                    <i class="bi bi-envelope-fill me-2"></i>
+                    Newsletter
+                </span>
+                <h2 class="section-title text-white mb-3">Mantente Informado</h2>
+                <p class="section-subtitle text-white-75 mx-auto" style="max-width: 700px;">
+                    Conoce todas las soluciones que podemos ofrecerte en tu área de enseñanza médica. 
+                    Recibe información exclusiva sobre productos, eventos y capacitaciones.
+                </p>
             </div>
-            <div class="newsletter-placeholder">
-                <p class="text-center">Formulario de newsletter (Próximamente)</p>
+            
+            <!-- Newsletter Form -->
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-9">
+                    <div class="newsletter-form-wrapper" data-aos="fade-up" data-aos-delay="100">
+                        
+                        <!-- Success Message (hidden by default) -->
+                        <div id="newsletter-success" class="alert alert-success d-none" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            <strong>¡Gracias por suscribirte!</strong> Pronto recibirás información relevante en tu correo.
+                        </div>
+                        
+                        <!-- Error Message (hidden by default) -->
+                        <div id="newsletter-error" class="alert alert-danger d-none" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>Error:</strong> <span id="newsletter-error-message">Hubo un problema al procesar tu solicitud.</span>
+                        </div>
+                        
+                        <form id="newsletterForm" action="<?php echo siteUrl('includes/newsletter_handler.php'); ?>" method="POST" novalidate>
+                            
+                            <div class="row g-4">
+                                
+                                <!-- Institución -->
+                                <div class="col-md-6">
+                                    <label for="institucion" class="form-label">
+                                        Institución <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="institucion" 
+                                           name="institucion" 
+                                           placeholder="Nombre de la institución" 
+                                           required>
+                                    <div class="invalid-feedback">Por favor ingresa el nombre de la institución.</div>
+                                </div>
+                                
+                                <!-- Tipo de Institución -->
+                                <div class="col-md-6">
+                                    <label for="tipo_institucion" class="form-label">
+                                        Tipo de Institución <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select form-select-lg" 
+                                            id="tipo_institucion" 
+                                            name="tipo_institucion" 
+                                            required>
+                                        <option value="" selected disabled>Selecciona una opción</option>
+                                        <option value="Hospital">Hospital</option>
+                                        <option value="Escuela de salud">Escuela de salud</option>
+                                        <option value="Enfermería">Enfermería</option>
+                                        <option value="Institución gubernamental">Institución gubernamental</option>
+                                    </select>
+                                    <div class="invalid-feedback">Por favor selecciona el tipo de institución.</div>
+                                </div>
+                                
+                                <!-- Campo Adicional (dinámico) -->
+                                <div class="col-12 d-none" id="campo_adicional_wrapper">
+                                    <label for="campo_adicional" class="form-label">
+                                        Especifica el tipo de institución
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="campo_adicional" 
+                                           name="campo_adicional" 
+                                           placeholder="Ej: Universidad, Secretaría de Salud, etc.">
+                                </div>
+                                
+                                <!-- Estado -->
+                                <div class="col-md-6">
+                                    <label for="estado" class="form-label">
+                                        Estado <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select form-select-lg" 
+                                            id="estado" 
+                                            name="estado" 
+                                            required>
+                                        <option value="" selected disabled>Selecciona un estado</option>
+                                        <option value="Aguascalientes">Aguascalientes</option>
+                                        <option value="Baja California">Baja California</option>
+                                        <option value="Baja California Sur">Baja California Sur</option>
+                                        <option value="Campeche">Campeche</option>
+                                        <option value="Chiapas">Chiapas</option>
+                                        <option value="Chihuahua">Chihuahua</option>
+                                        <option value="Ciudad de México">Ciudad de México</option>
+                                        <option value="Coahuila">Coahuila</option>
+                                        <option value="Colima">Colima</option>
+                                        <option value="Durango">Durango</option>
+                                        <option value="Guanajuato">Guanajuato</option>
+                                        <option value="Guerrero">Guerrero</option>
+                                        <option value="Hidalgo">Hidalgo</option>
+                                        <option value="Jalisco">Jalisco</option>
+                                        <option value="México">México</option>
+                                        <option value="Michoacán">Michoacán</option>
+                                        <option value="Morelos">Morelos</option>
+                                        <option value="Nayarit">Nayarit</option>
+                                        <option value="Nuevo León">Nuevo León</option>
+                                        <option value="Oaxaca">Oaxaca</option>
+                                        <option value="Puebla">Puebla</option>
+                                        <option value="Querétaro">Querétaro</option>
+                                        <option value="Quintana Roo">Quintana Roo</option>
+                                        <option value="San Luis Potosí">San Luis Potosí</option>
+                                        <option value="Sinaloa">Sinaloa</option>
+                                        <option value="Sonora">Sonora</option>
+                                        <option value="Tabasco">Tabasco</option>
+                                        <option value="Tamaulipas">Tamaulipas</option>
+                                        <option value="Tlaxcala">Tlaxcala</option>
+                                        <option value="Veracruz">Veracruz</option>
+                                        <option value="Yucatán">Yucatán</option>
+                                        <option value="Zacatecas">Zacatecas</option>
+                                    </select>
+                                    <div class="invalid-feedback">Por favor selecciona un estado.</div>
+                                </div>
+                                
+                                <!-- Ciudad -->
+                                <div class="col-md-6">
+                                    <label for="ciudad" class="form-label">
+                                        Ciudad <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="ciudad" 
+                                           name="ciudad" 
+                                           placeholder="Ciudad" 
+                                           required>
+                                    <div class="invalid-feedback">Por favor ingresa la ciudad.</div>
+                                </div>
+                                
+                                <!-- Nombre del Interesado -->
+                                <div class="col-md-6">
+                                    <label for="nombre" class="form-label">
+                                        Nombre Completo <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="nombre" 
+                                           name="nombre" 
+                                           placeholder="Tu nombre completo" 
+                                           required>
+                                    <div class="invalid-feedback">Por favor ingresa tu nombre completo.</div>
+                                </div>
+                                
+                                <!-- Puesto -->
+                                <div class="col-md-6">
+                                    <label for="puesto" class="form-label">
+                                        Puesto <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="puesto" 
+                                           name="puesto" 
+                                           placeholder="Tu puesto o cargo" 
+                                           required>
+                                    <div class="invalid-feedback">Por favor ingresa tu puesto.</div>
+                                </div>
+                                
+                                <!-- Correo Oficial -->
+                                <div class="col-md-6">
+                                    <label for="email_oficial" class="form-label">
+                                        Correo Oficial <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="email" 
+                                           class="form-control form-control-lg" 
+                                           id="email_oficial" 
+                                           name="email_oficial" 
+                                           placeholder="correo@institucion.com" 
+                                           required>
+                                    <div class="invalid-feedback">Por favor ingresa un correo oficial válido.</div>
+                                </div>
+                                
+                                <!-- Correo Alterno -->
+                                <div class="col-md-6">
+                                    <label for="email_alterno" class="form-label">
+                                        Correo Alterno <span class="text-muted">(Opcional)</span>
+                                    </label>
+                                    <input type="email" 
+                                           class="form-control form-control-lg" 
+                                           id="email_alterno" 
+                                           name="email_alterno" 
+                                           placeholder="correo@personal.com">
+                                    <div class="invalid-feedback">Por favor ingresa un correo alterno válido.</div>
+                                </div>
+                                
+                                <!-- Teléfono Oficina -->
+                                <div class="col-md-6">
+                                    <label for="telefono_oficina" class="form-label">
+                                        Teléfono Oficina <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group input-group-lg">
+                                        <input type="tel" 
+                                               class="form-control" 
+                                               id="telefono_oficina" 
+                                               name="telefono_oficina" 
+                                               placeholder="(555) 123-4567" 
+                                               required>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="extension" 
+                                               name="extension" 
+                                               placeholder="Ext." 
+                                               style="max-width: 80px;">
+                                    </div>
+                                    <div class="invalid-feedback">Por favor ingresa un teléfono de oficina válido.</div>
+                                </div>
+                                
+                                <!-- Teléfono Celular -->
+                                <div class="col-md-6">
+                                    <label for="telefono_celular" class="form-label">
+                                        Teléfono Celular <span class="text-muted">(Opcional)</span>
+                                    </label>
+                                    <input type="tel" 
+                                           class="form-control form-control-lg" 
+                                           id="telefono_celular" 
+                                           name="telefono_celular" 
+                                           placeholder="(555) 987-6543">
+                                    <div class="invalid-feedback">Por favor ingresa un teléfono celular válido.</div>
+                                </div>
+                                
+                                <!-- Producto de Interés -->
+                                <div class="col-md-6">
+                                    <label for="producto_interes" class="form-label">
+                                        Producto de Interés <span class="text-muted">(Opcional)</span>
+                                    </label>
+                                    <select class="form-select form-select-lg" 
+                                            id="producto_interes" 
+                                            name="producto_interes">
+                                        <option value="" selected>Selecciona un producto</option>
+                                        <option value="Simuladores Maternales">Simuladores Maternales</option>
+                                        <option value="Simuladores RCP">Simuladores RCP y Emergencias</option>
+                                        <option value="Simuladores Pediátricos">Simuladores Pediátricos</option>
+                                        <option value="Simuladores Adulto">Simuladores Adulto</option>
+                                        <option value="Anatomage Table">Anatomage Table</option>
+                                        <option value="Realidad Virtual">Realidad Virtual / Inmersiva</option>
+                                        <option value="Centro de Simulación">Centro de Simulación Completo</option>
+                                        <option value="Otro">Otro</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Fecha Aproximada de Compra -->
+                                <div class="col-md-6">
+                                    <label class="form-label">
+                                        Fecha Aproximada de Compra <span class="text-muted">(Opcional)</span>
+                                    </label>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <select class="form-select form-select-lg" 
+                                                    id="compra_mes" 
+                                                    name="compra_mes">
+                                                <option value="" selected>Mes</option>
+                                                <option value="01">Enero</option>
+                                                <option value="02">Febrero</option>
+                                                <option value="03">Marzo</option>
+                                                <option value="04">Abril</option>
+                                                <option value="05">Mayo</option>
+                                                <option value="06">Junio</option>
+                                                <option value="07">Julio</option>
+                                                <option value="08">Agosto</option>
+                                                <option value="09">Septiembre</option>
+                                                <option value="10">Octubre</option>
+                                                <option value="11">Noviembre</option>
+                                                <option value="12">Diciembre</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <select class="form-select form-select-lg" 
+                                                    id="compra_anio" 
+                                                    name="compra_anio">
+                                                <option value="" selected>Año</option>
+                                                <option value="2025">2025</option>
+                                                <option value="2026">2026</option>
+                                                <option value="2027">2027</option>
+                                                <option value="2028">2028</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Observaciones -->
+                                <div class="col-12">
+                                    <label for="observaciones" class="form-label">
+                                        Observaciones <span class="text-muted">(Opcional)</span>
+                                    </label>
+                                    <textarea class="form-control form-control-lg" 
+                                              id="observaciones" 
+                                              name="observaciones" 
+                                              rows="4" 
+                                              placeholder="Cuéntanos más sobre tus necesidades o proyectos..."></textarea>
+                                </div>
+                                
+                                <!-- Privacy Policy -->
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" 
+                                               type="checkbox" 
+                                               id="privacidad" 
+                                               name="privacidad" 
+                                               required>
+                                        <label class="form-check-label text-white-75" for="privacidad">
+                                            Acepto la <a href="#" class="text-white text-decoration-underline">política de privacidad</a> 
+                                            y el tratamiento de mis datos personales. <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="invalid-feedback">Debes aceptar la política de privacidad.</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Submit Button -->
+                                <div class="col-12 text-center mt-4">
+                                    <button type="submit" class="btn btn-light btn-lg px-5 py-3" id="newsletter-submit-btn">
+                                        <i class="bi bi-send-fill me-2"></i>
+                                        Suscribirse al Newsletter
+                                    </button>
+                                    <button type="button" class="btn btn-light btn-lg px-5 py-3 d-none" id="newsletter-loading-btn" disabled>
+                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        Enviando...
+                                    </button>
+                                </div>
+                                
+                            </div>
+                            
+                        </form>
+                        
+                    </div>
+                </div>
             </div>
+            
         </div>
     </section>
     
