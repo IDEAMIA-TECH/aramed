@@ -1,49 +1,102 @@
 ═══════════════════════════════════════════════════════════════════
-✅ ARCHIVOS A SUBIR AL SERVIDOR - CONFIGURACIÓN EMAIL SMTP
+✅ ARCHIVOS A SUBIR AL SERVIDOR - CON LOGS DE DEBUG
 ═══════════════════════════════════════════════════════════════════
 
-📁 SUBIR ESTOS 4 ARCHIVOS (en orden de prioridad):
+📁 SUBIR ESTOS 4 ARCHIVOS (ACTUALIZADOS CON LOGS):
 
-1. includes/config.php
-   → Contiene las nuevas credenciales SMTP
+1. includes/email_functions.php (10K)
+   → Sistema de envío de emails + LOGS EXHAUSTIVOS
 
-2. includes/email_functions.php  ⭐ NUEVO
-   → Sistema completo de envío de emails
+2. includes/newsletter_handler.php (12K)
+   → Handler de newsletter + LOGS EXHAUSTIVOS
 
-3. includes/newsletter_handler.php
-   → Actualizado para usar email_functions
+3. includes/contact_handler.php (9.9K)
+   → Handler de contacto + LOGS EXHAUSTIVOS
 
-4. includes/contact_handler.php
-   → Actualizado para usar email_functions
+4. public_html/test-email-debug.php (7.9K) ⭐ TEMPORAL
+   → Script de testing visual
+   → ⚠️ ELIMINAR DESPUÉS DEL DEBUG
 
 ═══════════════════════════════════════════════════════════════════
 ⚡ PASOS RÁPIDOS:
 ═══════════════════════════════════════════════════════════════════
 
-1. Subir los 4 archivos via FTP/cPanel al servidor
+PASO 1: Subir los 4 archivos via FTP/cPanel
    
-2. OPCIONAL (pero recomendado): Instalar PHPMailer
-   - Descargar: https://github.com/PHPMailer/PHPMailer/releases
-   - Subir a: /includes/library/phpmailer/
-     • class.phpmailer.php
-     • class.smtp.php
+PASO 2: Ejecutar test de debug
+   URL: https://aramedylaboratorio.com/NUEVO/aramed/public_html/test-email-debug.php
+   • Capturar screenshot completo
+   • Revisar cada sección (SMTP, PHPMailer, Test de conexión)
 
-3. Probar formulario en la web
+PASO 3: Probar formulario
+   • Abrir consola del navegador (F12)
+   • Llenar formulario completo
+   • Enviar
+   • Observar errores en consola
 
-4. ✅ ¡Listo! Los emails deberían funcionar
+PASO 4: Revisar logs del servidor
+   • cPanel > Error Log
+   • Buscar: "===== EMAIL SEND ATTEMPT ====="
+   • Buscar: ❌ (errores) y ✅ (éxitos)
+   • Copiar últimas 50 líneas
+
+PASO 5: Enviarme:
+   • Screenshot de test-email-debug.php
+   • Últimas 50 líneas del error log
+   • Screenshot de consola del navegador
+   • Mensaje de error exacto en pantalla
 
 ═══════════════════════════════════════════════════════════════════
-🔍 VERIFICACIÓN:
+🔍 QUÉ ESPERAR EN LOS LOGS:
 ═══════════════════════════════════════════════════════════════════
 
-✓ Formulario muestra mensaje de éxito
-✓ Email llega a: web@aramedylaboratorio.com
-✓ No hay errores en consola del navegador
+Si TODO funciona, verás:
+✅ NEWSLETTER HANDLER - START
+✅ POST request received
+✅ All required fields present
+✅ Privacy policy accepted
+✅ Email validation passed
+✅ Email not subscribed yet
+✅ INSERT successful. ID: [número]
+✅ Email sent successfully
+
+Si HAY problemas, verás:
+❌ [descripción del error]
+❌ Exception caught: [detalles]
+❌ Stack Trace: [información técnica]
 
 ═══════════════════════════════════════════════════════════════════
-❓ SI HAY PROBLEMAS:
+📊 LOGS INCLUIDOS:
+═══════════════════════════════════════════════════════════════════
 
-Ver documentación completa en:
-DOCS/FIX_EMAIL_SMTP_CONFIG.md
+✓ Configuración SMTP (host, port, user, password set)
+✓ Método de envío usado (PHPMailer vs mail())
+✓ Datos recibidos del formulario
+✓ Validación de campos
+✓ Operaciones de base de datos
+✓ Envío de email con detalles técnicos
+✓ Excepciones con stack trace completo
+✓ Debug SMTP nivel 2 (si PHPMailer disponible)
+
+═══════════════════════════════════════════════════════════════════
+⚠️ SEGURIDAD:
+═══════════════════════════════════════════════════════════════════
+
+🔴 ELIMINAR test-email-debug.php DESPUÉS DE DEBUGGING
+   Este archivo muestra información sensible y NO debe estar en
+   producción.
+
+   Para eliminarlo:
+   rm public_html/test-email-debug.php
+
+═══════════════════════════════════════════════════════════════════
+📚 DOCUMENTACIÓN COMPLETA:
+═══════════════════════════════════════════════════════════════════
+
+Ver: DOCS/DEBUG_LOGS_ACTIVADOS.md
+• Guía completa de debugging
+• Errores comunes y soluciones
+• Cómo interpretar los logs
+• Troubleshooting paso a paso
 
 ═══════════════════════════════════════════════════════════════════

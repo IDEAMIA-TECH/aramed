@@ -33,13 +33,31 @@ if (file_exists(INCLUDES_PATH . '/library/phpmailer/class.phpmailer.php')) {
 function sendEmail($to, $subject, $body, $toName = '', $attachments = []) {
     global $phpmailerAvailable;
     
+    // LOG: Inicio del envío
+    error_log("===== EMAIL SEND ATTEMPT =====");
+    error_log("To: " . $to);
+    error_log("Subject: " . $subject);
+    error_log("PHPMailer Available: " . ($phpmailerAvailable ? 'YES' : 'NO'));
+    error_log("SMTP Host: " . SMTP_HOST);
+    error_log("SMTP Port: " . SMTP_PORT);
+    error_log("SMTP User: " . SMTP_USERNAME);
+    error_log("SMTP Pass Set: " . (defined('SMTP_PASSWORD') && !empty(SMTP_PASSWORD) ? 'YES' : 'NO'));
+    
     // Si PHPMailer está disponible, usarlo
     if ($phpmailerAvailable && class_exists('PHPMailer')) {
+        error_log("Using: PHPMailer");
         return sendEmailWithPHPMailer($to, $subject, $body, $toName, $attachments);
     }
     
     // Fallback: usar mail() nativo con headers SMTP
+    error_log("Using: Native mail()");
+    
     try {
+        // Verificar configuración
+        if (!defined('MAIL_FROM_EMAIL') || empty(MAIL_FROM_EMAIL)) {
+            throw new Exception('MAIL_FROM_EMAIL no configurado');
+        }
+        
         // Configurar headers
         $headers = [];
         $headers[] = "MIME-Version: 1.0";
@@ -49,23 +67,36 @@ function sendEmail($to, $subject, $body, $toName = '', $attachments = []) {
         $headers[] = "X-Mailer: PHP/" . phpversion();
         $headers[] = "X-Priority: 3";
         
+        error_log("Headers: " . implode(" | ", $headers));
+        
         // Configurar parámetros adicionales para SMTP
         $additional_parameters = "-f" . MAIL_FROM_EMAIL;
         
+        error_log("Additional Params: " . $additional_parameters);
+        error_log("Attempting mail() function...");
+        
         // Enviar email
-        $result = mail($to, $subject, $body, implode("\r\n", $headers), $additional_parameters);
+        $result = @mail($to, $subject, $body, implode("\r\n", $headers), $additional_parameters);
+        
+        error_log("mail() result: " . ($result ? 'TRUE' : 'FALSE'));
         
         if ($result) {
+            error_log("✅ Email sent successfully via mail()");
             return [
                 'success' => true,
                 'message' => 'Email enviado correctamente'
             ];
         } else {
-            throw new Exception('Error al enviar email con mail()');
+            // Capturar el último error de PHP
+            $lastError = error_get_last();
+            $errorMsg = $lastError ? $lastError['message'] : 'Unknown error';
+            error_log("❌ mail() failed: " . $errorMsg);
+            throw new Exception('Error al enviar email con mail(): ' . $errorMsg);
         }
         
     } catch (Exception $e) {
-        error_log("Email Error: " . $e->getMessage());
+        error_log("❌ Exception caught: " . $e->getMessage());
+        error_log("===== EMAIL SEND FAILED =====");
         
         return [
             'success' => false,
@@ -88,6 +119,8 @@ function sendEmailWithPHPMailer($to, $subject, $body, $toName = '', $attachments
     $mail = new PHPMailer(true);
     
     try {
+        error_log("--- PHPMailer Configuration ---");
+        
         // Configuración del servidor SMTP
         $mail->isSMTP();
         $mail->Host       = SMTP_HOST;
@@ -96,6 +129,17 @@ function sendEmailWithPHPMailer($to, $subject, $body, $toName = '', $attachments
         $mail->Password   = SMTP_PASSWORD;
         $mail->SMTPSecure = SMTP_SECURE;
         $mail->Port       = SMTP_PORT;
+        
+        // Debug output (nivel 2 = mensajes de cliente y servidor)
+        $mail->SMTPDebug  = 2;
+        $mail->Debugoutput = function($str, $level) {
+            error_log("PHPMailer DEBUG: $str");
+        };
+        
+        error_log("SMTP Host: " . $mail->Host);
+        error_log("SMTP Port: " . $mail->Port);
+        error_log("SMTP Secure: " . $mail->SMTPSecure);
+        error_log("SMTP Auth: " . ($mail->SMTPAuth ? 'YES' : 'NO'));
         
         // Configuración del charset
         $mail->CharSet = 'UTF-8';
@@ -110,11 +154,15 @@ function sendEmailWithPHPMailer($to, $subject, $body, $toName = '', $attachments
             )
         );
         
+        error_log("SSL Options: verify_peer=false, verify_peer_name=false, allow_self_signed=true");
+        
         // Configurar timeout
         $mail->Timeout = 30;
+        error_log("Timeout: 30 seconds");
         
         // Remitente
         $mail->setFrom(MAIL_FROM_EMAIL, MAIL_FROM_NAME);
+        error_log("From: " . MAIL_FROM_EMAIL);
         
         // Destinatario
         if (empty($toName)) {
@@ -122,6 +170,7 @@ function sendEmailWithPHPMailer($to, $subject, $body, $toName = '', $attachments
         } else {
             $mail->addAddress($to, $toName);
         }
+        error_log("To: " . $to);
         
         // Reply-To
         $mail->addReplyTo(MAIL_FROM_EMAIL, MAIL_FROM_NAME);
@@ -131,6 +180,7 @@ function sendEmailWithPHPMailer($to, $subject, $body, $toName = '', $attachments
             foreach ($attachments as $attachment) {
                 if (file_exists($attachment)) {
                     $mail->addAttachment($attachment);
+                    error_log("Attachment: " . $attachment);
                 }
             }
         }
@@ -143,8 +193,15 @@ function sendEmailWithPHPMailer($to, $subject, $body, $toName = '', $attachments
         // Versión texto plano
         $mail->AltBody = strip_tags($body);
         
+        error_log("Subject: " . $subject);
+        error_log("Body length: " . strlen($body) . " chars");
+        error_log("Attempting to send via PHPMailer...");
+        
         // Enviar
         $mail->send();
+        
+        error_log("✅ PHPMailer: Email sent successfully!");
+        error_log("===== EMAIL SEND SUCCESS =====");
         
         return [
             'success' => true,
@@ -152,7 +209,9 @@ function sendEmailWithPHPMailer($to, $subject, $body, $toName = '', $attachments
         ];
         
     } catch (Exception $e) {
-        error_log("PHPMailer Error: {$mail->ErrorInfo}");
+        error_log("❌ PHPMailer Exception: " . $e->getMessage());
+        error_log("❌ PHPMailer ErrorInfo: " . $mail->ErrorInfo);
+        error_log("===== EMAIL SEND FAILED =====");
         
         return [
             'success' => false,

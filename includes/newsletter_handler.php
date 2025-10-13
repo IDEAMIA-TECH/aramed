@@ -22,8 +22,16 @@ require_once ROOT_PATH . '/includes/email_functions.php';
 // Headers para JSON
 header('Content-Type: application/json');
 
+// LOG: Inicio del handler
+error_log("========================================");
+error_log("NEWSLETTER HANDLER - START");
+error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
+error_log("Request Time: " . date('Y-m-d H:i:s'));
+error_log("========================================");
+
 // Solo permitir POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    error_log("❌ Invalid request method: " . $_SERVER['REQUEST_METHOD']);
     http_response_code(405);
     echo json_encode([
         'success' => false,
@@ -32,6 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+error_log("✅ POST request received");
+
 // Inicializar respuesta
 $response = [
     'success' => false,
@@ -39,6 +49,8 @@ $response = [
 ];
 
 try {
+    error_log("--- Data Sanitization ---");
+    
     // Sanitizar y validar datos
     $data = [
         'institucion' => sanitizeInput($_POST['institucion'] ?? ''),
@@ -62,7 +74,15 @@ try {
         'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
     ];
     
+    error_log("Received data:");
+    error_log("  - Institución: " . $data['institucion']);
+    error_log("  - Email: " . $data['email_oficial']);
+    error_log("  - Nombre: " . $data['nombre']);
+    error_log("  - Privacidad: " . ($data['privacidad'] ? 'Accepted' : 'NOT accepted'));
+    
     // Validaciones obligatorias
+    error_log("--- Field Validation ---");
+    
     $requiredFields = [
         'institucion' => 'Institución',
         'tipo_institucion' => 'Tipo de institución',
@@ -76,19 +96,28 @@ try {
     
     foreach ($requiredFields as $field => $label) {
         if (empty($data[$field])) {
+            error_log("❌ Validation failed: {$label} is empty");
             throw new Exception("El campo '{$label}' es obligatorio.");
         }
     }
     
+    error_log("✅ All required fields present");
+    
     // Validar privacidad
     if ($data['privacidad'] !== 1) {
+        error_log("❌ Privacy policy not accepted");
         throw new Exception("Debes aceptar la política de privacidad.");
     }
     
+    error_log("✅ Privacy policy accepted");
+    
     // Validar email oficial
     if (!filter_var($data['email_oficial'], FILTER_VALIDATE_EMAIL)) {
+        error_log("❌ Invalid email: " . $data['email_oficial']);
         throw new Exception("El correo oficial no es válido.");
     }
+    
+    error_log("✅ Email validation passed");
     
     // Validar email alterno si se proporcionó
     if ($data['email_alterno'] && !filter_var($data['email_alterno'], FILTER_VALIDATE_EMAIL')) {
@@ -96,19 +125,28 @@ try {
     }
     
     // Verificar si ya está suscrito
+    error_log("--- Database Operations ---");
+    error_log("Checking for existing subscription...");
+    
     $stmt = $pdo->prepare("SELECT id FROM newsletter_subscriptions WHERE email_oficial = ? AND status = 'active'");
     $stmt->execute([$data['email_oficial']]);
     if ($stmt->fetch()) {
+        error_log("❌ Email already subscribed: " . $data['email_oficial']);
         throw new Exception("Este correo ya está suscrito a nuestro newsletter.");
     }
+    
+    error_log("✅ Email not subscribed yet");
     
     // Preparar fecha aproximada de compra
     $fecha_compra = null;
     if (!empty($data['compra_mes']) && !empty($data['compra_anio'])) {
         $fecha_compra = $data['compra_anio'] . '-' . $data['compra_mes'] . '-01';
+        error_log("Purchase date: " . $fecha_compra);
     }
     
     // Insertar en base de datos
+    error_log("Preparing INSERT query...");
+    
     $sql = "INSERT INTO newsletter_subscriptions (
         institucion, tipo_institucion, campo_adicional, estado, ciudad,
         nombre, puesto, email_oficial, email_alterno,
@@ -124,6 +162,9 @@ try {
     )";
     
     $stmt = $pdo->prepare($sql);
+    
+    error_log("Executing INSERT...");
+    
     $result = $stmt->execute([
         ':institucion' => $data['institucion'],
         ':tipo_institucion' => $data['tipo_institucion'],
@@ -145,8 +186,13 @@ try {
     ]);
     
     if (!$result) {
+        error_log("❌ INSERT failed");
+        error_log("PDO Error: " . print_r($stmt->errorInfo(), true));
         throw new Exception("Error al guardar la suscripción.");
     }
+    
+    $insertId = $pdo->lastInsertId();
+    error_log("✅ INSERT successful. ID: " . $insertId);
     
     // Enviar notificación por email
     $to = CONTACT_EMAIL; // Definido en config.php
@@ -202,14 +248,22 @@ try {
     ";
     
     // Enviar email usando PHPMailer
+    error_log("--- Email Sending ---");
+    error_log("Sending notification email to: " . $to);
+    
     $emailResult = sendEmail($to, $subject, $message);
     
     // Log si hay error en el envío de email
     if (!$emailResult['success']) {
-        error_log("Newsletter Email Error: " . $emailResult['message']);
+        error_log("❌ Newsletter Email Error: " . $emailResult['message']);
+    } else {
+        error_log("✅ Newsletter Email sent successfully");
     }
     
     // Respuesta exitosa
+    error_log("✅ Newsletter subscription completed successfully");
+    error_log("========================================");
+    
     $response = [
         'success' => true,
         'message' => '¡Gracias por suscribirte! Pronto recibirás información relevante en tu correo.'
@@ -217,7 +271,12 @@ try {
     
 } catch (Exception $e) {
     // Log error
-    error_log("Newsletter Error: " . $e->getMessage());
+    error_log("❌❌❌ EXCEPTION CAUGHT ❌❌❌");
+    error_log("Error Message: " . $e->getMessage());
+    error_log("Error File: " . $e->getFile());
+    error_log("Error Line: " . $e->getLine());
+    error_log("Stack Trace: " . $e->getTraceAsString());
+    error_log("========================================");
     
     // Respuesta de error
     $response = [
