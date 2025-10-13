@@ -13,9 +13,11 @@
 
 // Configuración
 define('ROOT_PATH', dirname(__DIR__));
+define('INCLUDES_PATH', ROOT_PATH . '/includes');
 require_once ROOT_PATH . '/includes/config.php';
 require_once ROOT_PATH . '/includes/connection.php';
 require_once ROOT_PATH . '/includes/functions.php';
+require_once ROOT_PATH . '/includes/email_functions.php';
 
 // Headers para JSON
 header('Content-Type: application/json');
@@ -199,12 +201,13 @@ try {
     </html>
     ";
     
-    $headers = "MIME-Version: 1.0" . "\r\n";
-    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $headers .= "From: " . SITE_NAME . " <noreply@" . SITE_DOMAIN . ">" . "\r\n";
+    // Enviar email usando PHPMailer
+    $emailResult = sendEmail($to, $subject, $message);
     
-    // Enviar email (opcional, depende de la configuración del servidor)
-    @mail($to, $subject, $message, $headers);
+    // Log si hay error en el envío de email
+    if (!$emailResult['success']) {
+        error_log("Newsletter Email Error: " . $emailResult['message']);
+    }
     
     // Respuesta exitosa
     $response = [

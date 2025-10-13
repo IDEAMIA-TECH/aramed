@@ -13,9 +13,11 @@
 
 // Configuración
 define('ROOT_PATH', dirname(__DIR__));
+define('INCLUDES_PATH', ROOT_PATH . '/includes');
 require_once ROOT_PATH . '/includes/config.php';
 require_once ROOT_PATH . '/includes/connection.php';
 require_once ROOT_PATH . '/includes/functions.php';
+require_once ROOT_PATH . '/includes/email_functions.php';
 
 // Headers para JSON
 header('Content-Type: application/json');
@@ -167,13 +169,13 @@ try {
     </html>
     ";
     
-    $headers = "MIME-Version: 1.0" . "\r\n";
-    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $headers .= "From: " . SITE_NAME . " <noreply@" . SITE_DOMAIN . ">" . "\r\n";
-    $headers .= "Reply-To: {$data['nombre']} <{$data['email']}>" . "\r\n";
+    // Enviar email al admin usando PHPMailer
+    $emailResult = sendEmail($to, $subject, $message);
     
-    // Enviar email
-    @mail($to, $subject, $message, $headers);
+    // Log si hay error
+    if (!$emailResult['success']) {
+        error_log("Contact Email Error (Admin): " . $emailResult['message']);
+    }
     
     // Email de confirmación al cliente
     $clientSubject = "Hemos recibido tu mensaje - Aramed y Laboratorios";
@@ -228,12 +230,13 @@ try {
     </html>
     ";
     
-    $clientHeaders = "MIME-Version: 1.0" . "\r\n";
-    $clientHeaders .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $clientHeaders .= "From: " . SITE_NAME . " <" . CONTACT_EMAIL . ">" . "\r\n";
+    // Enviar confirmación al cliente usando PHPMailer
+    $clientEmailResult = sendEmail($data['email'], $clientSubject, $clientMessage, $data['nombre']);
     
-    // Enviar confirmación al cliente
-    @mail($data['email'], $clientSubject, $clientMessage, $clientHeaders);
+    // Log si hay error
+    if (!$clientEmailResult['success']) {
+        error_log("Contact Email Error (Client): " . $clientEmailResult['message']);
+    }
     
     // Respuesta exitosa
     $response = [

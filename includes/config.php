@@ -108,15 +108,15 @@ define('SOCIAL_TWITTER', 'https://twitter.com/aramedylab');
 // CONFIGURACIÓN DE EMAIL (SMTP)
 // ========================================
 
-define('SMTP_HOST', 'smtp.gmail.com'); // o el servidor SMTP del cliente
-define('SMTP_PORT', 587);
-define('SMTP_SECURE', 'tls'); // 'tls' o 'ssl'
+define('SMTP_HOST', 'mail.aramedylaboratorio.com'); // Servidor SMTP del cliente
+define('SMTP_PORT', 465);
+define('SMTP_SECURE', 'ssl'); // 'tls' o 'ssl'
 define('SMTP_AUTH', true);
-define('SMTP_USERNAME', CONTACT_EMAIL);
-define('SMTP_PASSWORD', ''); // Configurar en producción
+define('SMTP_USERNAME', 'web@aramedylaboratorio.com');
+define('SMTP_PASSWORD', 'xpC5OS67rVMNvU2('); // Contraseña del correo
 
 // Configuración de envío
-define('MAIL_FROM_EMAIL', CONTACT_EMAIL);
+define('MAIL_FROM_EMAIL', 'web@aramedylaboratorio.com');
 define('MAIL_FROM_NAME', SITE_NAME);
 
 // ========================================

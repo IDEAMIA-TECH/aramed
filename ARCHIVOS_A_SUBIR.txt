@@ -1,0 +1,49 @@
+═══════════════════════════════════════════════════════════════════
+✅ ARCHIVOS A SUBIR AL SERVIDOR - CONFIGURACIÓN EMAIL SMTP
+═══════════════════════════════════════════════════════════════════
+
+📁 SUBIR ESTOS 4 ARCHIVOS (en orden de prioridad):
+
+1. includes/config.php
+   → Contiene las nuevas credenciales SMTP
+
+2. includes/email_functions.php  ⭐ NUEVO
+   → Sistema completo de envío de emails
+
+3. includes/newsletter_handler.php
+   → Actualizado para usar email_functions
+
+4. includes/contact_handler.php
+   → Actualizado para usar email_functions
+
+═══════════════════════════════════════════════════════════════════
+⚡ PASOS RÁPIDOS:
+═══════════════════════════════════════════════════════════════════
+
+1. Subir los 4 archivos via FTP/cPanel al servidor
+   
+2. OPCIONAL (pero recomendado): Instalar PHPMailer
+   - Descargar: https://github.com/PHPMailer/PHPMailer/releases
+   - Subir a: /includes/library/phpmailer/
+     • class.phpmailer.php
+     • class.smtp.php
+
+3. Probar formulario en la web
+
+4. ✅ ¡Listo! Los emails deberían funcionar
+
+═══════════════════════════════════════════════════════════════════
+🔍 VERIFICACIÓN:
+═══════════════════════════════════════════════════════════════════
+
+✓ Formulario muestra mensaje de éxito
+✓ Email llega a: web@aramedylaboratorio.com
+✓ No hay errores en consola del navegador
+
+═══════════════════════════════════════════════════════════════════
+❓ SI HAY PROBLEMAS:
+
+Ver documentación completa en:
+DOCS/FIX_EMAIL_SMTP_CONFIG.md
+
+═══════════════════════════════════════════════════════════════════
