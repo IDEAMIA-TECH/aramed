@@ -1059,15 +1059,228 @@ $pageImage = imageUrl('design/logo-og.jpg');
     <!-- ========================================
          PRODUCTOS DESTACADOS
          ======================================== -->
-    <section id="productos" class="section-productos py-5">
+    <section id="productos" class="section-productos py-5 bg-light">
         <div class="container">
+            <!-- Header -->
             <div class="text-center mb-5" data-aos="fade-up">
-                <h2 class="section-title">Productos Destacados</h2>
-                <p class="section-subtitle">Tecnología de vanguardia para la educación médica</p>
+                <span class="badge bg-primary text-white px-3 py-2 mb-3">
+                    <i class="bi bi-box-seam me-2"></i>
+                    Productos Destacados
+                </span>
+                <h2 class="section-title mb-3">Tecnología de Simulación de Vanguardia</h2>
+                <p class="section-subtitle text-muted mx-auto" style="max-width: 700px;">
+                    Descubre nuestra selección de simuladores médicos de alta fidelidad, 
+                    diseñados para transformar la educación en ciencias de la salud
+                </p>
             </div>
-            <div class="productos-placeholder">
-                <p class="text-center text-muted">4 Productos destacados (Próximamente)</p>
+            
+            <!-- Product 1: VICTORIA® S2200 (Imagen Izquierda) -->
+            <div class="product-showcase mb-5" data-aos="fade-up" data-aos-delay="100">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-6 order-lg-1">
+                        <div class="product-image-wrapper">
+                            <div class="product-badge">
+                                <i class="bi bi-star-fill me-1"></i>
+                                Más Vendido
+                            </div>
+                            <img src="<?php echo imageUrl('contenido/productos/victoria-s2200-main.jpg'); ?>" 
+                                 alt="VICTORIA® S2200 - Simulador Maternal" 
+                                 class="product-image"
+                                 onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22500%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22600%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2224%22%3EVICTORIA S2200%3C/text%3E%3C/svg%3E';">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-lg-2">
+                        <div class="product-content">
+                            <span class="product-category">Simulación Maternal</span>
+                            <h3 class="product-title">VICTORIA® S2200</h3>
+                            <p class="product-subtitle">Simulador Maternal de Parto de Alta Fidelidad</p>
+                            <p class="product-description">
+                                El simulador más completo para entrenamiento en obstetricia. VICTORIA® S2200 ofrece 
+                                escenarios realistas de parto normal, complicaciones y cesárea. Con respuestas 
+                                fisiológicas automáticas y sistema de monitoreo fetal integrado.
+                            </p>
+                            <ul class="product-features-list">
+                                <li><i class="bi bi-check-circle-fill text-success"></i> Partos normales y complicados</li>
+                                <li><i class="bi bi-check-circle-fill text-success"></i> Monitoreo fetal en tiempo real</li>
+                                <li><i class="bi bi-check-circle-fill text-success"></i> Respuestas fisiológicas automáticas</li>
+                                <li><i class="bi bi-check-circle-fill text-success"></i> Interfaz táctil para control</li>
+                            </ul>
+                            <div class="product-actions">
+                                <a href="#contacto" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-cart-plus me-2"></i>
+                                    Solicitar Cotización
+                                </a>
+                                <a href="#" class="btn btn-outline-primary btn-lg">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Más Información
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            
+            <!-- Product 2: HAL® S5301 (Imagen Derecha) -->
+            <div class="product-showcase mb-5 product-reverse" data-aos="fade-up" data-aos-delay="200">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-6 order-lg-2">
+                        <div class="product-image-wrapper">
+                            <div class="product-badge bg-info">
+                                <i class="bi bi-wifi me-1"></i>
+                                Inalámbrico
+                            </div>
+                            <img src="<?php echo imageUrl('contenido/productos/hal-s5301-main.jpg'); ?>" 
+                                 alt="HAL® S5301 - Simulador de Resuscitación" 
+                                 class="product-image"
+                                 onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22500%22%3E%3Crect fill=%22%23e6f2ff%22 width=%22600%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23007bff%22 font-family=%22Arial%22 font-size=%2224%22%3EHAL S5301%3C/text%3E%3C/svg%3E';">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-lg-1">
+                        <div class="product-content">
+                            <span class="product-category">Cuidados Críticos</span>
+                            <h3 class="product-title">HAL® S5301</h3>
+                            <p class="product-subtitle">Simulador Inalámbrico de Resuscitación Cardiopulmonar</p>
+                            <p class="product-description">
+                                Simulador adulto inalámbrico diseñado para entrenamiento en emergencias y cuidados 
+                                críticos. Incluye sistema avanzado de vías respiratorias, RCP de alta calidad con 
+                                retroalimentación en tiempo real y monitoreo de signos vitales.
+                            </p>
+                            <ul class="product-features-list">
+                                <li><i class="bi bi-check-circle-fill text-info"></i> Control inalámbrico total</li>
+                                <li><i class="bi bi-check-circle-fill text-info"></i> RCP con retroalimentación inmediata</li>
+                                <li><i class="bi bi-check-circle-fill text-info"></i> Vías respiratorias avanzadas</li>
+                                <li><i class="bi bi-check-circle-fill text-info"></i> Batería de larga duración</li>
+                            </ul>
+                            <div class="product-actions">
+                                <a href="#contacto" class="btn btn-info text-white btn-lg">
+                                    <i class="bi bi-cart-plus me-2"></i>
+                                    Solicitar Cotización
+                                </a>
+                                <a href="#" class="btn btn-outline-info btn-lg">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Más Información
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product 3: Super TORY® S2220 (Imagen Izquierda) -->
+            <div class="product-showcase mb-5" data-aos="fade-up" data-aos-delay="300">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-6 order-lg-1">
+                        <div class="product-image-wrapper">
+                            <div class="product-badge bg-warning">
+                                <i class="bi bi-award-fill me-1"></i>
+                                Pediátrico
+                            </div>
+                            <img src="<?php echo imageUrl('contenido/productos/super-tory-s2220-main.jpg'); ?>" 
+                                 alt="Super TORY® S2220 - Simulador Pediátrico" 
+                                 class="product-image"
+                                 onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22500%22%3E%3Crect fill=%22%23fff8e6%22 width=%22600%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23ff9800%22 font-family=%22Arial%22 font-size=%2224%22%3ESuper TORY S2220%3C/text%3E%3C/svg%3E';">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-lg-2">
+                        <div class="product-content">
+                            <span class="product-category">Simulación Pediátrica</span>
+                            <h3 class="product-title">Super TORY® S2220</h3>
+                            <p class="product-subtitle">Simulador Integral Pediátrico Avanzado (6 años)</p>
+                            <p class="product-description">
+                                Simulador pediátrico de cuerpo completo que representa a un niño de 6 años. Ideal 
+                                para entrenamiento en cuidados pediátricos de emergencia, procedimientos de enfermería 
+                                y evaluación clínica. Con respuestas fisiológicas realistas.
+                            </p>
+                            <ul class="product-features-list">
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Anatomía pediátrica realista</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Respuestas fisiológicas dinámicas</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Procedimientos de enfermería</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Evaluación clínica completa</li>
+                            </ul>
+                            <div class="product-actions">
+                                <a href="#contacto" class="btn btn-warning text-white btn-lg">
+                                    <i class="bi bi-cart-plus me-2"></i>
+                                    Solicitar Cotización
+                                </a>
+                                <a href="#" class="btn btn-outline-warning btn-lg">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Más Información
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product 4: HAL® S3201 (Imagen Derecha) -->
+            <div class="product-showcase product-reverse" data-aos="fade-up" data-aos-delay="400">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-6 order-lg-2">
+                        <div class="product-image-wrapper">
+                            <div class="product-badge bg-danger">
+                                <i class="bi bi-heart-pulse-fill me-1"></i>
+                                RCP Avanzado
+                            </div>
+                            <img src="<?php echo imageUrl('contenido/productos/hal-s3201-main.jpg'); ?>" 
+                                 alt="HAL® S3201 - Simulador de RCP" 
+                                 class="product-image"
+                                 onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22500%22%3E%3Crect fill=%22%23ffe6e6%22 width=%22600%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23dc3545%22 font-family=%22Arial%22 font-size=%2224%22%3EHAL S3201%3C/text%3E%3C/svg%3E';">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-lg-1">
+                        <div class="product-content">
+                            <span class="product-category">Emergencias</span>
+                            <h3 class="product-title">HAL® S3201</h3>
+                            <p class="product-subtitle">Simulador de RCP y Desfibrilación con Trauma</p>
+                            <p class="product-description">
+                                Entrenador avanzado para RCP, desfibrilación y manejo de trauma. Diseñado para 
+                                certificaciones AHA y ERC. Incluye tecnología de reconocimiento de ritmo cardíaco, 
+                                compresiones torácicas y desfibrilación realista.
+                            </p>
+                            <ul class="product-features-list">
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Certificación AHA y ERC</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Desfibrilación realista</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Compresiones con retroalimentación</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Manejo de vías respiratorias</li>
+                            </ul>
+                            <div class="product-actions">
+                                <a href="#contacto" class="btn btn-danger btn-lg">
+                                    <i class="bi bi-cart-plus me-2"></i>
+                                    Solicitar Cotización
+                                </a>
+                                <a href="#" class="btn btn-outline-danger btn-lg">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Más Información
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CTA Ver Más Productos -->
+            <div class="row mt-5 pt-4">
+                <div class="col-lg-8 mx-auto text-center" data-aos="fade-up" data-aos-delay="500">
+                    <div class="productos-cta-box">
+                        <h3 class="h4 mb-3 fw-bold">¿Buscas algo más específico?</h3>
+                        <p class="text-muted mb-4">
+                            Contamos con más de 500 simuladores médicos para diferentes especialidades. 
+                            Explora nuestro catálogo completo o consúltanos para encontrar la solución perfecta.
+                        </p>
+                        <div class="d-flex gap-3 justify-content-center flex-wrap">
+                            <a href="#" class="btn btn-primary btn-lg px-4">
+                                <i class="bi bi-grid-3x3-gap me-2"></i>
+                                Ver Catálogo Completo
+                            </a>
+                            <a href="#contacto" class="btn btn-outline-primary btn-lg px-4">
+                                <i class="bi bi-chat-left-text me-2"></i>
+                                Consultar Asesor
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </section>
     
