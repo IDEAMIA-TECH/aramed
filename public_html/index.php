@@ -628,10 +628,10 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="swiper-slide">
                             <div class="aliado-card">
                                 <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/0.png'); ?>" 
+                                    <img src="<?php echo imageUrl('aliados/1-Gaumard.webp'); ?>" 
                                          alt="Gaumard Scientific" 
                                          class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EGaumard%3C/text%3E%3C/svg%3E';">
+                                         loading="lazy">
                                     <div class="aliado-overlay">
                                         <p class="aliado-name">Gaumard Scientific</p>
                                     </div>
@@ -639,16 +639,16 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             </div>
                         </div>
                         
-                        <!-- Logo 2: Medical-X -->
+                        <!-- Logo 2: Kyoto Kagaku -->
                         <div class="swiper-slide">
                             <div class="aliado-card">
                                 <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/1.png'); ?>" 
-                                         alt="Medical-X" 
+                                    <img src="<?php echo imageUrl('aliados/2-Kyoto-Kagaku.webp'); ?>" 
+                                         alt="Kyoto Kagaku" 
                                          class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EMedical-X%3C/text%3E%3C/svg%3E';">
+                                         loading="lazy">
                                     <div class="aliado-overlay">
-                                        <p class="aliado-name">Medical-X</p>
+                                        <p class="aliado-name">Kyoto Kagaku</p>
                                     </div>
                                 </div>
                             </div>
@@ -658,10 +658,10 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="swiper-slide">
                             <div class="aliado-card">
                                 <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/2.png'); ?>" 
+                                    <img src="<?php echo imageUrl('aliados/3-Anatomage.webp'); ?>" 
                                          alt="Anatomage" 
                                          class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EAnatomage%3C/text%3E%3C/svg%3E';">
+                                         loading="lazy">
                                     <div class="aliado-overlay">
                                         <p class="aliado-name">Anatomage</p>
                                     </div>
@@ -669,14 +669,59 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             </div>
                         </div>
                         
-                        <!-- Logo 4: 3B Scientific -->
+                        <!-- Logo 4: Rudiger Anatomie -->
                         <div class="swiper-slide">
                             <div class="aliado-card">
                                 <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/3.png'); ?>" 
+                                    <img src="<?php echo imageUrl('aliados/4-Rudiger.webp'); ?>" 
+                                         alt="Rudiger Anatomie" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Rudiger Anatomie</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 5: Simulab -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/5-Simulab.webp'); ?>" 
+                                         alt="Simulab" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Simulab</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 6: 3D Med -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/6-3D-Med.webp'); ?>" 
+                                         alt="3D Med" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">3D Med</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 7: 3B Scientific -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/7-3B Scientific.webp'); ?>" 
                                          alt="3B Scientific" 
                                          class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3E3B Scientific%3C/text%3E%3C/svg%3E';">
+                                         loading="lazy">
                                     <div class="aliado-overlay">
                                         <p class="aliado-name">3B Scientific</p>
                                     </div>
@@ -684,104 +729,14 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             </div>
                         </div>
                         
-                        <!-- Logo 5: Saratoga -->
+                        <!-- Logo 8: Adam Rouilly -->
                         <div class="swiper-slide">
                             <div class="aliado-card">
                                 <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/4.png'); ?>" 
-                                         alt="Saratoga Dental" 
-                                         class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3ESaratoga%3C/text%3E%3C/svg%3E';">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Saratoga Dental</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Logo 6: SimX -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/6.png'); ?>" 
-                                         alt="SimX" 
-                                         class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3ESimX%3C/text%3E%3C/svg%3E';">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">SimX</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Logo 7: Nasco Healthcare -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/7.png'); ?>" 
-                                         alt="Nasco Healthcare" 
-                                         class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3ENasco%3C/text%3E%3C/svg%3E';">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Nasco Healthcare</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Logo 8: TruCorp -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/9.png'); ?>" 
-                                         alt="TruCorp" 
-                                         class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3ETruCorp%3C/text%3E%3C/svg%3E';">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">TruCorp</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Logo 9: Kyoto Kagaku -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/14.png'); ?>" 
-                                         alt="Kyoto Kagaku" 
-                                         class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EKyoto%3C/text%3E%3C/svg%3E';">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Kyoto Kagaku</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Logo 10: Echo Healthcare -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/15.png'); ?>" 
-                                         alt="Echo Healthcare" 
-                                         class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EEcho%3C/text%3E%3C/svg%3E';">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Echo Healthcare</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Logo 11: Adam Rouilly -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/16.png'); ?>" 
+                                    <img src="<?php echo imageUrl('aliados/8-Adam Rouilly.webp'); ?>" 
                                          alt="Adam Rouilly" 
                                          class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EAdam Rouilly%3C/text%3E%3C/svg%3E';">
+                                         loading="lazy">
                                     <div class="aliado-overlay">
                                         <p class="aliado-name">Adam Rouilly</p>
                                     </div>
@@ -789,29 +744,59 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             </div>
                         </div>
                         
-                        <!-- Logo 12: Strategic Operations -->
+                        <!-- Logo 9: Erler Zimmer -->
                         <div class="swiper-slide">
                             <div class="aliado-card">
                                 <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/18.png'); ?>" 
-                                         alt="Strategic Operations" 
+                                    <img src="<?php echo imageUrl('aliados/9-Erler-Zimmer.webp'); ?>" 
+                                         alt="Erler Zimmer" 
                                          class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EStrategic Ops%3C/text%3E%3C/svg%3E';">
+                                         loading="lazy">
                                     <div class="aliado-overlay">
-                                        <p class="aliado-name">Strategic Operations</p>
+                                        <p class="aliado-name">Erler Zimmer</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Logo 13: VATA Inc -->
+                        <!-- Logo 10: TruCorp -->
                         <div class="swiper-slide">
                             <div class="aliado-card">
                                 <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/19.png'); ?>" 
+                                    <img src="<?php echo imageUrl('aliados/10-TrueCorp.webp'); ?>" 
+                                         alt="TruCorp" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">TruCorp</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 11: SimX -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/11-SimX.webp'); ?>" 
+                                         alt="SimX" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">SimX</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 12: VATA -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/12-VATA.webp'); ?>" 
                                          alt="VATA Inc" 
                                          class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EVATA Inc%3C/text%3E%3C/svg%3E';">
+                                         loading="lazy">
                                     <div class="aliado-overlay">
                                         <p class="aliado-name">VATA Inc</p>
                                     </div>
@@ -819,46 +804,61 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             </div>
                         </div>
                         
-                        <!-- Logo 14: 3-Dmed -->
+                        <!-- Logo 13: Medical X -->
                         <div class="swiper-slide">
                             <div class="aliado-card">
                                 <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/20.png'); ?>" 
-                                         alt="3-Dmed" 
+                                    <img src="<?php echo imageUrl('aliados/13-Medical X.webp'); ?>" 
+                                         alt="Medical-X" 
                                          class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3E3-Dmed%3C/text%3E%3C/svg%3E';">
+                                         loading="lazy">
                                     <div class="aliado-overlay">
-                                        <p class="aliado-name">3-Dmed</p>
+                                        <p class="aliado-name">Medical-X</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Logo 15: Lifecast -->
+                        <!-- Logo 14: Immersive -->
                         <div class="swiper-slide">
                             <div class="aliado-card">
                                 <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/22.png'); ?>" 
-                                         alt="Lifecast" 
+                                    <img src="<?php echo imageUrl('aliados/14-immersive.webp'); ?>" 
+                                         alt="Immersive Healthcare" 
                                          class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3ELifecast%3C/text%3E%3C/svg%3E';">
+                                         loading="lazy">
                                     <div class="aliado-overlay">
-                                        <p class="aliado-name">Lifecast</p>
+                                        <p class="aliado-name">Immersive Healthcare</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Logo 16: Erler-Zimmer -->
+                        <!-- Logo 15: Saratoga -->
                         <div class="swiper-slide">
                             <div class="aliado-card">
                                 <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('contenido/empresas/23.png'); ?>" 
-                                         alt="Erler-Zimmer" 
+                                    <img src="<?php echo imageUrl('aliados/15-Saratoga.webp'); ?>" 
+                                         alt="Saratoga Dental" 
                                          class="aliado-logo"
-                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EErler-Zimmer%3C/text%3E%3C/svg%3E';">
+                                         loading="lazy">
                                     <div class="aliado-overlay">
-                                        <p class="aliado-name">Erler-Zimmer</p>
+                                        <p class="aliado-name">Saratoga Dental</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 16: Nasco Healthcare -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/16-Nasco Healthcare.webp'); ?>" 
+                                         alt="Nasco Healthcare" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                    <div class="aliado-overlay">
+                                        <p class="aliado-name">Nasco Healthcare</p>
                                     </div>
                                 </div>
                             </div>

@@ -1,0 +1,19 @@
+Mapeo de logos de aliados:
+
+Logo 1: Gaumard Scientific → 1-Gaumard.webp
+Logo 2: Medical-X → 13-Medical X.webp
+Logo 3: Anatomage → 3-Anatomage.webp
+Logo 4: 3B Scientific → 7-3B Scientific.webp
+Logo 5: Saratoga → 15-Saratoga.webp
+Logo 6: SimX → 11-SimX.webp
+Logo 7: Nasco Healthcare → 16-Nasco Healthcare.webp
+Logo 8: TruCorp → 10-TrueCorp.webp
+Logo 9: Kyoto Kagaku → 2-Kyoto-Kagaku.webp
+Logo 10: Echo Healthcare → 7-Echo Healthcare.webp
+Logo 11: Adam Rouilly → 8-Adam Rouilly.webp
+Logo 12: Strategic Operations → (no disponible - mantener placeholder)
+Logo 13: VATA Inc → 12-VATA.webp
+Logo 14: Simulab → 5-Simulab.webp
+Logo 15: Lifecast → 7-Lifecast.webp
+Logo 16: Rudiger Anatomie → 4-Rudiger.webp
+
