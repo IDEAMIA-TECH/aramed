@@ -1240,10 +1240,13 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 <i class="bi bi-star-fill me-1"></i>
                                 Más Vendido
                             </div>
-                            <img src="<?php echo imageUrl('contenido/productos/victoria-s2200-main.jpg'); ?>" 
-                                 alt="VICTORIA® S2200 - Simulador Maternal" 
-                                 class="product-image"
-                                 onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22500%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22600%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2224%22%3EVICTORIA S2200%3C/text%3E%3C/svg%3E';">
+                            <picture>
+                                <source srcset="<?php echo imageUrl('productos/anatomage-table.webp'); ?>" type="image/webp">
+                                <img src="<?php echo imageUrl('productos/anatomage-table.jpg'); ?>" 
+                                     alt="VICTORIA® S2200 - Simulador Maternal" 
+                                     class="product-image"
+                                     loading="lazy">
+                            </picture>
                         </div>
                     </div>
                     <div class="col-lg-6 order-lg-2">
@@ -1286,10 +1289,13 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 <i class="bi bi-wifi me-1"></i>
                                 Inalámbrico
                             </div>
-                            <img src="<?php echo imageUrl('contenido/productos/hal-s5301-main.jpg'); ?>" 
-                                 alt="HAL® S5301 - Simulador de Resuscitación" 
-                                 class="product-image"
-                                 onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22500%22%3E%3Crect fill=%22%23e6f2ff%22 width=%22600%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23007bff%22 font-family=%22Arial%22 font-size=%2224%22%3EHAL S5301%3C/text%3E%3C/svg%3E';">
+                            <picture>
+                                <source srcset="<?php echo imageUrl('productos/immersive-echo.webp'); ?>" type="image/webp">
+                                <img src="<?php echo imageUrl('productos/immersive-echo.jpg'); ?>" 
+                                     alt="HAL® S5301 - Simulador de Resuscitación" 
+                                     class="product-image"
+                                     loading="lazy">
+                            </picture>
                         </div>
                     </div>
                     <div class="col-lg-6 order-lg-1">
@@ -1332,10 +1338,13 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 <i class="bi bi-award-fill me-1"></i>
                                 Pediátrico
                             </div>
-                            <img src="<?php echo imageUrl('contenido/productos/super-tory-s2220-main.jpg'); ?>" 
-                                 alt="Super TORY® S2220 - Simulador Pediátrico" 
-                                 class="product-image"
-                                 onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22500%22%3E%3Crect fill=%22%23fff8e6%22 width=%22600%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23ff9800%22 font-family=%22Arial%22 font-size=%2224%22%3ESuper TORY S2220%3C/text%3E%3C/svg%3E';">
+                            <picture>
+                                <source srcset="<?php echo imageUrl('productos/lifecast.webp'); ?>" type="image/webp">
+                                <img src="<?php echo imageUrl('productos/lifecast.jpg'); ?>" 
+                                     alt="Super TORY® S2220 - Simulador Pediátrico" 
+                                     class="product-image"
+                                     loading="lazy">
+                            </picture>
                         </div>
                     </div>
                     <div class="col-lg-6 order-lg-2">
@@ -1378,10 +1387,13 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 <i class="bi bi-heart-pulse-fill me-1"></i>
                                 RCP Avanzado
                             </div>
-                            <img src="<?php echo imageUrl('contenido/productos/hal-s3201-main.jpg'); ?>" 
-                                 alt="HAL® S3201 - Simulador de RCP" 
-                                 class="product-image"
-                                 onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22500%22%3E%3Crect fill=%22%23ffe6e6%22 width=%22600%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23dc3545%22 font-family=%22Arial%22 font-size=%2224%22%3EHAL S3201%3C/text%3E%3C/svg%3E';">
+                            <picture>
+                                <source srcset="<?php echo imageUrl('productos/adam-x.webp'); ?>" type="image/webp">
+                                <img src="<?php echo imageUrl('productos/adam-x.jpg'); ?>" 
+                                     alt="HAL® S3201 - Simulador de RCP" 
+                                     class="product-image"
+                                     loading="lazy">
+                            </picture>
                         </div>
                     </div>
                     <div class="col-lg-6 order-lg-1">
