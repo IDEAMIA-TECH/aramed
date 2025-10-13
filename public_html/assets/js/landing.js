@@ -29,37 +29,117 @@
         
         /**
          * Hero Slider (Swiper)
-         * Placeholder - Se implementará en DÍA 3-4
+         * Configuración completa del slider principal
          */
         initHeroSlider: function() {
             const heroSlider = document.querySelector('.hero-swiper');
             
             if (!heroSlider) {
-                console.log('ℹ️ Hero slider pendiente de implementación');
+                console.log('ℹ️ Hero slider no encontrado');
                 return;
             }
             
             // Configuración del slider
-            const swiper = new Swiper('.hero-swiper', {
+            const heroSwiper = new Swiper('.hero-swiper', {
                 loop: true,
                 autoplay: {
-                    delay: 5000,
+                    delay: 7000,
                     disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
                 },
                 effect: 'fade',
                 fadeEffect: {
                     crossFade: true
                 },
-                speed: 1000,
+                speed: 1200,
                 pagination: {
                     el: '.swiper-pagination',
                     clickable: true,
+                    dynamicBullets: true,
+                    dynamicMainBullets: 3,
                 },
                 navigation: {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
                 },
+                keyboard: {
+                    enabled: true,
+                    onlyInViewport: true,
+                },
+                mousewheel: {
+                    enabled: false,
+                },
+                // A11y
+                a11y: {
+                    prevSlideMessage: 'Slide anterior',
+                    nextSlideMessage: 'Siguiente slide',
+                    paginationBulletMessage: 'Ir al slide {{index}}',
+                },
+                // Callbacks
+                on: {
+                    init: function() {
+                        console.log('✅ Hero Swiper initialized');
+                        // Animar el primer slide
+                        const firstSlide = document.querySelector('.hero-swiper .swiper-slide-active .hero-content');
+                        if (firstSlide) {
+                            firstSlide.style.opacity = '0';
+                            firstSlide.style.transform = 'translateY(30px)';
+                            setTimeout(() => {
+                                firstSlide.style.transition = 'all 0.8s ease';
+                                firstSlide.style.opacity = '1';
+                                firstSlide.style.transform = 'translateY(0)';
+                            }, 300);
+                        }
+                    },
+                    slideChange: function() {
+                        // Animar contenido del slide activo
+                        const activeSlide = document.querySelector('.hero-swiper .swiper-slide-active .hero-content');
+                        if (activeSlide) {
+                            activeSlide.style.opacity = '0';
+                            activeSlide.style.transform = 'translateY(30px)';
+                            setTimeout(() => {
+                                activeSlide.style.transition = 'all 0.8s ease';
+                                activeSlide.style.opacity = '1';
+                                activeSlide.style.transform = 'translateY(0)';
+                            }, 300);
+                        }
+                    },
+                    autoplayTimeLeft: function(s, time, progress) {
+                        // Opcional: mostrar progreso del autoplay
+                        const pagination = document.querySelector('.swiper-pagination');
+                        if (pagination) {
+                            pagination.style.setProperty('--progress', 1 - progress);
+                        }
+                    }
+                }
             });
+            
+            // Pausar autoplay cuando el usuario interactúa con el slider
+            const heroSection = document.querySelector('.hero-section');
+            if (heroSection) {
+                heroSection.addEventListener('mouseenter', () => {
+                    if (heroSwiper.autoplay.running) {
+                        heroSwiper.autoplay.stop();
+                    }
+                });
+                
+                heroSection.addEventListener('mouseleave', () => {
+                    if (!heroSwiper.autoplay.running) {
+                        heroSwiper.autoplay.start();
+                    }
+                });
+            }
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    heroSwiper.slidePrev();
+                } else if (e.key === 'ArrowRight') {
+                    heroSwiper.slideNext();
+                }
+            });
+            
+            return heroSwiper;
         },
         
         /**
