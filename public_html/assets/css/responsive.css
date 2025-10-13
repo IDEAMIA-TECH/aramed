@@ -1,0 +1,358 @@
+/**
+ * ========================================
+ * ARAMED Y LABORATORIOS - Responsive CSS
+ * ========================================
+ * 
+ * Media queries y estilos responsive
+ * 
+ * @package    Aramed
+ * @author     IDEAMIA Tech
+ * @copyright  2025 Aramed y Laboratorios
+ */
+
+/* ========================================
+   BREAKPOINTS
+   xs: <576px (móviles pequeños)
+   sm: ≥576px (móviles)
+   md: ≥768px (tablets)
+   lg: ≥992px (laptops)
+   xl: ≥1200px (desktops)
+   xxl: ≥1400px (desktops grandes)
+   ======================================== */
+
+/* ========================================
+   MÓVILES PEQUEÑOS (< 576px)
+   ======================================== */
+
+@media (max-width: 575.98px) {
+    /* Tipografía */
+    h1, .h1 { font-size: 1.75rem; }
+    h2, .h2 { font-size: 1.5rem; }
+    h3, .h3 { font-size: 1.25rem; }
+    h4, .h4 { font-size: 1.125rem; }
+    h5, .h5 { font-size: 1rem; }
+    h6, .h6 { font-size: 0.875rem; }
+    
+    .section-title {
+        font-size: 1.75rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1rem;
+    }
+    
+    /* Secciones */
+    section {
+        padding: 2rem 0;
+    }
+    
+    /* Hero */
+    .hero-section {
+        min-height: 400px;
+    }
+    
+    /* Botones */
+    .btn {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.875rem;
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    /* Cards */
+    .card-body {
+        padding: 1rem;
+    }
+    
+    /* Topbar */
+    .topbar {
+        font-size: 0.75rem;
+        padding: 0.5rem 0;
+    }
+    
+    /* Navbar */
+    .navbar-brand img {
+        max-height: 40px;
+    }
+    
+    .navbar-nav {
+        margin-top: 1rem;
+    }
+    
+    .navbar-nav .nav-item {
+        text-align: center;
+        padding: 0.5rem 0;
+    }
+    
+    .navbar-nav .nav-item .btn {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+    
+    /* Footer */
+    .footer {
+        padding: 2rem 0 1rem;
+    }
+    
+    .footer .col-lg-3,
+    .footer .col-lg-2,
+    .footer .col-lg-4,
+    .footer .col-md-6 {
+        margin-bottom: 2rem;
+    }
+    
+    .footer .text-md-end {
+        text-align: center !important;
+    }
+    
+    /* Modal */
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+}
+
+/* ========================================
+   MÓVILES (≥ 576px y < 768px)
+   ======================================== */
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    /* Tipografía */
+    h1, .h1 { font-size: 2rem; }
+    h2, .h2 { font-size: 1.75rem; }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    /* Secciones */
+    section {
+        padding: 3rem 0;
+    }
+    
+    /* Hero */
+    .hero-section {
+        min-height: 500px;
+    }
+    
+    /* Navbar */
+    .navbar-brand img {
+        max-height: 45px;
+    }
+}
+
+/* ========================================
+   TABLETS (≥ 768px y < 992px)
+   ======================================== */
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    /* Tipografía */
+    h1, .h1 { font-size: 2.25rem; }
+    h2, .h2 { font-size: 1.875rem; }
+    
+    .section-title {
+        font-size: 2.25rem;
+    }
+    
+    /* Secciones */
+    section {
+        padding: 3.5rem 0;
+    }
+    
+    /* Hero */
+    .hero-section {
+        min-height: 550px;
+    }
+    
+    /* Navbar */
+    .navbar-expand-lg .navbar-nav {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .navbar-expand-lg .navbar-nav .nav-item {
+        padding: 0.5rem 0;
+    }
+}
+
+/* ========================================
+   LAPTOPS (≥ 992px y < 1200px)
+   ======================================== */
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    /* Tipografía */
+    .section-title {
+        font-size: 2.25rem;
+    }
+    
+    /* Container */
+    .container {
+        max-width: 960px;
+    }
+}
+
+/* ========================================
+   DESKTOPS (≥ 1200px y < 1400px)
+   ======================================== */
+
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+    /* Container */
+    .container {
+        max-width: 1140px;
+    }
+}
+
+/* ========================================
+   DESKTOPS GRANDES (≥ 1400px)
+   ======================================== */
+
+@media (min-width: 1400px) {
+    /* Container */
+    .container {
+        max-width: 1320px;
+    }
+    
+    /* Tipografía */
+    .section-title {
+        font-size: 3rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1.25rem;
+    }
+    
+    /* Hero */
+    .hero-section {
+        min-height: 700px;
+    }
+}
+
+/* ========================================
+   ORIENTACIÓN (Landscape vs Portrait)
+   ======================================== */
+
+@media (max-width: 991.98px) and (orientation: landscape) {
+    /* Hero ajustado en landscape móvil/tablet */
+    .hero-section {
+        min-height: 400px;
+    }
+    
+    section {
+        padding: 2rem 0;
+    }
+}
+
+/* ========================================
+   DISPOSITIVOS CON HOVER
+   ======================================== */
+
+@media (hover: hover) and (pointer: fine) {
+    /* Efectos hover solo en dispositivos con mouse */
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+}
+
+/* ========================================
+   DISPOSITIVOS TÁCTILES
+   ======================================== */
+
+@media (hover: none) and (pointer: coarse) {
+    /* Eliminar efectos hover en dispositivos táctiles */
+    .card:hover {
+        transform: none;
+    }
+    
+    .btn:hover {
+        transform: none;
+    }
+    
+    /* Aumentar área de toque en botones */
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .nav-link {
+        padding: 1rem;
+    }
+}
+
+/* ========================================
+   MODO OSCURO (Preferencia del sistema)
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Nota: Implementar dark mode en fase futura si es necesario */
+}
+
+/* ========================================
+   REDUCCIÓN DE MOVIMIENTO (Accesibilidad)
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ========================================
+   IMPRESIÓN
+   ======================================== */
+
+@media print {
+    /* Ocultar elementos no necesarios en impresión */
+    .topbar,
+    .navbar,
+    .footer,
+    .btn,
+    .modal,
+    .dropdown,
+    [data-aos] {
+        display: none !important;
+    }
+    
+    /* Ajustes para impresión */
+    body {
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000;
+        background: #fff;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+    
+    img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+    }
+    
+    a {
+        text-decoration: underline;
+    }
+    
+    a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 10pt;
+        color: #666;
+    }
+}
+

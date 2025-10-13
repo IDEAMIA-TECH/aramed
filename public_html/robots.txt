@@ -1,0 +1,49 @@
+# ========================================
+# ARAMED Y LABORATORIOS - robots.txt
+# ========================================
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://aramedylaboratorio.com/sitemap.xml
+
+# Directorios prohibidos
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /api/
+Disallow: /database/
+Disallow: /logs/
+Disallow: /OLD/
+
+# Archivos prohibidos
+Disallow: /*.php$
+Disallow: /*.sql$
+Disallow: /*.conf$
+Disallow: /*.log$
+
+# Permitir rastreo de CSS, JS e imágenes
+Allow: /assets/
+Allow: /*.css
+Allow: /*.js
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.png
+Allow: /*.gif
+Allow: /*.webp
+Allow: /*.svg
+Allow: /*.ico
+
+# Crawl-delay (opcional - ajustar según necesidades)
+# Crawl-delay: 1
+
+# Bots específicos (opcional)
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
