@@ -1068,28 +1068,30 @@
 }
 
 .service-icon {
-    width: 70px;
-    height: 70px;
+    width: 90px;
+    height: 90px;
     border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: white;
     transition: all 0.3s ease;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .service-icon-image {
-    width: 60%;
-    height: 60%;
+    width: 70%;
+    height: 70%;
     object-fit: contain;
     filter: brightness(0) invert(1); /* Convierte iconos a blanco */
+    display: block;
 }
 
 .service-icon i {
-    color: white;
-    font-size: 2rem;
+    color: white !important;
+    font-size: 2.5rem !important;
+    display: block;
 }
 
 .service-card:hover .service-icon {
@@ -1237,9 +1239,18 @@
     }
     
     .service-icon {
-        width: 60px;
-        height: 60px;
-        font-size: 1.75rem;
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+    
+    .service-icon-image {
+        width: 65%;
+        height: 65%;
+    }
+    
+    .service-icon i {
+        font-size: 2rem !important;
     }
     
     .service-title {
@@ -1266,9 +1277,18 @@
     }
     
     .service-icon {
-        width: 55px;
-        height: 55px;
-        font-size: 1.5rem;
+        width: 70px;
+        height: 70px;
+        font-size: 1.75rem;
+    }
+    
+    .service-icon-image {
+        width: 65%;
+        height: 65%;
+    }
+    
+    .service-icon i {
+        font-size: 1.75rem !important;
     }
     
     .service-title {
