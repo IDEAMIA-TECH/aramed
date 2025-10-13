@@ -1181,8 +1181,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
-                            <div class="service-icon bg-secondary" style="background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);">
-                                <i class="bi bi-headset" style="font-size: 2rem;"></i>
+                            <div class="service-icon" style="background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);">
+                                <i class="bi bi-headset"></i>
                             </div>
                         </div>
                         <h3 class="service-title">Soporte Técnico 24/7</h3>
