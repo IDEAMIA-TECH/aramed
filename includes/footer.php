@@ -114,9 +114,9 @@ if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
                     </div>
                     
                     <!-- Redes Sociales -->
-                    <div class="footer-social">
+                    <div class="footer-social text-center">
                         <p class="small text-white-50 mb-2">Síguenos:</p>
-                        <div class="social-links d-flex gap-2">
+                        <div class="social-links d-flex justify-content-center gap-2">
                             <a href="<?php echo esc(SOCIAL_LINKEDIN); ?>" target="_blank" rel="noopener noreferrer" class="social-link" title="LinkedIn" aria-label="LinkedIn">
                                 <i class="bi bi-linkedin"></i>
                             </a>
