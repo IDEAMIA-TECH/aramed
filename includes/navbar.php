@@ -62,12 +62,10 @@ $nav_items = [
                 
                 <!-- CTA Button -->
                 <li class="nav-item ms-lg-3">
-                    <button class="btn btn-primary px-4 py-2 w-100 w-lg-auto shadow-sm" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#contactModal">
+                    <a href="#newsletter" class="btn btn-primary px-4 py-2 w-100 w-lg-auto shadow-sm">
                         <i class="bi bi-envelope me-2"></i>
                         Contáctanos
-                    </button>
+                    </a>
                 </li>
             </ul>
             
