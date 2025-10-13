@@ -21,7 +21,7 @@ if (!defined('ARAMED_SITE')) {
 // ========================================
 
 // Entorno: 'development' o 'production'
-define('ENVIRONMENT', 'development');
+define('ENVIRONMENT', 'production');
 
 // Mostrar errores en desarrollo
 if (ENVIRONMENT === 'development') {
@@ -55,7 +55,7 @@ define('SITE_URL', (ENVIRONMENT === 'development')
     : 'https://aramedylaboratorio.com'
 );
 define('ASSETS_URL', SITE_URL . '/assets');
-define('IMAGES_URL', ASSETS_URL . '/img');
+define('IMAGES_URL', ASSETS_URL . '/images');
 
 // Rutas del servidor
 define('ROOT_PATH', dirname(__DIR__));
