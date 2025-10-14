@@ -58,11 +58,11 @@ define('ASSETS_URL', SITE_URL . '/assets');
 define('IMAGES_URL', ASSETS_URL . '/images');
 
 // Rutas del servidor
-define('ROOT_PATH', dirname(__DIR__));
+define('ROOT_PATH', dirname(__DIR__)); // public_html/
 define('INCLUDES_PATH', ROOT_PATH . '/includes');
-define('PAGES_PATH', ROOT_PATH . '/public_html/pages');
-define('ASSETS_PATH', ROOT_PATH . '/public_html/assets');
-define('UPLOADS_PATH', ROOT_PATH . '/public_html/uploads');
+define('PAGES_PATH', ROOT_PATH . '/pages');
+define('ASSETS_PATH', ROOT_PATH . '/assets');
+define('UPLOADS_PATH', ROOT_PATH . '/uploads');
 
 // Información del sitio
 define('SITE_NAME', 'Aramed y Laboratorios');

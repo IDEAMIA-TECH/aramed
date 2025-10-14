@@ -12,15 +12,31 @@
  */
 
 // Configuración
-define('ROOT_PATH', dirname(__DIR__));
-define('INCLUDES_PATH', ROOT_PATH . '/includes');
-require_once ROOT_PATH . '/includes/config.php';
-require_once ROOT_PATH . '/includes/connection.php';
-require_once ROOT_PATH . '/includes/functions.php';
-require_once ROOT_PATH . '/includes/email_functions.php';
+define('ARAMED_SITE', true);
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/connection.php';
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/email_functions.php';
+require_once __DIR__ . '/debug_logger.php';
 
 // Headers para JSON
 header('Content-Type: application/json');
+
+// Obtener conexión a la base de datos
+try {
+    $pdo = getDB();
+    if (!$pdo) {
+        throw new Exception("No se pudo conectar a la base de datos");
+    }
+} catch (Exception $e) {
+    debugLog("❌ Database connection failed: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Error de conexión a la base de datos'
+    ]);
+    exit;
+}
 
 // Solo permitir POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
