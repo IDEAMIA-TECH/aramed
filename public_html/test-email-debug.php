@@ -52,11 +52,11 @@ echo "<!DOCTYPE html>
 ";
 
 // Configuración
-define('ROOT_PATH', dirname(__DIR__));
+define('ROOT_PATH', __DIR__);
 define('INCLUDES_PATH', ROOT_PATH . '/includes');
 
 try {
-    require_once ROOT_PATH . '/includes/config.php';
+    require_once INCLUDES_PATH . '/config.php';
     echo "<div class='section'><h2 class='success'>✅ Config.php cargado correctamente</h2></div>";
 } catch (Exception $e) {
     echo "<div class='section'><h2 class='error'>❌ Error al cargar config.php</h2>";
@@ -65,7 +65,7 @@ try {
 }
 
 try {
-    require_once ROOT_PATH . '/includes/email_functions.php';
+    require_once INCLUDES_PATH . '/email_functions.php';
     echo "<div class='section'><h2 class='success'>✅ email_functions.php cargado correctamente</h2></div>";
 } catch (Exception $e) {
     echo "<div class='section'><h2 class='error'>❌ Error al cargar email_functions.php</h2>";

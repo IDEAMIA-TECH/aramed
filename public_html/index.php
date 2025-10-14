@@ -1858,7 +1858,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
             <div class="text-center mb-5" data-aos="fade-up">
                 <span class="badge bg-white text-primary px-3 py-2 mb-3">
                     <i class="bi bi-envelope-fill me-2"></i>
-                    Newsletter
+                    Contacto
                 </span>
                 <h2 class="section-title text-white mb-3">Mantente Informado</h2>
                 <p class="section-subtitle text-white-75 mx-auto" style="max-width: 700px;">
@@ -1884,7 +1884,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <strong>Error:</strong> <span id="newsletter-error-message">Hubo un problema al procesar tu solicitud.</span>
                         </div>
                         
-                        <form id="newsletterForm" action="<?php echo siteUrl('includes/newsletter_handler.php'); ?>" method="POST" novalidate>
+                        <form id="newsletterForm" action="includes/newsletter_handler.php" method="POST" novalidate>
                             
                             <div class="row g-4">
                                 
@@ -2219,7 +2219,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                     
                     <!-- Contact Form -->
-                    <form id="contactForm" action="<?php echo siteUrl('includes/contact_handler.php'); ?>" method="POST" novalidate>
+                    <form id="contactForm" action="includes/contact_handler.php" method="POST" novalidate>
                         <div class="row g-3">
                             
                             <!-- Nombre -->

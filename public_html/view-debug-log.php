@@ -6,7 +6,7 @@
  */
 
 // Configuración
-define('ROOT_PATH', dirname(__DIR__));
+define('ROOT_PATH', __DIR__);
 define('DEBUG_LOG_FILE', ROOT_PATH . '/logs/debug.log');
 
 // Acción de limpiar

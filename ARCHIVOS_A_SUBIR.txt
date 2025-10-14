@@ -1,50 +1,86 @@
 ═══════════════════════════════════════════════════════════════════
-✅ ARCHIVOS A SUBIR - SISTEMA DE LOGS VISIBLE
+✅ ESTRUCTURA REORGANIZADA - TODO EN public_html/
 ═══════════════════════════════════════════════════════════════════
 
-📁 SUBIR ESTOS 4 ARCHIVOS:
+🎯 PROBLEMA SOLUCIONADO:
 
-1. includes/debug_logger.php (1.1K) ⭐ NUEVO
-   → Sistema de logging dual (error_log + archivo visible)
-
-2. includes/newsletter_handler.php (12K) 
-   → Todos los error_log() reemplazados por debugLog()
-
-3. includes/email_functions.php (12K)
-   → Todos los error_log() reemplazados por debugLog()
-
-4. public_html/view-debug-log.php (5.8K) ⭐ NUEVO  
-   → Visor de logs en tiempo real con auto-refresh
-   → ⚠️ ELIMINAR DESPUÉS DEL DEBUG
+❌ ANTES: Error 404 (File not found)
+✅ AHORA: Rutas simples (includes/newsletter_handler.php)
 
 ═══════════════════════════════════════════════════════════════════
-🚀 PASOS PARA VER LOS LOGS:
+📁 NUEVA ESTRUCTURA:
 ═══════════════════════════════════════════════════════════════════
 
-PASO 1: Subir los 4 archivos al servidor
+public_html/
+├── index.php (ACTUALIZADO - rutas simples)
+├── test-email-debug.php
+├── view-debug-log.php
+├── includes/ (MOVIDO AQUÍ - antes estaba fuera)
+│   ├── config.php
+│   ├── connection.php
+│   ├── functions.php
+│   ├── email_functions.php
+│   ├── debug_logger.php
+│   ├── newsletter_handler.php
+│   └── contact_handler.php
+├── logs/ (MOVIDO AQUÍ)
+│   └── (se creará debug.log automáticamente)
+└── assets/
+    ├── css/
+    ├── js/
+    └── images/
 
-PASO 2: Crear carpeta 'logs' en el servidor
-   • Via cPanel File Manager
-   • Crear carpeta "logs" en el directorio raíz (junto a includes/)
-   • Permisos: 755
+═══════════════════════════════════════════════════════════════════
+🚀 INSTRUCCIONES PARA SUBIR:
+═══════════════════════════════════════════════════════════════════
 
-PASO 3: Abrir el visor de logs en el navegador
+PASO 1: Subir TODO public_html/ al servidor
+
+   Via FTP o cPanel File Manager:
+   
+   • Subir TODO el contenido de public_html/
+   • Incluyendo las carpetas:
+     - includes/
+     - logs/
+     - assets/
+
+PASO 2: Verificar permisos
+
+   • includes/: 755
+   • logs/: 755  
+   • archivos .php: 644
+
+PASO 3: Probar test de debug
+
+   https://aramedylaboratorio.com/NUEVO/aramed/public_html/test-email-debug.php
+   
+   Debería mostrar:
+   ✅ Config.php cargado correctamente
+   ✅ email_functions.php cargado correctamente
+   ✅ Configuración válida
+   ✅ Conexión exitosa a SMTP
+
+PASO 4: Abrir visor de logs
+
    https://aramedylaboratorio.com/NUEVO/aramed/public_html/view-debug-log.php
    
    Verás:
-   • 📊 Estadísticas del log
-   • 🔄 Auto-refresh cada 5 segundos
    • Pantalla tipo terminal (fondo negro, texto verde)
+   • "No hay archivo de log" (normal, se crea al enviar formulario)
+   • Auto-refresh cada 5 segundos
 
-PASO 4: En OTRA pestaña del navegador
-   https://aramedylaboratorio.com/NUEVO/aramed/public_html/
-   
-   • Llenar el formulario de newsletter
-   • Enviar
+PASO 5: Probar formulario
 
-PASO 5: Volver a la pestaña del visor de logs
+   1. Ir a: https://aramedylaboratorio.com/NUEVO/aramed/public_html/
+   2. Scroll a "Mantente Informado"
+   3. Llenar formulario COMPLETO
+   4. Enviar
+
+PASO 6: Ver logs en tiempo real
+
+   • Volver a la pestaña del visor de logs
    • Los logs aparecerán automáticamente
-   • Verás cada paso del proceso en tiempo real
+   • Verás TODO el proceso paso a paso
    • ✅ = éxito
    • ❌ = error
 
@@ -52,30 +88,36 @@ PASO 5: Volver a la pestaña del visor de logs
 🔍 QUÉ VERÁS EN LOS LOGS:
 ═══════════════════════════════════════════════════════════════════
 
-✓ NEWSLETTER HANDLER - START
-✓ POST request received
-✓ Data Sanitization
-✓ Field Validation
-✓ Database Operations (INSERT)
-✓ Email Sending (SMTP)
-✓ Success o Error con detalles completos
+Si TODO funciona:
 
-Si hay error, verás:
+✅ NEWSLETTER HANDLER - START
+✅ POST request received
+✅ Data Sanitization
+✅ All required fields present
+✅ Privacy policy accepted
+✅ Email validation passed
+✅ Email not subscribed yet
+✅ INSERT successful. ID: [número]
+✅ Email sent successfully
+✅ Newsletter subscription completed successfully
+
+Si hay error:
+
 ❌❌❌ EXCEPTION CAUGHT ❌❌❌
-Error Message: [descripción exacta]
-Error File: [archivo y línea]
-Stack Trace: [detalles técnicos completos]
+Error Message: [descripción exacta del problema]
+Error File: [archivo donde ocurrió]
+Error Line: [línea específica]
+Stack Trace: [detalles técnicos]
 
 ═══════════════════════════════════════════════════════════════════
-💡 VENTAJAS DE ESTE SISTEMA:
+✅ VENTAJAS DE LA NUEVA ESTRUCTURA:
 ═══════════════════════════════════════════════════════════════════
 
-✅ Logs visibles en TIEMPO REAL desde el navegador
-✅ NO necesitas acceso a cPanel
-✅ Auto-refresh cada 5 segundos
-✅ Colores para identificar problemas rápidamente
-✅ Fácil de compartir (screenshot)
-✅ Veremos EXACTAMENTE dónde falla el proceso
+✅ Rutas simples (includes/handler.php)
+✅ Sin errores 404
+✅ Estructura estándar
+✅ Más fácil de mantener
+✅ Compatible con cualquier hosting
 
 ═══════════════════════════════════════════════════════════════════
 📊 DESPUÉS DE PROBAR:
@@ -83,29 +125,28 @@ Stack Trace: [detalles técnicos completos]
 
 Envíame un screenshot del visor de logs mostrando:
 • Todo el contenido del log
-• Desde "NEWSLETTER HANDLER - START"
+• Desde "NEWSLETTER HANDLER - START"  
 • Hasta el final (éxito o error)
 
-Con eso sabré EXACTAMENTE qué está fallando y cómo arreglarlo.
+Con eso sabré EXACTAMENTE qué está pasando y podré arreglar
+cualquier problema que quede.
 
 ═══════════════════════════════════════════════════════════════════
-⚠️ SEGURIDAD - IMPORTANTE:
+⚠️ IMPORTANTE - SEGURIDAD:
 ═══════════════════════════════════════════════════════════════════
 
 🔴 ELIMINAR DESPUÉS DEL DEBUG:
+   • public_html/test-email-debug.php
    • public_html/view-debug-log.php
-   • logs/debug.log
-
-Estos archivos muestran información sensible y NO deben estar
-en producción.
+   • public_html/logs/debug.log
 
 ═══════════════════════════════════════════════════════════════════
-📚 DOCUMENTACIÓN COMPLETA:
+📚 DOCUMENTACIÓN:
 ═══════════════════════════════════════════════════════════════════
 
-Ver: DOCS/SISTEMA_LOGS_VISIBLE.md
-• Explicación completa del sistema
-• Troubleshooting
-• Ejemplos de logs completos
+Ver: DOCS/REORGANIZACION_ESTRUCTURA.md
+• Estructura antes y después
+• Todos los cambios realizados
+• Instrucciones detalladas
 
 ═══════════════════════════════════════════════════════════════════
