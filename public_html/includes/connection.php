@@ -16,8 +16,8 @@ if (!defined('ARAMED_SITE')) {
     die('Acceso directo no permitido');
 }
 
-// Cargar configuración
-require_once __DIR__ . '/config.php';
+// NOTA: config.php debe ser cargado ANTES de incluir este archivo
+// No lo cargamos aquí para evitar redefinición de constantes
 
 /**
  * Clase Database - Singleton para conexión PDO
