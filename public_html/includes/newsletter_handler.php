@@ -139,7 +139,7 @@ try {
     debugLog("✅ Email validation passed");
     
     // Validar email alterno si se proporcionó
-    if ($data['email_alterno'] && !filter_var($data['email_alterno'], FILTER_VALIDATE_EMAIL')) {
+    if ($data['email_alterno'] && !filter_var($data['email_alterno'], FILTER_VALIDATE_EMAIL)) {
         throw new Exception("El correo alterno no es válido.");
     }
     
@@ -147,7 +147,7 @@ try {
     debugLog("--- Database Operations ---");
     debugLog("Checking for existing subscription...");
     
-    $stmt = $pdo->prepare("SELECT id FROM newsletter_subscriptions WHERE email_oficial = ? AND status = 'active'");
+    $stmt = $pdo->prepare("SELECT id FROM newsletter_subscriptions WHERE email_oficial = ? AND status = active ");
     $stmt->execute([$data['email_oficial']]);
     if ($stmt->fetch()) {
         debugLog("❌ Email already subscribed: " . $data['email_oficial']);
