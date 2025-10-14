@@ -20,6 +20,7 @@ if (!defined('ARAMED_SITE')) {
 // No lo cargamos aquí para evitar redefinición de constantes
 
 /**
+ * 
  * Clase Database - Singleton para conexión PDO
  */
 class Database {
