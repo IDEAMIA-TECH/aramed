@@ -15,7 +15,7 @@
 define('ARAMED_SITE', true);
 
 // Cargar configuración
-require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/includes/config.php';
 
 // Cargar funciones
 require_once INCLUDES_PATH . '/functions.php';
