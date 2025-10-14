@@ -14,16 +14,23 @@ echo "<hr>";
 // Simular datos POST
 $_SERVER['REQUEST_METHOD'] = 'POST';
 $_POST = [
-    'nombre_completo' => 'Test Usuario',
-    'email_oficial' => 'test@example.com',
-    'telefono' => '1234567890',
     'institucion' => 'Test Institution',
-    'cargo' => 'Test Cargo',
-    'pais' => 'México',
+    'tipo_institucion' => 'Hospital',
+    'campo_adicional' => '',
     'estado' => 'CDMX',
-    'interes_productos' => 'Maniquíes',
-    'interes_servicios' => 'Capacitación',
-    'acepto_privacidad' => '1'
+    'ciudad' => 'Ciudad de México',
+    'nombre' => 'Test Usuario',
+    'puesto' => 'Director',
+    'email_oficial' => 'test@example.com',
+    'email_alterno' => '',
+    'telefono_oficina' => '5555555555',
+    'extension' => '1234',
+    'telefono_celular' => '5512345678',
+    'producto_interes' => 'Maniquíes de Simulación',
+    'compra_mes' => '12',
+    'compra_anio' => '2025',
+    'observaciones' => 'Test desde script directo',
+    'privacidad' => '1'
 ];
 
 echo "<h2>TEST 1: Cargar archivos manualmente</h2>";
@@ -127,15 +134,20 @@ try {
     
     // Sanitizar datos
     $data = [
-        'nombre_completo' => sanitizeInput($_POST['nombre_completo']),
-        'email_oficial' => sanitizeEmail($_POST['email_oficial']),
-        'telefono' => sanitizeInput($_POST['telefono']),
         'institucion' => sanitizeInput($_POST['institucion']),
-        'cargo' => sanitizeInput($_POST['cargo']),
-        'pais' => sanitizeInput($_POST['pais']),
+        'tipo_institucion' => sanitizeInput($_POST['tipo_institucion']),
+        'campo_adicional' => sanitizeInput($_POST['campo_adicional']),
         'estado' => sanitizeInput($_POST['estado']),
-        'interes_productos' => sanitizeInput($_POST['interes_productos']),
-        'interes_servicios' => sanitizeInput($_POST['interes_servicios'])
+        'ciudad' => sanitizeInput($_POST['ciudad']),
+        'nombre' => sanitizeInput($_POST['nombre']),
+        'puesto' => sanitizeInput($_POST['puesto']),
+        'email_oficial' => sanitizeEmail($_POST['email_oficial']),
+        'email_alterno' => sanitizeInput($_POST['email_alterno']),
+        'telefono_oficina' => sanitizeInput($_POST['telefono_oficina']),
+        'extension' => sanitizeInput($_POST['extension']),
+        'telefono_celular' => sanitizeInput($_POST['telefono_celular']),
+        'producto_interes' => sanitizeInput($_POST['producto_interes']),
+        'observaciones' => sanitizeInput($_POST['observaciones'])
     ];
     echo "✅ Datos sanitizados<br>";
     
@@ -145,21 +157,32 @@ try {
         throw new Exception("Tabla newsletter_subscriptions no existe");
     }
     
+    // Preparar fecha de compra
+    $fecha_compra = null;
+    if (!empty($_POST['compra_mes']) && !empty($_POST['compra_anio'])) {
+        $fecha_compra = $_POST['compra_anio'] . '-' . str_pad($_POST['compra_mes'], 2, '0', STR_PAD_LEFT) . '-01';
+    }
+    
     // Preparar INSERT
     $sql = "INSERT INTO newsletter_subscriptions (
-        nombre_completo, email_oficial, telefono, institucion, cargo,
-        pais, estado, interes_productos, interes_servicios,
-        ip_address, user_agent, created_at
+        institucion, tipo_institucion, campo_adicional, estado, ciudad,
+        nombre, puesto, email_oficial, email_alterno,
+        telefono_oficina, extension, telefono_celular,
+        producto_interes, fecha_compra_aprox, observaciones,
+        ip_address, user_agent, status, created_at
     ) VALUES (
-        :nombre_completo, :email_oficial, :telefono, :institucion, :cargo,
-        :pais, :estado, :interes_productos, :interes_servicios,
-        :ip_address, :user_agent, NOW()
+        :institucion, :tipo_institucion, :campo_adicional, :estado, :ciudad,
+        :nombre, :puesto, :email_oficial, :email_alterno,
+        :telefono_oficina, :extension, :telefono_celular,
+        :producto_interes, :fecha_compra, :observaciones,
+        :ip_address, :user_agent, 'active', NOW()
     )";
     
     echo "→ Preparando INSERT...<br>";
     $stmt = $pdo->prepare($sql);
     
     $params = array_merge($data, [
+        'fecha_compra' => $fecha_compra,
         'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'test',
         'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'test'
     ]);
