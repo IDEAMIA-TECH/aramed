@@ -47,11 +47,14 @@ class Database {
             }
             
         } catch (PDOException $e) {
+            // Registrar el error
+            error_log("Database Connection Error: " . $e->getMessage());
+            
+            // Lanzar excepción para que pueda ser manejada por el código que llama
             if (ENVIRONMENT === 'development') {
-                die("Error de conexión: " . $e->getMessage());
+                throw new Exception("Error de conexión a BD: " . $e->getMessage());
             } else {
-                error_log("Database Connection Error: " . $e->getMessage());
-                die("Error al conectar con la base de datos. Por favor, contacte al administrador.");
+                throw new Exception("Error al conectar con la base de datos. Por favor, contacte al administrador.");
             }
         }
     }
