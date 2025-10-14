@@ -132,16 +132,133 @@ simpleLog("✅ Método POST confirmado");
 simpleLog("→ Procesando datos POST...");
 simpleLog("POST data keys: " . implode(', ', array_keys($_POST)));
 
-// Aquí puedes continuar con la lógica normal del handler
-// Por ahora, solo retornamos éxito para confirmar que llegamos hasta aquí
+// Sanitizar datos (IGUAL que el handler real)
+simpleLog("→ Sanitizando datos...");
+try {
+    $data = [
+        'institucion' => sanitizeInput($_POST['institucion'] ?? ''),
+        'tipo_institucion' => sanitizeInput($_POST['tipo_institucion'] ?? ''),
+        'campo_adicional' => sanitizeInput($_POST['campo_adicional'] ?? ''),
+        'estado' => sanitizeInput($_POST['estado'] ?? ''),
+        'ciudad' => sanitizeInput($_POST['ciudad'] ?? ''),
+        'nombre' => sanitizeInput($_POST['nombre'] ?? ''),
+        'puesto' => sanitizeInput($_POST['puesto'] ?? ''),
+        'email_oficial' => sanitizeEmail($_POST['email_oficial'] ?? ''),
+        'email_alterno' => !empty($_POST['email_alterno']) ? sanitizeEmail($_POST['email_alterno']) : null,
+        'telefono_oficina' => sanitizeInput($_POST['telefono_oficina'] ?? ''),
+        'extension' => sanitizeInput($_POST['extension'] ?? ''),
+        'telefono_celular' => !empty($_POST['telefono_celular']) ? sanitizeInput($_POST['telefono_celular']) : null,
+        'producto_interes' => sanitizeInput($_POST['producto_interes'] ?? ''),
+        'compra_mes' => sanitizeInput($_POST['compra_mes'] ?? ''),
+        'compra_anio' => sanitizeInput($_POST['compra_anio'] ?? ''),
+        'observaciones' => sanitizeInput($_POST['observaciones'] ?? ''),
+        'privacidad' => isset($_POST['privacidad']) ? 1 : 0,
+    ];
+    simpleLog("✅ Datos sanitizados correctamente");
+    simpleLog("  - Email: " . $data['email_oficial']);
+    simpleLog("  - Privacidad: " . ($data['privacidad'] ? 'SI' : 'NO'));
+} catch (Exception $e) {
+    simpleLog("❌ Error sanitizando datos: " . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Error al sanitizar datos']);
+    exit;
+}
+
+// Validar campos obligatorios
+simpleLog("→ Validando campos obligatorios...");
+$requiredFields = [
+    'institucion' => 'Institución',
+    'tipo_institucion' => 'Tipo de institución',
+    'estado' => 'Estado',
+    'ciudad' => 'Ciudad',
+    'nombre' => 'Nombre',
+    'puesto' => 'Puesto',
+    'email_oficial' => 'Correo oficial',
+    'telefono_oficina' => 'Teléfono de oficina'
+];
+
+foreach ($requiredFields as $field => $label) {
+    if (empty($data[$field])) {
+        simpleLog("❌ Campo vacío: $label");
+        echo json_encode(['success' => false, 'message' => "El campo '$label' es obligatorio"]);
+        exit;
+    }
+}
+simpleLog("✅ Todos los campos obligatorios presentes");
+
+// Validar privacidad
+if ($data['privacidad'] !== 1) {
+    simpleLog("❌ Privacidad NO aceptada");
+    echo json_encode(['success' => false, 'message' => 'Debes aceptar la política de privacidad']);
+    exit;
+}
+simpleLog("✅ Privacidad aceptada");
+
+// Intentar INSERT en BD
+simpleLog("→ Intentando INSERT en base de datos...");
+try {
+    // Preparar fecha de compra
+    $fecha_compra = null;
+    if (!empty($data['compra_mes']) && !empty($data['compra_anio'])) {
+        $fecha_compra = $data['compra_anio'] . '-' . str_pad($data['compra_mes'], 2, '0', STR_PAD_LEFT) . '-01';
+    }
+    
+    $sql = "INSERT INTO newsletter_subscriptions (
+        institucion, tipo_institucion, campo_adicional, estado, ciudad,
+        nombre, puesto, email_oficial, email_alterno,
+        telefono_oficina, extension, telefono_celular,
+        producto_interes, fecha_compra_aprox, observaciones,
+        ip_address, user_agent, status, created_at
+    ) VALUES (
+        :institucion, :tipo_institucion, :campo_adicional, :estado, :ciudad,
+        :nombre, :puesto, :email_oficial, :email_alterno,
+        :telefono_oficina, :extension, :telefono_celular,
+        :producto_interes, :fecha_compra, :observaciones,
+        :ip_address, :user_agent, 'active', NOW()
+    )";
+    
+    $stmt = $pdo->prepare($sql);
+    
+    $result = $stmt->execute([
+        ':institucion' => $data['institucion'],
+        ':tipo_institucion' => $data['tipo_institucion'],
+        ':campo_adicional' => $data['campo_adicional'],
+        ':estado' => $data['estado'],
+        ':ciudad' => $data['ciudad'],
+        ':nombre' => $data['nombre'],
+        ':puesto' => $data['puesto'],
+        ':email_oficial' => $data['email_oficial'],
+        ':email_alterno' => $data['email_alterno'],
+        ':telefono_oficina' => $data['telefono_oficina'],
+        ':extension' => $data['extension'],
+        ':telefono_celular' => $data['telefono_celular'],
+        ':producto_interes' => $data['producto_interes'],
+        ':fecha_compra' => $fecha_compra,
+        ':observaciones' => $data['observaciones'],
+        ':ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
+        ':user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
+    ]);
+    
+    if ($result) {
+        $insert_id = $pdo->lastInsertId();
+        simpleLog("✅ INSERT exitoso - ID: $insert_id");
+    } else {
+        simpleLog("❌ INSERT falló");
+        throw new Exception("Error al insertar en base de datos");
+    }
+    
+} catch (Exception $e) {
+    simpleLog("❌ Error en INSERT: " . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Error al guardar: ' . $e->getMessage()]);
+    exit;
+}
 
 simpleLog("✅ Handler completado exitosamente");
 
 echo json_encode([
     'success' => true,
-    'message' => 'Handler debug funcionando correctamente',
+    'message' => '¡Gracias! Te hemos agregado a nuestra lista.',
     'data' => [
-        'post_keys' => array_keys($_POST),
+        'insert_id' => $insert_id ?? 0,
         'timestamp' => date('Y-m-d H:i:s')
     ]
 ]);
