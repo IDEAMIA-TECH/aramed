@@ -1,102 +1,111 @@
 ═══════════════════════════════════════════════════════════════════
-✅ ARCHIVOS A SUBIR AL SERVIDOR - CON LOGS DE DEBUG
+✅ ARCHIVOS A SUBIR - SISTEMA DE LOGS VISIBLE
 ═══════════════════════════════════════════════════════════════════
 
-📁 SUBIR ESTOS 4 ARCHIVOS (ACTUALIZADOS CON LOGS):
+📁 SUBIR ESTOS 4 ARCHIVOS:
 
-1. includes/email_functions.php (10K)
-   → Sistema de envío de emails + LOGS EXHAUSTIVOS
+1. includes/debug_logger.php (1.1K) ⭐ NUEVO
+   → Sistema de logging dual (error_log + archivo visible)
 
-2. includes/newsletter_handler.php (12K)
-   → Handler de newsletter + LOGS EXHAUSTIVOS
+2. includes/newsletter_handler.php (12K) 
+   → Todos los error_log() reemplazados por debugLog()
 
-3. includes/contact_handler.php (9.9K)
-   → Handler de contacto + LOGS EXHAUSTIVOS
+3. includes/email_functions.php (12K)
+   → Todos los error_log() reemplazados por debugLog()
 
-4. public_html/test-email-debug.php (7.9K) ⭐ TEMPORAL
-   → Script de testing visual
+4. public_html/view-debug-log.php (5.8K) ⭐ NUEVO  
+   → Visor de logs en tiempo real con auto-refresh
    → ⚠️ ELIMINAR DESPUÉS DEL DEBUG
 
 ═══════════════════════════════════════════════════════════════════
-⚡ PASOS RÁPIDOS:
+🚀 PASOS PARA VER LOS LOGS:
 ═══════════════════════════════════════════════════════════════════
 
-PASO 1: Subir los 4 archivos via FTP/cPanel
+PASO 1: Subir los 4 archivos al servidor
+
+PASO 2: Crear carpeta 'logs' en el servidor
+   • Via cPanel File Manager
+   • Crear carpeta "logs" en el directorio raíz (junto a includes/)
+   • Permisos: 755
+
+PASO 3: Abrir el visor de logs en el navegador
+   https://aramedylaboratorio.com/NUEVO/aramed/public_html/view-debug-log.php
    
-PASO 2: Ejecutar test de debug
-   URL: https://aramedylaboratorio.com/NUEVO/aramed/public_html/test-email-debug.php
-   • Capturar screenshot completo
-   • Revisar cada sección (SMTP, PHPMailer, Test de conexión)
+   Verás:
+   • 📊 Estadísticas del log
+   • 🔄 Auto-refresh cada 5 segundos
+   • Pantalla tipo terminal (fondo negro, texto verde)
 
-PASO 3: Probar formulario
-   • Abrir consola del navegador (F12)
-   • Llenar formulario completo
+PASO 4: En OTRA pestaña del navegador
+   https://aramedylaboratorio.com/NUEVO/aramed/public_html/
+   
+   • Llenar el formulario de newsletter
    • Enviar
-   • Observar errores en consola
 
-PASO 4: Revisar logs del servidor
-   • cPanel > Error Log
-   • Buscar: "===== EMAIL SEND ATTEMPT ====="
-   • Buscar: ❌ (errores) y ✅ (éxitos)
-   • Copiar últimas 50 líneas
-
-PASO 5: Enviarme:
-   • Screenshot de test-email-debug.php
-   • Últimas 50 líneas del error log
-   • Screenshot de consola del navegador
-   • Mensaje de error exacto en pantalla
+PASO 5: Volver a la pestaña del visor de logs
+   • Los logs aparecerán automáticamente
+   • Verás cada paso del proceso en tiempo real
+   • ✅ = éxito
+   • ❌ = error
 
 ═══════════════════════════════════════════════════════════════════
-🔍 QUÉ ESPERAR EN LOS LOGS:
+🔍 QUÉ VERÁS EN LOS LOGS:
 ═══════════════════════════════════════════════════════════════════
 
-Si TODO funciona, verás:
-✅ NEWSLETTER HANDLER - START
-✅ POST request received
-✅ All required fields present
-✅ Privacy policy accepted
-✅ Email validation passed
-✅ Email not subscribed yet
-✅ INSERT successful. ID: [número]
-✅ Email sent successfully
+✓ NEWSLETTER HANDLER - START
+✓ POST request received
+✓ Data Sanitization
+✓ Field Validation
+✓ Database Operations (INSERT)
+✓ Email Sending (SMTP)
+✓ Success o Error con detalles completos
 
-Si HAY problemas, verás:
-❌ [descripción del error]
-❌ Exception caught: [detalles]
-❌ Stack Trace: [información técnica]
-
-═══════════════════════════════════════════════════════════════════
-📊 LOGS INCLUIDOS:
-═══════════════════════════════════════════════════════════════════
-
-✓ Configuración SMTP (host, port, user, password set)
-✓ Método de envío usado (PHPMailer vs mail())
-✓ Datos recibidos del formulario
-✓ Validación de campos
-✓ Operaciones de base de datos
-✓ Envío de email con detalles técnicos
-✓ Excepciones con stack trace completo
-✓ Debug SMTP nivel 2 (si PHPMailer disponible)
+Si hay error, verás:
+❌❌❌ EXCEPTION CAUGHT ❌❌❌
+Error Message: [descripción exacta]
+Error File: [archivo y línea]
+Stack Trace: [detalles técnicos completos]
 
 ═══════════════════════════════════════════════════════════════════
-⚠️ SEGURIDAD:
+💡 VENTAJAS DE ESTE SISTEMA:
 ═══════════════════════════════════════════════════════════════════
 
-🔴 ELIMINAR test-email-debug.php DESPUÉS DE DEBUGGING
-   Este archivo muestra información sensible y NO debe estar en
-   producción.
+✅ Logs visibles en TIEMPO REAL desde el navegador
+✅ NO necesitas acceso a cPanel
+✅ Auto-refresh cada 5 segundos
+✅ Colores para identificar problemas rápidamente
+✅ Fácil de compartir (screenshot)
+✅ Veremos EXACTAMENTE dónde falla el proceso
 
-   Para eliminarlo:
-   rm public_html/test-email-debug.php
+═══════════════════════════════════════════════════════════════════
+📊 DESPUÉS DE PROBAR:
+═══════════════════════════════════════════════════════════════════
+
+Envíame un screenshot del visor de logs mostrando:
+• Todo el contenido del log
+• Desde "NEWSLETTER HANDLER - START"
+• Hasta el final (éxito o error)
+
+Con eso sabré EXACTAMENTE qué está fallando y cómo arreglarlo.
+
+═══════════════════════════════════════════════════════════════════
+⚠️ SEGURIDAD - IMPORTANTE:
+═══════════════════════════════════════════════════════════════════
+
+🔴 ELIMINAR DESPUÉS DEL DEBUG:
+   • public_html/view-debug-log.php
+   • logs/debug.log
+
+Estos archivos muestran información sensible y NO deben estar
+en producción.
 
 ═══════════════════════════════════════════════════════════════════
 📚 DOCUMENTACIÓN COMPLETA:
 ═══════════════════════════════════════════════════════════════════
 
-Ver: DOCS/DEBUG_LOGS_ACTIVADOS.md
-• Guía completa de debugging
-• Errores comunes y soluciones
-• Cómo interpretar los logs
-• Troubleshooting paso a paso
+Ver: DOCS/SISTEMA_LOGS_VISIBLE.md
+• Explicación completa del sistema
+• Troubleshooting
+• Ejemplos de logs completos
 
 ═══════════════════════════════════════════════════════════════════
