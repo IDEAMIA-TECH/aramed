@@ -147,7 +147,7 @@ try {
     debugLog("--- Database Operations ---");
     debugLog("Checking for existing subscription...");
     
-    $stmt = $pdo->prepare("SELECT id FROM newsletter_subscriptions WHERE email_oficial = ? AND status = active ");
+    $stmt = $pdo->prepare("SELECT id FROM newsletter_subscriptions WHERE email_oficial = ? AND status = 'active' ");
     $stmt->execute([$data['email_oficial']]);
     if ($stmt->fetch()) {
         debugLog("❌ Email already subscribed: " . $data['email_oficial']);
