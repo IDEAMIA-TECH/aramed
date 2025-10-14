@@ -485,3 +485,11 @@ function isValidDate($date, $format = 'Y-m-d') {
     return $d && $d->format($format) === $date;
 }
 
+/**
+ * Obtener el año actual
+ * Usado en el footer para el copyright
+ */
+function getCurrentYear() {
+    return date('Y');
+}
+
