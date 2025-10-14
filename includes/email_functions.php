@@ -303,40 +303,82 @@ function validateSMTPConfig() {
  * @return array Resultado del test
  */
 function testSMTPConnection() {
-    $mail = new PHPMailer(true);
+    global $phpmailerAvailable;
     
+    // Si PHPMailer está disponible, usarlo
+    if ($phpmailerAvailable && class_exists('PHPMailer')) {
+        try {
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host       = SMTP_HOST;
+            $mail->SMTPAuth   = SMTP_AUTH;
+            $mail->Username   = SMTP_USERNAME;
+            $mail->Password   = SMTP_PASSWORD;
+            $mail->SMTPSecure = SMTP_SECURE;
+            $mail->Port       = SMTP_PORT;
+            $mail->SMTPDebug  = 0;
+            $mail->Timeout    = 10;
+            
+            $mail->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                )
+            );
+            
+            // Intentar conectar
+            $mail->smtpConnect();
+            $mail->smtpClose();
+            
+            return [
+                'success' => true,
+                'message' => 'Conexión SMTP exitosa (usando PHPMailer)'
+            ];
+            
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Error PHPMailer: ' . $e->getMessage()
+            ];
+        }
+    }
+    
+    // Fallback: Test manual sin PHPMailer
     try {
-        $mail->isSMTP();
-        $mail->Host       = SMTP_HOST;
-        $mail->SMTPAuth   = SMTP_AUTH;
-        $mail->Username   = SMTP_USERNAME;
-        $mail->Password   = SMTP_PASSWORD;
-        $mail->SMTPSecure = SMTP_SECURE;
-        $mail->Port       = SMTP_PORT;
-        $mail->SMTPDebug  = 0;
-        $mail->Timeout    = 10;
+        $host = SMTP_HOST;
+        $port = SMTP_PORT;
+        $timeout = 10;
         
-        $mail->SMTPOptions = array(
-            'ssl' => array(
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                'allow_self_signed' => true
-            )
-        );
+        error_log("Testing SMTP connection to {$host}:{$port}");
         
-        // Intentar conectar
-        $mail->smtpConnect();
-        $mail->smtpClose();
+        // Intentar conexión con fsockopen
+        if (SMTP_SECURE === 'ssl') {
+            $host = 'ssl://' . $host;
+        }
         
-        return [
-            'success' => true,
-            'message' => 'Conexión SMTP exitosa'
-        ];
+        $errno = 0;
+        $errstr = '';
+        
+        $socket = @fsockopen($host, $port, $errno, $errstr, $timeout);
+        
+        if ($socket) {
+            fclose($socket);
+            return [
+                'success' => true,
+                'message' => "Conexión exitosa a {$host}:{$port} (test manual)"
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => "No se pudo conectar a {$host}:{$port}. Error: [{$errno}] {$errstr}"
+            ];
+        }
         
     } catch (Exception $e) {
         return [
             'success' => false,
-            'message' => 'Error de conexión: ' . $e->getMessage()
+            'message' => 'Error en test de conexión: ' . $e->getMessage()
         ];
     }
 }
