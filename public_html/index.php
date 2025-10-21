@@ -843,7 +843,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Nasco Healthcare" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    </div>
                                 </div>
                             </div>
                         </div>
