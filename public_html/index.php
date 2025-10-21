@@ -659,9 +659,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Gaumard Scientific" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Gaumard Scientific</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -674,9 +671,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Kyoto Kagaku" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Kyoto Kagaku</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -689,9 +683,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Anatomage" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Anatomage</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -704,9 +695,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Rudiger Anatomie" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Rudiger Anatomie</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -719,9 +707,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Simulab" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Simulab</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -734,9 +719,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="3D Med" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">3D Med</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -749,9 +731,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="3B Scientific" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">3B Scientific</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -764,9 +743,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Adam Rouilly" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Adam Rouilly</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -779,9 +755,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Erler Zimmer" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Erler Zimmer</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -794,9 +767,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="TruCorp" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">TruCorp</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -809,9 +779,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="SimX" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">SimX</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -824,8 +791,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="VATA Inc" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">VATA Inc</p>
                                     </div>
                                 </div>
                             </div>
@@ -839,8 +804,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Medical-X" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Medical-X</p>
                                     </div>
                                 </div>
                             </div>
@@ -854,8 +817,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Immersive Healthcare" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Immersive Healthcare</p>
                                     </div>
                                 </div>
                             </div>
@@ -869,8 +830,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Saratoga Dental" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Saratoga Dental</p>
                                     </div>
                                 </div>
                             </div>
@@ -884,8 +843,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Nasco Healthcare" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    <div class="aliado-overlay">
-                                        <p class="aliado-name">Nasco Healthcare</p>
                                     </div>
                                 </div>
                             </div>
