@@ -619,9 +619,29 @@
     box-shadow: 0 2px 4px rgba(0, 102, 204, 0.3);
 }
 
+.active-filters .badge {
+    color: #ffffff !important;
+    background-color: var(--aramed-primary) !important;
+    border: 2px solid var(--aramed-primary) !important;
+    font-weight: 600 !important;
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 25px !important;
+    box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2) !important;
+}
+
 .active-filters .badge a {
-    color: white !important;
-    text-decoration: none;
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+.active-filters .badge .btn-close {
+    filter: brightness(0) invert(1) !important;
+    opacity: 0.8 !important;
+}
+
+.active-filters .badge .btn-close:hover {
+    opacity: 1 !important;
+    transform: scale(1.1);
 }
 
 .active-filters .btn-close {
