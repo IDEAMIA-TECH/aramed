@@ -7,10 +7,7 @@ if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
 // Configurar menú de navegación
 $nav_items = [
     ['label' => 'Inicio', 'href' => '#home', 'active' => true],
-    ['label' => 'Catálogos', 'href' => '#catalogos', 'icon' => 'book'],
-    ['label' => 'Proyectos', 'href' => '#proyectos', 'icon' => 'briefcase'],
     ['label' => 'Aliados', 'href' => '#aliados', 'icon' => 'people'],
-    ['label' => 'Blog', 'href' => '#blog', 'icon' => 'newspaper'],
 ];
 ?>
 
