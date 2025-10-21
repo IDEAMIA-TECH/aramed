@@ -69,9 +69,11 @@
 .producto-image {
     width: 100%;
     height: 400px;
-    object-fit: cover;
+    object-fit: contain;
     cursor: pointer;
     transition: var(--producto-transition);
+    background: #f8f9fa;
+    border-radius: 8px;
 }
 
 .producto-image:hover {
@@ -96,10 +98,11 @@
     transform: scale(1.05);
 }
 
-.producto-thumb {
+.thumbnail-image {
     width: 100%;
     height: 80px;
     object-fit: cover;
+    border-radius: 6px;
 }
 
 /* Navegación del swiper */
