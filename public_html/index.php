@@ -791,7 +791,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="VATA Inc" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -804,7 +803,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Medical-X" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -817,7 +815,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Immersive Healthcare" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -830,7 +827,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                          alt="Saratoga Dental" 
                                          class="aliado-logo"
                                          loading="lazy">
-                                    </div>
                                 </div>
                             </div>
                         </div>
