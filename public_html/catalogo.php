@@ -483,9 +483,9 @@ function buildFilterUrl($params = []) {
                                                    name="marca" 
                                                    id="marca_all" 
                                                    value=""
-                                                   <?php echo ($marca_id == 0) ? 'checked' : ''; ?>
+                                                   <?php echo ($marca_id == 0 || empty($marca_id)) ? 'checked' : ''; ?>
                                                    onchange="this.form.submit()">
-                                            <label class="form-check-label" for="marca_all">
+                                            <label class="form-check-label <?php echo ($marca_id == 0 || empty($marca_id)) ? 'text-primary fw-semibold' : ''; ?>" for="marca_all">
                                                 <strong>Todas las marcas</strong>
                                             </label>
                                         </div>
@@ -520,9 +520,9 @@ function buildFilterUrl($params = []) {
                                                    name="categoria" 
                                                    id="categoria_all" 
                                                    value=""
-                                                   <?php echo ($categoria_id == 0) ? 'checked' : ''; ?>
+                                                   <?php echo ($categoria_id == 0 || empty($categoria_id)) ? 'checked' : ''; ?>
                                                    onchange="this.form.submit()">
-                                            <label class="form-check-label" for="categoria_all">
+                                            <label class="form-check-label <?php echo ($categoria_id == 0 || empty($categoria_id)) ? 'text-primary fw-semibold' : ''; ?>" for="categoria_all">
                                                 <strong>Todas las categorías</strong>
                                             </label>
                                         </div>

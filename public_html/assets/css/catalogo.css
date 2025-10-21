@@ -145,6 +145,17 @@
     font-weight: 600 !important;
 }
 
+.filter-options .form-check-input:checked {
+    background-color: var(--aramed-primary) !important;
+    border-color: var(--aramed-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+}
+
+.filter-options .form-check-input:focus {
+    border-color: var(--aramed-primary);
+    box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+}
+
 /* ========================================
    BARRA DE RESULTADOS
    ======================================== */
@@ -570,6 +581,11 @@
     color: white !important;
     border-radius: 20px;
     box-shadow: 0 2px 4px rgba(0, 102, 204, 0.3);
+}
+
+.active-filters .badge a {
+    color: white !important;
+    text-decoration: none;
 }
 
 .active-filters .btn-close {
