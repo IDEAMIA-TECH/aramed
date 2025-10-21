@@ -340,11 +340,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(0, 102, 204, 0.95) 0%, rgba(44, 62, 80, 0.95) 100%);">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
-                                <div class="col-lg-8 col-xl-7">
+                                <div class="col-lg-6 col-xl-6">
                                     <div class="hero-content" data-aos="fade-up">
-                                        <div class="hero-logo mb-4">
-                                            <img src="<?php echo imageUrl('design/logo.png'); ?>" alt="Aramed y Laboratorios" height="160" class="img-fluid">
-                                        </div>
                                         <span class="hero-badge badge bg-white text-primary mb-3 px-3 py-2">
                                             <i class="bi bi-award-fill me-2"></i>
                                             +20 Años de Experiencia
@@ -389,6 +386,11 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-xl-6">
+                                    <div class="hero-logo text-center" data-aos="fade-left" data-aos-delay="300">
+                                        <img src="<?php echo imageUrl('design/logo.png'); ?>" alt="Aramed y Laboratorios" height="200" class="img-fluid">
                                     </div>
                                 </div>
                             </div>
