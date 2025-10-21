@@ -1180,7 +1180,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </p>
             </div>
             
-            <!-- Product 1: VICTORIA® S2200 (Imagen Izquierda) -->
+            <!-- Product 1: ANATOMAGE TABLE (Imagen Izquierda) -->
             <div class="product-showcase mb-5" data-aos="fade-up" data-aos-delay="100">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-6 order-lg-1">
@@ -1190,9 +1190,9 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 Más Vendido
                             </div>
                             <picture>
-                                <source srcset="<?php echo imageUrl('productos/victoria-s2200.webp'); ?>" type="image/webp">
-                                <img src="<?php echo imageUrl('productos/victoria-s2200.jpg'); ?>" 
-                                     alt="VICTORIA® S2200 - Simulador Maternal" 
+                                <source srcset="<?php echo imageUrl('productos/anatomage-table.webp'); ?>" type="image/webp">
+                                <img src="<?php echo imageUrl('productos/anatomage-table.jpg'); ?>" 
+                                     alt="Anatomage Table - Plataforma de educación médica" 
                                      class="product-image"
                                      loading="lazy">
                             </picture>
@@ -1200,19 +1200,24 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                     <div class="col-lg-6 order-lg-2">
                         <div class="product-content">
-                            <span class="product-category">Simulación Maternal</span>
-                            <h3 class="product-title">VICTORIA® S2200</h3>
-                            <p class="product-subtitle">Simulador Maternal de Parto de Alta Fidelidad</p>
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="product-category me-3">Plataforma Educativa</span>
+                                <img src="<?php echo imageUrl('aliados/7-3B Scientific.webp'); ?>" 
+                                     alt="3B Scientific" 
+                                     class="company-logo"
+                                     style="height: 30px; width: auto;">
+                            </div>
+                            <h3 class="product-title">ANATOMAGE TABLE</h3>
+                            <p class="product-subtitle">Revoluciona la enseñanza médica con Anatomage Table</p>
                             <p class="product-description">
-                                El simulador más completo para entrenamiento en obstetricia. VICTORIA® S2200 ofrece 
-                                escenarios realistas de parto normal, complicaciones y cesárea. Con respuestas 
-                                fisiológicas automáticas y sistema de monitoreo fetal integrado.
+                                La Anatomage Table es la plataforma de educación médica más avanzada basada en cuerpos humanos reales digitalizados. Su tecnología de visualización 3D permite a los estudiantes explorar la anatomía, la fisiología y las patologías en tamaño real, con una precisión sumamente realista.
                             </p>
                             <ul class="product-features-list">
-                                <li><i class="bi bi-check-circle-fill text-success"></i> Partos normales y complicados</li>
-                                <li><i class="bi bi-check-circle-fill text-success"></i> Monitoreo fetal en tiempo real</li>
-                                <li><i class="bi bi-check-circle-fill text-success"></i> Respuestas fisiológicas automáticas</li>
-                                <li><i class="bi bi-check-circle-fill text-success"></i> Interfaz táctil para control</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Visualización 3D de cuerpos humanos reales digitalizados</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Herramientas interactivas de disección virtual</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Simulaciones clínicas avanzadas</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Visor DICOM integrado</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Aprendizaje práctico sin laboratorios tradicionales</li>
                             </ul>
                             <div class="product-actions">
                                 <a href="#contacto" class="btn btn-primary btn-lg">
@@ -1229,19 +1234,19 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
             </div>
             
-            <!-- Product 2: HAL® S5301 (Imagen Derecha) -->
+            <!-- Product 2: IMMERSE INTERACTIVE (Imagen Derecha) -->
             <div class="product-showcase mb-5 product-reverse" data-aos="fade-up" data-aos-delay="200">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-6 order-lg-2">
                         <div class="product-image-wrapper">
                             <div class="product-badge bg-info">
-                                <i class="bi bi-wifi me-1"></i>
-                                Inalámbrico
+                                <i class="bi bi-vr me-1"></i>
+                                Inmersivo
                             </div>
                             <picture>
-                                <source srcset="<?php echo imageUrl('productos/hal-s5301.webp'); ?>" type="image/webp">
-                                <img src="<?php echo imageUrl('productos/hal-s5301.jpg'); ?>" 
-                                     alt="HAL® S5301 - Simulador de Resuscitación" 
+                                <source srcset="<?php echo imageUrl('productos/immersive-echo.webp'); ?>" type="image/webp">
+                                <img src="<?php echo imageUrl('productos/immersive-echo.jpg'); ?>" 
+                                     alt="Immerse Interactive - Entornos inmersivos" 
                                      class="product-image"
                                      loading="lazy">
                             </picture>
@@ -1249,20 +1254,24 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                     <div class="col-lg-6 order-lg-1">
                         <div class="product-content">
-                            <span class="product-category">Cuidados Críticos</span>
-                            <h3 class="product-title">HAL® S5301</h3>
-                            <p class="product-subtitle">Donde la simulación se convierte en experiencia real</p>
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="product-category me-3">Realidad Inmersiva</span>
+                                <img src="<?php echo imageUrl('aliados/7-Echo Healthcare.webp'); ?>" 
+                                     alt="Echo Healthcare" 
+                                     class="company-logo"
+                                     style="height: 30px; width: auto;">
+                            </div>
+                            <h3 class="product-title">IMMERSE INTERACTIVE</h3>
+                            <p class="product-subtitle">Transforma la educación médica con entornos inmersivos y realistas</p>
                             <p class="product-description">
-                                Combinando audio, expresiones faciales y movimientos realistas para hacer que la 
-                                interacción con los proveedores sea más natural.
+                                El sistema Immersive Interactive de Echo Healthcare convierte cualquier aula o espacio en un entorno virtual envolvente, multisensorial e interactivo, diseñado para fomentar el aprendizaje activo en estudiantes de medicina.
                             </p>
                             <ul class="product-features-list">
-                                <li><i class="bi bi-check-circle-fill text-info"></i> Simula problemas neurológicos con la caída facial realista</li>
-                                <li><i class="bi bi-check-circle-fill text-danger"></i> Respuesta activa al dolor en sitios sensibles a la presión</li>
-                                <li><i class="bi bi-check-circle-fill text-primary"></i> Simula emergencias médicas, quirúrgicas y de trauma</li>
-                                <li><i class="bi bi-check-circle-fill text-success"></i> Fisiología y respuesta automática a intervenciones</li>
-                                <li><i class="bi bi-check-circle-fill text-warning"></i> Reconocimiento automático de fármacos y fluidos</li>
-                                <li><i class="bi bi-check-circle-fill text-secondary"></i> Escenarios SLE™ interdisciplinarios preinstalados</li>
+                                <li><i class="bi bi-check-circle-fill text-info"></i> Entorno virtual envolvente y multisensorial</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Tecnología sin gafas ni auriculares</li>
+                                <li><i class="bi bi-check-circle-fill text-success"></i> Escenarios clínicos realistas</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Estimula la toma de decisiones y colaboración</li>
+                                <li><i class="bi bi-check-circle-fill text-secondary"></i> Mejora la retención del conocimiento</li>
                             </ul>
                             <div class="product-actions">
                                 <a href="#contacto" class="btn btn-info text-white btn-lg">
@@ -1279,19 +1288,19 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
             </div>
             
-            <!-- Product 3: Super TORY® S2220 (Imagen Izquierda) -->
+            <!-- Product 3: LIFECAST (Imagen Izquierda) -->
             <div class="product-showcase mb-5" data-aos="fade-up" data-aos-delay="300">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-6 order-lg-1">
                         <div class="product-image-wrapper">
                             <div class="product-badge bg-warning">
-                                <i class="bi bi-award-fill me-1"></i>
+                                <i class="bi bi-heart-fill me-1"></i>
                                 Pediátrico
                             </div>
                             <picture>
-                                <source srcset="<?php echo imageUrl('productos/super-tory-s2220.webp'); ?>" type="image/webp">
-                                <img src="<?php echo imageUrl('productos/super-tory-s2220.jpg'); ?>" 
-                                     alt="Super TORY® S2220 - Simulador Pediátrico" 
+                                <source srcset="<?php echo imageUrl('productos/lifecast.webp'); ?>" type="image/webp">
+                                <img src="<?php echo imageUrl('productos/lifecast.jpg'); ?>" 
+                                     alt="Lifecast - Simulación pediátrica realista" 
                                      class="product-image"
                                      loading="lazy">
                             </picture>
@@ -1299,20 +1308,25 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                     <div class="col-lg-6 order-lg-2">
                         <div class="product-content">
-                            <span class="product-category">Simulación Pediátrica</span>
-                            <h3 class="product-title">Super TORY® S2220</h3>
-                            <p class="product-subtitle">El realismo neonatal llevado al máximo</p>
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="product-category me-3">Simulación Pediátrica</span>
+                                <img src="<?php echo imageUrl('aliados/7-Lifecast.webp'); ?>" 
+                                     alt="Lifecast" 
+                                     class="company-logo"
+                                     style="height: 30px; width: auto;">
+                            </div>
+                            <h3 class="product-title">LIFECAST</h3>
+                            <p class="product-subtitle">Realismo y precisión en simulación pediátrica</p>
                             <p class="product-description">
-                                Simulación avanzada del recién nacido con movimiento, ventilación y respuesta 
-                                fisiológica real.
+                                Diseñados para ofrecer una experiencia de capacitación médica inigualable, los maniquíes Lifecast para niños pequeños y niños brindan un nivel de realismo anatómico y funcional que transforma la enseñanza y la práctica clínica.
                             </p>
                             <ul class="product-features-list">
-                                <li><i class="bi bi-check-circle-fill text-warning"></i> Movimientos faciales</li>
-                                <li><i class="bi bi-check-circle-fill text-warning"></i> Signos vitales y reacciones en tiempo real</li>
-                                <li><i class="bi bi-check-circle-fill text-warning"></i> Diseño respiratorio que reproduce la respuesta real al soporte ventilatorio</li>
-                                <li><i class="bi bi-check-circle-fill text-warning"></i> Llanto, cianosis y respiración programables al nacer</li>
-                                <li><i class="bi bi-check-circle-fill text-warning"></i> Escenarios SLE™ neonatales listos para uso inmediato</li>
-                                <li><i class="bi bi-check-circle-fill text-warning"></i> Operación totalmente inalámbrica y portátil</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Realismo anatómico y funcional superior</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Ahogamiento pulmonar húmedo y seco</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Hemorragia torácica y sangría</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Efectos de vómito realistas</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Escenarios de rescate acuático</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Emergencias pediátricas complejas</li>
                             </ul>
                             <div class="product-actions">
                                 <a href="#contacto" class="btn btn-warning text-white btn-lg">
@@ -1329,19 +1343,19 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
             </div>
             
-            <!-- Product 4: HAL® S3201 (Imagen Derecha) -->
+            <!-- Product 4: ADAM-X (Imagen Derecha) -->
             <div class="product-showcase product-reverse" data-aos="fade-up" data-aos-delay="400">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-6 order-lg-2">
                         <div class="product-image-wrapper">
                             <div class="product-badge bg-danger">
-                                <i class="bi bi-heart-pulse-fill me-1"></i>
-                                RCP Avanzado
+                                <i class="bi bi-person-fill me-1"></i>
+                                Adulto
                             </div>
                             <picture>
-                                <source srcset="<?php echo imageUrl('productos/hal-s3201.webp'); ?>" type="image/webp">
-                                <img src="<?php echo imageUrl('productos/hal-s3201.jpg'); ?>" 
-                                     alt="HAL® S3201 - Simulador de RCP" 
+                                <source srcset="<?php echo imageUrl('productos/adam-x.webp'); ?>" type="image/webp">
+                                <img src="<?php echo imageUrl('productos/adam-x.jpg'); ?>" 
+                                     alt="ADAM-X - Simulador de paciente adulto" 
                                      class="product-image"
                                      loading="lazy">
                             </picture>
@@ -1349,19 +1363,25 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                     <div class="col-lg-6 order-lg-1">
                         <div class="product-content">
-                            <span class="product-category">Emergencias</span>
-                            <h3 class="product-title">HAL® S3201</h3>
-                            <p class="product-subtitle">Realismo clínico en cada entrenamiento</p>
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="product-category me-3">Simulación Clínica</span>
+                                <img src="<?php echo imageUrl('aliados/8-Adam Rouilly.webp'); ?>" 
+                                     alt="Adam Rouilly" 
+                                     class="company-logo"
+                                     style="height: 30px; width: auto;">
+                            </div>
+                            <h3 class="product-title">ADAM-X</h3>
+                            <p class="product-subtitle">Simulación clínica avanzada con el realismo total de ADAM-X</p>
                             <p class="product-description">
-                                Simulación avanzada para emergencias, cuidados intensivos y medicina general.
+                                ADAM-X Xtreme es un simulador de paciente adulto de alta fidelidad que reproduce fielmente la anatomía y fisiología humana. Destaca por su realismo extremo, con parpadeo, sudoración, secreciones, respiración espontánea y pulsos sincronizados.
                             </p>
                             <ul class="product-features-list">
-                                <li><i class="bi bi-check-circle-fill text-danger"></i> Movimientos faciales</li>
-                                <li><i class="bi bi-check-circle-fill text-danger"></i> Signos vitales y reacciones en tiempo real</li>
-                                <li><i class="bi bi-check-circle-fill text-danger"></i> Diseño respiratorio que reproduce la respuesta real al soporte ventilatorio</li>
-                                <li><i class="bi bi-check-circle-fill text-danger"></i> Llanto, cianosis y respiración programables al nacer</li>
-                                <li><i class="bi bi-check-circle-fill text-danger"></i> Escenarios SLE™ neonatales listos para uso inmediato</li>
-                                <li><i class="bi bi-check-circle-fill text-danger"></i> Operación totalmente inalámbrica y portátil</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Realismo extremo con parpadeo y sudoración</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Secreciones y respiración espontánea</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Pulsos sincronizados y realistas</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Control táctil Command-X</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Escenarios clínicos personalizados</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Entrenamiento integral en vía aérea, RCP y ventilación</li>
                             </ul>
                             <div class="product-actions">
                                 <a href="#contacto" class="btn btn-danger btn-lg">

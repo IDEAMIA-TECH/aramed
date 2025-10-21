@@ -2026,3 +2026,29 @@
         font-size: 14px;
     }
 }
+
+/* ========================================
+   PRODUCTOS - LOGOS DE EMPRESAS
+   ======================================== */
+
+.product-content .company-logo {
+    height: 30px;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.product-content .company-logo:hover {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+@media (max-width: 767.98px) {
+    .product-content .company-logo {
+        height: 25px;
+        max-width: 100px;
+    }
+}
