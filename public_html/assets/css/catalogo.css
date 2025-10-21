@@ -636,6 +636,23 @@
     gap: 0.5rem !important;
 }
 
+/* Clase personalizada para badges de filtros */
+.filter-badge {
+    color: #ffffff !important;
+    background-color: #0066cc !important;
+    border: 2px solid #0066cc !important;
+    font-weight: 600 !important;
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 25px !important;
+    box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2) !important;
+    font-size: 0.8rem !important;
+    margin-right: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
 /* Forzar color blanco en todos los elementos dentro del badge */
 .active-filters .badge,
 .active-filters .badge *,
@@ -650,6 +667,20 @@
     text-shadow: none !important;
 }
 
+/* Estilos específicos para filter-badge */
+.filter-badge,
+.filter-badge *,
+.filter-badge span,
+.filter-badge div,
+.filter-badge p,
+.filter-badge strong,
+.filter-badge em,
+.filter-badge i,
+.filter-badge b {
+    color: #ffffff !important;
+    text-shadow: none !important;
+}
+
 /* Enlaces dentro del badge */
 .active-filters .badge a,
 .active-filters .badge a:hover,
@@ -660,12 +691,33 @@
     text-shadow: none !important;
 }
 
+/* Enlaces dentro de filter-badge */
+.filter-badge a,
+.filter-badge a:hover,
+.filter-badge a:focus,
+.filter-badge a:visited {
+    color: #ffffff !important;
+    text-decoration: none !important;
+    text-shadow: none !important;
+}
+
 .active-filters .badge .btn-close {
     filter: brightness(0) invert(1) !important;
     opacity: 0.8 !important;
 }
 
+/* Botones de cierre en filter-badge */
+.filter-badge .btn-close {
+    filter: brightness(0) invert(1) !important;
+    opacity: 0.8 !important;
+}
+
 .active-filters .badge .btn-close:hover {
+    opacity: 1 !important;
+    transform: scale(1.1);
+}
+
+.filter-badge .btn-close:hover {
     opacity: 1 !important;
     transform: scale(1.1);
 }
