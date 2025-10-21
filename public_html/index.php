@@ -1000,7 +1000,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
             <div class="row g-4">
                 
                 <!-- Service 1: Diseño y Desarrollo -->
-                    <div class="swiper-slide">
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-primary">
@@ -1027,7 +1027,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Service 2: Mantenimiento Preventivo -->
-                    <div class="swiper-slide">
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
                     <div class="service-card h-100 featured">
                         <div class="featured-badge">
                             <i class="bi bi-star-fill me-1"></i> Más Solicitado
@@ -1133,12 +1133,37 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                 </div>
                 
+                <!-- Service 6: Soporte Técnico -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                    <div class="service-card h-100">
+                        <div class="service-icon-wrapper">
+                            <div class="service-icon bg-secondary">
+                                <i class="bi bi-headset" style="font-size: 2.5rem;"></i>
+                            </div>
+                        </div>
+                        <h3 class="service-title">Soporte Técnico</h3>
+                        <p class="service-description">
+                            Asistencia técnica especializada para garantizar el funcionamiento óptimo de sus equipos. 
+                            Nuestro equipo de expertos está disponible para resolver cualquier inconveniente técnico.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Diagnóstico y reparación</li>
+                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Actualización de software</li>
+                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Capacitación en uso</li>
+                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Garantía extendida</li>
+                        </ul>
+                        <a href="#contacto" class="btn btn-outline-secondary w-100 mt-auto service-cta">
+                            Contactar Soporte
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
                 
             </div>
             
             <!-- CTA Section -->
             <div class="row mt-5 pt-4">
-                <div class="col-lg-10 mx-auto" data-aos="fade-up" data-aos-delay="600">
+                <div class="col-lg-10 mx-auto" data-aos="fade-up" data-aos-delay="700">
                     <div class="services-cta-box">
                         <div class="row align-items-center g-4">
                             <div class="col-lg-8">
