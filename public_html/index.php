@@ -398,9 +398,10 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 
                 <!-- Slide 2: VICTORIA® S2200 -->
                 <div class="swiper-slide hero-slide">
-                    <div class="hero-slide-image">
+                    <picture class="hero-slide-image">
+                        <source srcset="<?php echo imageUrl('hero/hero-victoria-s2200.webp'); ?>" type="image/webp">
                         <img src="<?php echo imageUrl('hero/hero-victoria-s2200.jpg'); ?>" alt="VICTORIA S2200 Simulador Obstétrico" loading="lazy">
-                    </div>
+                    </picture>
                     <div class="hero-slide-bg" style="background: transparent;">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
@@ -416,12 +417,15 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                         <h3 class="hero-subtitle h4 text-white mb-4">
                                             El simulador de parto más avanzado del mundo
                                         </h3>
+                                        <p class="hero-description lead text-white mb-4">
+                                            Entrenamiento realista para partos, emergencias y cuidados maternos
+                                        </p>
                                         <ul class="hero-features list-unstyled text-white mb-4">
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Entrenamiento realista para partos y emergencias</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Ojos interactivos con respuesta fisiológica</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 4 abdómenes intercambiables: cesárea, trabajo de parto, hemorragia</li>
+                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Ojos interactivos</li>
+                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 4 abdómenes: vientre para procedimientos de cesárea, trabajo de parto, hemorragia post parto, maniobras de leopold</li>
                                             <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Compatible con monitores y equipos clínicos reales</li>
                                             <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Neonato con signos vitales y respuesta realista</li>
+                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Dos simuladores en un solo modelo: simulación obstétrica y ginecológica</li>
                                         </ul>
                                         <div class="hero-actions d-flex flex-wrap gap-3">
                                             <button class="btn btn-light btn-lg px-5" data-bs-toggle="modal" data-bs-target="#contactModal">
@@ -440,9 +444,10 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 
                 <!-- Slide 3: HAL® S5301 -->
                 <div class="swiper-slide hero-slide">
-                    <div class="hero-slide-image">
+                    <picture class="hero-slide-image">
+                        <source srcset="<?php echo imageUrl('hero/hero-hal-s5301.webp'); ?>" type="image/webp">
                         <img src="<?php echo imageUrl('hero/hero-hal-s5301.jpg'); ?>" alt="HAL S5301 Simulador Avanzado" loading="lazy">
-                    </div>
+                    </picture>
                     <div class="hero-slide-bg" style="background: transparent;">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
@@ -1132,37 +1137,12 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                 </div>
                 
-                <!-- Service 6: Soporte 24/7 (Bonus) -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
-                    <div class="service-card h-100">
-                        <div class="service-icon-wrapper">
-                            <div class="service-icon" style="background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);">
-                                <i class="bi bi-headset"></i>
-                            </div>
-                        </div>
-                        <h3 class="service-title">Soporte Técnico</h3>
-                        <p class="service-description">
-                            Disponibilidad total para resolver cualquier eventualidad. Equipo técnico especializado 
-                            disponible 24 horas, los 7 días de la semana para garantizar la continuidad de sus operaciones.
-                        </p>
-                        <ul class="service-features">
-                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Línea directa de soporte</li>
-                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Atención remota inmediata</li>
-                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Visitas técnicas de emergencia</li>
-                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Base de conocimientos online</li>
-                        </ul>
-                        <a href="#contacto" class="btn btn-outline-secondary w-100 mt-auto service-cta">
-                            Activar Soporte
-                            <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
                 
             </div>
             
             <!-- CTA Section -->
             <div class="row mt-5 pt-4">
-                <div class="col-lg-10 mx-auto" data-aos="fade-up" data-aos-delay="700">
+                <div class="col-lg-10 mx-auto" data-aos="fade-up" data-aos-delay="600">
                     <div class="services-cta-box">
                         <div class="row align-items-center g-4">
                             <div class="col-lg-8">
