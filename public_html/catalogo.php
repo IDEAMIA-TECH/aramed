@@ -527,14 +527,8 @@ function buildFilterUrl($params = []) {
                                     <div class="filter-options">
                                         <?php foreach ($marcas as $marca): ?>
                                         <?php 
-                                        // Usar contadores contextuales si hay filtros, sino usar totales
+                                        // Mostrar el contador contextual (filtrado)
                                         $marca_count = $marca['productos_count'];
-                                        if ($categoria_id > 0 || !empty($busqueda)) {
-                                            // Buscar en los totales para mostrar el contador real
-                                            $total_marca = array_filter($total_marcas, function($tm) use ($marca) { return $tm['id'] == $marca['id']; });
-                                            $total_marca = reset($total_marca);
-                                            $marca_count = $total_marca ? $total_marca['productos_count'] : $marca['productos_count'];
-                                        }
                                         ?>
                                         <div class="form-check">
                                             <input class="form-check-input" 
@@ -574,14 +568,8 @@ function buildFilterUrl($params = []) {
                                     <div class="filter-options">
                                         <?php foreach ($categorias as $categoria): ?>
                                         <?php 
-                                        // Usar contadores contextuales si hay filtros, sino usar totales
+                                        // Mostrar el contador contextual (filtrado)
                                         $categoria_count = $categoria['productos_count'];
-                                        if ($marca_id > 0 || !empty($busqueda)) {
-                                            // Buscar en los totales para mostrar el contador real
-                                            $total_categoria = array_filter($total_categorias, function($tc) use ($categoria) { return $tc['id'] == $categoria['id']; });
-                                            $total_categoria = reset($total_categoria);
-                                            $categoria_count = $total_categoria ? $total_categoria['productos_count'] : $categoria['productos_count'];
-                                        }
                                         ?>
                                         <div class="form-check">
                                             <input class="form-check-input" 
