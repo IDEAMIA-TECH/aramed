@@ -1255,17 +1255,18 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="product-content">
                             <span class="product-category">Cuidados Críticos</span>
                             <h3 class="product-title">HAL® S5301</h3>
-                            <p class="product-subtitle">Simulador Inalámbrico de Resuscitación Cardiopulmonar</p>
+                            <p class="product-subtitle">Donde la simulación se convierte en experiencia real</p>
                             <p class="product-description">
-                                Simulador adulto inalámbrico diseñado para entrenamiento en emergencias y cuidados 
-                                críticos. Incluye sistema avanzado de vías respiratorias, RCP de alta calidad con 
-                                retroalimentación en tiempo real y monitoreo de signos vitales.
+                                Combinando audio, expresiones faciales y movimientos realistas para hacer que la 
+                                interacción con los proveedores sea más natural.
                             </p>
                             <ul class="product-features-list">
-                                <li><i class="bi bi-check-circle-fill text-info"></i> Control inalámbrico total</li>
-                                <li><i class="bi bi-check-circle-fill text-info"></i> RCP con retroalimentación inmediata</li>
-                                <li><i class="bi bi-check-circle-fill text-info"></i> Vías respiratorias avanzadas</li>
-                                <li><i class="bi bi-check-circle-fill text-info"></i> Batería de larga duración</li>
+                                <li><i class="bi bi-check-circle-fill text-info"></i> Simula problemas neurológicos con la caída facial realista</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Respuesta activa al dolor en sitios sensibles a la presión</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Simula emergencias médicas, quirúrgicas y de trauma</li>
+                                <li><i class="bi bi-check-circle-fill text-success"></i> Fisiología y respuesta automática a intervenciones</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Reconocimiento automático de fármacos y fluidos</li>
+                                <li><i class="bi bi-check-circle-fill text-secondary"></i> Escenarios SLE™ interdisciplinarios preinstalados</li>
                             </ul>
                             <div class="product-actions">
                                 <a href="#contacto" class="btn btn-info text-white btn-lg">
@@ -1304,17 +1305,18 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="product-content">
                             <span class="product-category">Simulación Pediátrica</span>
                             <h3 class="product-title">Super TORY® S2220</h3>
-                            <p class="product-subtitle">Simulador Integral Pediátrico Avanzado (6 años)</p>
+                            <p class="product-subtitle">El realismo neonatal llevado al máximo</p>
                             <p class="product-description">
-                                Simulador pediátrico de cuerpo completo que representa a un niño de 6 años. Ideal 
-                                para entrenamiento en cuidados pediátricos de emergencia, procedimientos de enfermería 
-                                y evaluación clínica. Con respuestas fisiológicas realistas.
+                                Simulación avanzada del recién nacido con movimiento, ventilación y respuesta 
+                                fisiológica real.
                             </p>
                             <ul class="product-features-list">
-                                <li><i class="bi bi-check-circle-fill text-warning"></i> Anatomía pediátrica realista</li>
-                                <li><i class="bi bi-check-circle-fill text-warning"></i> Respuestas fisiológicas dinámicas</li>
-                                <li><i class="bi bi-check-circle-fill text-warning"></i> Procedimientos de enfermería</li>
-                                <li><i class="bi bi-check-circle-fill text-warning"></i> Evaluación clínica completa</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Movimientos faciales</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Signos vitales y reacciones en tiempo real</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Diseño respiratorio que reproduce la respuesta real al soporte ventilatorio</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Llanto, cianosis y respiración programables al nacer</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Escenarios SLE™ neonatales listos para uso inmediato</li>
+                                <li><i class="bi bi-check-circle-fill text-warning"></i> Operación totalmente inalámbrica y portátil</li>
                             </ul>
                             <div class="product-actions">
                                 <a href="#contacto" class="btn btn-warning text-white btn-lg">
@@ -1353,17 +1355,17 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="product-content">
                             <span class="product-category">Emergencias</span>
                             <h3 class="product-title">HAL® S3201</h3>
-                            <p class="product-subtitle">Simulador de RCP y Desfibrilación con Trauma</p>
+                            <p class="product-subtitle">Realismo clínico en cada entrenamiento</p>
                             <p class="product-description">
-                                Entrenador avanzado para RCP, desfibrilación y manejo de trauma. Diseñado para 
-                                certificaciones AHA y ERC. Incluye tecnología de reconocimiento de ritmo cardíaco, 
-                                compresiones torácicas y desfibrilación realista.
+                                Simulación avanzada para emergencias, cuidados intensivos y medicina general.
                             </p>
                             <ul class="product-features-list">
-                                <li><i class="bi bi-check-circle-fill text-danger"></i> Certificación AHA y ERC</li>
-                                <li><i class="bi bi-check-circle-fill text-danger"></i> Desfibrilación realista</li>
-                                <li><i class="bi bi-check-circle-fill text-danger"></i> Compresiones con retroalimentación</li>
-                                <li><i class="bi bi-check-circle-fill text-danger"></i> Manejo de vías respiratorias</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Movimientos faciales</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Signos vitales y reacciones en tiempo real</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Diseño respiratorio que reproduce la respuesta real al soporte ventilatorio</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Llanto, cianosis y respiración programables al nacer</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Escenarios SLE™ neonatales listos para uso inmediato</li>
+                                <li><i class="bi bi-check-circle-fill text-danger"></i> Operación totalmente inalámbrica y portátil</li>
                             </ul>
                             <div class="product-actions">
                                 <a href="#contacto" class="btn btn-danger btn-lg">
