@@ -76,12 +76,13 @@ try {
     $total_products = $count_stmt->fetch()['total'];
     $total_pages = ceil($total_products / $per_page);
     
-    // Obtener productos con paginación
+    // Obtener productos con paginación e imágenes
     $products_sql = "
-        SELECT p.*, m.nombre as marca_nombre, c.nombre as categoria_nombre
+        SELECT p.*, m.nombre as marca_nombre, c.nombre as categoria_nombre, i.imagen_url
         FROM catalogo_productos p
         LEFT JOIN catalogo_marcas m ON p.marca_id = m.id
         LEFT JOIN catalogo_categorias c ON p.categoria_id = c.id
+        LEFT JOIN catalogo_producto_imagenes i ON p.id = i.producto_id AND i.es_principal = 1
         WHERE {$where_clause}
         ORDER BY p.destacado DESC, p.nombre ASC
         LIMIT {$per_page} OFFSET {$offset}
@@ -711,14 +712,27 @@ function buildFilterUrl($params = []) {
                                         <?php endif; ?>
                                         
                                         <a href="producto.php?id=<?php echo $product['id']; ?>" class="product-image-link">
-                                            <picture>
-                                                <source srcset="<?php echo imageUrl('productos/' . strtolower($product['codigo']) . '.webp'); ?>" type="image/webp">
-                                                <img src="<?php echo imageUrl('productos/' . strtolower($product['codigo']) . '.jpg'); ?>" 
-                                                     alt="<?php echo esc($product['nombre']); ?>" 
-                                                     class="product-image"
-                                                     loading="lazy"
-                                                     onerror="this.src='<?php echo imageUrl('design/placeholder-product.jpg'); ?>'">
-                                            </picture>
+                                            <?php
+                                            // Usar imagen real de la base de datos si existe
+                                            if (!empty($product['imagen_url'])) {
+                                                $imagen_real = $product['imagen_url'];
+                                                // Convertir ruta relativa a URL completa
+                                                if (strpos($imagen_real, '/assets/') === 0) {
+                                                    $imagen_real = SITE_URL . $imagen_real;
+                                                }
+                                                echo '<img src="' . esc($imagen_real) . '" 
+                                                         alt="' . esc($product['nombre']) . '" 
+                                                         class="product-image"
+                                                         loading="lazy"
+                                                         onerror="this.src=\'' . imageUrl('design/placeholder-product.jpg') . '\'">';
+                                            } else {
+                                                // Fallback: usar imagen placeholder
+                                                echo '<img src="' . imageUrl('design/placeholder-product.jpg') . '" 
+                                                         alt="' . esc($product['nombre']) . '" 
+                                                         class="product-image"
+                                                         loading="lazy">';
+                                            }
+                                            ?>
                                         </a>
                                         
                                         <!-- Overlay con acciones -->
