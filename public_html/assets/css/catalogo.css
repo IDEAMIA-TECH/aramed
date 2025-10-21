@@ -399,30 +399,38 @@
 
 .pagination .page-link {
     color: var(--aramed-primary);
-    border-color: #dee2e6;
-    padding: 0.75rem 1rem;
-    margin: 0 0.25rem;
-    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    padding: 0.5rem 0.75rem;
+    margin: 0 2px;
+    border-radius: 4px;
+    text-decoration: none;
     transition: all 0.3s ease;
 }
 
 .pagination .page-link:hover {
+    color: #fff;
     background-color: var(--aramed-primary);
     border-color: var(--aramed-primary);
-    color: white;
     transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 102, 204, 0.3);
 }
 
 .pagination .page-item.active .page-link {
+    color: #fff;
     background-color: var(--aramed-primary);
     border-color: var(--aramed-primary);
-    box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
+    font-weight: 600;
 }
 
 .pagination .page-item.disabled .page-link {
-    color: #adb5bd;
-    background-color: #f8f9fa;
+    color: #6c757d;
+    background-color: #fff;
     border-color: #dee2e6;
+    cursor: not-allowed;
+}
+
+.pagination .page-link i {
+    font-size: 0.875rem;
 }
 
 /* ========================================

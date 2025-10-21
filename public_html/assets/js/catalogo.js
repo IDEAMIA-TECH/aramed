@@ -139,18 +139,16 @@ const AramedCatalogo = {
     
     /**
      * Inicializar paginación
+     * NOTA: Paginación manejada por el servidor, no por JavaScript
      */
     initPagination: function() {
+        // La paginación se maneja del lado del servidor
+        // No interceptamos los clics para permitir navegación normal
         if (this.elements.pagination) {
             this.elements.pagination.addEventListener('click', (e) => {
+                // Solo agregamos smooth scroll, no prevenimos el comportamiento por defecto
                 if (e.target.classList.contains('page-link')) {
-                    e.preventDefault();
-                    const page = parseInt(e.target.dataset.page);
-                    if (page && page !== this.currentFilters.page) {
-                        this.currentFilters.page = page;
-                        this.renderProducts();
-                        this.scrollToProducts();
-                    }
+                    this.scrollToProducts();
                 }
             });
         }
