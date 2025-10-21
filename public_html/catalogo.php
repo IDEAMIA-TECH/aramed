@@ -90,13 +90,29 @@ try {
     $products_stmt->execute($params);
     $products = $products_stmt->fetchAll();
     
-    // Obtener marcas para filtro
-    $marcas_sql = "SELECT * FROM catalogo_marcas WHERE estado = 'activo' ORDER BY nombre ASC";
+    // Obtener marcas para filtro (solo las que tienen productos)
+    $marcas_sql = "
+        SELECT DISTINCT m.*, COUNT(p.id) as productos_count
+        FROM catalogo_marcas m
+        INNER JOIN catalogo_productos p ON m.id = p.marca_id
+        WHERE m.estado = 'activo' AND p.estado = 'activo'
+        GROUP BY m.id
+        HAVING productos_count > 0
+        ORDER BY m.nombre ASC
+    ";
     $marcas_stmt = $pdo->query($marcas_sql);
     $marcas = $marcas_stmt->fetchAll();
     
-    // Obtener categorías para filtro
-    $categorias_sql = "SELECT * FROM catalogo_categorias WHERE estado = 'activo' ORDER BY nombre ASC";
+    // Obtener categorías para filtro (solo las que tienen productos)
+    $categorias_sql = "
+        SELECT DISTINCT c.*, COUNT(p.id) as productos_count
+        FROM catalogo_categorias c
+        INNER JOIN catalogo_productos p ON c.id = p.categoria_id
+        WHERE c.estado = 'activo' AND p.estado = 'activo'
+        GROUP BY c.id
+        HAVING productos_count > 0
+        ORDER BY c.nombre ASC
+    ";
     $categorias_stmt = $pdo->query($categorias_sql);
     $categorias = $categorias_stmt->fetchAll();
     
@@ -455,8 +471,9 @@ function buildFilterUrl($params = []) {
                                                    value="<?php echo $marca['id']; ?>"
                                                    <?php echo ($marca_id == $marca['id']) ? 'checked' : ''; ?>
                                                    onchange="this.form.submit()">
-                                            <label class="form-check-label" for="marca_<?php echo $marca['id']; ?>">
+                                            <label class="form-check-label <?php echo ($marca_id == $marca['id']) ? 'text-primary fw-semibold' : ''; ?>" for="marca_<?php echo $marca['id']; ?>">
                                                 <?php echo esc($marca['nombre']); ?>
+                                                <span class="text-muted ms-2">(<?php echo $marca['productos_count']; ?>)</span>
                                             </label>
                                         </div>
                                         <?php endforeach; ?>
@@ -491,8 +508,9 @@ function buildFilterUrl($params = []) {
                                                    value="<?php echo $categoria['id']; ?>"
                                                    <?php echo ($categoria_id == $categoria['id']) ? 'checked' : ''; ?>
                                                    onchange="this.form.submit()">
-                                            <label class="form-check-label" for="categoria_<?php echo $categoria['id']; ?>">
+                                            <label class="form-check-label <?php echo ($categoria_id == $categoria['id']) ? 'text-primary fw-semibold' : ''; ?>" for="categoria_<?php echo $categoria['id']; ?>">
                                                 <?php echo esc($categoria['nombre']); ?>
+                                                <span class="text-muted ms-2">(<?php echo $categoria['productos_count']; ?>)</span>
                                             </label>
                                         </div>
                                         <?php endforeach; ?>
@@ -520,6 +538,50 @@ function buildFilterUrl($params = []) {
                      CONTENIDO PRINCIPAL
                      ======================================== -->
                 <div class="col-lg-9">
+                    
+                    <!-- Filtros Activos -->
+                    <?php if ($marca_id || $categoria_id || $busqueda): ?>
+                    <div class="active-filters mb-4">
+                        <div class="d-flex flex-wrap align-items-center">
+                            <span class="me-3 text-muted fw-semibold">
+                                <i class="bi bi-funnel me-1"></i>Filtros aplicados:
+                            </span>
+                            
+                            <?php if ($busqueda): ?>
+                            <span class="badge bg-primary me-2 mb-2">
+                                Búsqueda: "<?php echo esc($busqueda); ?>"
+                                <a href="<?php echo buildFilterUrl(['busqueda' => '']); ?>" class="btn-close btn-close-white ms-2" aria-label="Eliminar filtro de búsqueda"></a>
+                            </span>
+                            <?php endif; ?>
+                            
+                            <?php if ($marca_id): ?>
+                            <?php 
+                            $marca_seleccionada = array_filter($marcas, function($m) use ($marca_id) { return $m['id'] == $marca_id; });
+                            $marca_seleccionada = reset($marca_seleccionada);
+                            ?>
+                            <span class="badge bg-primary me-2 mb-2">
+                                Marca: <?php echo esc($marca_seleccionada['nombre']); ?>
+                                <a href="<?php echo buildFilterUrl(['marca' => '']); ?>" class="btn-close btn-close-white ms-2" aria-label="Eliminar filtro de marca"></a>
+                            </span>
+                            <?php endif; ?>
+                            
+                            <?php if ($categoria_id): ?>
+                            <?php 
+                            $categoria_seleccionada = array_filter($categorias, function($c) use ($categoria_id) { return $c['id'] == $categoria_id; });
+                            $categoria_seleccionada = reset($categoria_seleccionada);
+                            ?>
+                            <span class="badge bg-primary me-2 mb-2">
+                                Categoría: <?php echo esc($categoria_seleccionada['nombre']); ?>
+                                <a href="<?php echo buildFilterUrl(['categoria' => '']); ?>" class="btn-close btn-close-white ms-2" aria-label="Eliminar filtro de categoría"></a>
+                            </span>
+                            <?php endif; ?>
+                            
+                            <a href="catalogo.php" class="btn btn-sm btn-outline-secondary clear-filters">
+                                <i class="bi bi-x-circle me-1"></i>Limpiar todos
+                            </a>
+                        </div>
+                    </div>
+                    <?php endif; ?>
                     
                     <!-- Barra de Resultados -->
                     <div class="results-bar mb-4">
