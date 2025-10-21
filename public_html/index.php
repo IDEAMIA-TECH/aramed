@@ -1227,8 +1227,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="product-content">
                             <div class="d-flex align-items-center mb-3">
                                 <span class="product-category me-3">Plataforma Educativa</span>
-                                <img src="<?php echo imageUrl('aliados/7-3B Scientific.webp'); ?>" 
-                                     alt="3B Scientific" 
+                                <img src="<?php echo imageUrl('aliados/3-Anatomage.webp'); ?>" 
+                                     alt="Anatomage" 
                                      class="company-logo"
                                      style="height: 30px; width: auto;">
                             </div>
@@ -1281,8 +1281,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="product-content">
                             <div class="d-flex align-items-center mb-3">
                                 <span class="product-category me-3">Realidad Inmersiva</span>
-                                <img src="<?php echo imageUrl('aliados/7-Echo Healthcare.webp'); ?>" 
-                                     alt="Echo Healthcare" 
+                                <img src="<?php echo imageUrl('aliados/14-immersive.webp'); ?>" 
+                                     alt="Immersive Interactive" 
                                      class="company-logo"
                                      style="height: 30px; width: auto;">
                             </div>
@@ -1390,8 +1390,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="product-content">
                             <div class="d-flex align-items-center mb-3">
                                 <span class="product-category me-3">Simulación Clínica</span>
-                                <img src="<?php echo imageUrl('aliados/8-Adam Rouilly.webp'); ?>" 
-                                     alt="Adam Rouilly" 
+                                <img src="<?php echo imageUrl('aliados/13-Medical X.webp'); ?>" 
+                                     alt="Medical X" 
                                      class="company-logo"
                                      style="height: 30px; width: auto;">
                             </div>
