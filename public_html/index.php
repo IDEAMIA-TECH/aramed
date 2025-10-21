@@ -367,19 +367,13 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                         
                                         <!-- Stats -->
                                         <div class="hero-stats row g-4 mt-4">
-                                            <div class="col-4">
+                                            <div class="col-6">
                                                 <div class="stat-item">
                                                     <h3 class="stat-number text-white fw-bold mb-1">20+</h3>
                                                     <p class="stat-label text-white-75 small mb-0">Años</p>
                                                 </div>
                                             </div>
-                                            <div class="col-4">
-                                                <div class="stat-item">
-                                                    <h3 class="stat-number text-white fw-bold mb-1">500+</h3>
-                                                    <p class="stat-label text-white-75 small mb-0">Clientes</p>
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
+                                            <div class="col-6">
                                                 <div class="stat-item">
                                                     <h3 class="stat-number text-white fw-bold mb-1">100%</h3>
                                                     <p class="stat-label text-white-75 small mb-0">Satisfacción</p>
@@ -2292,4 +2286,5 @@ $pageImage = imageUrl('design/logo-og.jpg');
     
 </body>
 </html>
+
 
