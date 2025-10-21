@@ -343,7 +343,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 <div class="col-lg-8 col-xl-7">
                                     <div class="hero-content" data-aos="fade-up">
                                         <div class="hero-logo mb-4">
-                                            <img src="<?php echo imageUrl('design/logo.png'); ?>" alt="Aramed y Laboratorios" height="80" class="img-fluid">
+                                            <img src="<?php echo imageUrl('design/logo.png'); ?>" alt="Aramed y Laboratorios" height="150" class="img-fluid">
                                         </div>
                                         <span class="hero-badge badge bg-white text-primary mb-3 px-3 py-2">
                                             <i class="bi bi-award-fill me-2"></i>
