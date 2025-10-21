@@ -1000,7 +1000,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
             <div class="row g-4">
                 
                 <!-- Service 1: Diseño y Desarrollo -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="swiper-slide">
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-primary">
@@ -1027,7 +1027,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Service 2: Mantenimiento Preventivo -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="swiper-slide">
                     <div class="service-card h-100 featured">
                         <div class="featured-badge">
                             <i class="bi bi-star-fill me-1"></i> Más Solicitado
@@ -1422,70 +1422,71 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </p>
             </div>
             
-            <!-- Grid de Aliados -->
-            <div class="row g-4">
-                
-                <!-- Aliado 1: GAUMARD -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/1-Gaumard.webp'); ?>" 
-                                 alt="Gaumard Scientific" 
-                                 class="aliado-logo"
-                                 loading="lazy">
-                        </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">GAUMARD</h4>
-                            <p class="aliado-description">
-                                Gaumard Scientific desarrolla simuladores médicos de alta fidelidad que transforman 
-                                la enseñanza clínica. Su innovación tecnológica complementa nuestra misión de ofrecer 
-                                experiencias de aprendizaje realistas y seguras en salud.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 2: MEDICAL X -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/13-Medical X.webp'); ?>" 
-                                 alt="Medical-X" 
-                                 class="aliado-logo"
-                                 loading="lazy">
-                        </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">MEDICAL X</h4>
-                            <p class="aliado-description">
-                                Medical-X desarrolla simuladores médicos de alta fidelidad para entrenamiento clínico. 
-                                Su tecnología avanzada potencia a Aramed en formación realista y segura.
-                            </p>
+            <!-- Carrusel de Aliados -->
+            <div class="aliados-detalle-swiper swiper">
+                <div class="swiper-wrapper">
+                    
+                    <!-- Aliado 1: GAUMARD -->
+                    <div class="swiper-slide">
+                        <div class="aliado-detalle-card h-100">
+                            <div class="aliado-logo-wrapper">
+                                <img src="<?php echo imageUrl('aliados/1-Gaumard.webp'); ?>" 
+                                     alt="Gaumard Scientific" 
+                                     class="aliado-logo"
+                                     loading="lazy">
+                            </div>
+                            <div class="aliado-info">
+                                <h4 class="aliado-name">GAUMARD</h4>
+                                <p class="aliado-description">
+                                    Gaumard Scientific desarrolla simuladores médicos de alta fidelidad que transforman 
+                                    la enseñanza clínica. Su innovación tecnológica complementa nuestra misión de ofrecer 
+                                    experiencias de aprendizaje realistas y seguras en salud.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
                 
-                <!-- Aliado 3: ANATOMAGE -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/3-Anatomage.webp'); ?>" 
-                                 alt="Anatomage" 
-                                 class="aliado-logo"
-                                 loading="lazy">
-                        </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">ANATOMAGE</h4>
-                            <p class="aliado-description">
-                                Anatomage crea plataformas 3D interactivas que revolucionan la enseñanza anatómica 
-                                mediante visualizaciones precisas del cuerpo humano. Su innovación eleva nuestros 
-                                estándares en simulación médica educativa.
-                            </p>
+                    <!-- Aliado 2: MEDICAL X -->
+                    <div class="swiper-slide">
+                        <div class="aliado-detalle-card h-100">
+                            <div class="aliado-logo-wrapper">
+                                <img src="<?php echo imageUrl('aliados/13-Medical X.webp'); ?>" 
+                                     alt="Medical-X" 
+                                     class="aliado-logo"
+                                     loading="lazy">
+                            </div>
+                            <div class="aliado-info">
+                                <h4 class="aliado-name">MEDICAL X</h4>
+                                <p class="aliado-description">
+                                    Medical-X desarrolla simuladores médicos de alta fidelidad para entrenamiento clínico. 
+                                    Su tecnología avanzada potencia a Aramed en formación realista y segura.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                
+                    <!-- Aliado 3: ANATOMAGE -->
+                    <div class="swiper-slide">
+                        <div class="aliado-detalle-card h-100">
+                            <div class="aliado-logo-wrapper">
+                                <img src="<?php echo imageUrl('aliados/3-Anatomage.webp'); ?>" 
+                                     alt="Anatomage" 
+                                     class="aliado-logo"
+                                     loading="lazy">
+                            </div>
+                            <div class="aliado-info">
+                                <h4 class="aliado-name">ANATOMAGE</h4>
+                                <p class="aliado-description">
+                                    Anatomage crea plataformas 3D interactivas que revolucionan la enseñanza anatómica 
+                                    mediante visualizaciones precisas del cuerpo humano. Su innovación eleva nuestros 
+                                    estándares en simulación médica educativa.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 
                 <!-- Aliado 4: SARATOGA -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/15-Saratoga.webp'); ?>" 
@@ -1505,7 +1506,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Aliado 5: 3B SCIENTIFIC -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/7-3B Scientific.webp'); ?>" 
@@ -1524,7 +1525,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Aliado 6: 3D Med -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/6-3D-Med.webp'); ?>" 
@@ -1544,7 +1545,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Aliado 7: SIMBODIES (SafeGuard) -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/17-Safeguard Medical (Simbodies).webp'); ?>" 
@@ -1563,7 +1564,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Aliado 8: STRATEGIC OPERATIONS -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/5-Simulab.webp'); ?>" 
@@ -1583,7 +1584,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Aliado 9: KYOTO KAGAKU -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/2-Kyoto-Kagaku.webp'); ?>" 
@@ -1602,7 +1603,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Aliado 10: SIMX -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/11-SimX.webp'); ?>" 
@@ -1621,7 +1622,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Aliado 11: NASCO -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/16-Nasco Healthcare.webp'); ?>" 
@@ -1641,7 +1642,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Aliado 12: TRUCORP -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/10-TrueCorp.webp'); ?>" 
@@ -1661,7 +1662,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Aliado 13: ERLER ZIMMER -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/9-Erler-Zimmer.webp'); ?>" 
@@ -1680,7 +1681,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Aliado 14: VATA -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/12-VATA.webp'); ?>" 
@@ -1700,7 +1701,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Aliado 15: ADAM ROUILLY -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/8-Adam Rouilly.webp'); ?>" 
@@ -1719,7 +1720,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Aliado 16: RUDIGER -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/4-Rudiger.webp'); ?>" 
@@ -1739,7 +1740,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
                 
                 <!-- Aliado 17: ECHO HEALTHCARE -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
                             <img src="<?php echo imageUrl('aliados/7-Echo Healthcare.webp'); ?>" 
@@ -1758,6 +1759,12 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                 </div>
                 
+                </div>
+                
+                <!-- Navegación del carrusel -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
             </div>
             
             <!-- CTA -->

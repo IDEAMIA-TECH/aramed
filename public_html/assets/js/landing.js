@@ -22,6 +22,7 @@
         init: function() {
             this.initHeroSlider();
             this.initAliadosCarousel();
+            this.initAliadosDetalleCarousel();
             this.initTestimonios();
             this.initCounters();
             // console.log('✅ Landing Page JS initialized');
@@ -267,6 +268,63 @@
             
             counters.forEach(counter => observer.observe(counter));
             // console.log(`✅ ${counters.length} contadores inicializados`);
+        },
+        
+        /**
+         * Aliados Detalle Carousel (Swiper)
+         * Carrusel rotatorio automático para la sección de aliados con descripciones
+         */
+        initAliadosDetalleCarousel: function() {
+            const aliadosDetalleCarousel = document.querySelector('.aliados-detalle-swiper');
+            
+            if (!aliadosDetalleCarousel) {
+                // console.log('ℹ️ Aliados detalle carousel no encontrado');
+                return;
+            }
+            
+            // Configuración del carrusel
+            const aliadosDetalleSwiper = new Swiper('.aliados-detalle-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                loop: true,
+                autoplay: {
+                    delay: 4000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 30,
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                        spaceBetween: 40,
+                    }
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                    dynamicBullets: true,
+                },
+                // Efectos
+                effect: 'slide',
+                speed: 800,
+                // Accesibilidad
+                a11y: {
+                    enabled: true,
+                    prevSlideMessage: 'Aliado anterior',
+                    nextSlideMessage: 'Aliado siguiente',
+                    firstSlideMessage: 'Primer aliado',
+                    lastSlideMessage: 'Último aliado',
+                }
+            });
+            
+            // console.log('✅ Aliados detalle carousel initialized');
         },
         
         /**
