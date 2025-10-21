@@ -333,18 +333,22 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 
                 <!-- Slide 1: Principal -->
                 <div class="swiper-slide hero-slide">
-                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(0, 102, 204, 0.95) 0%, rgba(44, 62, 80, 0.95) 100%), url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1920 1080%22><rect fill=%22%23f0f0f0%22 width=%221920%22 height=%221080%22/></svg>') center/cover;">
+                    <picture class="hero-slide-image">
+                        <source srcset="<?php echo imageUrl('hero/hero-principal.webp'); ?>" type="image/webp">
+                        <img src="<?php echo imageUrl('hero/hero-principal.jpg'); ?>" alt="Aramed y Laboratorios - Simuladores médicos" loading="lazy">
+                    </picture>
+                    <div class="hero-slide-bg" style="background: transparent;">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-8 col-xl-7">
                                     <div class="hero-content" data-aos="fade-up">
+                                        <div class="hero-logo mb-4">
+                                            <img src="<?php echo imageUrl('design/logo.png'); ?>" alt="Aramed y Laboratorios" height="80" class="img-fluid">
+                                        </div>
                                         <span class="hero-badge badge bg-white text-primary mb-3 px-3 py-2">
                                             <i class="bi bi-award-fill me-2"></i>
                                             +20 Años de Experiencia
                                         </span>
-                                        <h1 class="hero-title display-2 fw-bold text-white mb-4">
-                                            Aramed y Laboratorio
-                                        </h1>
                                         <h2 class="hero-subtitle h3 text-white mb-4 fw-normal">
                                             Simuladores médicos para la enseñanza
                                         </h2>
@@ -397,7 +401,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     <div class="hero-slide-image">
                         <img src="<?php echo imageUrl('hero/hero-victoria-s2200.jpg'); ?>" alt="VICTORIA S2200 Simulador Obstétrico" loading="lazy">
                     </div>
-                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(142, 68, 173, 0.9) 0%, rgba(74, 35, 90, 0.9) 100%);">
+                    <div class="hero-slide-bg" style="background: transparent;">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
@@ -439,7 +443,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     <div class="hero-slide-image">
                         <img src="<?php echo imageUrl('hero/hero-hal-s5301.jpg'); ?>" alt="HAL S5301 Simulador Avanzado" loading="lazy">
                     </div>
-                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(52, 152, 219, 0.9) 0%, rgba(41, 128, 185, 0.9) 100%);">
+                    <div class="hero-slide-bg" style="background: transparent;">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
@@ -482,7 +486,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <source srcset="<?php echo imageUrl('hero/hero-hal-s3201.webp'); ?>" type="image/webp">
                         <img src="<?php echo imageUrl('hero/hero-hal-s3201.jpg'); ?>" alt="HAL S3201 UCI y Emergencias" loading="lazy">
                     </picture>
-                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(46, 204, 113, 0.9) 0%, rgba(39, 174, 96, 0.9) 100%);">
+                    <div class="hero-slide-bg" style="background: transparent;">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
@@ -525,7 +529,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <source srcset="<?php echo imageUrl('hero/hero-super-tory-s2220.webp'); ?>" type="image/webp">
                         <img src="<?php echo imageUrl('hero/hero-super-tory-s2220.jpg'); ?>" alt="Super TORY S2220 Simulador Neonatal" loading="lazy">
                     </picture>
-                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(230, 126, 34, 0.9) 0%, rgba(211, 84, 0, 0.9) 100%);">
+                    <div class="hero-slide-bg" style="background: transparent;">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
@@ -568,7 +572,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <source srcset="<?php echo imageUrl('hero/hero-susie-s2400.webp'); ?>" type="image/webp">
                         <img src="<?php echo imageUrl('hero/hero-susie-s2400.jpg'); ?>" alt="SUSIE S2400 Simulador de Enfermería" loading="lazy">
                     </picture>
-                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(231, 76, 60, 0.9) 0%, rgba(192, 57, 43, 0.9) 100%);">
+                    <div class="hero-slide-bg" style="background: transparent;">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
