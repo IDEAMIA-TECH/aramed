@@ -953,25 +953,19 @@ $pageImage = imageUrl('design/logo-og.jpg');
             <!-- Stats Bar -->
             <div class="stats-bar mt-5 pt-4" data-aos="fade-up" data-aos-delay="300">
                 <div class="row g-4 text-center">
-                    <div class="col-6 col-md-3">
-                        <div class="stat-box">
-                            <h3 class="stat-number text-primary mb-2" data-target="500">0</h3>
-                            <p class="stat-label text-muted mb-0">Instituciones Equipadas</p>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md-4">
                         <div class="stat-box">
                             <h3 class="stat-number text-primary mb-2" data-target="20">0</h3>
                             <p class="stat-label text-muted mb-0">Años de Experiencia</p>
                         </div>
                     </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md-4">
                         <div class="stat-box">
                             <h3 class="stat-number text-primary mb-2" data-target="16">0</h3>
                             <p class="stat-label text-muted mb-0">Marcas Representadas</p>
                         </div>
                     </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md-4">
                         <div class="stat-box">
                             <h3 class="stat-number text-primary mb-2" data-target="100">0</h3>
                             <p class="stat-label text-muted mb-0">% Satisfacción</p>
@@ -1146,7 +1140,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 <i class="bi bi-headset"></i>
                             </div>
                         </div>
-                        <h3 class="service-title">Soporte Técnico 24/7</h3>
+                        <h3 class="service-title">Soporte Técnico</h3>
                         <p class="service-description">
                             Disponibilidad total para resolver cualquier eventualidad. Equipo técnico especializado 
                             disponible 24 horas, los 7 días de la semana para garantizar la continuidad de sus operaciones.
