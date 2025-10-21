@@ -1194,8 +1194,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 Más Vendido
                             </div>
                             <picture>
-                                <source srcset="<?php echo imageUrl('productos/anatomage-table.webp'); ?>" type="image/webp">
-                                <img src="<?php echo imageUrl('productos/anatomage-table.jpg'); ?>" 
+                                <source srcset="<?php echo imageUrl('productos/victoria-s2200.webp'); ?>" type="image/webp">
+                                <img src="<?php echo imageUrl('productos/victoria-s2200.jpg'); ?>" 
                                      alt="VICTORIA® S2200 - Simulador Maternal" 
                                      class="product-image"
                                      loading="lazy">
@@ -1243,8 +1243,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 Inalámbrico
                             </div>
                             <picture>
-                                <source srcset="<?php echo imageUrl('productos/immersive-echo.webp'); ?>" type="image/webp">
-                                <img src="<?php echo imageUrl('productos/immersive-echo.jpg'); ?>" 
+                                <source srcset="<?php echo imageUrl('productos/hal-s5301.webp'); ?>" type="image/webp">
+                                <img src="<?php echo imageUrl('productos/hal-s5301.jpg'); ?>" 
                                      alt="HAL® S5301 - Simulador de Resuscitación" 
                                      class="product-image"
                                      loading="lazy">
@@ -1292,8 +1292,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 Pediátrico
                             </div>
                             <picture>
-                                <source srcset="<?php echo imageUrl('productos/lifecast.webp'); ?>" type="image/webp">
-                                <img src="<?php echo imageUrl('productos/lifecast.jpg'); ?>" 
+                                <source srcset="<?php echo imageUrl('productos/super-tory-s2220.webp'); ?>" type="image/webp">
+                                <img src="<?php echo imageUrl('productos/super-tory-s2220.jpg'); ?>" 
                                      alt="Super TORY® S2220 - Simulador Pediátrico" 
                                      class="product-image"
                                      loading="lazy">
@@ -1341,8 +1341,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 RCP Avanzado
                             </div>
                             <picture>
-                                <source srcset="<?php echo imageUrl('productos/adam-x.webp'); ?>" type="image/webp">
-                                <img src="<?php echo imageUrl('productos/adam-x.jpg'); ?>" 
+                                <source srcset="<?php echo imageUrl('productos/hal-s3201.webp'); ?>" type="image/webp">
+                                <img src="<?php echo imageUrl('productos/hal-s3201.jpg'); ?>" 
                                      alt="HAL® S3201 - Simulador de RCP" 
                                      class="product-image"
                                      loading="lazy">
