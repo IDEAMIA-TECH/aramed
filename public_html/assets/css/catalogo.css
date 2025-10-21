@@ -616,7 +616,11 @@
     border-left: 5px solid var(--aramed-primary);
 }
 
-.active-filters .badge {
+/* Filtros aplicados - Estilos con máxima especificidad */
+.active-filters .badge,
+.active-filters .badge.bg-primary,
+.active-filters span.badge,
+.active-filters span.badge.bg-primary {
     color: #ffffff !important;
     background-color: var(--aramed-primary) !important;
     border: 2px solid var(--aramed-primary) !important;
@@ -627,26 +631,33 @@
     font-size: 0.8rem !important;
     margin-right: 0.5rem !important;
     margin-bottom: 0.5rem !important;
-}
-
-.active-filters .badge a {
-    color: #ffffff !important;
-    text-decoration: none !important;
-}
-
-/* Asegurar que todo el texto dentro del badge sea visible */
-.active-filters .badge,
-.active-filters .badge *,
-.active-filters .badge span,
-.active-filters .badge div {
-    color: #ffffff !important;
-}
-
-/* Estilos específicos para el texto del filtro */
-.active-filters .badge {
     display: inline-flex !important;
     align-items: center !important;
     gap: 0.5rem !important;
+}
+
+/* Forzar color blanco en todos los elementos dentro del badge */
+.active-filters .badge,
+.active-filters .badge *,
+.active-filters .badge span,
+.active-filters .badge div,
+.active-filters .badge p,
+.active-filters .badge strong,
+.active-filters .badge em,
+.active-filters .badge i,
+.active-filters .badge b {
+    color: #ffffff !important;
+    text-shadow: none !important;
+}
+
+/* Enlaces dentro del badge */
+.active-filters .badge a,
+.active-filters .badge a:hover,
+.active-filters .badge a:focus,
+.active-filters .badge a:visited {
+    color: #ffffff !important;
+    text-decoration: none !important;
+    text-shadow: none !important;
 }
 
 .active-filters .badge .btn-close {
