@@ -90,8 +90,72 @@ try {
     $products_stmt->execute($params);
     $products = $products_stmt->fetchAll();
     
-    // Obtener marcas para filtro (solo las que tienen productos)
+    // Obtener marcas para filtro (solo las que tienen productos con filtros aplicados)
+    $marcas_where = ['m.estado = "activo"', 'p.estado = "activo"'];
+    $marcas_params = [];
+    
+    // Aplicar filtros contextuales para marcas
+    if ($categoria_id > 0) {
+        $marcas_where[] = 'p.categoria_id = ?';
+        $marcas_params[] = $categoria_id;
+    }
+    
+    if (!empty($busqueda)) {
+        $marcas_where[] = '(p.nombre LIKE ? OR p.descripcion_corta LIKE ? OR p.descripcion_larga LIKE ?)';
+        $search_term = "%{$busqueda}%";
+        $marcas_params[] = $search_term;
+        $marcas_params[] = $search_term;
+        $marcas_params[] = $search_term;
+    }
+    
+    $marcas_where_clause = implode(' AND ', $marcas_where);
     $marcas_sql = "
+        SELECT DISTINCT m.*, COUNT(p.id) as productos_count
+        FROM catalogo_marcas m
+        INNER JOIN catalogo_productos p ON m.id = p.marca_id
+        WHERE {$marcas_where_clause}
+        GROUP BY m.id
+        HAVING productos_count > 0
+        ORDER BY m.nombre ASC
+    ";
+    $marcas_stmt = $pdo->prepare($marcas_sql);
+    $marcas_stmt->execute($marcas_params);
+    $marcas = $marcas_stmt->fetchAll();
+    
+    // Obtener categorías para filtro (solo las que tienen productos con filtros aplicados)
+    $categorias_where = ['c.estado = "activo"', 'p.estado = "activo"'];
+    $categorias_params = [];
+    
+    // Aplicar filtros contextuales para categorías
+    if ($marca_id > 0) {
+        $categorias_where[] = 'p.marca_id = ?';
+        $categorias_params[] = $marca_id;
+    }
+    
+    if (!empty($busqueda)) {
+        $categorias_where[] = '(p.nombre LIKE ? OR p.descripcion_corta LIKE ? OR p.descripcion_larga LIKE ?)';
+        $search_term = "%{$busqueda}%";
+        $categorias_params[] = $search_term;
+        $categorias_params[] = $search_term;
+        $categorias_params[] = $search_term;
+    }
+    
+    $categorias_where_clause = implode(' AND ', $categorias_where);
+    $categorias_sql = "
+        SELECT DISTINCT c.*, COUNT(p.id) as productos_count
+        FROM catalogo_categorias c
+        INNER JOIN catalogo_productos p ON c.id = p.categoria_id
+        WHERE {$categorias_where_clause}
+        GROUP BY c.id
+        HAVING productos_count > 0
+        ORDER BY c.nombre ASC
+    ";
+    $categorias_stmt = $pdo->prepare($categorias_sql);
+    $categorias_stmt->execute($categorias_params);
+    $categorias = $categorias_stmt->fetchAll();
+    
+    // Obtener contadores totales para mostrar cuando no hay filtros
+    $total_marcas_sql = "
         SELECT DISTINCT m.*, COUNT(p.id) as productos_count
         FROM catalogo_marcas m
         INNER JOIN catalogo_productos p ON m.id = p.marca_id
@@ -100,11 +164,10 @@ try {
         HAVING productos_count > 0
         ORDER BY m.nombre ASC
     ";
-    $marcas_stmt = $pdo->query($marcas_sql);
-    $marcas = $marcas_stmt->fetchAll();
+    $total_marcas_stmt = $pdo->query($total_marcas_sql);
+    $total_marcas = $total_marcas_stmt->fetchAll();
     
-    // Obtener categorías para filtro (solo las que tienen productos)
-    $categorias_sql = "
+    $total_categorias_sql = "
         SELECT DISTINCT c.*, COUNT(p.id) as productos_count
         FROM catalogo_categorias c
         INNER JOIN catalogo_productos p ON c.id = p.categoria_id
@@ -113,8 +176,8 @@ try {
         HAVING productos_count > 0
         ORDER BY c.nombre ASC
     ";
-    $categorias_stmt = $pdo->query($categorias_sql);
-    $categorias = $categorias_stmt->fetchAll();
+    $total_categorias_stmt = $pdo->query($total_categorias_sql);
+    $total_categorias = $total_categorias_stmt->fetchAll();
     
 } catch (Exception $e) {
     error_log("Error en catálogo: " . $e->getMessage());
@@ -463,6 +526,16 @@ function buildFilterUrl($params = []) {
                                     </h5>
                                     <div class="filter-options">
                                         <?php foreach ($marcas as $marca): ?>
+                                        <?php 
+                                        // Usar contadores contextuales si hay filtros, sino usar totales
+                                        $marca_count = $marca['productos_count'];
+                                        if ($categoria_id > 0 || !empty($busqueda)) {
+                                            // Buscar en los totales para mostrar el contador real
+                                            $total_marca = array_filter($total_marcas, function($tm) use ($marca) { return $tm['id'] == $marca['id']; });
+                                            $total_marca = reset($total_marca);
+                                            $marca_count = $total_marca ? $total_marca['productos_count'] : $marca['productos_count'];
+                                        }
+                                        ?>
                                         <div class="form-check">
                                             <input class="form-check-input" 
                                                    type="radio" 
@@ -473,7 +546,7 @@ function buildFilterUrl($params = []) {
                                                    onchange="this.form.submit()">
                                             <label class="form-check-label <?php echo ($marca_id == $marca['id']) ? 'text-primary fw-semibold' : ''; ?>" for="marca_<?php echo $marca['id']; ?>">
                                                 <?php echo esc($marca['nombre']); ?>
-                                                <span class="text-muted ms-2">(<?php echo $marca['productos_count']; ?>)</span>
+                                                <span class="text-muted ms-2">(<?php echo $marca_count; ?>)</span>
                                             </label>
                                         </div>
                                         <?php endforeach; ?>
@@ -500,6 +573,16 @@ function buildFilterUrl($params = []) {
                                     </h5>
                                     <div class="filter-options">
                                         <?php foreach ($categorias as $categoria): ?>
+                                        <?php 
+                                        // Usar contadores contextuales si hay filtros, sino usar totales
+                                        $categoria_count = $categoria['productos_count'];
+                                        if ($marca_id > 0 || !empty($busqueda)) {
+                                            // Buscar en los totales para mostrar el contador real
+                                            $total_categoria = array_filter($total_categorias, function($tc) use ($categoria) { return $tc['id'] == $categoria['id']; });
+                                            $total_categoria = reset($total_categoria);
+                                            $categoria_count = $total_categoria ? $total_categoria['productos_count'] : $categoria['productos_count'];
+                                        }
+                                        ?>
                                         <div class="form-check">
                                             <input class="form-check-input" 
                                                    type="radio" 
@@ -510,7 +593,7 @@ function buildFilterUrl($params = []) {
                                                    onchange="this.form.submit()">
                                             <label class="form-check-label <?php echo ($categoria_id == $categoria['id']) ? 'text-primary fw-semibold' : ''; ?>" for="categoria_<?php echo $categoria['id']; ?>">
                                                 <?php echo esc($categoria['nombre']); ?>
-                                                <span class="text-muted ms-2">(<?php echo $categoria['productos_count']; ?>)</span>
+                                                <span class="text-muted ms-2">(<?php echo $categoria_count; ?>)</span>
                                             </label>
                                         </div>
                                         <?php endforeach; ?>
