@@ -620,8 +620,8 @@ function buildFilterUrl($params = []) {
                             </span>
                             
                             <?php if ($busqueda): ?>
-                            <span class="badge filter-badge me-2 mb-2">
-                                <span>Búsqueda: "<?php echo esc($busqueda); ?>"</span>
+                            <span class="badge filter-badge me-2 mb-2" style="color: #ffffff !important; background-color: #0066cc !important; border: 2px solid #0066cc !important; font-weight: 600 !important; padding: 0.5rem 0.75rem !important; border-radius: 25px !important; box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2) !important; font-size: 0.8rem !important; display: inline-flex !important; align-items: center !important; gap: 0.5rem !important;">
+                                <span style="color: #ffffff !important;">Búsqueda: "<?php echo esc($busqueda); ?>"</span>
                                 <a href="<?php echo buildFilterUrl(['busqueda' => '']); ?>" class="btn-close btn-close-white ms-2" aria-label="Eliminar filtro de búsqueda"></a>
                             </span>
                             <?php endif; ?>
@@ -631,8 +631,8 @@ function buildFilterUrl($params = []) {
                             $marca_seleccionada = array_filter($marcas, function($m) use ($marca_id) { return $m['id'] == $marca_id; });
                             $marca_seleccionada = reset($marca_seleccionada);
                             ?>
-                            <span class="badge filter-badge me-2 mb-2">
-                                <span>Marca: <?php echo esc($marca_seleccionada['nombre']); ?></span>
+                            <span class="badge filter-badge me-2 mb-2" style="color: #ffffff !important; background-color: #0066cc !important; border: 2px solid #0066cc !important; font-weight: 600 !important; padding: 0.5rem 0.75rem !important; border-radius: 25px !important; box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2) !important; font-size: 0.8rem !important; display: inline-flex !important; align-items: center !important; gap: 0.5rem !important;">
+                                <span style="color: #ffffff !important;">Marca: <?php echo esc($marca_seleccionada['nombre']); ?></span>
                                 <a href="<?php echo buildFilterUrl(['marca' => '']); ?>" class="btn-close btn-close-white ms-2" aria-label="Eliminar filtro de marca"></a>
                             </span>
                             <?php endif; ?>
@@ -642,8 +642,8 @@ function buildFilterUrl($params = []) {
                             $categoria_seleccionada = array_filter($categorias, function($c) use ($categoria_id) { return $c['id'] == $categoria_id; });
                             $categoria_seleccionada = reset($categoria_seleccionada);
                             ?>
-                            <span class="badge filter-badge me-2 mb-2">
-                                <span>Categoría: <?php echo esc($categoria_seleccionada['nombre']); ?></span>
+                            <span class="badge filter-badge me-2 mb-2" style="color: #ffffff !important; background-color: #0066cc !important; border: 2px solid #0066cc !important; font-weight: 600 !important; padding: 0.5rem 0.75rem !important; border-radius: 25px !important; box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2) !important; font-size: 0.8rem !important; display: inline-flex !important; align-items: center !important; gap: 0.5rem !important;">
+                                <span style="color: #ffffff !important;">Categoría: <?php echo esc($categoria_seleccionada['nombre']); ?></span>
                                 <a href="<?php echo buildFilterUrl(['categoria' => '']); ?>" class="btn-close btn-close-white ms-2" aria-label="Eliminar filtro de categoría"></a>
                             </span>
                             <?php endif; ?>
