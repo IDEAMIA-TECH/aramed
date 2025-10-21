@@ -24,9 +24,6 @@ $nav_items = [
                  width="auto"
                  class="navbar-logo"
                  onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%2250%22%3E%3Ctext x=%2210%22 y=%2235%22 font-family=%22Arial%22 font-size=%2224%22 font-weight=%22bold%22 fill=%22%230066CC%22%3EAramed%3C/text%3E%3C/svg%3E';">
-            <span class="navbar-brand-text ms-2 d-none d-xl-inline fw-bold text-primary">
-                Aramed y Laboratorios
-            </span>
         </a>
         
         <!-- Toggler para móvil con animación -->
