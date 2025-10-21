@@ -355,10 +355,10 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                             simuladores de última generación.
                                         </p>
                                         <div class="hero-actions d-flex flex-wrap gap-3">
-                                            <button class="btn btn-light btn-lg px-5 shadow" data-bs-toggle="modal" data-bs-target="#contactModal">
+                                            <a href="#newsletter" class="btn btn-light btn-lg px-5 shadow">
                                                 <i class="bi bi-envelope me-2"></i>
                                                 Contáctanos
-                                            </button>
+                                            </a>
                                             <a href="#catalogos" class="btn btn-outline-light btn-lg px-5">
                                                 <i class="bi bi-book me-2"></i>
                                                 Ver Catálogos
@@ -424,9 +424,9 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                             <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Dos simuladores en un solo modelo: simulación obstétrica y ginecológica</li>
                                         </ul>
                                         <div class="hero-actions d-flex flex-wrap gap-3">
-                                            <button class="btn btn-light btn-lg px-5" data-bs-toggle="modal" data-bs-target="#contactModal">
+                                            <a href="#newsletter" class="btn btn-light btn-lg px-5">
                                                 Solicitar Información
-                                            </button>
+                                            </a>
                                             <a href="#productos" class="btn btn-outline-light btn-lg px-5">
                                                 Ver Detalles
                                             </a>
@@ -467,9 +467,9 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                             <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> Escenarios SLE™ interdisciplinarios preinstalados</li>
                                         </ul>
                                         <div class="hero-actions d-flex flex-wrap gap-3">
-                                            <button class="btn btn-light btn-lg px-5" data-bs-toggle="modal" data-bs-target="#contactModal">
+                                            <a href="#newsletter" class="btn btn-light btn-lg px-5">
                                                 Solicitar Demo
-                                            </button>
+                                            </a>
                                             <a href="#productos" class="btn btn-outline-light btn-lg px-5">
                                                 Conocer Más
                                             </a>
@@ -510,9 +510,9 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                             <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Monitoreo ECG, SpO₂, presión y CO₂ en tiempo real</li>
                                         </ul>
                                         <div class="hero-actions d-flex flex-wrap gap-3">
-                                            <button class="btn btn-light btn-lg px-5" data-bs-toggle="modal" data-bs-target="#contactModal">
+                                            <a href="#newsletter" class="btn btn-light btn-lg px-5">
                                                 Solicitar Cotización
-                                            </button>
+                                            </a>
                                             <a href="#productos" class="btn btn-outline-light btn-lg px-5">
                                                 Ver Características
                                             </a>
@@ -553,9 +553,9 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                             <li class="mb-2"><i class="bi bi-check-circle-fill text-light me-2"></i> Operación totalmente inalámbrica y portátil</li>
                                         </ul>
                                         <div class="hero-actions d-flex flex-wrap gap-3">
-                                            <button class="btn btn-light btn-lg px-5" data-bs-toggle="modal" data-bs-target="#contactModal">
+                                            <a href="#newsletter" class="btn btn-light btn-lg px-5">
                                                 Contactar Ahora
-                                            </button>
+                                            </a>
                                             <a href="#productos" class="btn btn-outline-light btn-lg px-5">
                                                 Más Información
                                             </a>
@@ -596,9 +596,9 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                             <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Reconocimiento automático de medicamentos</li>
                                         </ul>
                                         <div class="hero-actions d-flex flex-wrap gap-3">
-                                            <button class="btn btn-light btn-lg px-5" data-bs-toggle="modal" data-bs-target="#contactModal">
+                                            <a href="#newsletter" class="btn btn-light btn-lg px-5">
                                                 Agendar Demo
-                                            </button>
+                                            </a>
                                             <a href="#productos" class="btn btn-outline-light btn-lg px-5">
                                                 Especificaciones
                                             </a>
@@ -1019,7 +1019,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <li><i class="bi bi-check-circle-fill text-primary"></i> Selección de equipamiento</li>
                             <li><i class="bi bi-check-circle-fill text-primary"></i> Instalación y puesta en marcha</li>
                         </ul>
-                        <a href="#contacto" class="btn btn-outline-primary w-100 mt-auto service-cta">
+                        <a href="#newsletter" class="btn btn-outline-primary w-100 mt-auto service-cta">
                             Solicitar Cotización
                             <i class="bi bi-arrow-right ms-2"></i>
                         </a>
@@ -1048,7 +1048,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <li><i class="bi bi-check-circle-fill text-success"></i> Actualización de software</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i> Soporte técnico prioritario</li>
                         </ul>
-                        <a href="#contacto" class="btn btn-success w-100 mt-auto service-cta">
+                        <a href="#newsletter" class="btn btn-success w-100 mt-auto service-cta">
                             Agendar Mantenimiento
                             <i class="bi bi-arrow-right ms-2"></i>
                         </a>
@@ -1074,7 +1074,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <li><i class="bi bi-check-circle-fill text-info"></i> Metodología de evaluación</li>
                             <li><i class="bi bi-check-circle-fill text-info"></i> Certificación de programas</li>
                         </ul>
-                        <a href="#contacto" class="btn btn-outline-info w-100 mt-auto service-cta">
+                        <a href="#newsletter" class="btn btn-outline-info w-100 mt-auto service-cta">
                             Consultar Programa
                             <i class="bi bi-arrow-right ms-2"></i>
                         </a>
@@ -1100,7 +1100,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <li><i class="bi bi-check-circle-fill text-warning"></i> Certificaciones oficiales</li>
                             <li><i class="bi bi-check-circle-fill text-warning"></i> Talleres y seminarios</li>
                         </ul>
-                        <a href="#contacto" class="btn btn-outline-warning w-100 mt-auto service-cta">
+                        <a href="#newsletter" class="btn btn-outline-warning w-100 mt-auto service-cta">
                             Ver Calendario
                             <i class="bi bi-arrow-right ms-2"></i>
                         </a>
@@ -1126,7 +1126,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <li><i class="bi bi-check-circle-fill text-danger"></i> Financiamiento a largo plazo</li>
                             <li><i class="bi bi-check-circle-fill text-danger"></i> Asesoría financiera especializada</li>
                         </ul>
-                        <a href="#contacto" class="btn btn-outline-danger w-100 mt-auto service-cta">
+                        <a href="#newsletter" class="btn btn-outline-danger w-100 mt-auto service-cta">
                             Solicitar Información
                             <i class="bi bi-arrow-right ms-2"></i>
                         </a>
@@ -1149,7 +1149,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 </p>
                             </div>
                             <div class="col-lg-4 text-lg-end">
-                                <a href="#contacto" class="btn btn-primary btn-lg px-4">
+                                <a href="#newsletter" class="btn btn-primary btn-lg px-4">
                                     <i class="bi bi-chat-dots-fill me-2"></i>
                                     Hablar con un Asesor
                                 </a>
@@ -1220,7 +1220,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 <li><i class="bi bi-check-circle-fill text-primary"></i> Aprendizaje práctico sin laboratorios tradicionales</li>
                             </ul>
                             <div class="product-actions">
-                                <a href="#contacto" class="btn btn-primary btn-lg">
+                                <a href="#newsletter" class="btn btn-primary btn-lg">
                                     <i class="bi bi-cart-plus me-2"></i>
                                     Solicitar Cotización
                                 </a>
@@ -1270,7 +1270,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 <li><i class="bi bi-check-circle-fill text-secondary"></i> Mejora la retención del conocimiento</li>
                             </ul>
                             <div class="product-actions">
-                                <a href="#contacto" class="btn btn-info text-white btn-lg">
+                                <a href="#newsletter" class="btn btn-info text-white btn-lg">
                                     <i class="bi bi-cart-plus me-2"></i>
                                     Solicitar Cotización
                                 </a>
@@ -1321,7 +1321,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 <li><i class="bi bi-check-circle-fill text-warning"></i> Emergencias pediátricas complejas</li>
                             </ul>
                             <div class="product-actions">
-                                <a href="#contacto" class="btn btn-warning text-white btn-lg">
+                                <a href="#newsletter" class="btn btn-warning text-white btn-lg">
                                     <i class="bi bi-cart-plus me-2"></i>
                                     Solicitar Cotización
                                 </a>
@@ -1372,7 +1372,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 <li><i class="bi bi-check-circle-fill text-danger"></i> Entrenamiento integral en vía aérea, RCP y ventilación</li>
                             </ul>
                             <div class="product-actions">
-                                <a href="#contacto" class="btn btn-danger btn-lg">
+                                <a href="#newsletter" class="btn btn-danger btn-lg">
                                     <i class="bi bi-cart-plus me-2"></i>
                                     Solicitar Cotización
                                 </a>
@@ -1396,7 +1396,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 <i class="bi bi-grid-3x3-gap me-2"></i>
                                 Ver Catálogo Completo
                             </a>
-                            <a href="#contacto" class="btn btn-outline-primary btn-lg px-4">
+                            <a href="#newsletter" class="btn btn-outline-primary btn-lg px-4">
                                 <i class="bi bi-chat-left-text me-2"></i>
                                 Consultar Asesor
                             </a>
@@ -1776,13 +1776,11 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <p class="lead text-muted mb-4">
                     ¿Quieres conocer más sobre nuestras alianzas y productos?
                 </p>
-                <button type="button" 
-                        class="btn btn-primary btn-lg px-5"
-                        data-bs-toggle="modal" 
-                        data-bs-target="#contactModal">
+                <a href="#newsletter" 
+                        class="btn btn-primary btn-lg px-5">
                     <i class="bi bi-envelope-fill me-2"></i>
                     Contáctanos
-                </button>
+                </a>
             </div>
             
         </div>
