@@ -194,7 +194,7 @@ require_once __DIR__ . '/../../includes/functions.php';
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="uploadBtn">
+                    <button type="submit" class="btn btn-primary" id="uploadBtn">
                         <i class="bi bi-cloud-upload me-2"></i>Subir
                     </button>
                 </div>
@@ -243,12 +243,23 @@ require_once __DIR__ . '/../../includes/functions.php';
             
             if (isPopupMode) {
                 // Ocultar sidebar en modo popup
-                document.querySelector('.col-md-3').style.display = 'none';
-                document.querySelector('.col-md-9').classList.remove('col-md-9');
-                document.querySelector('.col-md-9').classList.add('col-12');
+                const sidebar = document.querySelector('.col-md-3');
+                const mainContent = document.querySelector('.col-md-9');
+                
+                if (sidebar) {
+                    sidebar.style.display = 'none';
+                }
+                
+                if (mainContent) {
+                    mainContent.classList.remove('col-md-9');
+                    mainContent.classList.add('col-12');
+                }
                 
                 // Mostrar botón de selección
-                document.getElementById('selectImageBtn').style.display = 'inline-block';
+                const selectBtn = document.getElementById('selectImageBtn');
+                if (selectBtn) {
+                    selectBtn.style.display = 'inline-block';
+                }
             }
             
             loadImages();
@@ -319,23 +330,59 @@ require_once __DIR__ . '/../../includes/functions.php';
             const uploadArea = document.getElementById('uploadArea');
             const fileInput = document.getElementById('imageFile');
             
-            uploadArea.addEventListener('click', () => fileInput.click());
-            uploadArea.addEventListener('dragover', handleDragOver);
-            uploadArea.addEventListener('dragleave', handleDragLeave);
-            uploadArea.addEventListener('drop', handleDrop);
+            if (uploadArea && fileInput) {
+                uploadArea.addEventListener('click', () => fileInput.click());
+                uploadArea.addEventListener('dragover', handleDragOver);
+                uploadArea.addEventListener('dragleave', handleDragLeave);
+                uploadArea.addEventListener('drop', handleDrop);
+            }
             
             // Formulario de subida
-            document.getElementById('uploadBtn').addEventListener('click', uploadImage);
+            const uploadBtn = document.getElementById('uploadBtn');
+            if (uploadBtn) {
+                console.log('Upload button found, adding event listener');
+                uploadBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Upload button clicked');
+                    uploadImage();
+                });
+            } else {
+                console.error('Upload button not found');
+            }
             
             // Botones de acción
-            document.getElementById('selectAll').addEventListener('click', selectAll);
-            document.getElementById('deleteSelected').addEventListener('click', deleteSelected);
+            const selectAllBtn = document.getElementById('selectAll');
+            const deleteSelectedBtn = document.getElementById('deleteSelected');
+            
+            if (selectAllBtn) {
+                selectAllBtn.addEventListener('click', selectAll);
+            }
+            
+            if (deleteSelectedBtn) {
+                deleteSelectedBtn.addEventListener('click', deleteSelected);
+            }
             
             // Búsqueda
-            document.getElementById('searchImages').addEventListener('input', filterImages);
+            const searchInput = document.getElementById('searchImages');
+            if (searchInput) {
+                searchInput.addEventListener('input', filterImages);
+            }
             
             // Botón de selección (modo popup)
-            document.getElementById('selectImageBtn').addEventListener('click', selectImage);
+            const selectImageBtn = document.getElementById('selectImageBtn');
+            if (selectImageBtn) {
+                selectImageBtn.addEventListener('click', selectImage);
+            }
+            
+            // Listener adicional para el formulario de subida
+            const uploadForm = document.getElementById('uploadForm');
+            if (uploadForm) {
+                uploadForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    console.log('Form submit event triggered');
+                    uploadImage();
+                });
+            }
         }
         
         function selectImage() {
@@ -375,35 +422,72 @@ require_once __DIR__ . '/../../includes/functions.php';
         }
 
         function uploadImage() {
+            console.log('uploadImage() called');
             const fileInput = document.getElementById('imageFile');
-            if (fileInput.files.length > 0) {
-                uploadFile(fileInput.files[0]);
+            
+            if (!fileInput) {
+                console.error('File input not found');
+                showAlert('Error: Campo de archivo no encontrado', 'danger');
+                return;
             }
+            
+            if (fileInput.files.length === 0) {
+                console.log('No files selected');
+                showAlert('Por favor selecciona una imagen', 'warning');
+                return;
+            }
+            
+            console.log('File selected:', fileInput.files[0].name);
+            uploadFile(fileInput.files[0]);
         }
 
         function uploadFile(file) {
+            console.log('uploadFile() called with:', file.name, file.size, file.type);
+            
             const formData = new FormData();
             formData.append('image', file);
             
             const progressContainer = document.querySelector('.progress-container');
             const progressBar = document.querySelector('.progress-bar');
             
+            if (!progressContainer || !progressBar) {
+                console.error('Progress elements not found');
+                showAlert('Error: Elementos de progreso no encontrados', 'danger');
+                return;
+            }
+            
             progressContainer.style.display = 'block';
             progressBar.style.width = '0%';
+            
+            console.log('Sending request to upload-image.php');
             
             fetch('upload-image.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
             .then(data => {
+                console.log('Response data:', data);
                 progressContainer.style.display = 'none';
                 
                 if (data.success) {
                     // Cerrar modal y recargar imágenes
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
-                    modal.hide();
-                    document.getElementById('uploadForm').reset();
+                    const modalElement = document.getElementById('uploadModal');
+                    if (modalElement) {
+                        const modal = bootstrap.Modal.getInstance(modalElement);
+                        if (modal) {
+                            modal.hide();
+                        }
+                    }
+                    
+                    const form = document.getElementById('uploadForm');
+                    if (form) {
+                        form.reset();
+                    }
+                    
                     loadImages();
                     
                     // Mostrar mensaje de éxito
@@ -453,12 +537,17 @@ require_once __DIR__ . '/../../includes/functions.php';
 
         function updateDeleteButton() {
             const deleteBtn = document.getElementById('deleteSelected');
-            deleteBtn.disabled = selectedImages.size === 0;
-            deleteBtn.innerHTML = `<i class="bi bi-trash me-1"></i>Eliminar (${selectedImages.size})`;
+            if (deleteBtn) {
+                deleteBtn.disabled = selectedImages.size === 0;
+                deleteBtn.innerHTML = `<i class="bi bi-trash me-1"></i>Eliminar (${selectedImages.size})`;
+            }
         }
 
         function filterImages() {
-            const searchTerm = document.getElementById('searchImages').value.toLowerCase();
+            const searchInput = document.getElementById('searchImages');
+            if (!searchInput) return;
+            
+            const searchTerm = searchInput.value.toLowerCase();
             const cards = document.querySelectorAll('.image-card');
             
             cards.forEach(card => {
