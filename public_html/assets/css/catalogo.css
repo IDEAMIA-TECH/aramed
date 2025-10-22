@@ -602,33 +602,18 @@
 }
 
 /* ========================================
-   FONDO DE LA PÁGINA
-   ======================================== */
-body.catalogo-page {
-    background-color: #ffffff !important;
-}
-
-.catalogo-page .container {
-    background-color: transparent !important;
-}
-
-.catalogo-page .catalogo-content {
-    background-color: #ffffff !important;
-}
-
-/* ========================================
    FILTROS DINÁMICOS ADICIONALES
    ======================================== */
 
 /* Filtros activos */
 .active-filters {
-    background: #ffffff;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-radius: var(--product-card-border-radius);
     padding: 1rem;
     margin-bottom: 1.5rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e9ecef;
-    border-left: 4px solid var(--aramed-primary);
+    border: 2px solid var(--aramed-primary);
+    border-left: 5px solid var(--aramed-primary);
 }
 
 /* Filtros aplicados - Estilos con máxima especificidad */
@@ -639,23 +624,6 @@ body.catalogo-page {
     color: #ffffff !important;
     background-color: var(--aramed-primary) !important;
     border: 2px solid var(--aramed-primary) !important;
-    font-weight: 600 !important;
-    padding: 0.5rem 0.75rem !important;
-    border-radius: 25px !important;
-    box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2) !important;
-    font-size: 0.8rem !important;
-    margin-right: 0.5rem !important;
-    margin-bottom: 0.5rem !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-}
-
-/* Clase personalizada para badges de filtros */
-.filter-badge {
-    color: #ffffff !important;
-    background-color: #0066cc !important;
-    border: 2px solid #0066cc !important;
     font-weight: 600 !important;
     padding: 0.5rem 0.75rem !important;
     border-radius: 25px !important;
@@ -682,20 +650,6 @@ body.catalogo-page {
     text-shadow: none !important;
 }
 
-/* Estilos específicos para filter-badge */
-.filter-badge,
-.filter-badge *,
-.filter-badge span,
-.filter-badge div,
-.filter-badge p,
-.filter-badge strong,
-.filter-badge em,
-.filter-badge i,
-.filter-badge b {
-    color: #ffffff !important;
-    text-shadow: none !important;
-}
-
 /* Enlaces dentro del badge */
 .active-filters .badge a,
 .active-filters .badge a:hover,
@@ -706,33 +660,12 @@ body.catalogo-page {
     text-shadow: none !important;
 }
 
-/* Enlaces dentro de filter-badge */
-.filter-badge a,
-.filter-badge a:hover,
-.filter-badge a:focus,
-.filter-badge a:visited {
-    color: #ffffff !important;
-    text-decoration: none !important;
-    text-shadow: none !important;
-}
-
 .active-filters .badge .btn-close {
     filter: brightness(0) invert(1) !important;
     opacity: 0.8 !important;
 }
 
-/* Botones de cierre en filter-badge */
-.filter-badge .btn-close {
-    filter: brightness(0) invert(1) !important;
-    opacity: 0.8 !important;
-}
-
 .active-filters .badge .btn-close:hover {
-    opacity: 1 !important;
-    transform: scale(1.1);
-}
-
-.filter-badge .btn-close:hover {
     opacity: 1 !important;
     transform: scale(1.1);
 }
