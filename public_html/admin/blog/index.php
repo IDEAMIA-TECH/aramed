@@ -153,13 +153,23 @@ function truncateText($texto, $limite = 150) {
                                         <tr>
                                             <td>
                                                 <?php if (!empty($articulo['imagen_principal'])): ?>
-                                                <img src="<?php echo SITE_URL . $articulo['imagen_principal']; ?>" 
-                                                     alt="<?php echo esc($articulo['titulo']); ?>" 
-                                                     class="article-image">
+                                                    <?php 
+                                                    $imagen_url = $articulo['imagen_principal'];
+                                                    // Si la URL no es absoluta, agregar SITE_URL
+                                                    if (strpos($imagen_url, 'http') !== 0 && strpos($imagen_url, '/') !== 0) {
+                                                        $imagen_url = SITE_URL . '/' . $imagen_url;
+                                                    } elseif (strpos($imagen_url, '/') === 0) {
+                                                        $imagen_url = SITE_URL . $imagen_url;
+                                                    }
+                                                    ?>
+                                                    <img src="<?php echo esc($imagen_url); ?>" 
+                                                         alt="<?php echo esc($articulo['titulo']); ?>" 
+                                                         class="article-image"
+                                                         onerror="this.src='<?php echo SITE_URL; ?>/assets/images/blog/default-article.jpg'">
                                                 <?php else: ?>
-                                                <div class="article-image bg-light d-flex align-items-center justify-content-center">
-                                                    <i class="bi bi-image text-muted"></i>
-                                                </div>
+                                                    <div class="article-image bg-light d-flex align-items-center justify-content-center">
+                                                        <i class="bi bi-image text-muted"></i>
+                                                    </div>
                                                 <?php endif; ?>
                                             </td>
                                             <td>
@@ -310,5 +320,39 @@ function truncateText($texto, $limite = 150) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <style>
+        .article-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .article-image:hover {
+            border-color: #0066cc;
+            transform: scale(1.05);
+            transition: all 0.3s ease;
+        }
+        
+        .status-badge {
+            font-size: 0.75rem;
+        }
+        
+        .table td {
+            vertical-align: middle;
+        }
+        
+        .admin-content {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+    </style>
 </body>
 </html>

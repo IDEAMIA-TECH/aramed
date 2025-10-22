@@ -147,8 +147,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image'])) {
             rename($resized_path, $file_path);
         }
         
-        // Generar URL
-        $image_url = SITE_URL . '/assets/images/blog/' . $filename;
+        // Generar URL relativa
+        $image_url = '/assets/images/blog/' . $filename;
         
         echo json_encode([
             'success' => true,
@@ -173,7 +173,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'list') {
                 $file_path = $upload_dir . $file;
                 $images[] = [
                     'filename' => $file,
-                    'url' => SITE_URL . '/assets/images/blog/' . $file,
+                    'url' => '/assets/images/blog/' . $file,
                     'size' => filesize($file_path),
                     'modified' => filemtime($file_path)
                 ];
