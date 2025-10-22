@@ -289,16 +289,26 @@ require_once __DIR__ . '/../../includes/functions.php';
             }
             
             noImages.classList.add('d-none');
-            grid.innerHTML = images.map(image => `
+            grid.innerHTML = images.map(image => {
+                // Convertir URL relativa a absoluta
+                let imageUrl = image.url;
+                if (imageUrl.startsWith('/')) {
+                    imageUrl = window.location.origin + imageUrl;
+                } else if (!imageUrl.startsWith('http')) {
+                    imageUrl = window.location.origin + '/' + imageUrl;
+                }
+                
+                return `
                 <div class="image-card" data-filename="${image.filename}">
-                    <img src="${image.url}" alt="${image.filename}" class="image-preview">
+                    <img src="${imageUrl}" alt="${image.filename}" class="image-preview" onerror="this.src='${window.location.origin}/assets/images/blog/default-article.jpg'">
                     <div class="image-info">
                         <div class="fw-bold text-truncate" title="${image.filename}">${image.filename}</div>
                         <div class="text-muted small">${formatFileSize(image.size)}</div>
                         <div class="text-muted small">${formatDate(image.modified)}</div>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
             
             // Agregar event listeners a las tarjetas
             document.querySelectorAll('.image-card').forEach(card => {
@@ -320,6 +330,15 @@ require_once __DIR__ . '/../../includes/functions.php';
                             this.classList.add('selected');
                         }
                         updateDeleteButton();
+                    }
+                });
+                
+                // Doble clic para vista previa
+                card.addEventListener('dblclick', function() {
+                    const filename = this.dataset.filename;
+                    const image = images.find(img => img.filename === filename);
+                    if (image) {
+                        showPreview(image);
                     }
                 });
             });
@@ -399,6 +418,23 @@ require_once __DIR__ . '/../../includes/functions.php';
             } else {
                 alert('Por favor selecciona una imagen');
             }
+        }
+        
+        function showPreview(image) {
+            // Convertir URL relativa a absoluta
+            let imageUrl = image.url;
+            if (imageUrl.startsWith('/')) {
+                imageUrl = window.location.origin + imageUrl;
+            } else if (!imageUrl.startsWith('http')) {
+                imageUrl = window.location.origin + '/' + imageUrl;
+            }
+            
+            document.getElementById('previewImage').src = imageUrl;
+            document.getElementById('previewFilename').textContent = image.filename;
+            
+            // Mostrar modal
+            const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+            modal.show();
         }
 
         function handleDragOver(e) {

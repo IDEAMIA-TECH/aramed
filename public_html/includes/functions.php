@@ -493,3 +493,19 @@ function getCurrentYear() {
     return date('Y');
 }
 
+/**
+ * Truncar texto a una longitud específica
+ * 
+ * @param string $text Texto a truncar
+ * @param int $length Longitud máxima
+ * @param string $suffix Sufijo a agregar (por defecto '...')
+ * @return string Texto truncado
+ */
+function truncateText($text, $length = 100, $suffix = '...') {
+    if (strlen($text) <= $length) {
+        return $text;
+    }
+    
+    return substr($text, 0, $length) . $suffix;
+}
+
