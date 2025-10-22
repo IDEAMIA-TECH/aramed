@@ -16,23 +16,24 @@ define('ARAMED_SITE', true);
 
 // Cargar configuración
 require_once __DIR__ . '/includes/config.php';
+require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/connection.php';
 
-// Cargar funciones
-require_once INCLUDES_PATH . '/functions.php';
-
-// Cargar conexión a la base de datos
-require_once INCLUDES_PATH . '/connection.php';
+// Obtener conexión PDO
+$pdo = getDB();
+if (!$pdo) {
+    die('Error de conexión a la base de datos');
+}
 
 // Obtener slug del artículo
 $slug = isset($_GET['slug']) ? sanitizeInput($_GET['slug']) : '';
 
 if (empty($slug)) {
-    header('HTTP/1.0 404 Not Found');
-    include '404.php';
+    header('Location: ' . siteUrl('blog.php'));
     exit;
 }
 
-// Obtener artículo
+// Obtener artículo por slug
 $sql_articulo = "
     SELECT a.*, c.nombre as categoria_nombre, c.slug as categoria_slug, c.color as categoria_color, c.icono as categoria_icono
     FROM blog_articulos a
@@ -45,8 +46,7 @@ $stmt_articulo->execute([$slug]);
 $articulo = $stmt_articulo->fetch(PDO::FETCH_ASSOC);
 
 if (!$articulo) {
-    header('HTTP/1.0 404 Not Found');
-    include '404.php';
+    header('Location: ' . siteUrl('blog.php'));
     exit;
 }
 
@@ -57,11 +57,11 @@ $stmt_vistas->execute([$articulo['id']]);
 
 // Obtener artículos relacionados
 $sql_relacionados = "
-    SELECT a.*, c.nombre as categoria_nombre, c.slug as categoria_slug, c.color as categoria_color
+    SELECT a.*, c.nombre as categoria_nombre, c.color as categoria_color
     FROM blog_articulos a
     LEFT JOIN blog_categorias c ON a.categoria_id = c.id
     WHERE a.categoria_id = ? AND a.id != ? AND a.estado = 'publicado'
-    ORDER BY a.fecha_publicacion DESC
+    ORDER BY a.destacado DESC, a.fecha_publicacion DESC
     LIMIT 3
 ";
 
@@ -80,332 +80,291 @@ $stmt_comentarios = $pdo->prepare($sql_comentarios);
 $stmt_comentarios->execute([$articulo['id']]);
 $comentarios = $stmt_comentarios->fetchAll(PDO::FETCH_ASSOC);
 
-// Función para formatear fecha
-function formatBlogDate($fecha) {
-    $meses = [
-        1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
-        5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
-        9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
-    ];
+// Procesar envío de comentario
+$mensaje_comentario = '';
+$tipo_mensaje = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_comentario'])) {
+    $nombre = sanitizeInput($_POST['nombre'] ?? '');
+    $email = sanitizeInput($_POST['email'] ?? '');
+    $comentario = sanitizeInput($_POST['comentario'] ?? '');
     
-    $fecha_obj = new DateTime($fecha);
-    $dia = $fecha_obj->format('d');
-    $mes = $meses[(int)$fecha_obj->format('n')];
-    $año = $fecha_obj->format('Y');
-    
-    return "$dia de $mes, $año";
+    if (!empty($nombre) && !empty($email) && !empty($comentario)) {
+        $sql_insert_comentario = "
+            INSERT INTO blog_comentarios (articulo_id, nombre, email, comentario, ip_address, user_agent, estado, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, 'pendiente', NOW())
+        ";
+        
+        $stmt_insert = $pdo->prepare($sql_insert_comentario);
+        $resultado = $stmt_insert->execute([
+            $articulo['id'],
+            $nombre,
+            $email,
+            $comentario,
+            $_SERVER['REMOTE_ADDR'] ?? '',
+            $_SERVER['HTTP_USER_AGENT'] ?? ''
+        ]);
+        
+        if ($resultado) {
+            $mensaje_comentario = 'Tu comentario ha sido enviado y está pendiente de moderación.';
+            $tipo_mensaje = 'success';
+        } else {
+            $mensaje_comentario = 'Error al enviar el comentario. Inténtalo de nuevo.';
+            $tipo_mensaje = 'danger';
+        }
+    } else {
+        $mensaje_comentario = 'Por favor completa todos los campos.';
+        $tipo_mensaje = 'warning';
+    }
 }
-
-// Función para formatear fecha ISO
-function formatISODate($fecha) {
-    $fecha_obj = new DateTime($fecha);
-    return $fecha_obj->format('c');
-}
-
-// Variables para meta tags
-$pageTitle = $articulo['meta_title'] ?: $articulo['titulo'] . ' - ' . SITE_NAME;
-$pageDescription = $articulo['meta_description'] ?: $articulo['resumen'];
-$pageKeywords = $articulo['meta_keywords'] ?: 'blog, simulación médica, educación médica, tecnología';
-$pageUrl = SITE_URL . '/blog-detalle.php?slug=' . $articulo['slug'];
-$pageImage = !empty($articulo['imagen_og']) ? SITE_URL . $articulo['imagen_og'] : 
-             (!empty($articulo['imagen_principal']) ? SITE_URL . $articulo['imagen_principal'] : imageUrl('design/logo-og.jpg'));
-
-// Procesar tags
-$tags = !empty($articulo['tags']) ? json_decode($articulo['tags'], true) : [];
 ?>
 <!DOCTYPE html>
 <html lang="es-MX">
 <head>
-    <!-- ========================================
-         META TAGS BÁSICOS
-         ======================================== -->
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo esc($articulo['titulo']); ?> - <?php echo SITE_NAME; ?></title>
+    <meta name="description" content="<?php echo esc($articulo['meta_descripcion'] ?? truncateText($articulo['extracto'] ?? '', 160)); ?>">
     
-    <!-- ========================================
-         SEO BÁSICO
-         ======================================== -->
-    <title><?php echo esc($pageTitle); ?></title>
-    <meta name="description" content="<?php echo esc($pageDescription); ?>">
-    <meta name="keywords" content="<?php echo esc($pageKeywords); ?>">
-    <meta name="author" content="<?php echo esc($articulo['autor']); ?>">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="<?php echo esc($pageUrl); ?>">
-    
-    <!-- ========================================
-         OPEN GRAPH (Facebook, LinkedIn)
-         ======================================== -->
+    <!-- Open Graph -->
+    <meta property="og:title" content="<?php echo esc($articulo['titulo']); ?>">
+    <meta property="og:description" content="<?php echo esc($articulo['meta_descripcion'] ?? truncateText($articulo['extracto'] ?? '', 160)); ?>">
+    <meta property="og:image" content="<?php echo SITE_URL . ($articulo['imagen_og'] ?? $articulo['imagen_principal'] ?? '/assets/images/blog/default-article-og.jpg'); ?>">
+    <meta property="og:url" content="<?php echo siteUrl('blog-detalle.php?slug=' . $articulo['slug']); ?>">
     <meta property="og:type" content="article">
-    <meta property="og:site_name" content="<?php echo esc(SITE_NAME); ?>">
-    <meta property="og:title" content="<?php echo esc($pageTitle); ?>">
-    <meta property="og:description" content="<?php echo esc($pageDescription); ?>">
-    <meta property="og:url" content="<?php echo esc($pageUrl); ?>">
-    <meta property="og:image" content="<?php echo esc($pageImage); ?>">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:locale" content="es_MX">
-    <meta property="article:author" content="<?php echo esc($articulo['autor']); ?>">
-    <meta property="article:published_time" content="<?php echo formatISODate($articulo['fecha_publicacion']); ?>">
-    <meta property="article:modified_time" content="<?php echo formatISODate($articulo['updated_at']); ?>">
-    <?php if (!empty($tags)): ?>
-    <?php foreach ($tags as $tag): ?>
-    <meta property="article:tag" content="<?php echo esc($tag); ?>">
-    <?php endforeach; ?>
-    <?php endif; ?>
     
-    <!-- ========================================
-         TWITTER CARD
-         ======================================== -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@aramedylab">
-    <meta name="twitter:title" content="<?php echo esc($pageTitle); ?>">
-    <meta name="twitter:description" content="<?php echo esc($pageDescription); ?>">
-    <meta name="twitter:image" content="<?php echo esc($pageImage); ?>">
+    <meta name="twitter:title" content="<?php echo esc($articulo['titulo']); ?>">
+    <meta name="twitter:description" content="<?php echo esc($articulo['meta_descripcion'] ?? truncateText($articulo['extracto'] ?? '', 160)); ?>">
+    <meta name="twitter:image" content="<?php echo SITE_URL . ($articulo['imagen_og'] ?? $articulo['imagen_principal'] ?? '/assets/images/blog/default-article-og.jpg'); ?>">
     
-    <!-- ========================================
-         FAVICON
-         ======================================== -->
-    <link rel="shortcut icon" href="<?php echo imageUrl('design/favicon.ico'); ?>">
-    <link rel="icon" href="<?php echo imageUrl('design/favicon.ico'); ?>" type="image/x-icon">
-    <link rel="icon" href="<?php echo imageUrl('design/favicon-32x32.png'); ?>" type="image/png" sizes="32x32">
-    <link rel="icon" href="<?php echo imageUrl('design/favicon-16x16.png'); ?>" type="image/png" sizes="16x16">
-    
-    <!-- ========================================
-         CSS
-         ======================================== -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- AOS CSS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="<?php echo assetUrl('css/landing.css'); ?>" rel="stylesheet">
-    <link href="<?php echo assetUrl('css/blog.css'); ?>" rel="stylesheet">
     
-    <!-- ========================================
-         SCHEMA.ORG STRUCTURED DATA
-         ======================================== -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        "headline": "<?php echo esc($articulo['titulo']); ?>",
-        "description": "<?php echo esc($pageDescription); ?>",
-        "image": "<?php echo esc($pageImage); ?>",
-        "author": {
-            "@type": "Person",
-            "name": "<?php echo esc($articulo['autor']); ?>"
-        },
-        "publisher": {
-            "@type": "Organization",
-            "name": "<?php echo esc(SITE_NAME); ?>",
-            "url": "<?php echo esc(SITE_URL); ?>",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "<?php echo imageUrl('design/logo.png'); ?>"
-            }
-        },
-        "datePublished": "<?php echo formatISODate($articulo['fecha_publicacion']); ?>",
-        "dateModified": "<?php echo formatISODate($articulo['updated_at']); ?>",
-        "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": "<?php echo esc($pageUrl); ?>"
-        },
-        "articleSection": "<?php echo esc($articulo['categoria_nombre']); ?>",
-        "wordCount": "<?php echo str_word_count(strip_tags($articulo['contenido'])); ?>",
-        "interactionStatistic": {
-            "@type": "InteractionCounter",
-            "interactionType": "https://schema.org/ReadAction",
-            "userInteractionCount": "<?php echo $articulo['vistas']; ?>"
+    <style>
+        .article-hero {
+            background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+            color: white;
+            padding: 60px 0 40px;
         }
-    }
-    </script>
+        .article-content {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        .article-content h1, .article-content h2, .article-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .article-content h2 {
+            color: #0066cc;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 0.5rem;
+        }
+        .article-content blockquote {
+            border-left: 4px solid #0066cc;
+            padding-left: 1rem;
+            margin: 2rem 0;
+            font-style: italic;
+            background: #f8f9fa;
+            padding: 1rem;
+        }
+        .article-meta {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        .related-article {
+            transition: transform 0.3s ease;
+        }
+        .related-article:hover {
+            transform: translateY(-5px);
+        }
+        .comment-form {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 8px;
+        }
+        .social-share {
+            position: sticky;
+            top: 100px;
+        }
+        .social-share .btn {
+            margin-bottom: 0.5rem;
+        }
+    </style>
 </head>
-
 <body>
-    <!-- ========================================
-         HEADER
-         ======================================== -->
-    <?php component('topbar'); ?>
-    <?php component('navbar'); ?>
+    <!-- Header -->
+    <?php include 'includes/navbar.php'; ?>
     
-    <!-- ========================================
-         BREADCRUMB
-         ======================================== -->
+    <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="bg-light py-3">
         <div class="container">
             <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="<?php echo siteUrl('index.php'); ?>">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="<?php echo siteUrl('blog.php'); ?>">Blog</a></li>
+                <?php if ($articulo['categoria_nombre']): ?>
                 <li class="breadcrumb-item">
-                    <a href="<?php echo siteUrl(); ?>" class="text-decoration-none">
-                        <i class="bi bi-house me-1"></i>Inicio
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="<?php echo siteUrl('blog.php'); ?>" class="text-decoration-none">Blog</a>
-                </li>
-                <?php if ($articulo['categoria_id']): ?>
-                <li class="breadcrumb-item">
-                    <a href="<?php echo siteUrl('blog.php?categoria=' . $articulo['categoria_id']); ?>" class="text-decoration-none">
+                    <a href="<?php echo siteUrl('blog.php?categoria=' . $articulo['categoria_id']); ?>">
                         <?php echo esc($articulo['categoria_nombre']); ?>
                     </a>
                 </li>
                 <?php endif; ?>
-                <li class="breadcrumb-item active" aria-current="page">
-                    <?php echo esc($articulo['titulo']); ?>
-                </li>
+                <li class="breadcrumb-item active" aria-current="page"><?php echo esc(truncateText($articulo['titulo'], 50)); ?></li>
             </ol>
         </div>
     </nav>
-
-    <!-- ========================================
-         HERO DEL ARTÍCULO
-         ======================================== -->
-    <section class="blog-article-hero py-5">
+    
+    <!-- Article Hero -->
+    <section class="article-hero">
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <!-- Categoría -->
-                    <?php if ($articulo['categoria_id']): ?>
-                    <div class="text-center mb-4" data-aos="fade-up">
-                        <a href="<?php echo siteUrl('blog.php?categoria=' . $articulo['categoria_id']); ?>" 
-                           class="badge rounded-pill px-4 py-2 text-decoration-none fs-6"
-                           style="background-color: <?php echo $articulo['categoria_color']; ?>;">
-                            <i class="<?php echo $articulo['categoria_icono']; ?> me-2"></i>
-                            <?php echo esc($articulo['categoria_nombre']); ?>
-                        </a>
-                    </div>
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <?php if ($articulo['categoria_nombre']): ?>
+                    <span class="badge bg-light text-primary mb-3" style="font-size: 0.9rem;">
+                        <i class="bi bi-<?php echo $articulo['categoria_icono'] ?? 'folder'; ?> me-1"></i>
+                        <?php echo esc($articulo['categoria_nombre']); ?>
+                    </span>
                     <?php endif; ?>
-
-                    <!-- Título -->
-                    <h1 class="display-5 fw-bold text-center mb-4" data-aos="fade-up" data-aos-delay="100">
-                        <?php echo esc($articulo['titulo']); ?>
-                    </h1>
-
-                    <!-- Resumen -->
-                    <?php if (!empty($articulo['resumen'])): ?>
-                    <p class="lead text-center text-muted mb-4" data-aos="fade-up" data-aos-delay="200">
-                        <?php echo esc($articulo['resumen']); ?>
-                    </p>
-                    <?php endif; ?>
-
-                    <!-- Meta información -->
-                    <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 mb-4" data-aos="fade-up" data-aos-delay="300">
-                        <div class="d-flex align-items-center text-muted">
-                            <i class="bi bi-person-circle me-2"></i>
-                            <span><?php echo esc($articulo['autor']); ?></span>
-                        </div>
-                        <div class="d-flex align-items-center text-muted">
-                            <i class="bi bi-calendar3 me-2"></i>
-                            <span><?php echo formatBlogDate($articulo['fecha_publicacion']); ?></span>
-                        </div>
-                        <div class="d-flex align-items-center text-muted">
-                            <i class="bi bi-eye me-2"></i>
-                            <span><?php echo number_format($articulo['vistas']); ?> vistas</span>
-                        </div>
-                        <div class="d-flex align-items-center text-muted">
-                            <i class="bi bi-clock me-2"></i>
-                            <span><?php echo ceil(str_word_count(strip_tags($articulo['contenido'])) / 200); ?> min de lectura</span>
-                        </div>
-                    </div>
-
-                    <!-- Tags -->
-                    <?php if (!empty($tags)): ?>
-                    <div class="text-center mb-4" data-aos="fade-up" data-aos-delay="400">
-                        <?php foreach ($tags as $tag): ?>
-                        <span class="badge bg-light text-dark me-2 mb-2">#<?php echo esc($tag); ?></span>
-                        <?php endforeach; ?>
-                    </div>
-                    <?php endif; ?>
-
-                    <!-- Botones de compartir -->
-                    <div class="text-center" data-aos="fade-up" data-aos-delay="500">
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-outline-primary" onclick="shareOnFacebook()">
-                                <i class="bi bi-facebook me-1"></i>Facebook
-                            </button>
-                            <button type="button" class="btn btn-outline-info" onclick="shareOnTwitter()">
-                                <i class="bi bi-twitter me-1"></i>Twitter
-                            </button>
-                            <button type="button" class="btn btn-outline-success" onclick="shareOnLinkedIn()">
-                                <i class="bi bi-linkedin me-1"></i>LinkedIn
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary" onclick="copyLink()">
-                                <i class="bi bi-link-45deg me-1"></i>Copiar enlace
-                            </button>
-                        </div>
+                    
+                    <h1 class="display-5 fw-bold mb-4"><?php echo esc($articulo['titulo']); ?></h1>
+                    
+                    <div class="d-flex justify-content-center align-items-center text-white-75">
+                        <small class="me-4">
+                            <i class="bi bi-person me-1"></i>
+                            <?php echo esc($articulo['autor']); ?>
+                        </small>
+                        <small class="me-4">
+                            <i class="bi bi-calendar me-1"></i>
+                            <?php echo date('d M Y', strtotime($articulo['fecha_publicacion'])); ?>
+                        </small>
+                        <small>
+                            <i class="bi bi-eye me-1"></i>
+                            <?php echo $articulo['vistas'] + 1; ?> vistas
+                        </small>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- ========================================
-         IMAGEN PRINCIPAL
-         ======================================== -->
-    <?php if (!empty($articulo['imagen_principal'])): ?>
-    <section class="blog-article-image py-4">
+    
+    <!-- Article Content -->
+    <section class="py-5">
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <img src="<?php echo SITE_URL . $articulo['imagen_principal']; ?>" 
-                         alt="<?php echo esc($articulo['titulo']); ?>" 
-                         class="img-fluid rounded shadow"
-                         data-aos="fade-up">
-                </div>
-            </div>
-        </div>
-    </section>
-    <?php endif; ?>
-
-    <!-- ========================================
-         CONTENIDO DEL ARTÍCULO
-         ======================================== -->
-    <section class="blog-article-content py-5">
-        <div class="container">
-            <div class="row justify-content-center">
+            <div class="row">
+                <!-- Main Content -->
                 <div class="col-lg-8">
-                    <article class="blog-content" data-aos="fade-up">
+                    <!-- Article Image -->
+                    <?php if (!empty($articulo['imagen_principal'])): ?>
+                        <?php 
+                        $imagen_url = $articulo['imagen_principal'];
+                        if (strpos($imagen_url, 'http') !== 0 && strpos($imagen_url, '/') !== 0) {
+                            $imagen_url = SITE_URL . '/' . $imagen_url;
+                        } elseif (strpos($imagen_url, '/') === 0) {
+                            $imagen_url = SITE_URL . $imagen_url;
+                        }
+                        ?>
+                        <img src="<?php echo esc($imagen_url); ?>" 
+                             alt="<?php echo esc($articulo['titulo']); ?>" 
+                             class="img-fluid rounded mb-4"
+                             onerror="this.src='<?php echo SITE_URL; ?>/assets/images/blog/default-article.jpg'">
+                    <?php endif; ?>
+                    
+                    <!-- Article Meta -->
+                    <div class="article-meta">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Autor:</strong> <?php echo esc($articulo['autor']); ?><br>
+                                <strong>Fecha:</strong> <?php echo date('d M Y', strtotime($articulo['fecha_publicacion'])); ?>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Categoría:</strong> <?php echo esc($articulo['categoria_nombre'] ?? 'Sin categoría'); ?><br>
+                                <strong>Vistas:</strong> <?php echo $articulo['vistas'] + 1; ?>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Article Content -->
+                    <div class="article-content">
                         <?php echo $articulo['contenido']; ?>
-                    </article>
-
-                    <!-- Botones de compartir al final -->
-                    <div class="text-center mt-5 pt-4 border-top">
-                        <h5 class="mb-3">¿Te gustó este artículo? ¡Compártelo!</h5>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-primary" onclick="shareOnFacebook()">
+                    </div>
+                    
+                    <!-- Tags -->
+                    <?php if (!empty($articulo['tags'])): ?>
+                    <div class="mt-4">
+                        <h6>Etiquetas:</h6>
+                        <?php 
+                        $tags = json_decode($articulo['tags'], true);
+                        if (is_array($tags)):
+                        ?>
+                            <?php foreach ($tags as $tag): ?>
+                            <span class="badge bg-secondary me-2"><?php echo esc($tag); ?></span>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <!-- Social Share -->
+                    <div class="mt-4 pt-4 border-top">
+                        <h6>Compartir:</h6>
+                        <div class="d-flex gap-2">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(siteUrl('blog-detalle.php?slug=' . $articulo['slug'])); ?>" 
+                               target="_blank" class="btn btn-outline-primary btn-sm">
                                 <i class="bi bi-facebook me-1"></i>Facebook
-                            </button>
-                            <button type="button" class="btn btn-info" onclick="shareOnTwitter()">
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(siteUrl('blog-detalle.php?slug=' . $articulo['slug'])); ?>&text=<?php echo urlencode($articulo['titulo']); ?>" 
+                               target="_blank" class="btn btn-outline-info btn-sm">
                                 <i class="bi bi-twitter me-1"></i>Twitter
-                            </button>
-                            <button type="button" class="btn btn-success" onclick="shareOnLinkedIn()">
+                            </a>
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo urlencode(siteUrl('blog-detalle.php?slug=' . $articulo['slug'])); ?>" 
+                               target="_blank" class="btn btn-outline-primary btn-sm">
                                 <i class="bi bi-linkedin me-1"></i>LinkedIn
-                            </button>
-                            <button type="button" class="btn btn-secondary" onclick="copyLink()">
+                            </a>
+                            <button onclick="navigator.clipboard.writeText('<?php echo siteUrl('blog-detalle.php?slug=' . $articulo['slug']); ?>')" 
+                                    class="btn btn-outline-secondary btn-sm">
                                 <i class="bi bi-link-45deg me-1"></i>Copiar enlace
                             </button>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========================================
-         COMENTARIOS
-         ======================================== -->
-    <section class="blog-comments py-5 bg-light">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <h3 class="h4 mb-4" data-aos="fade-up">
-                        <i class="bi bi-chat-dots me-2"></i>Comentarios (<?php echo count($comentarios); ?>)
-                    </h3>
-
-                    <!-- Formulario de comentarios -->
-                    <div class="card mb-4" data-aos="fade-up" data-aos-delay="100">
-                        <div class="card-body">
-                            <h5 class="card-title">Deja tu comentario</h5>
-                            <form id="commentForm" action="includes/blog_comment_handler.php" method="POST">
-                                <input type="hidden" name="articulo_id" value="<?php echo $articulo['id']; ?>">
+                    
+                    <!-- Comments Section -->
+                    <div class="mt-5">
+                        <h4>Comentarios (<?php echo count($comentarios); ?>)</h4>
+                        
+                        <?php if (!empty($comentarios)): ?>
+                            <?php foreach ($comentarios as $comentario): ?>
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="card-title mb-0"><?php echo esc($comentario['nombre']); ?></h6>
+                                        <small class="text-muted"><?php echo date('d M Y', strtotime($comentario['created_at'])); ?></small>
+                                    </div>
+                                    <p class="card-text"><?php echo nl2br(esc($comentario['comentario'])); ?></p>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p class="text-muted">No hay comentarios aún. ¡Sé el primero en comentar!</p>
+                        <?php endif; ?>
+                        
+                        <!-- Comment Form -->
+                        <div class="comment-form">
+                            <h5>Dejar un comentario</h5>
+                            
+                            <?php if ($mensaje_comentario): ?>
+                            <div class="alert alert-<?php echo $tipo_mensaje; ?> alert-dismissible fade show" role="alert">
+                                <?php echo esc($mensaje_comentario); ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            <?php endif; ?>
+                            
+                            <form method="POST">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="nombre" class="form-label">Nombre *</label>
@@ -420,174 +379,71 @@ $tags = !empty($articulo['tags']) ? json_decode($articulo['tags'], true) : [];
                                     <label for="comentario" class="form-label">Comentario *</label>
                                     <textarea class="form-control" id="comentario" name="comentario" rows="4" required></textarea>
                                 </div>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-send me-2"></i>Enviar comentario
+                                <button type="submit" name="enviar_comentario" class="btn btn-primary">
+                                    <i class="bi bi-send me-1"></i>Enviar comentario
                                 </button>
                             </form>
                         </div>
                     </div>
-
-                    <!-- Lista de comentarios -->
-                    <div class="comments-list" data-aos="fade-up" data-aos-delay="200">
-                        <?php if (!empty($comentarios)): ?>
-                            <?php foreach ($comentarios as $comentario): ?>
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <h6 class="card-title mb-0"><?php echo esc($comentario['nombre']); ?></h6>
-                                        <small class="text-muted">
-                                            <?php echo formatBlogDate($comentario['created_at']); ?>
-                                        </small>
-                                    </div>
-                                    <p class="card-text"><?php echo nl2br(esc($comentario['comentario'])); ?></p>
-                                </div>
-                            </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="text-center py-4">
-                                <i class="bi bi-chat-dots display-4 text-muted mb-3"></i>
-                                <p class="text-muted">No hay comentarios aún. ¡Sé el primero en comentar!</p>
-                            </div>
-                        <?php endif; ?>
-                    </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========================================
-         ARTÍCULOS RELACIONADOS
-         ======================================== -->
-    <?php if (!empty($articulos_relacionados)): ?>
-    <section class="blog-related py-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <h3 class="h4 text-center mb-5" data-aos="fade-up">
-                        <i class="bi bi-collection me-2"></i>Artículos Relacionados
-                    </h3>
-                    <div class="row g-4">
-                        <?php foreach ($articulos_relacionados as $index => $relacionado): ?>
-                        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="<?php echo $index * 100; ?>">
-                            <article class="card h-100 border-0 shadow-sm">
-                                <img src="<?php echo !empty($relacionado['imagen_principal']) ? SITE_URL . $relacionado['imagen_principal'] : imageUrl('design/placeholder-blog.jpg'); ?>" 
-                                     class="card-img-top" 
-                                     alt="<?php echo esc($relacionado['titulo']); ?>"
-                                     style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <div class="mb-2">
-                                        <span class="badge rounded-pill px-3 py-2" 
-                                              style="background-color: <?php echo $relacionado['categoria_color']; ?>;">
-                                            <?php echo esc($relacionado['categoria_nombre']); ?>
-                                        </span>
-                                    </div>
-                                    <h5 class="card-title">
-                                        <a href="<?php echo siteUrl('blog-detalle.php?slug=' . $relacionado['slug']); ?>" 
-                                           class="text-decoration-none text-dark">
-                                            <?php echo esc($relacionado['titulo']); ?>
-                                        </a>
-                                    </h5>
-                                    <p class="card-text text-muted">
-                                        <?php echo esc(truncateText($relacionado['resumen'], 100)); ?>
-                                    </p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">
-                                            <?php echo formatBlogDate($relacionado['fecha_publicacion']); ?>
-                                        </small>
-                                        <a href="<?php echo siteUrl('blog-detalle.php?slug=' . $relacionado['slug']); ?>" 
-                                           class="btn btn-primary btn-sm">
-                                            Leer más
-                                        </a>
-                                    </div>
-                                </div>
-                            </article>
+                
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Social Share -->
+                    <div class="social-share">
+                        <h6>Compartir</h6>
+                        <div class="d-grid gap-2">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(siteUrl('blog-detalle.php?slug=' . $articulo['slug'])); ?>" 
+                               target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-facebook me-1"></i>Facebook
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(siteUrl('blog-detalle.php?slug=' . $articulo['slug'])); ?>&text=<?php echo urlencode($articulo['titulo']); ?>" 
+                               target="_blank" class="btn btn-outline-info btn-sm">
+                                <i class="bi bi-twitter me-1"></i>Twitter
+                            </a>
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo urlencode(siteUrl('blog-detalle.php?slug=' . $articulo['slug'])); ?>" 
+                               target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-linkedin me-1"></i>LinkedIn
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Related Articles -->
+                    <?php if (!empty($articulos_relacionados)): ?>
+                    <div class="mt-4">
+                        <h6>Artículos relacionados</h6>
+                        <?php foreach ($articulos_relacionados as $relacionado): ?>
+                        <div class="card related-article mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <a href="<?php echo siteUrl('blog-detalle.php?slug=' . $relacionado['slug']); ?>" 
+                                       class="text-decoration-none">
+                                        <?php echo esc(truncateText($relacionado['titulo'], 60)); ?>
+                                    </a>
+                                </h6>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar me-1"></i>
+                                    <?php echo date('d M Y', strtotime($relacionado['fecha_publicacion'])); ?>
+                                </small>
+                            </div>
                         </div>
                         <?php endforeach; ?>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </section>
-    <?php endif; ?>
-
-    <!-- ========================================
-         FOOTER
-         ======================================== -->
-    <?php component('footer'); ?>
-
-    <!-- ========================================
-         SCRIPTS
-         ======================================== -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="<?php echo assetUrl('js/landing.js'); ?>"></script>
-    <script src="<?php echo assetUrl('js/blog.js'); ?>"></script>
     
+    <!-- Footer -->
+    <?php include 'includes/footer.php'; ?>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Inicializar AOS
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true
-        });
-
-        // Funciones para compartir
-        function shareOnFacebook() {
-            const url = encodeURIComponent(window.location.href);
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
-        }
-
-        function shareOnTwitter() {
-            const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent('<?php echo esc($articulo['titulo']); ?>');
-            window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'width=600,height=400');
-        }
-
-        function shareOnLinkedIn() {
-            const url = encodeURIComponent(window.location.href);
-            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=600,height=400');
-        }
-
-        function copyLink() {
-            navigator.clipboard.writeText(window.location.href).then(function() {
-                // Mostrar notificación
-                const btn = event.target.closest('button');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<i class="bi bi-check me-1"></i>¡Copiado!';
-                btn.classList.add('btn-success');
-                btn.classList.remove('btn-outline-secondary', 'btn-secondary');
-                
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.classList.remove('btn-success');
-                    btn.classList.add('btn-outline-secondary');
-                }, 2000);
-            });
-        }
-
-        // Manejar formulario de comentarios
-        document.getElementById('commentForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            
-            fetch('includes/blog_comment_handler.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Comentario enviado correctamente. Será revisado antes de publicarse.');
-                    this.reset();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                alert('Error de conexión. Por favor, intenta de nuevo.');
-            });
-        });
+        AOS.init();
     </script>
 </body>
 </html>
