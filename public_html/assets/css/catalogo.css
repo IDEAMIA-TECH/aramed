@@ -55,6 +55,226 @@
 }
 
 /* ========================================
+   SECTION STYLES (Consistent with landing.css)
+   ======================================== */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--aramed-dark);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.section-subtitle {
+    font-size: 1.25rem;
+    color: var(--color-gray-600);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.section-tag {
+    display: inline-block;
+    background: var(--aramed-primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* ========================================
+   BADGE STYLES (Consistent with landing.css)
+   ======================================== */
+.badge {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 50px;
+    display: inline-block;
+}
+
+.badge.bg-primary {
+    background-color: var(--aramed-primary) !important;
+    color: white;
+}
+
+.badge.bg-white {
+    background-color: white !important;
+    color: var(--aramed-primary);
+}
+
+.badge.bg-light {
+    background-color: var(--color-gray-100) !important;
+    color: var(--aramed-dark);
+}
+
+.badge.bg-secondary {
+    background-color: var(--aramed-secondary) !important;
+    color: white;
+}
+
+/* ========================================
+   BUTTON STYLES (Consistent with landing.css)
+   ======================================== */
+.btn {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-medium);
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--aramed-primary);
+    color: white;
+    border: 2px solid var(--aramed-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--aramed-primary-dark);
+    border-color: var(--aramed-primary-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(11, 159, 217, 0.3);
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    color: var(--aramed-primary);
+    border: 2px solid var(--aramed-primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--aramed-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(11, 159, 217, 0.3);
+}
+
+.btn-outline-secondary {
+    background-color: transparent;
+    color: var(--color-gray-600);
+    border: 2px solid var(--color-gray-400);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--color-gray-600);
+    color: white;
+    border-color: var(--color-gray-600);
+}
+
+.btn-light {
+    background-color: white;
+    color: var(--aramed-primary);
+    border: 2px solid white;
+}
+
+.btn-light:hover {
+    background-color: var(--color-gray-100);
+    color: var(--aramed-primary);
+    border-color: var(--color-gray-100);
+}
+
+/* ========================================
+   CARD STYLES (Consistent with landing.css)
+   ======================================== */
+.card {
+    background: white;
+    border-radius: var(--product-card-border-radius);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* ========================================
+   FORM STYLES (Consistent with landing.css)
+   ======================================== */
+.form-control {
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--aramed-primary);
+    box-shadow: 0 0 0 0.2rem rgba(11, 159, 217, 0.25);
+}
+
+.form-select {
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus {
+    border-color: var(--aramed-primary);
+    box-shadow: 0 0 0 0.2rem rgba(11, 159, 217, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: var(--aramed-primary);
+    border-color: var(--aramed-primary);
+}
+
+/* ========================================
+   TEXT STYLES (Consistent with landing.css)
+   ======================================== */
+.text-primary {
+    color: var(--aramed-primary) !important;
+}
+
+.text-secondary {
+    color: var(--aramed-secondary) !important;
+}
+
+.text-muted {
+    color: var(--color-gray-600) !important;
+}
+
+.text-white {
+    color: white !important;
+}
+
+.text-white-75 {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+
+/* ========================================
+   BACKGROUND STYLES (Consistent with landing.css)
+   ======================================== */
+.bg-primary {
+    background-color: var(--aramed-primary) !important;
+}
+
+.bg-secondary {
+    background-color: var(--aramed-secondary) !important;
+}
+
+.bg-light {
+    background-color: var(--color-gray-100) !important;
+}
+
+.bg-white {
+    background-color: white !important;
+}
+
+/* ========================================
    BREADCRUMB
    ======================================== */
 .breadcrumb-section {
@@ -230,12 +450,15 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
     overflow: hidden;
-    border: 1px solid #f0f0f0;
+    border: none;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .product-card:hover {
-    box-shadow: 0 8px 30px rgba(0, 102, 204, 0.15);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(11, 159, 217, 0.15);
+    transform: translateY(-5px);
 }
 
 /* ========================================
@@ -343,24 +566,26 @@
 }
 
 .product-category {
-    background: #e3f2fd;
+    background: rgba(11, 159, 217, 0.1);
     color: var(--aramed-primary);
 }
 
 .product-brand {
-    background: #f3e5f5;
-    color: #7b1fa2;
+    background: rgba(26, 26, 26, 0.1);
+    color: var(--aramed-secondary);
 }
 
 .product-title {
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.25rem;
+    font-weight: 700;
     margin-bottom: 0.75rem;
-    line-height: 1.4;
+    line-height: 1.3;
+    color: var(--aramed-dark);
 }
 
 .product-title a {
-    color: #2c3e50;
+    color: inherit;
+    text-decoration: none;
     transition: color 0.3s ease;
 }
 
@@ -369,8 +594,8 @@
 }
 
 .product-description {
-    font-size: 0.9rem;
-    color: #6c757d;
+    font-size: 0.95rem;
+    color: var(--color-gray-600);
     line-height: 1.5;
     margin-bottom: 1rem;
     flex: 1;
