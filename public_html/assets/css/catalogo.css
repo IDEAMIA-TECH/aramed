@@ -602,6 +602,21 @@
 }
 
 /* ========================================
+   FONDO DE LA PÁGINA
+   ======================================== */
+body.catalogo-page {
+    background-color: #ffffff !important;
+}
+
+.catalogo-page .container {
+    background-color: transparent !important;
+}
+
+.catalogo-page .catalogo-content {
+    background-color: #ffffff !important;
+}
+
+/* ========================================
    FILTROS DINÁMICOS ADICIONALES
    ======================================== */
 
