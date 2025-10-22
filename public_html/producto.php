@@ -728,9 +728,30 @@ $breadcrumb = [
     <!-- Initialize Product JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar carrusel directamente
+            // Inicializar carrusel de forma simple
             if (typeof Swiper !== 'undefined') {
-                // Swiper thumbnails primero
+                // Solo carrusel principal sin thumbs para evitar bucles
+                const mainSwiper = new Swiper('.producto-swiper-main', {
+                    spaceBetween: 10,
+                    navigation: {
+                        nextEl: '.producto-swiper-main .swiper-button-next',
+                        prevEl: '.producto-swiper-main .swiper-button-prev',
+                    },
+                    pagination: {
+                        el: '.producto-swiper-main .swiper-pagination',
+                        clickable: true,
+                    },
+                    keyboard: {
+                        enabled: true,
+                    },
+                    loop: false,
+                    effect: 'fade',
+                    fadeEffect: {
+                        crossFade: true
+                    }
+                });
+                
+                // Carrusel de thumbnails separado
                 const thumbsSwiper = new Swiper('.producto-swiper-thumbs', {
                     spaceBetween: 10,
                     slidesPerView: 4,
@@ -752,28 +773,13 @@ $breadcrumb = [
                     }
                 });
                 
-                // Swiper principal con thumbs configurado
-                const mainSwiper = new Swiper('.producto-swiper-main', {
-                    spaceBetween: 10,
-                    navigation: {
-                        nextEl: '.producto-swiper-main .swiper-button-next',
-                        prevEl: '.producto-swiper-main .swiper-button-prev',
-                    },
-                    pagination: {
-                        el: '.producto-swiper-main .swiper-pagination',
-                        clickable: true,
-                    },
-                    keyboard: {
-                        enabled: true,
-                    },
-                    loop: false,
-                    effect: 'fade',
-                    fadeEffect: {
-                        crossFade: true
-                    },
-                    thumbs: {
-                        swiper: thumbsSwiper,
-                    },
+                // Conectar manualmente sin crear bucles
+                thumbsSwiper.on('slideChange', function() {
+                    mainSwiper.slideTo(this.activeIndex);
+                });
+                
+                mainSwiper.on('slideChange', function() {
+                    thumbsSwiper.slideTo(this.activeIndex);
                 });
                 
                 console.log('✅ Carrusel de producto inicializado correctamente');
