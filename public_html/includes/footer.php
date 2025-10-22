@@ -147,9 +147,9 @@ if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
                     </p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
-                    <a href="#" class="footer-legal-link me-3">Aviso de Privacidad</a>
-                    <a href="#" class="footer-legal-link me-3">Términos de Uso</a>
-                    <a href="#" class="footer-legal-link">Política de Cookies</a>
+                    <a href="<?php echo siteUrl('privacidad.php'); ?>" class="footer-legal-link me-3">Aviso de Privacidad</a>
+                    <a href="<?php echo siteUrl('terminos.php'); ?>" class="footer-legal-link me-3">Términos de Uso</a>
+                    <a href="<?php echo siteUrl('cookies.php'); ?>" class="footer-legal-link">Política de Cookies</a>
                 </div>
             </div>
             
