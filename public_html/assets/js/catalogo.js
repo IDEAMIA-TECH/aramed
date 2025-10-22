@@ -797,13 +797,6 @@ window.addEventListener('resize', function() {
 });
 
 // Manejar navegación del navegador
-window.addEventListener('popstate', function() {
-    // Recargar página si es necesario para filtros
-    if (window.location.pathname.includes('catalogo.php')) {
-        window.location.reload();
-    }
-});
-
     /**
      * Inicializar toggle de vista (grid/list)
      */
@@ -869,6 +862,16 @@ window.addEventListener('popstate', function() {
         console.log('💾 Preferencia guardada:', view);
     }
 };
+
+// ========================================
+// EVENT LISTENERS GLOBALES
+// ========================================
+window.addEventListener('popstate', function() {
+    // Recargar página si es necesario para filtros
+    if (window.location.pathname.includes('catalogo.php')) {
+        window.location.reload();
+    }
+});
 
 // ========================================
 // EXPORT PARA USO EN OTROS SCRIPTS
