@@ -1282,10 +1282,10 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             </p>
                             <ul class="product-features-list">
                                 <li><i class="bi bi-check-circle-fill text-info"></i> Entorno virtual envolvente y multisensorial</li>
-                                <li><i class="bi bi-check-circle-fill text-primary"></i> Tecnología sin gafas ni auriculares</li>
-                                <li><i class="bi bi-check-circle-fill text-success"></i> Escenarios clínicos realistas</li>
-                                <li><i class="bi bi-check-circle-fill text-warning"></i> Estimula la toma de decisiones y colaboración</li>
-                                <li><i class="bi bi-check-circle-fill text-secondary"></i> Mejora la retención del conocimiento</li>
+                                <li><i class="bi bi-check-circle-fill text-info"></i> Tecnología sin gafas ni auriculares</li>
+                                <li><i class="bi bi-check-circle-fill text-info"></i> Escenarios clínicos realistas</li>
+                                <li><i class="bi bi-check-circle-fill text-info"></i> Estimula la toma de decisiones y colaboración</li>
+                                <li><i class="bi bi-check-circle-fill text-info"></i> Mejora la retención del conocimiento</li>
                             </ul>
                             <div class="product-actions">
                                 <a href="#newsletter" class="btn btn-info text-white btn-lg">
