@@ -712,10 +712,18 @@
     margin-bottom: 0.5rem !important;
     color: #ffffff !important;
     background-color: var(--aramed-primary) !important;
+    background: var(--aramed-primary) !important;
     border: 2px solid var(--aramed-primary) !important;
     font-weight: 600 !important;
     border-radius: 25px !important;
     box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2) !important;
+}
+
+/* Fallback para asegurar color azul */
+.active-filters .badge.bg-primary {
+    background-color: #0066cc !important;
+    background: #0066cc !important;
+    border-color: #0066cc !important;
 }
 
 .active-filters .badge a {
