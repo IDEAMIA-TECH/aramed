@@ -19,6 +19,12 @@ require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/connection.php';
 
+// Obtener conexión PDO
+$pdo = getDB();
+if (!$pdo) {
+    die('Error de conexión a la base de datos');
+}
+
 // Verificar autenticación (simplificado para demo)
 session_start();
 if (!isset($_SESSION['admin_logged_in'])) {
@@ -29,278 +35,280 @@ if (!isset($_SESSION['admin_logged_in'])) {
 $action = isset($_GET['action']) ? $_GET['action'] : 'list';
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// Procesar acciones
-switch ($action) {
-    case 'create':
-        $this->handleCreate();
-        break;
-    case 'edit':
-        $this->handleEdit($id);
-        break;
-    case 'delete':
-        $this->handleDelete($id);
-        break;
-    case 'toggle_status':
-        $this->handleToggleStatus($id);
-        break;
-    default:
-        $this->showList();
-        break;
-}
+// Obtener artículos
+$sql = "
+    SELECT a.*, c.nombre as categoria_nombre, c.color as categoria_color
+    FROM blog_articulos a
+    LEFT JOIN blog_categorias c ON a.categoria_id = c.id
+    ORDER BY a.created_at DESC
+";
 
-/**
- * Mostrar lista de artículos
- */
-function showList() {
-    global $pdo;
-    
-    // Obtener artículos
-    $sql = "
-        SELECT a.*, c.nombre as categoria_nombre, c.color as categoria_color
-        FROM blog_articulos a
-        LEFT JOIN blog_categorias c ON a.categoria_id = c.id
-        ORDER BY a.created_at DESC
-    ";
-    
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $articulos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Obtener categorías para filtros
-    $sql_categorias = "SELECT * FROM blog_categorias WHERE estado = 'activo' ORDER BY nombre";
-    $stmt_categorias = $pdo->prepare($sql_categorias);
-    $stmt_categorias->execute();
-    $categorias = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
-    
-    include 'views/list.php';
-}
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$articulos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-/**
- * Manejar creación de artículo
- */
-function handleCreate() {
-    global $pdo;
-    
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        try {
-            $data = [
-                'titulo' => sanitizeInput($_POST['titulo']),
-                'slug' => generateSlug($_POST['titulo']),
-                'resumen' => sanitizeInput($_POST['resumen']),
-                'contenido' => $_POST['contenido'], // No sanitizar para mantener HTML
-                'imagen_principal' => sanitizeInput($_POST['imagen_principal']),
-                'imagen_og' => sanitizeInput($_POST['imagen_og']),
-                'categoria_id' => (int)$_POST['categoria_id'],
-                'autor' => sanitizeInput($_POST['autor']),
-                'autor_email' => sanitizeEmail($_POST['autor_email']),
-                'tags' => json_encode(explode(',', $_POST['tags'])),
-                'meta_title' => sanitizeInput($_POST['meta_title']),
-                'meta_description' => sanitizeInput($_POST['meta_description']),
-                'meta_keywords' => sanitizeInput($_POST['meta_keywords']),
-                'estado' => $_POST['estado'],
-                'destacado' => isset($_POST['destacado']) ? 1 : 0,
-                'fecha_publicacion' => $_POST['fecha_publicacion'] ?: null
-            ];
-            
-            $sql = "
-                INSERT INTO blog_articulos (
-                    titulo, slug, resumen, contenido, imagen_principal, imagen_og,
-                    categoria_id, autor, autor_email, tags, meta_title, meta_description,
-                    meta_keywords, estado, destacado, fecha_publicacion, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
-            ";
-            
-            $stmt = $pdo->prepare($sql);
-            $result = $stmt->execute(array_values($data));
-            
-            if ($result) {
-                $_SESSION['success_message'] = 'Artículo creado correctamente';
-                header('Location: index.php');
-                exit;
-            } else {
-                throw new Exception('Error al crear el artículo');
-            }
-            
-        } catch (Exception $e) {
-            $_SESSION['error_message'] = $e->getMessage();
-        }
+// Obtener categorías para filtros
+$sql_categorias = "SELECT * FROM blog_categorias WHERE estado = 'activo' ORDER BY nombre";
+$stmt_categorias = $pdo->prepare($sql_categorias);
+$stmt_categorias->execute();
+$categorias = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
+
+// Función para truncar texto
+function truncateText($texto, $limite = 150) {
+    if (strlen($texto) <= $limite) {
+        return $texto;
     }
-    
-    // Obtener categorías
-    $sql_categorias = "SELECT * FROM blog_categorias WHERE estado = 'activo' ORDER BY nombre";
-    $stmt_categorias = $pdo->prepare($sql_categorias);
-    $stmt_categorias->execute();
-    $categorias = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
-    
-    include 'views/create.php';
-}
-
-/**
- * Manejar edición de artículo
- */
-function handleEdit($id) {
-    global $pdo;
-    
-    // Obtener artículo
-    $sql = "SELECT * FROM blog_articulos WHERE id = ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$id]);
-    $articulo = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if (!$articulo) {
-        $_SESSION['error_message'] = 'Artículo no encontrado';
-        header('Location: index.php');
-        exit;
-    }
-    
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        try {
-            $data = [
-                'titulo' => sanitizeInput($_POST['titulo']),
-                'slug' => generateSlug($_POST['titulo']),
-                'resumen' => sanitizeInput($_POST['resumen']),
-                'contenido' => $_POST['contenido'],
-                'imagen_principal' => sanitizeInput($_POST['imagen_principal']),
-                'imagen_og' => sanitizeInput($_POST['imagen_og']),
-                'categoria_id' => (int)$_POST['categoria_id'],
-                'autor' => sanitizeInput($_POST['autor']),
-                'autor_email' => sanitizeEmail($_POST['autor_email']),
-                'tags' => json_encode(explode(',', $_POST['tags'])),
-                'meta_title' => sanitizeInput($_POST['meta_title']),
-                'meta_description' => sanitizeInput($_POST['meta_description']),
-                'meta_keywords' => sanitizeInput($_POST['meta_keywords']),
-                'estado' => $_POST['estado'],
-                'destacado' => isset($_POST['destacado']) ? 1 : 0,
-                'fecha_publicacion' => $_POST['fecha_publicacion'] ?: null,
-                'id' => $id
-            ];
-            
-            $sql = "
-                UPDATE blog_articulos SET
-                    titulo = ?, slug = ?, resumen = ?, contenido = ?, imagen_principal = ?, imagen_og = ?,
-                    categoria_id = ?, autor = ?, autor_email = ?, tags = ?, meta_title = ?, meta_description = ?,
-                    meta_keywords = ?, estado = ?, destacado = ?, fecha_publicacion = ?, updated_at = NOW()
-                WHERE id = ?
-            ";
-            
-            $stmt = $pdo->prepare($sql);
-            $result = $stmt->execute(array_values($data));
-            
-            if ($result) {
-                $_SESSION['success_message'] = 'Artículo actualizado correctamente';
-                header('Location: index.php');
-                exit;
-            } else {
-                throw new Exception('Error al actualizar el artículo');
-            }
-            
-        } catch (Exception $e) {
-            $_SESSION['error_message'] = $e->getMessage();
-        }
-    }
-    
-    // Obtener categorías
-    $sql_categorias = "SELECT * FROM blog_categorias WHERE estado = 'activo' ORDER BY nombre";
-    $stmt_categorias = $pdo->prepare($sql_categorias);
-    $stmt_categorias->execute();
-    $categorias = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
-    
-    include 'views/edit.php';
-}
-
-/**
- * Manejar eliminación de artículo
- */
-function handleDelete($id) {
-    global $pdo;
-    
-    try {
-        $sql = "DELETE FROM blog_articulos WHERE id = ?";
-        $stmt = $pdo->prepare($sql);
-        $result = $stmt->execute([$id]);
-        
-        if ($result) {
-            $_SESSION['success_message'] = 'Artículo eliminado correctamente';
-        } else {
-            throw new Exception('Error al eliminar el artículo');
-        }
-    } catch (Exception $e) {
-        $_SESSION['error_message'] = $e->getMessage();
-    }
-    
-    header('Location: index.php');
-    exit;
-}
-
-/**
- * Manejar cambio de estado
- */
-function handleToggleStatus($id) {
-    global $pdo;
-    
-    try {
-        // Obtener estado actual
-        $sql = "SELECT estado FROM blog_articulos WHERE id = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$id]);
-        $articulo = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($articulo) {
-            $nuevo_estado = $articulo['estado'] === 'publicado' ? 'borrador' : 'publicado';
-            
-            $sql = "UPDATE blog_articulos SET estado = ?, updated_at = NOW() WHERE id = ?";
-            $stmt = $pdo->prepare($sql);
-            $result = $stmt->execute([$nuevo_estado, $id]);
-            
-            if ($result) {
-                $_SESSION['success_message'] = 'Estado actualizado correctamente';
-            } else {
-                throw new Exception('Error al actualizar el estado');
-            }
-        } else {
-            throw new Exception('Artículo no encontrado');
-        }
-    } catch (Exception $e) {
-        $_SESSION['error_message'] = $e->getMessage();
-    }
-    
-    header('Location: index.php');
-    exit;
-}
-
-/**
- * Generar slug único
- */
-function generateSlug($titulo) {
-    global $pdo;
-    
-    $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $titulo)));
-    $original_slug = $slug;
-    $counter = 1;
-    
-    // Verificar si el slug ya existe
-    while (true) {
-        $sql = "SELECT id FROM blog_articulos WHERE slug = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$slug]);
-        
-        if (!$stmt->fetch()) {
-            break;
-        }
-        
-        $slug = $original_slug . '-' . $counter;
-        $counter++;
-    }
-    
-    return $slug;
-}
-
-// Función para procesar tags
-function processTags($tags_string) {
-    $tags = array_map('trim', explode(',', $tags_string));
-    $tags = array_filter($tags, function($tag) {
-        return !empty($tag);
-    });
-    return array_values($tags);
+    return substr($texto, 0, $limite) . '...';
 }
 ?>
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión del Blog - <?php echo SITE_NAME; ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .admin-sidebar {
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+        .admin-content {
+            min-height: 100vh;
+        }
+        .status-badge {
+            font-size: 0.75rem;
+        }
+        .article-image {
+            width: 60px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 admin-sidebar p-0">
+                <div class="p-3">
+                    <h5 class="text-primary mb-4">
+                        <i class="bi bi-newspaper me-2"></i>Blog Admin
+                    </h5>
+                    <nav class="nav flex-column">
+                        <a class="nav-link active" href="index.php">
+                            <i class="bi bi-list-ul me-2"></i>Artículos
+                        </a>
+                        <a class="nav-link" href="categorias.php">
+                            <i class="bi bi-folder me-2"></i>Categorías
+                        </a>
+                        <a class="nav-link" href="comentarios.php">
+                            <i class="bi bi-chat-dots me-2"></i>Comentarios
+                        </a>
+                        <a class="nav-link" href="../../blog.php" target="_blank">
+                            <i class="bi bi-eye me-2"></i>Ver Blog
+                        </a>
+                        <hr>
+                        <a class="nav-link" href="../../index.php">
+                            <i class="bi bi-house me-2"></i>Volver al Sitio
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Contenido principal -->
+            <div class="col-md-9 col-lg-10 admin-content p-4">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>
+                        <i class="bi bi-newspaper me-2"></i>Gestión de Artículos
+                    </h2>
+                    <a href="create.php" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Nuevo Artículo
+                    </a>
+                </div>
+
+                <!-- Tabla de artículos -->
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Imagen</th>
+                                        <th>Título</th>
+                                        <th>Categoría</th>
+                                        <th>Autor</th>
+                                        <th>Estado</th>
+                                        <th>Vistas</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($articulos)): ?>
+                                        <?php foreach ($articulos as $articulo): ?>
+                                        <tr>
+                                            <td>
+                                                <?php if (!empty($articulo['imagen_principal'])): ?>
+                                                <img src="<?php echo SITE_URL . $articulo['imagen_principal']; ?>" 
+                                                     alt="<?php echo esc($articulo['titulo']); ?>" 
+                                                     class="article-image">
+                                                <?php else: ?>
+                                                <div class="article-image bg-light d-flex align-items-center justify-content-center">
+                                                    <i class="bi bi-image text-muted"></i>
+                                                </div>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <strong><?php echo esc($articulo['titulo']); ?></strong>
+                                                    <?php if ($articulo['destacado']): ?>
+                                                    <span class="badge bg-warning text-dark ms-2 status-badge">
+                                                        <i class="bi bi-star-fill me-1"></i>Destacado
+                                                    </span>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <small class="text-muted">
+                                                    <?php echo esc(truncateText($articulo['resumen'], 60)); ?>
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <?php if ($articulo['categoria_nombre']): ?>
+                                                <span class="badge rounded-pill" 
+                                                      style="background-color: <?php echo $articulo['categoria_color']; ?>;">
+                                                    <?php echo esc($articulo['categoria_nombre']); ?>
+                                                </span>
+                                                <?php else: ?>
+                                                <span class="text-muted">Sin categoría</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <div><?php echo esc($articulo['autor']); ?></div>
+                                                <small class="text-muted"><?php echo esc($articulo['autor_email']); ?></small>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                $estado_classes = [
+                                                    'borrador' => 'bg-secondary',
+                                                    'publicado' => 'bg-success',
+                                                    'archivado' => 'bg-warning'
+                                                ];
+                                                $estado_texts = [
+                                                    'borrador' => 'Borrador',
+                                                    'publicado' => 'Publicado',
+                                                    'archivado' => 'Archivado'
+                                                ];
+                                                ?>
+                                                <span class="badge <?php echo $estado_classes[$articulo['estado']]; ?> status-badge">
+                                                    <?php echo $estado_texts[$articulo['estado']]; ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info status-badge">
+                                                    <i class="bi bi-eye me-1"></i><?php echo number_format($articulo['vistas']); ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div><?php echo date('d/m/Y', strtotime($articulo['created_at'])); ?></div>
+                                                <small class="text-muted">
+                                                    <?php echo date('H:i', strtotime($articulo['created_at'])); ?>
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    <a href="../../blog-detalle.php?slug=<?php echo $articulo['slug']; ?>" 
+                                                       class="btn btn-outline-primary" 
+                                                       target="_blank" 
+                                                       title="Ver artículo">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                    <a href="edit.php?id=<?php echo $articulo['id']; ?>" 
+                                                       class="btn btn-outline-warning" 
+                                                       title="Editar">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <a href="?action=toggle_status&id=<?php echo $articulo['id']; ?>" 
+                                                       class="btn btn-outline-<?php echo $articulo['estado'] === 'publicado' ? 'secondary' : 'success'; ?>" 
+                                                       title="<?php echo $articulo['estado'] === 'publicado' ? 'Despublicar' : 'Publicar'; ?>">
+                                                        <i class="bi bi-<?php echo $articulo['estado'] === 'publicado' ? 'eye-slash' : 'eye'; ?>"></i>
+                                                    </a>
+                                                    <a href="?action=delete&id=<?php echo $articulo['id']; ?>" 
+                                                       class="btn btn-outline-danger" 
+                                                       title="Eliminar"
+                                                       onclick="return confirm('¿Estás seguro de eliminar este artículo?')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="8" class="text-center py-4">
+                                                <i class="bi bi-newspaper display-4 text-muted mb-3"></i>
+                                                <p class="text-muted">No hay artículos disponibles</p>
+                                                <a href="create.php" class="btn btn-primary">
+                                                    <i class="bi bi-plus-circle me-2"></i>Crear primer artículo
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estadísticas -->
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">
+                                    <?php echo count(array_filter($articulos, function($a) { return $a['estado'] === 'publicado'; })); ?>
+                                </h5>
+                                <p class="card-text">Publicados</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title text-warning">
+                                    <?php echo count(array_filter($articulos, function($a) { return $a['estado'] === 'borrador'; })); ?>
+                                </h5>
+                                <p class="card-text">Borradores</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title text-info">
+                                    <?php echo array_sum(array_column($articulos, 'vistas')); ?>
+                                </h5>
+                                <p class="card-text">Total Vistas</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title text-success">
+                                    <?php echo count(array_filter($articulos, function($a) { return $a['destacado'] == 1; })); ?>
+                                </h5>
+                                <p class="card-text">Destacados</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
