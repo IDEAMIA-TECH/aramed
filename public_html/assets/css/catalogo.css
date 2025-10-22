@@ -25,7 +25,65 @@
    LAYOUT PRINCIPAL
    ======================================== */
 .catalogo-page {
-    background-color: #f8f9fa;
+    background-color: white !important;
+}
+
+.catalogo-page body {
+    background-color: white !important;
+}
+
+.catalogo-page .container {
+    background-color: transparent !important;
+}
+
+.catalogo-page .row {
+    background-color: transparent !important;
+}
+
+/* ========================================
+   CONTENIDO PRINCIPAL DEL CATÁLOGO
+   ======================================== */
+.catalogo-content {
+    background-color: white !important;
+    padding: 2rem 0;
+}
+
+.catalogo-content .container {
+    background-color: transparent !important;
+}
+
+.catalogo-content .row {
+    background-color: transparent !important;
+}
+
+.catalogo-content .col-lg-3,
+.catalogo-content .col-lg-9 {
+    background-color: transparent !important;
+}
+
+/* ========================================
+   FORZAR FONDO BLANCO EN TODOS LOS ELEMENTOS
+   ======================================== */
+.catalogo-page * {
+    background-color: inherit !important;
+}
+
+.catalogo-page .filters-sidebar,
+.catalogo-page .results-bar,
+.catalogo-page .products-grid,
+.catalogo-page .pagination {
+    background-color: white !important;
+}
+
+.catalogo-page .product-card {
+    background-color: white !important;
+    color: #212529 !important;
+}
+
+.catalogo-page .filter-title,
+.catalogo-page .product-title,
+.catalogo-page .product-description {
+    color: inherit !important;
 }
 
 .catalogo-header {
@@ -798,31 +856,31 @@
 }
 
 /* ========================================
-   DARK MODE SUPPORT
+   DARK MODE SUPPORT - DISABLED
    ======================================== */
 @media (prefers-color-scheme: dark) {
     .catalogo-page {
-        background-color: #1a1a1a;
+        background-color: white !important;
     }
     
     .filters-sidebar,
     .results-bar,
     .product-card {
-        background: #2d2d2d;
-        border-color: #404040;
-        color: #e9ecef;
+        background: white !important;
+        border-color: #dee2e6 !important;
+        color: #212529 !important;
     }
     
     .filter-title {
-        color: #74c0fc;
+        color: var(--aramed-primary) !important;
     }
     
     .product-title a {
-        color: #e9ecef;
+        color: var(--aramed-dark) !important;
     }
     
     .product-description {
-        color: #adb5bd;
+        color: var(--color-gray-600) !important;
     }
 }
 
