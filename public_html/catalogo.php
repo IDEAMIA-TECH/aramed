@@ -913,5 +913,14 @@ function buildFilterUrl($params = []) {
         });
     </script>
     
+    <!-- Initialize Catalog JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof AramedCatalogo !== 'undefined') {
+                AramedCatalogo.init();
+            }
+        });
+    </script>
+    
 </body>
 </html>
