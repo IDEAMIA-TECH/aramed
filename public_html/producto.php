@@ -725,5 +725,14 @@ $breadcrumb = [
         });
     </script>
     
+    <!-- Initialize Product JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof AramedProducto !== 'undefined') {
+                AramedProducto.init();
+            }
+        });
+    </script>
+    
 </body>
 </html>
