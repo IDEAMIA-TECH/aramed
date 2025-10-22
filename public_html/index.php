@@ -76,6 +76,12 @@ $pageImage = imageUrl('design/logo-og.jpg');
     <link rel="apple-touch-icon" sizes="180x180" href="<?php echo imageUrl('design/apple-touch-icon.png'); ?>">
     <link rel="manifest" href="<?php echo siteUrl('site.webmanifest'); ?>">
     
+    <!-- Favicon para diferentes navegadores -->
+    <link rel="shortcut icon" href="<?php echo imageUrl('design/favicon.ico'); ?>">
+    <link rel="icon" href="<?php echo imageUrl('design/favicon.ico'); ?>" type="image/x-icon">
+    <link rel="icon" href="<?php echo imageUrl('design/favicon-32x32.png'); ?>" type="image/png" sizes="32x32">
+    <link rel="icon" href="<?php echo imageUrl('design/favicon-16x16.png'); ?>" type="image/png" sizes="16x16">
+    
     <!-- ========================================
          PRECONNECT & DNS-PREFETCH
          ======================================== -->
@@ -342,41 +348,43 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-6 col-xl-6">
                                     <div class="hero-content" data-aos="fade-up">
-                                        <span class="hero-badge badge bg-white text-primary mb-3 px-3 py-2">
-                                            <i class="bi bi-award-fill me-2"></i>
-                                            +20 Años de Experiencia
-                                        </span>
-                                        <h2 class="hero-subtitle h3 text-white mb-4 fw-normal">
-                                            Simuladores médicos para la enseñanza
-                                        </h2>
-                                        <p class="hero-description lead text-white-75 mb-5">
-                                            Distribuidores líderes de tecnología educativa en salud. 
-                                            Equipamos universidades, hospitales e instituciones con 
-                                            simuladores de última generación.
-                                        </p>
-                                        <div class="hero-actions d-flex flex-wrap gap-3">
-                                            <a href="#newsletter" class="btn btn-light btn-lg px-5 shadow">
-                                                <i class="bi bi-envelope me-2"></i>
-                                                Contáctanos
-                                            </a>
-                                            <a href="#catalogos" class="btn btn-outline-light btn-lg px-5">
-                                                <i class="bi bi-book me-2"></i>
-                                                Ver Catálogos
-                                            </a>
-                                        </div>
-                                        
-                                        <!-- Stats -->
-                                        <div class="hero-stats row g-4 mt-4">
-                                            <div class="col-6">
-                                                <div class="stat-item">
-                                                    <h3 class="stat-number text-white fw-bold mb-1">20+</h3>
-                                                    <p class="stat-label text-white-75 small mb-0">Años</p>
-                                                </div>
+                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                                            <span class="hero-badge badge bg-white text-primary mb-3 px-3 py-2">
+                                                <i class="bi bi-award-fill me-2"></i>
+                                                +20 Años de Experiencia
+                                            </span>
+                                            <h2 class="hero-subtitle h3 text-white mb-4 fw-normal">
+                                                Simuladores médicos para la enseñanza
+                                            </h2>
+                                            <p class="hero-description lead text-white mb-5">
+                                                Distribuidores líderes de tecnología educativa en salud. 
+                                                Equipamos universidades, hospitales e instituciones con 
+                                                simuladores de última generación.
+                                            </p>
+                                            <div class="hero-actions d-flex flex-wrap gap-3">
+                                                <a href="#newsletter" class="btn btn-light btn-lg px-5 shadow">
+                                                    <i class="bi bi-envelope me-2"></i>
+                                                    Contáctanos
+                                                </a>
+                                                <a href="#catalogos" class="btn btn-outline-light btn-lg px-5">
+                                                    <i class="bi bi-book me-2"></i>
+                                                    Ver Catálogos
+                                                </a>
                                             </div>
-                                            <div class="col-6">
-                                                <div class="stat-item">
-                                                    <h3 class="stat-number text-white fw-bold mb-1">100%</h3>
-                                                    <p class="stat-label text-white-75 small mb-0">Satisfacción</p>
+                                            
+                                            <!-- Stats -->
+                                            <div class="hero-stats row g-4 mt-4">
+                                                <div class="col-6">
+                                                    <div class="stat-item">
+                                                        <h3 class="stat-number text-white fw-bold mb-1">20+</h3>
+                                                        <p class="stat-label text-white small mb-0">Años</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="stat-item">
+                                                        <h3 class="stat-number text-white fw-bold mb-1">100%</h3>
+                                                        <p class="stat-label text-white small mb-0">Satisfacción</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
