@@ -28,6 +28,18 @@
     background-color: #ffffff;
 }
 
+.catalogo-content {
+    background-color: #ffffff !important;
+}
+
+.catalogo-content .container {
+    background-color: #ffffff !important;
+}
+
+.catalogo-content .row {
+    background-color: #ffffff !important;
+}
+
 .catalogo-header {
     background: linear-gradient(135deg, var(--aramed-primary) 0%, var(--aramed-secondary) 100%);
     position: relative;
