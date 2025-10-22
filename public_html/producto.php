@@ -73,12 +73,11 @@ try {
     $documents_stmt->execute([$product_id]);
     $documents = $documents_stmt->fetchAll();
     
-    // Obtener productos relacionados (misma categoría) con sus imágenes
+    // Obtener productos relacionados (misma categoría)
     $related_sql = "
-        SELECT p.*, m.nombre as marca_nombre, i.imagen_url
+        SELECT p.*, m.nombre as marca_nombre
         FROM catalogo_productos p
         LEFT JOIN catalogo_marcas m ON p.marca_id = m.id
-        LEFT JOIN catalogo_producto_imagenes i ON p.id = i.producto_id AND i.es_principal = 1
         WHERE p.categoria_id = ? AND p.id != ? AND p.estado = 'activo'
         ORDER BY p.destacado DESC, RAND()
         LIMIT 4
@@ -361,14 +360,7 @@ $breadcrumb = [
                                 <?php foreach ($images as $image): ?>
                                 <div class="swiper-slide">
                                     <div class="producto-image-wrapper">
-                                        <?php
-                                        $imagen_url = $image['imagen_url'];
-                                        // Convertir ruta relativa a URL completa
-                                        if (strpos($imagen_url, '/assets/') === 0) {
-                                            $imagen_url = SITE_URL . $imagen_url;
-                                        }
-                                        ?>
-                                        <img src="<?php echo esc($imagen_url); ?>" 
+                                        <img src="<?php echo esc($image['imagen_url']); ?>" 
                                              alt="<?php echo esc($product['nombre']); ?>" 
                                              class="producto-image"
                                              loading="lazy">
@@ -392,14 +384,7 @@ $breadcrumb = [
                                 <?php foreach ($images as $image): ?>
                                 <div class="swiper-slide">
                                     <div class="producto-thumbnail">
-                                        <?php
-                                        $imagen_url = $image['imagen_url'];
-                                        // Convertir ruta relativa a URL completa
-                                        if (strpos($imagen_url, '/assets/') === 0) {
-                                            $imagen_url = SITE_URL . $imagen_url;
-                                        }
-                                        ?>
-                                        <img src="<?php echo esc($imagen_url); ?>" 
+                                        <img src="<?php echo esc($image['imagen_url']); ?>" 
                                              alt="<?php echo esc($product['nombre']); ?>" 
                                              class="thumbnail-image">
                                     </div>
@@ -626,27 +611,10 @@ $breadcrumb = [
                     <div class="related-product-card">
                         <div class="related-image-wrapper">
                             <a href="producto.php?id=<?php echo $related['id']; ?>">
-                                <?php
-                                // Usar imagen real de la base de datos si existe
-                                if (!empty($related['imagen_url'])) {
-                                    $imagen_real = $related['imagen_url'];
-                                    // Convertir ruta relativa a URL completa
-                                    if (strpos($imagen_real, '/assets/') === 0) {
-                                        $imagen_real = SITE_URL . $imagen_real;
-                                    }
-                                    echo '<img src="' . esc($imagen_real) . '" 
-                                             alt="' . esc($related['nombre']) . '" 
-                                             class="related-image"
-                                             loading="lazy"
-                                             onerror="this.src=\'' . imageUrl('design/placeholder-product.jpg') . '\'">';
-                                } else {
-                                    // Fallback: usar imagen placeholder
-                                    echo '<img src="' . imageUrl('design/placeholder-product.jpg') . '" 
-                                             alt="' . esc($related['nombre']) . '" 
-                                             class="related-image"
-                                             loading="lazy">';
-                                }
-                                ?>
+                                <img src="<?php echo imageUrl('productos/' . strtolower($related['codigo']) . '.jpg'); ?>" 
+                                     alt="<?php echo esc($related['nombre']); ?>" 
+                                     class="related-image"
+                                     onerror="this.src='<?php echo imageUrl('design/placeholder-product.jpg'); ?>'">
                             </a>
                         </div>
                         <div class="related-info">

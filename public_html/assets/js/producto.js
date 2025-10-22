@@ -32,40 +32,6 @@ const AramedProducto = {
      * Inicializar galería de imágenes con Swiper
      */
     initImageGallery: function() {
-        // Verificar que existen los elementos del swiper
-        const mainSwiperEl = document.querySelector('.producto-swiper-main');
-        const thumbsSwiperEl = document.querySelector('.producto-swiper-thumbs');
-        
-        if (!mainSwiperEl) {
-            console.log('No se encontró el swiper principal');
-            return;
-        }
-        
-        // Swiper thumbnails primero
-        let thumbsSwiper = null;
-        if (thumbsSwiperEl) {
-            thumbsSwiper = new Swiper('.producto-swiper-thumbs', {
-                spaceBetween: 10,
-                slidesPerView: 4,
-                freeMode: true,
-                watchSlidesProgress: true,
-                breakpoints: {
-                    320: {
-                        slidesPerView: 3,
-                        spaceBetween: 8,
-                    },
-                    768: {
-                        slidesPerView: 4,
-                        spaceBetween: 10,
-                    },
-                    1024: {
-                        slidesPerView: 4,
-                        spaceBetween: 10,
-                    },
-                }
-            });
-        }
-        
         // Swiper principal
         const mainSwiper = new Swiper('.producto-swiper-main', {
             spaceBetween: 10,
@@ -81,15 +47,46 @@ const AramedProducto = {
                 enabled: true,
             },
             loop: false,
-            effect: 'slide',
-            speed: 300,
-            // Conectar con thumbs si existe
-            ...(thumbsSwiper && {
-                thumbs: {
-                    swiper: thumbsSwiper,
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true
+            },
+            thumbs: {
+                swiper: {
+                    el: '.producto-swiper-thumbs',
+                    slidesPerView: 4,
+                    spaceBetween: 10,
+                    freeMode: true,
+                    watchSlidesProgress: true,
                 },
-            }),
+            },
         });
+        
+        // Swiper thumbnails
+        const thumbsSwiper = new Swiper('.producto-swiper-thumbs', {
+            spaceBetween: 10,
+            slidesPerView: 4,
+            freeMode: true,
+            watchSlidesProgress: true,
+            breakpoints: {
+                320: {
+                    slidesPerView: 3,
+                    spaceBetween: 8,
+                },
+                768: {
+                    slidesPerView: 4,
+                    spaceBetween: 10,
+                },
+                1024: {
+                    slidesPerView: 4,
+                    spaceBetween: 10,
+                },
+            }
+        });
+        
+        // Conectar swipers
+        mainSwiper.thumbs.swiper = thumbsSwiper;
+        thumbsSwiper.controller.control = mainSwiper;
         
         // Zoom en imagen principal (futuro)
         this.initImageZoom();
