@@ -699,6 +699,71 @@ const AramedCatalogo = {
             style: 'currency',
             currency: 'MXN'
         }).format(price);
+    },
+
+    /**
+     * Inicializar toggle de vista (grid/list)
+     */
+    initViewToggle: function() {
+        console.log('🔧 Inicializando toggle de vista...');
+        
+        const viewButtons = document.querySelectorAll('[data-view]');
+        console.log('📋 Botones encontrados:', viewButtons.length);
+        
+        viewButtons.forEach((btn, index) => {
+            console.log(`🔘 Botón ${index + 1}:`, btn.dataset.view);
+            
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const view = btn.dataset.view;
+                console.log('🖱️ Click en botón:', view);
+                this.toggleView(view);
+            });
+        });
+    },
+    
+    /**
+     * Cambiar vista entre grid y lista
+     */
+    toggleView: function(view) {
+        console.log('🔄 Cambiando vista a:', view);
+        
+        const productsGrid = document.querySelector('.products-grid');
+        const viewButtons = document.querySelectorAll('[data-view]');
+        
+        if (!productsGrid) {
+            console.error('❌ No se encontró .products-grid');
+            return;
+        }
+        
+        console.log('✅ Grid encontrado:', productsGrid);
+        
+        // Remover clases activas
+        viewButtons.forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Activar botón seleccionado
+        const activeBtn = document.querySelector(`[data-view="${view}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+            console.log('✅ Botón activado:', view);
+        }
+        
+        // Cambiar vista
+        if (view === 'list') {
+            productsGrid.classList.add('list-view');
+            productsGrid.classList.remove('grid-view');
+            console.log('📋 Vista de lista activada');
+        } else {
+            productsGrid.classList.add('grid-view');
+            productsGrid.classList.remove('list-view');
+            console.log('🔲 Vista de grid activada');
+        }
+        
+        // Guardar preferencia
+        localStorage.setItem('catalogo-view', view);
+        console.log('💾 Preferencia guardada:', view);
     }
 };
 
@@ -797,75 +862,6 @@ window.addEventListener('resize', function() {
 });
 
 // Manejar navegación del navegador
-    /**
-     * Inicializar toggle de vista (grid/list)
-     */
-    initViewToggle: function() {
-        console.log('🔧 Inicializando toggle de vista...');
-        
-        const viewButtons = document.querySelectorAll('[data-view]');
-        console.log('📋 Botones encontrados:', viewButtons.length);
-        
-        viewButtons.forEach((btn, index) => {
-            console.log(`🔘 Botón ${index + 1}:`, btn.dataset.view);
-            
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const view = btn.dataset.view;
-                console.log('🖱️ Click en botón:', view);
-                this.toggleView(view);
-            });
-        });
-    },
-    
-    /**
-     * Cambiar vista entre grid y lista
-     */
-    toggleView: function(view) {
-        console.log('🔄 Cambiando vista a:', view);
-        
-        const productsGrid = document.querySelector('.products-grid');
-        const viewButtons = document.querySelectorAll('[data-view]');
-        
-        if (!productsGrid) {
-            console.error('❌ No se encontró .products-grid');
-            return;
-        }
-        
-        console.log('✅ Grid encontrado:', productsGrid);
-        
-        // Remover clases activas
-        viewButtons.forEach(btn => {
-            btn.classList.remove('active');
-        });
-        
-        // Activar botón seleccionado
-        const activeBtn = document.querySelector(`[data-view="${view}"]`);
-        if (activeBtn) {
-            activeBtn.classList.add('active');
-            console.log('✅ Botón activado:', view);
-        }
-        
-        // Cambiar vista
-        if (view === 'list') {
-            productsGrid.classList.add('list-view');
-            productsGrid.classList.remove('grid-view');
-            console.log('📋 Vista de lista activada');
-        } else {
-            productsGrid.classList.add('grid-view');
-            productsGrid.classList.remove('list-view');
-            console.log('🔲 Vista de grid activada');
-        }
-        
-        // Guardar preferencia
-        localStorage.setItem('catalogo-view', view);
-        console.log('💾 Preferencia guardada:', view);
-    }
-};
-
-// ========================================
-// EVENT LISTENERS GLOBALES
-// ========================================
 window.addEventListener('popstate', function() {
     // Recargar página si es necesario para filtros
     if (window.location.pathname.includes('catalogo.php')) {
