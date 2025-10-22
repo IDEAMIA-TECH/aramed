@@ -620,8 +620,8 @@ function buildFilterUrl($params = []) {
                             </span>
                             
                             <?php if ($busqueda): ?>
-                            <span class="badge bg-primary me-2 mb-2" style="color: #ffffff !important; background-color: var(--aramed-primary) !important;">
-                                <span style="color: #ffffff !important;">Búsqueda: "<?php echo esc($busqueda); ?>"</span>
+                            <span class="badge bg-primary me-2 mb-2">
+                                Búsqueda: "<?php echo esc($busqueda); ?>"
                                 <a href="<?php echo buildFilterUrl(['busqueda' => '']); ?>" class="btn-close btn-close-white ms-2" aria-label="Eliminar filtro de búsqueda"></a>
                             </span>
                             <?php endif; ?>
@@ -631,8 +631,8 @@ function buildFilterUrl($params = []) {
                             $marca_seleccionada = array_filter($marcas, function($m) use ($marca_id) { return $m['id'] == $marca_id; });
                             $marca_seleccionada = reset($marca_seleccionada);
                             ?>
-                            <span class="badge bg-primary me-2 mb-2" style="color: #ffffff !important; background-color: var(--aramed-primary) !important;">
-                                <span style="color: #ffffff !important;">Marca: <?php echo esc($marca_seleccionada['nombre']); ?></span>
+                            <span class="badge bg-primary me-2 mb-2">
+                                Marca: <?php echo esc($marca_seleccionada['nombre']); ?>
                                 <a href="<?php echo buildFilterUrl(['marca' => '']); ?>" class="btn-close btn-close-white ms-2" aria-label="Eliminar filtro de marca"></a>
                             </span>
                             <?php endif; ?>
@@ -642,8 +642,8 @@ function buildFilterUrl($params = []) {
                             $categoria_seleccionada = array_filter($categorias, function($c) use ($categoria_id) { return $c['id'] == $categoria_id; });
                             $categoria_seleccionada = reset($categoria_seleccionada);
                             ?>
-                            <span class="badge bg-primary me-2 mb-2" style="color: #ffffff !important; background-color: var(--aramed-primary) !important;">
-                                <span style="color: #ffffff !important;">Categoría: <?php echo esc($categoria_seleccionada['nombre']); ?></span>
+                            <span class="badge bg-primary me-2 mb-2">
+                                Categoría: <?php echo esc($categoria_seleccionada['nombre']); ?>
                                 <a href="<?php echo buildFilterUrl(['categoria' => '']); ?>" class="btn-close btn-close-white ms-2" aria-label="Eliminar filtro de categoría"></a>
                             </span>
                             <?php endif; ?>
