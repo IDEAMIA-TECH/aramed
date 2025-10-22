@@ -2128,7 +2128,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 <div class="col-12 text-center mt-4">
                                     <button type="submit" class="btn btn-light btn-lg px-5 py-3" id="newsletter-submit-btn">
                                         <i class="bi bi-send-fill me-2"></i>
-                                        Suscribirse al Newsletter
+                                        Contáctanos
                                     </button>
                                     <button type="button" class="btn btn-light btn-lg px-5 py-3 d-none" id="newsletter-loading-btn" disabled>
                                         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
