@@ -208,7 +208,7 @@
    BARRA DE RESULTADOS
    ======================================== */
 .results-bar {
-    background: white;
+    background: white !important;
     padding: 1rem 1.5rem;
     border-radius: var(--product-card-border-radius);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -606,9 +606,8 @@
     }
     
     .results-bar {
-        background: #2d2d2d;
-        border-color: #404040;
-        color: #e9ecef;
+        background: white !important;
+        color: #000000 !important;
     }
     
     .product-card,
