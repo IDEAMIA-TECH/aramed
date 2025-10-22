@@ -402,7 +402,7 @@ $breadcrumb = [
                                         ?>
                                         <img src="<?php echo esc($imagen_url); ?>" 
                                              alt="<?php echo esc($product['nombre']); ?>" 
-                                             class="thumbnail-image"
+                                             class="producto-thumb"
                                              onerror="this.src='<?php echo imageUrl('design/placeholder-product.jpg'); ?>'">
                                     </div>
                                 </div>
