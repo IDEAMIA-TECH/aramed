@@ -86,6 +86,43 @@
     color: inherit !important;
 }
 
+/* ========================================
+   HEADER SIN SOMBRA
+   ======================================== */
+.catalogo-page .navbar {
+    box-shadow: none !important;
+}
+
+.catalogo-page .navbar-brand {
+    box-shadow: none !important;
+}
+
+.catalogo-page header {
+    box-shadow: none !important;
+}
+
+.catalogo-page .navbar-nav {
+    box-shadow: none !important;
+}
+
+/* Quitar todas las sombras del header */
+.catalogo-page .navbar,
+.catalogo-page .navbar-brand,
+.catalogo-page .navbar-nav,
+.catalogo-page .navbar-nav .nav-link,
+.catalogo-page .navbar-toggler,
+.catalogo-page header,
+.catalogo-page .topbar {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+}
+
+/* Asegurar que no haya sombras en elementos del header */
+.catalogo-page .navbar * {
+    box-shadow: none !important;
+}
+
 .catalogo-header {
     background: linear-gradient(135deg, var(--aramed-primary) 0%, var(--aramed-secondary) 100%);
     position: relative;
