@@ -48,8 +48,8 @@ const AramedCatalogo = {
         this.initSearch();
         this.initPagination();
         this.initLazyLoading();
-        this.initTooltips();
         this.initViewToggle();
+        this.initTooltips();
         this.loadProducts();
         
         // console.log('✅ AramedCatalogo initialized');
@@ -803,6 +803,55 @@ window.addEventListener('popstate', function() {
         window.location.reload();
     }
 });
+
+    /**
+     * Inicializar toggle de vista (grid/list)
+     */
+    initViewToggle: function() {
+        const viewButtons = document.querySelectorAll('[data-view]');
+        
+        viewButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const view = btn.dataset.view;
+                this.toggleView(view);
+            });
+        });
+    },
+    
+    /**
+     * Cambiar vista entre grid y lista
+     */
+    toggleView: function(view) {
+        const productsGrid = document.querySelector('.products-grid');
+        const viewButtons = document.querySelectorAll('[data-view]');
+        
+        if (!productsGrid) return;
+        
+        // Remover clases activas
+        viewButtons.forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Activar botón seleccionado
+        const activeBtn = document.querySelector(`[data-view="${view}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+        }
+        
+        // Cambiar vista
+        if (view === 'list') {
+            productsGrid.classList.add('list-view');
+            productsGrid.classList.remove('grid-view');
+        } else {
+            productsGrid.classList.add('grid-view');
+            productsGrid.classList.remove('list-view');
+        }
+        
+        // Guardar preferencia
+        localStorage.setItem('catalogo-view', view);
+    }
+};
 
 // ========================================
 // EXPORT PARA USO EN OTROS SCRIPTS
