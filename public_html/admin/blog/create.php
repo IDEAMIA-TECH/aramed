@@ -306,16 +306,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 
                                 <div class="mb-3">
                                     <label for="imagen_principal" class="form-label">Imagen Principal</label>
-                                    <input type="url" class="form-control" id="imagen_principal" name="imagen_principal" 
-                                           placeholder="/assets/images/blog/imagen.jpg">
+                                    <div class="input-group">
+                                        <input type="url" class="form-control" id="imagen_principal" name="imagen_principal" 
+                                               placeholder="/assets/images/blog/imagen.jpg">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="openImageManager('imagen_principal')">
+                                            <i class="bi bi-images me-1"></i>Seleccionar
+                                        </button>
+                                    </div>
                                     <div class="form-text">URL de la imagen principal</div>
+                                    <div id="imagen_principal_preview" class="mt-2" style="display: none;">
+                                        <img id="imagen_principal_img" src="" alt="Vista previa" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+                                    </div>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="imagen_og" class="form-label">Imagen Open Graph</label>
-                                    <input type="url" class="form-control" id="imagen_og" name="imagen_og" 
-                                           placeholder="/assets/images/blog/imagen-og.jpg">
+                                    <div class="input-group">
+                                        <input type="url" class="form-control" id="imagen_og" name="imagen_og" 
+                                               placeholder="/assets/images/blog/imagen-og.jpg">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="openImageManager('imagen_og')">
+                                            <i class="bi bi-images me-1"></i>Seleccionar
+                                        </button>
+                                    </div>
                                     <div class="form-text">Imagen para redes sociales (1200x630px)</div>
+                                    <div id="imagen_og_preview" class="mt-2" style="display: none;">
+                                        <img id="imagen_og_img" src="" alt="Vista previa" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <a href="image-manager.php" target="_blank" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-images me-1"></i>Gestionar Imágenes
+                                    </a>
                                 </div>
                             </div>
 
@@ -371,7 +393,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $('#meta_description').val(resumen);
                 }
             });
+            
+            // Mostrar vista previa de imágenes
+            $('#imagen_principal').on('input', function() {
+                const url = $(this).val();
+                if (url) {
+                    $('#imagen_principal_img').attr('src', url);
+                    $('#imagen_principal_preview').show();
+                } else {
+                    $('#imagen_principal_preview').hide();
+                }
+            });
+            
+            $('#imagen_og').on('input', function() {
+                const url = $(this).val();
+                if (url) {
+                    $('#imagen_og_img').attr('src', url);
+                    $('#imagen_og_preview').show();
+                } else {
+                    $('#imagen_og_preview').hide();
+                }
+            });
         });
+        
+        // Función para abrir el gestor de imágenes
+        function openImageManager(fieldId) {
+            const url = `image-manager.php?field=${fieldId}`;
+            const popup = window.open(url, 'imageManager', 'width=1000,height=700,scrollbars=yes,resizable=yes');
+            
+            // Escuchar mensaje del popup
+            window.addEventListener('message', function(event) {
+                if (event.data.type === 'imageSelected') {
+                    const field = document.getElementById(fieldId);
+                    const preview = document.getElementById(fieldId + '_preview');
+                    const img = document.getElementById(fieldId + '_img');
+                    
+                    field.value = event.data.url;
+                    img.src = event.data.url;
+                    preview.style.display = 'block';
+                    
+                    popup.close();
+                }
+            });
+        }
     </script>
 </body>
 </html>
