@@ -390,10 +390,11 @@
     font-weight: 600;
     margin-bottom: 0.75rem;
     line-height: 1.4;
+    color: #000000 !important;
 }
 
 .product-title a {
-    color: #2c3e50;
+    color: #000000 !important;
     transition: color 0.3s ease;
 }
 
@@ -634,8 +635,9 @@
         color: #000000 !important;
     }
     
+    .product-title,
     .product-title a {
-        color: #e9ecef;
+        color: #000000 !important;
     }
     
     .product-description {
