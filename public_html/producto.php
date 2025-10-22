@@ -73,11 +73,12 @@ try {
     $documents_stmt->execute([$product_id]);
     $documents = $documents_stmt->fetchAll();
     
-    // Obtener productos relacionados (misma categoría)
+    // Obtener productos relacionados (misma categoría) con imágenes
     $related_sql = "
-        SELECT p.*, m.nombre as marca_nombre
+        SELECT p.*, m.nombre as marca_nombre, i.imagen_url
         FROM catalogo_productos p
         LEFT JOIN catalogo_marcas m ON p.marca_id = m.id
+        LEFT JOIN catalogo_producto_imagenes i ON p.id = i.producto_id AND i.es_principal = 1
         WHERE p.categoria_id = ? AND p.id != ? AND p.estado = 'activo'
         ORDER BY p.destacado DESC, RAND()
         LIMIT 4
@@ -627,10 +628,23 @@ $breadcrumb = [
                     <div class="related-product-card">
                         <div class="related-image-wrapper">
                             <a href="producto.php?id=<?php echo $related['id']; ?>">
-                                <img src="<?php echo imageUrl('productos/' . strtolower($related['codigo']) . '.jpg'); ?>" 
-                                     alt="<?php echo esc($related['nombre']); ?>" 
-                                     class="related-image"
-                                     onerror="this.src='<?php echo imageUrl('design/placeholder-product.jpg'); ?>'">
+                                <?php
+                                if (!empty($related['imagen_url'])) {
+                                    $imagen_url = $related['imagen_url'];
+                                    // Convertir ruta relativa a URL completa
+                                    if (strpos($imagen_url, '/assets/') === 0) {
+                                        $imagen_url = SITE_URL . $imagen_url;
+                                    }
+                                    echo '<img src="' . esc($imagen_url) . '" 
+                                             alt="' . esc($related['nombre']) . '" 
+                                             class="related-image"
+                                             onerror="this.src=\'' . imageUrl('design/placeholder-product.jpg') . '\'">';
+                                } else {
+                                    echo '<img src="' . imageUrl('design/placeholder-product.jpg') . '" 
+                                             alt="' . esc($related['nombre']) . '" 
+                                             class="related-image">';
+                                }
+                                ?>
                             </a>
                         </div>
                         <div class="related-info">
