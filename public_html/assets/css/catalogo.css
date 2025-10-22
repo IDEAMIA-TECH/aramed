@@ -88,6 +88,19 @@
 }
 
 /* ========================================
+   BADGES
+   ======================================== */
+.badge.bg-primary {
+    background-color: var(--aramed-primary) !important;
+    color: #ffffff !important;
+}
+
+.badge.bg-primary a {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+/* ========================================
    FILTROS SIDEBAR
    ======================================== */
 .filters-sidebar {
