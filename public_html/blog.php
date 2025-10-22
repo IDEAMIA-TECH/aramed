@@ -42,7 +42,7 @@ if ($categoria_id > 0) {
 }
 
 if (!empty($busqueda)) {
-    $where_conditions[] = '(a.titulo LIKE ? OR a.extracto LIKE ? OR a.contenido LIKE ?)';
+    $where_conditions[] = '(a.titulo LIKE ? OR a.resumen LIKE ? OR a.contenido LIKE ?)';
     $search_term = "%{$busqueda}%";
     $params[] = $search_term;
     $params[] = $search_term;
@@ -230,7 +230,7 @@ $categorias = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
                                         </h5>
                                         
                                         <p class="card-text text-muted flex-grow-1">
-                                            <?php echo esc(truncateText($articulo['extracto'] ?? '', 120)); ?>
+                                            <?php echo esc(truncateText($articulo['resumen'] ?? '', 120)); ?>
                                         </p>
                                         
                                         <div class="d-flex justify-content-between align-items-center">
