@@ -509,3 +509,36 @@ function truncateText($text, $length = 100, $suffix = '...') {
     return substr($text, 0, $length) . $suffix;
 }
 
+/**
+ * Generar slug URL-friendly a partir de un texto
+ * 
+ * @param string $text Texto a convertir
+ * @return string Slug generado
+ */
+function generateSlug($text) {
+    if (empty($text)) {
+        return '';
+    }
+    
+    // Convertir a minúsculas
+    $slug = strtolower($text);
+    
+    // Reemplazar caracteres especiales
+    $slug = str_replace(
+        ['á', 'é', 'í', 'ó', 'ú', 'ñ', 'ü', 'ç'],
+        ['a', 'e', 'i', 'o', 'u', 'n', 'u', 'c'],
+        $slug
+    );
+    
+    // Eliminar caracteres no alfanuméricos excepto espacios y guiones
+    $slug = preg_replace('/[^a-z0-9\s\-]/', '', $slug);
+    
+    // Reemplazar espacios y múltiples guiones con un solo guión
+    $slug = preg_replace('/[\s\-]+/', '-', $slug);
+    
+    // Eliminar guiones al inicio y final
+    $slug = trim($slug, '-');
+    
+    return $slug;
+}
+
