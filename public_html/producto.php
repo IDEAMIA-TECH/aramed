@@ -728,8 +728,18 @@ $breadcrumb = [
     <!-- Initialize Product JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            if (typeof AramedProducto !== 'undefined') {
+            // Esperar a que Swiper esté disponible
+            if (typeof Swiper !== 'undefined' && typeof AramedProducto !== 'undefined') {
                 AramedProducto.init();
+            } else {
+                // Reintentar después de un breve delay
+                setTimeout(function() {
+                    if (typeof Swiper !== 'undefined' && typeof AramedProducto !== 'undefined') {
+                        AramedProducto.init();
+                    } else {
+                        console.error('Swiper o AramedProducto no están disponibles');
+                    }
+                }, 100);
             }
         });
     </script>
