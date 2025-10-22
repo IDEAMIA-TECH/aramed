@@ -250,22 +250,9 @@ const AramedCatalogo = {
      * Cargar productos desde el servidor
      */
     loadProducts: function() {
-        this.showLoading();
-        
-        // Simular carga de datos (en producción esto sería una llamada AJAX)
-        fetch('/api/productos.php')
-            .then(response => response.json())
-            .then(data => {
-                this.products = data.productos || [];
-                this.applyFilters();
-            })
-            .catch(error => {
-                console.error('Error cargando productos:', error);
-                this.showError('Error al cargar los productos');
-            })
-            .finally(() => {
-                this.hideLoading();
-            });
+        // Los productos ya se cargan del lado del servidor en PHP
+        // No necesitamos hacer llamadas AJAX adicionales
+        console.log('Productos cargados del lado del servidor');
     },
     
     /**
