@@ -52,7 +52,7 @@ const AramedCatalogo = {
         this.initTooltips();
         this.loadProducts();
         
-        // console.log('✅ AramedCatalogo initialized');
+        console.log('✅ AramedCatalogo initialized');
     },
     
     /**
@@ -808,12 +808,18 @@ window.addEventListener('popstate', function() {
      * Inicializar toggle de vista (grid/list)
      */
     initViewToggle: function() {
-        const viewButtons = document.querySelectorAll('[data-view]');
+        console.log('🔧 Inicializando toggle de vista...');
         
-        viewButtons.forEach(btn => {
+        const viewButtons = document.querySelectorAll('[data-view]');
+        console.log('📋 Botones encontrados:', viewButtons.length);
+        
+        viewButtons.forEach((btn, index) => {
+            console.log(`🔘 Botón ${index + 1}:`, btn.dataset.view);
+            
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 const view = btn.dataset.view;
+                console.log('🖱️ Click en botón:', view);
                 this.toggleView(view);
             });
         });
@@ -823,10 +829,17 @@ window.addEventListener('popstate', function() {
      * Cambiar vista entre grid y lista
      */
     toggleView: function(view) {
+        console.log('🔄 Cambiando vista a:', view);
+        
         const productsGrid = document.querySelector('.products-grid');
         const viewButtons = document.querySelectorAll('[data-view]');
         
-        if (!productsGrid) return;
+        if (!productsGrid) {
+            console.error('❌ No se encontró .products-grid');
+            return;
+        }
+        
+        console.log('✅ Grid encontrado:', productsGrid);
         
         // Remover clases activas
         viewButtons.forEach(btn => {
@@ -837,19 +850,23 @@ window.addEventListener('popstate', function() {
         const activeBtn = document.querySelector(`[data-view="${view}"]`);
         if (activeBtn) {
             activeBtn.classList.add('active');
+            console.log('✅ Botón activado:', view);
         }
         
         // Cambiar vista
         if (view === 'list') {
             productsGrid.classList.add('list-view');
             productsGrid.classList.remove('grid-view');
+            console.log('📋 Vista de lista activada');
         } else {
             productsGrid.classList.add('grid-view');
             productsGrid.classList.remove('list-view');
+            console.log('🔲 Vista de grid activada');
         }
         
         // Guardar preferencia
         localStorage.setItem('catalogo-view', view);
+        console.log('💾 Preferencia guardada:', view);
     }
 };
 
