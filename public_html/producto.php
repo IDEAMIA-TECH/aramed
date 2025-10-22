@@ -728,18 +728,67 @@ $breadcrumb = [
     <!-- Initialize Product JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Esperar a que Swiper esté disponible
-            if (typeof Swiper !== 'undefined' && typeof AramedProducto !== 'undefined') {
-                AramedProducto.init();
-            } else {
-                // Reintentar después de un breve delay
-                setTimeout(function() {
-                    if (typeof Swiper !== 'undefined' && typeof AramedProducto !== 'undefined') {
-                        AramedProducto.init();
-                    } else {
-                        console.error('Swiper o AramedProducto no están disponibles');
+            // Inicializar carrusel directamente
+            if (typeof Swiper !== 'undefined') {
+                // Swiper principal
+                const mainSwiper = new Swiper('.producto-swiper-main', {
+                    spaceBetween: 10,
+                    navigation: {
+                        nextEl: '.producto-swiper-main .swiper-button-next',
+                        prevEl: '.producto-swiper-main .swiper-button-prev',
+                    },
+                    pagination: {
+                        el: '.producto-swiper-main .swiper-pagination',
+                        clickable: true,
+                    },
+                    keyboard: {
+                        enabled: true,
+                    },
+                    loop: false,
+                    effect: 'fade',
+                    fadeEffect: {
+                        crossFade: true
+                    },
+                    thumbs: {
+                        swiper: {
+                            el: '.producto-swiper-thumbs',
+                            slidesPerView: 4,
+                            spaceBetween: 10,
+                            freeMode: true,
+                            watchSlidesProgress: true,
+                        },
+                    },
+                });
+                
+                // Swiper thumbnails
+                const thumbsSwiper = new Swiper('.producto-swiper-thumbs', {
+                    spaceBetween: 10,
+                    slidesPerView: 4,
+                    freeMode: true,
+                    watchSlidesProgress: true,
+                    breakpoints: {
+                        320: {
+                            slidesPerView: 3,
+                            spaceBetween: 8,
+                        },
+                        768: {
+                            slidesPerView: 4,
+                            spaceBetween: 10,
+                        },
+                        1024: {
+                            slidesPerView: 4,
+                            spaceBetween: 10,
+                        },
                     }
-                }, 100);
+                });
+                
+                // Conectar swipers
+                mainSwiper.thumbs.swiper = thumbsSwiper;
+                thumbsSwiper.controller.control = mainSwiper;
+                
+                console.log('✅ Carrusel de producto inicializado correctamente');
+            } else {
+                console.error('Swiper no está disponible');
             }
         });
     </script>
