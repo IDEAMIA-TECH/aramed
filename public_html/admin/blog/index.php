@@ -53,13 +53,7 @@ $stmt_categorias = $pdo->prepare($sql_categorias);
 $stmt_categorias->execute();
 $categorias = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
 
-// Función para truncar texto
-function truncateText($texto, $limite = 150) {
-    if (strlen($texto) <= $limite) {
-        return $texto;
-    }
-    return substr($texto, 0, $limite) . '...';
-}
+// La función truncateText está definida en includes/functions.php
 ?>
 <!DOCTYPE html>
 <html lang="es-MX">
@@ -182,7 +176,7 @@ function truncateText($texto, $limite = 150) {
                                                     <?php endif; ?>
                                                 </div>
                                                 <small class="text-muted">
-                                                    <?php echo esc(truncateText($articulo['resumen'], 60)); ?>
+                                                    <?php echo esc(truncateText($articulo['extracto'] ?? '', 60)); ?>
                                                 </small>
                                             </td>
                                             <td>
@@ -197,7 +191,7 @@ function truncateText($texto, $limite = 150) {
                                             </td>
                                             <td>
                                                 <div><?php echo esc($articulo['autor']); ?></div>
-                                                <small class="text-muted"><?php echo esc($articulo['autor_email']); ?></small>
+                                                <small class="text-muted"><?php echo esc($articulo['autor']); ?></small>
                                             </td>
                                             <td>
                                                 <?php
