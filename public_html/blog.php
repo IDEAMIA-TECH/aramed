@@ -16,12 +16,14 @@ define('ARAMED_SITE', true);
 
 // Cargar configuración
 require_once __DIR__ . '/includes/config.php';
+require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/connection.php';
 
-// Cargar funciones
-require_once INCLUDES_PATH . '/functions.php';
-
-// Cargar conexión a la base de datos
-require_once INCLUDES_PATH . '/connection.php';
+// Obtener conexión PDO
+$pdo = getDB();
+if (!$pdo) {
+    die('Error de conexión a la base de datos');
+}
 
 // Obtener parámetros de filtro
 $categoria_id = isset($_GET['categoria']) ? (int)$_GET['categoria'] : 0;
@@ -105,20 +107,16 @@ $stmt_destacados = $pdo->prepare($sql_destacados);
 $stmt_destacados->execute();
 $articulos_destacados = $stmt_destacados->fetchAll(PDO::FETCH_ASSOC);
 
-// Variables para meta tags
-$pageTitle = 'Blog - ' . SITE_NAME;
-$pageDescription = 'Descubre las últimas noticias, artículos y casos de éxito sobre simulación médica, tecnología en salud y educación médica. Mantente actualizado con Aramed y Laboratorios.';
-$pageKeywords = 'blog, simulación médica, educación médica, tecnología, noticias, casos de éxito, Anatomage, Gaumard';
-$pageUrl = SITE_URL . '/blog.php';
-$pageImage = imageUrl('design/logo-og.jpg');
-
-// Función para generar slug de URL
-function generateBlogSlug($titulo) {
-    return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $titulo)));
+// Función para truncar texto
+function truncateText($texto, $limite = 150) {
+    if (strlen($texto) <= $limite) {
+        return $texto;
+    }
+    return substr($texto, 0, $limite) . '...';
 }
 
 // Función para formatear fecha
-function formatBlogDate($fecha) {
+function formatDate($fecha) {
     $meses = [
         1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
         5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
@@ -130,246 +128,184 @@ function formatBlogDate($fecha) {
     $mes = $meses[(int)$fecha_obj->format('n')];
     $año = $fecha_obj->format('Y');
     
-    return "$dia de $mes, $año";
-}
-
-// Función para truncar texto
-function truncateText($texto, $limite = 150) {
-    if (strlen($texto) <= $limite) {
-        return $texto;
-    }
-    return substr($texto, 0, $limite) . '...';
+    return "$dia de $mes de $año";
 }
 ?>
 <!DOCTYPE html>
 <html lang="es-MX">
 <head>
-    <!-- ========================================
-         META TAGS BÁSICOS
-         ======================================== -->
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - <?php echo SITE_NAME; ?></title>
+    <meta name="description" content="Descubre las últimas noticias, artículos y tendencias en simulación médica, educación en salud y tecnología innovadora con Aramed y Laboratorios.">
+    <meta name="keywords" content="blog, simulación médica, educación en salud, tecnología médica, Aramed, laboratorios">
     
-    <!-- ========================================
-         SEO BÁSICO
-         ======================================== -->
-    <title><?php echo esc($pageTitle); ?></title>
-    <meta name="description" content="<?php echo esc($pageDescription); ?>">
-    <meta name="keywords" content="<?php echo esc($pageKeywords); ?>">
-    <meta name="author" content="<?php echo esc(SITE_NAME); ?>">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="<?php echo esc($pageUrl); ?>">
-    
-    <!-- ========================================
-         OPEN GRAPH (Facebook, LinkedIn)
-         ======================================== -->
+    <!-- Open Graph -->
+    <meta property="og:title" content="Blog - <?php echo SITE_NAME; ?>">
+    <meta property="og:description" content="Descubre las últimas noticias, artículos y tendencias en simulación médica, educación en salud y tecnología innovadora.">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="<?php echo esc(SITE_NAME); ?>">
-    <meta property="og:title" content="<?php echo esc($pageTitle); ?>">
-    <meta property="og:description" content="<?php echo esc($pageDescription); ?>">
-    <meta property="og:url" content="<?php echo esc($pageUrl); ?>">
-    <meta property="og:image" content="<?php echo esc($pageImage); ?>">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:locale" content="es_MX">
+    <meta property="og:url" content="<?php echo SITE_URL; ?>/blog.php">
+    <meta property="og:image" content="<?php echo SITE_URL; ?>/assets/images/design/logo-og.jpg">
     
-    <!-- ========================================
-         TWITTER CARD
-         ======================================== -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@aramedylab">
-    <meta name="twitter:title" content="<?php echo esc($pageTitle); ?>">
-    <meta name="twitter:description" content="<?php echo esc($pageDescription); ?>">
-    <meta name="twitter:image" content="<?php echo esc($pageImage); ?>">
+    <meta name="twitter:title" content="Blog - <?php echo SITE_NAME; ?>">
+    <meta name="twitter:description" content="Descubre las últimas noticias, artículos y tendencias en simulación médica, educación en salud y tecnología innovadora.">
+    <meta name="twitter:image" content="<?php echo SITE_URL; ?>/assets/images/design/logo-og.jpg">
     
-    <!-- ========================================
-         FAVICON
-         ======================================== -->
+    <!-- Favicon -->
     <link rel="shortcut icon" href="<?php echo imageUrl('design/favicon.ico'); ?>">
     <link rel="icon" href="<?php echo imageUrl('design/favicon.ico'); ?>" type="image/x-icon">
-    <link rel="icon" href="<?php echo imageUrl('design/favicon-32x32.png'); ?>" type="image/png" sizes="32x32">
-    <link rel="icon" href="<?php echo imageUrl('design/favicon-16x16.png'); ?>" type="image/png" sizes="16x16">
     
-    <!-- ========================================
-         CSS
-         ======================================== -->
+    <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="<?php echo assetUrl('css/landing.css'); ?>" rel="stylesheet">
-    <link href="<?php echo assetUrl('css/blog.css'); ?>" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link href="<?php echo SITE_URL; ?>/assets/css/landing.css" rel="stylesheet">
+    <link href="<?php echo SITE_URL; ?>/assets/css/blog.css" rel="stylesheet">
     
-    <!-- ========================================
-         SCHEMA.ORG STRUCTURED DATA
-         ======================================== -->
+    <!-- Schema.org -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "Blog",
-        "name": "<?php echo esc(SITE_NAME); ?> - Blog",
-        "description": "<?php echo esc($pageDescription); ?>",
-        "url": "<?php echo esc($pageUrl); ?>",
+        "name": "Blog de <?php echo SITE_NAME; ?>",
+        "description": "Blog especializado en simulación médica, educación en salud y tecnología innovadora",
+        "url": "<?php echo SITE_URL; ?>/blog.php",
         "publisher": {
             "@type": "Organization",
-            "name": "<?php echo esc(SITE_NAME); ?>",
-            "url": "<?php echo esc(SITE_URL); ?>",
+            "name": "<?php echo SITE_NAME; ?>",
+            "url": "<?php echo SITE_URL; ?>",
             "logo": {
                 "@type": "ImageObject",
-                "url": "<?php echo imageUrl('design/logo.png'); ?>"
+                "url": "<?php echo SITE_URL; ?>/assets/images/design/logo.png"
             }
         }
     }
     </script>
 </head>
-
 <body>
-    <!-- ========================================
-         HEADER
-         ======================================== -->
-    <?php component('topbar'); ?>
-    <?php component('navbar'); ?>
-    
-    <!-- ========================================
-         HERO SECTION
-         ======================================== -->
-    <section class="blog-hero py-5 bg-light">
+    <!-- Header -->
+    <?php include 'includes/navbar.php'; ?>
+
+    <!-- Hero Section -->
+    <section class="blog-hero py-5">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8">
-                    <h1 class="display-4 fw-bold text-primary mb-3" data-aos="fade-up">
-                        <i class="bi bi-newspaper me-3"></i>Blog
+                    <h1 class="display-4 fw-bold text-primary mb-3">
+                        <i class="bi bi-newspaper me-3"></i>Blog Aramed
                     </h1>
-                    <p class="lead text-muted mb-4" data-aos="fade-up" data-aos-delay="100">
-                        Descubre las últimas noticias, artículos y casos de éxito sobre simulación médica, 
-                        tecnología en salud y educación médica.
+                    <p class="lead text-muted mb-4">
+                        Descubre las últimas noticias, artículos y tendencias en simulación médica, 
+                        educación en salud y tecnología innovadora.
                     </p>
-                    <div class="d-flex flex-wrap gap-2" data-aos="fade-up" data-aos-delay="200">
-                        <span class="badge bg-primary fs-6 px-3 py-2">
-                            <i class="bi bi-cpu me-1"></i>Simulación Médica
-                        </span>
-                        <span class="badge bg-success fs-6 px-3 py-2">
-                            <i class="bi bi-book me-1"></i>Educación
-                        </span>
-                        <span class="badge bg-info fs-6 px-3 py-2">
-                            <i class="bi bi-gear me-1"></i>Tecnología
-                        </span>
+                    
+                    <!-- Buscador -->
+                    <form method="GET" class="search-form">
+                        <div class="input-group input-group-lg">
+                            <input type="text" 
+                                   class="form-control" 
+                                   name="busqueda" 
+                                   placeholder="Buscar artículos..." 
+                                   value="<?php echo esc($busqueda); ?>">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <img src="<?php echo imageUrl('design/blog-hero.svg'); ?>" 
+                         alt="Blog Aramed" 
+                         class="img-fluid" 
+                         style="max-height: 300px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filtros -->
+    <section class="blog-filters py-4 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5 class="mb-0">
+                        <i class="bi bi-funnel me-2"></i>Filtrar por categoría:
+                    </h5>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="blog.php" 
+                           class="btn btn-outline-primary <?php echo $categoria_id == 0 ? 'active' : ''; ?>">
+                            Todas (<?php echo $total_articulos; ?>)
+                        </a>
+                        <?php foreach ($categorias as $categoria): ?>
+                        <a href="blog.php?categoria=<?php echo $categoria['id']; ?>" 
+                           class="btn btn-outline-primary <?php echo $categoria_id == $categoria['id'] ? 'active' : ''; ?>">
+                            <i class="bi bi-<?php echo $categoria['icono']; ?> me-1"></i>
+                            <?php echo esc($categoria['nombre']); ?> (<?php echo $categoria['articulos_count']; ?>)
+                        </a>
+                        <?php endforeach; ?>
                     </div>
                 </div>
-                <div class="col-lg-4 text-center" data-aos="fade-left">
-                    <img src="<?php echo imageUrl('design/blog-hero.png'); ?>" 
-                         alt="Blog Aramed" 
-                         class="img-fluid"
-                         style="max-height: 300px;"
-                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect width=%22300%22 height=%22300%22 fill=%22%23f8f9fa%22/%3E%3Ctext x=%22150%22 y=%22150%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%230066CC%22%3EBlog%3C/text%3E%3C/svg%3E';">
-                </div>
             </div>
         </div>
     </section>
 
-    <!-- ========================================
-         BÚSQUEDA Y FILTROS
-         ======================================== -->
-    <section class="blog-filters py-4 bg-white border-bottom">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8">
-                    <form method="GET" class="d-flex gap-3">
-                        <div class="flex-grow-1">
-                            <div class="input-group">
-                                <span class="input-group-text bg-primary text-white">
-                                    <i class="bi bi-search"></i>
-                                </span>
-                                <input type="text" 
-                                       class="form-control form-control-lg" 
-                                       name="busqueda" 
-                                       value="<?php echo esc($busqueda); ?>"
-                                       placeholder="Buscar artículos...">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg px-4">
-                            <i class="bi bi-search me-2"></i>Buscar
-                        </button>
-                        <?php if (!empty($busqueda) || $categoria_id > 0): ?>
-                        <a href="<?php echo siteUrl('blog.php'); ?>" class="btn btn-outline-secondary btn-lg">
-                            <i class="bi bi-x-circle me-2"></i>Limpiar
-                        </a>
-                        <?php endif; ?>
-                    </form>
-                </div>
-                <div class="col-lg-4">
-                    <form method="GET" class="d-flex gap-2">
-                        <select name="categoria" class="form-select form-select-lg">
-                            <option value="">Todas las categorías</option>
-                            <?php foreach ($categorias as $cat): ?>
-                            <option value="<?php echo $cat['id']; ?>" 
-                                    <?php echo $categoria_id == $cat['id'] ? 'selected' : ''; ?>>
-                                <?php echo esc($cat['nombre']); ?> (<?php echo $cat['articulos_count']; ?>)
-                            </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <button type="submit" class="btn btn-outline-primary btn-lg">
-                            <i class="bi bi-funnel"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========================================
-         ARTÍCULOS DESTACADOS
-         ======================================== -->
+    <!-- Artículos Destacados -->
     <?php if (!empty($articulos_destacados) && $page == 1): ?>
-    <section class="blog-destacados py-5 bg-primary text-white">
+    <section class="blog-destacados py-5">
         <div class="container">
-            <h2 class="h3 fw-bold mb-4 text-center" data-aos="fade-up">
-                <i class="bi bi-star-fill me-2"></i>Artículos Destacados
+            <h2 class="text-center mb-5">
+                <i class="bi bi-star-fill text-warning me-2"></i>Artículos Destacados
             </h2>
-            <div class="row g-4">
+            <div class="row">
                 <?php foreach ($articulos_destacados as $index => $articulo): ?>
-                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="<?php echo $index * 100; ?>">
-                    <div class="card h-100 border-0 shadow-lg">
-                        <div class="position-relative">
-                            <img src="<?php echo !empty($articulo['imagen_principal']) ? SITE_URL . $articulo['imagen_principal'] : imageUrl('design/placeholder-blog.jpg'); ?>" 
-                                 class="card-img-top" 
-                                 alt="<?php echo esc($articulo['titulo']); ?>"
-                                 style="height: 200px; object-fit: cover;">
-                            <div class="position-absolute top-0 start-0 m-3">
-                                <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+                <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="<?php echo $index * 100; ?>">
+                    <article class="card h-100 shadow-sm border-0">
+                        <?php if (!empty($articulo['imagen_principal'])): ?>
+                        <div class="card-img-top" style="height: 200px; overflow: hidden;">
+                            <img src="<?php echo SITE_URL . $articulo['imagen_principal']; ?>" 
+                                 alt="<?php echo esc($articulo['titulo']); ?>" 
+                                 class="w-100 h-100" 
+                                 style="object-fit: cover;">
+                        </div>
+                        <?php endif; ?>
+                        <div class="card-body d-flex flex-column">
+                            <div class="mb-2">
+                                <?php if ($articulo['categoria_nombre']): ?>
+                                <span class="badge rounded-pill" 
+                                      style="background-color: <?php echo $articulo['categoria_color']; ?>;">
+                                    <i class="bi bi-<?php echo $articulo['categoria_icono']; ?> me-1"></i>
+                                    <?php echo esc($articulo['categoria_nombre']); ?>
+                                </span>
+                                <?php endif; ?>
+                                <span class="badge bg-warning text-dark ms-2">
                                     <i class="bi bi-star-fill me-1"></i>Destacado
                                 </span>
                             </div>
-                            <div class="position-absolute top-0 end-0 m-3">
-                                <span class="badge rounded-pill px-3 py-2" 
-                                      style="background-color: <?php echo $articulo['categoria_color']; ?>;">
-                                    <i class="<?php echo $articulo['categoria_icono']; ?> me-1"></i>
-                                    <?php echo esc($articulo['categoria_nombre']); ?>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold mb-3">
-                                <a href="<?php echo siteUrl('blog-detalle.php?slug=' . $articulo['slug']); ?>" 
-                                   class="text-decoration-none text-dark">
+                            <h3 class="card-title h5">
+                                <a href="blog-detalle.php?slug=<?php echo $articulo['slug']; ?>" 
+                                   class="text-decoration-none">
                                     <?php echo esc($articulo['titulo']); ?>
                                 </a>
-                            </h5>
-                            <p class="card-text text-muted mb-3">
+                            </h3>
+                            <p class="card-text text-muted flex-grow-1">
                                 <?php echo esc(truncateText($articulo['resumen'], 120)); ?>
                             </p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-muted">
-                                    <i class="bi bi-calendar3 me-1"></i>
-                                    <?php echo formatBlogDate($articulo['fecha_publicacion']); ?>
+                                    <i class="bi bi-calendar me-1"></i>
+                                    <?php echo formatDate($articulo['fecha_publicacion']); ?>
                                 </small>
-                                <a href="<?php echo siteUrl('blog-detalle.php?slug=' . $articulo['slug']); ?>" 
-                                   class="btn btn-primary btn-sm">
+                                <a href="blog-detalle.php?slug=<?php echo $articulo['slug']; ?>" 
+                                   class="btn btn-outline-primary btn-sm">
                                     Leer más <i class="bi bi-arrow-right ms-1"></i>
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </article>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -377,110 +313,50 @@ function truncateText($texto, $limite = 150) {
     </section>
     <?php endif; ?>
 
-    <!-- ========================================
-         LISTADO DE ARTÍCULOS
-         ======================================== -->
-    <section class="blog-content py-5">
+    <!-- Lista de Artículos -->
+    <section class="blog-articulos py-5">
         <div class="container">
             <div class="row">
-                <!-- Barra lateral con categorías -->
-                <div class="col-lg-3 mb-4">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">
-                                <i class="bi bi-folder me-2"></i>Categorías
-                            </h5>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="list-group list-group-flush">
-                                <a href="<?php echo siteUrl('blog.php'); ?>" 
-                                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center <?php echo $categoria_id == 0 ? 'active' : ''; ?>">
-                                    <span>
-                                        <i class="bi bi-grid-3x3-gap me-2"></i>Todas las categorías
-                                    </span>
-                                    <span class="badge bg-primary rounded-pill"><?php echo $total_articulos; ?></span>
-                                </a>
-                                <?php foreach ($categorias as $cat): ?>
-                                <a href="<?php echo siteUrl('blog.php?categoria=' . $cat['id']); ?>" 
-                                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center <?php echo $categoria_id == $cat['id'] ? 'active' : ''; ?>">
-                                    <span>
-                                        <i class="<?php echo $cat['icono']; ?> me-2" style="color: <?php echo $cat['color']; ?>;"></i>
-                                        <?php echo esc($cat['nombre']); ?>
-                                    </span>
-                                    <span class="badge rounded-pill" style="background-color: <?php echo $cat['color']; ?>;">
-                                        <?php echo $cat['articulos_count']; ?>
-                                    </span>
-                                </a>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Lista de artículos -->
-                <div class="col-lg-9">
+                <div class="col-lg-8">
                     <?php if (!empty($articulos)): ?>
-                        <!-- Resultados -->
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h3 class="h5 mb-0">
-                                <?php if (!empty($busqueda)): ?>
-                                    Resultados para "<?php echo esc($busqueda); ?>" (<?php echo $total_articulos; ?> artículos)
-                                <?php elseif ($categoria_id > 0): ?>
-                                    <?php 
-                                    $categoria_actual = array_filter($categorias, function($cat) use ($categoria_id) {
-                                        return $cat['id'] == $categoria_id;
-                                    });
-                                    $categoria_actual = reset($categoria_actual);
-                                    ?>
-                                    <?php echo esc($categoria_actual['nombre']); ?> (<?php echo $total_articulos; ?> artículos)
-                                <?php else: ?>
-                                    Todos los artículos (<?php echo $total_articulos; ?>)
-                                <?php endif; ?>
-                            </h3>
-                        </div>
-
-                        <!-- Grid de artículos -->
-                        <div class="row g-4">
+                        <div class="row">
                             <?php foreach ($articulos as $index => $articulo): ?>
-                            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="<?php echo $index * 100; ?>">
-                                <article class="card h-100 border-0 shadow-sm blog-article-card">
-                                    <div class="position-relative">
-                                        <img src="<?php echo !empty($articulo['imagen_principal']) ? SITE_URL . $articulo['imagen_principal'] : imageUrl('design/placeholder-blog.jpg'); ?>" 
-                                             class="card-img-top" 
-                                             alt="<?php echo esc($articulo['titulo']); ?>"
-                                             style="height: 200px; object-fit: cover;">
-                                        <?php if ($articulo['destacado']): ?>
-                                        <div class="position-absolute top-0 start-0 m-2">
-                                            <span class="badge bg-warning text-dark">
-                                                <i class="bi bi-star-fill me-1"></i>Destacado
-                                            </span>
-                                        </div>
-                                        <?php endif; ?>
-                                        <div class="position-absolute top-0 end-0 m-2">
-                                            <span class="badge rounded-pill px-3 py-2" 
+                            <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="<?php echo $index * 100; ?>">
+                                <article class="card h-100 shadow-sm border-0">
+                                    <?php if (!empty($articulo['imagen_principal'])): ?>
+                                    <div class="card-img-top" style="height: 200px; overflow: hidden;">
+                                        <img src="<?php echo SITE_URL . $articulo['imagen_principal']; ?>" 
+                                             alt="<?php echo esc($articulo['titulo']); ?>" 
+                                             class="w-100 h-100" 
+                                             style="object-fit: cover;">
+                                    </div>
+                                    <?php endif; ?>
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="mb-2">
+                                            <?php if ($articulo['categoria_nombre']): ?>
+                                            <span class="badge rounded-pill" 
                                                   style="background-color: <?php echo $articulo['categoria_color']; ?>;">
-                                                <i class="<?php echo $articulo['categoria_icono']; ?> me-1"></i>
+                                                <i class="bi bi-<?php echo $articulo['categoria_icono']; ?> me-1"></i>
                                                 <?php echo esc($articulo['categoria_nombre']); ?>
                                             </span>
+                                            <?php endif; ?>
                                         </div>
-                                    </div>
-                                    <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title fw-bold mb-3">
-                                            <a href="<?php echo siteUrl('blog-detalle.php?slug=' . $articulo['slug']); ?>" 
-                                               class="text-decoration-none text-dark">
+                                        <h3 class="card-title h5">
+                                            <a href="blog-detalle.php?slug=<?php echo $articulo['slug']; ?>" 
+                                               class="text-decoration-none">
                                                 <?php echo esc($articulo['titulo']); ?>
                                             </a>
-                                        </h5>
-                                        <p class="card-text text-muted mb-3 flex-grow-1">
+                                        </h3>
+                                        <p class="card-text text-muted flex-grow-1">
                                             <?php echo esc(truncateText($articulo['resumen'], 120)); ?>
                                         </p>
-                                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center">
                                             <small class="text-muted">
-                                                <i class="bi bi-calendar3 me-1"></i>
-                                                <?php echo formatBlogDate($articulo['fecha_publicacion']); ?>
+                                                <i class="bi bi-calendar me-1"></i>
+                                                <?php echo formatDate($articulo['fecha_publicacion']); ?>
                                             </small>
-                                            <a href="<?php echo siteUrl('blog-detalle.php?slug=' . $articulo['slug']); ?>" 
-                                               class="btn btn-primary btn-sm">
+                                            <a href="blog-detalle.php?slug=<?php echo $articulo['slug']; ?>" 
+                                               class="btn btn-outline-primary btn-sm">
                                                 Leer más <i class="bi bi-arrow-right ms-1"></i>
                                             </a>
                                         </div>
@@ -496,20 +372,15 @@ function truncateText($texto, $limite = 150) {
                             <ul class="pagination justify-content-center">
                                 <?php if ($page > 1): ?>
                                 <li class="page-item">
-                                    <a class="page-link" href="<?php echo siteUrl('blog.php?' . http_build_query(array_merge($_GET, ['page' => $page - 1]))); ?>">
+                                    <a class="page-link" href="?page=<?php echo $page - 1; ?><?php echo $categoria_id ? '&categoria=' . $categoria_id : ''; ?><?php echo $busqueda ? '&busqueda=' . urlencode($busqueda) : ''; ?>">
                                         <i class="bi bi-chevron-left"></i> Anterior
                                     </a>
                                 </li>
                                 <?php endif; ?>
 
-                                <?php
-                                $start_page = max(1, $page - 2);
-                                $end_page = min($total_pages, $page + 2);
-                                
-                                for ($i = $start_page; $i <= $end_page; $i++):
-                                ?>
+                                <?php for ($i = max(1, $page - 2); $i <= min($total_pages, $page + 2); $i++): ?>
                                 <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
-                                    <a class="page-link" href="<?php echo siteUrl('blog.php?' . http_build_query(array_merge($_GET, ['page' => $i]))); ?>">
+                                    <a class="page-link" href="?page=<?php echo $i; ?><?php echo $categoria_id ? '&categoria=' . $categoria_id : ''; ?><?php echo $busqueda ? '&busqueda=' . urlencode($busqueda) : ''; ?>">
                                         <?php echo $i; ?>
                                     </a>
                                 </li>
@@ -517,7 +388,7 @@ function truncateText($texto, $limite = 150) {
 
                                 <?php if ($page < $total_pages): ?>
                                 <li class="page-item">
-                                    <a class="page-link" href="<?php echo siteUrl('blog.php?' . http_build_query(array_merge($_GET, ['page' => $page + 1]))); ?>">
+                                    <a class="page-link" href="?page=<?php echo $page + 1; ?><?php echo $categoria_id ? '&categoria=' . $categoria_id : ''; ?><?php echo $busqueda ? '&busqueda=' . urlencode($busqueda) : ''; ?>">
                                         Siguiente <i class="bi bi-chevron-right"></i>
                                     </a>
                                 </li>
@@ -527,83 +398,131 @@ function truncateText($texto, $limite = 150) {
                         <?php endif; ?>
 
                     <?php else: ?>
-                        <!-- Sin resultados -->
+                        <!-- Sin artículos -->
                         <div class="text-center py-5">
-                            <div class="mb-4">
-                                <i class="bi bi-search display-1 text-muted"></i>
-                            </div>
-                            <h3 class="h4 text-muted mb-3">No se encontraron artículos</h3>
-                            <p class="text-muted mb-4">
-                                <?php if (!empty($busqueda)): ?>
-                                    No hay artículos que coincidan con "<?php echo esc($busqueda); ?>"
-                                <?php elseif ($categoria_id > 0): ?>
-                                    No hay artículos en esta categoría
+                            <i class="bi bi-newspaper display-1 text-muted mb-3"></i>
+                            <h3 class="text-muted">No se encontraron artículos</h3>
+                            <p class="text-muted">
+                                <?php if ($categoria_id > 0 || !empty($busqueda)): ?>
+                                    No hay artículos que coincidan con los filtros aplicados.
+                                    <a href="blog.php" class="btn btn-outline-primary ms-2">Ver todos los artículos</a>
                                 <?php else: ?>
-                                    Aún no hay artículos publicados
+                                    Aún no hay artículos publicados. ¡Vuelve pronto!
                                 <?php endif; ?>
                             </p>
-                            <a href="<?php echo siteUrl('blog.php'); ?>" class="btn btn-primary">
-                                <i class="bi bi-arrow-left me-2"></i>Ver todos los artículos
-                            </a>
                         </div>
                     <?php endif; ?>
                 </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- ========================================
-         NEWSLETTER
-         ======================================== -->
-    <section class="newsletter-section py-5 bg-primary text-white">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8 text-center">
-                    <h2 class="h3 fw-bold mb-3" data-aos="fade-up">
-                        <i class="bi bi-envelope-heart me-2"></i>Mantente Informado
-                    </h2>
-                    <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">
-                        Suscríbete a nuestro boletín y recibe las últimas noticias, 
-                        artículos y actualizaciones sobre simulación médica.
-                    </p>
-                    <form class="newsletter-form d-flex gap-3 justify-content-center" 
-                          action="includes/newsletter_handler.php" method="POST" 
-                          data-aos="fade-up" data-aos-delay="200">
-                        <div class="flex-grow-1" style="max-width: 400px;">
-                            <input type="email" 
-                                   class="form-control form-control-lg" 
-                                   name="email_oficial"
-                                   placeholder="Tu correo electrónico" 
-                                   required>
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <div class="sticky-top" style="top: 2rem;">
+                        <!-- Categorías -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-folder me-2"></i>Categorías
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="list-group list-group-flush">
+                                    <a href="blog.php" 
+                                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center <?php echo $categoria_id == 0 ? 'active' : ''; ?>">
+                                        Todas
+                                        <span class="badge bg-primary rounded-pill"><?php echo $total_articulos; ?></span>
+                                    </a>
+                                    <?php foreach ($categorias as $categoria): ?>
+                                    <a href="blog.php?categoria=<?php echo $categoria['id']; ?>" 
+                                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center <?php echo $categoria_id == $categoria['id'] ? 'active' : ''; ?>">
+                                        <span>
+                                            <i class="bi bi-<?php echo $categoria['icono']; ?> me-2"></i>
+                                            <?php echo esc($categoria['nombre']); ?>
+                                        </span>
+                                        <span class="badge bg-primary rounded-pill"><?php echo $categoria['articulos_count']; ?></span>
+                                    </a>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-light btn-lg px-4">
-                            <i class="bi bi-send-fill me-2"></i>Suscribirse
-                        </button>
-                    </form>
+
+                        <!-- Newsletter -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-envelope me-2"></i>Newsletter
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Mantente al día con las últimas noticias y artículos.</p>
+                                <form action="includes/newsletter_simple_handler.php" method="POST" class="newsletter-form">
+                                    <div class="mb-3">
+                                        <input type="email" 
+                                               class="form-control" 
+                                               name="email" 
+                                               placeholder="Tu correo electrónico" 
+                                               required>
+                                        <input type="hidden" name="source" value="blog">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="bi bi-send me-2"></i>Suscribirse
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ========================================
-         FOOTER
-         ======================================== -->
-    <?php component('footer'); ?>
+    <!-- Footer -->
+    <?php include 'includes/footer.php'; ?>
 
-    <!-- ========================================
-         SCRIPTS
-         ======================================== -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="<?php echo assetUrl('js/landing.js'); ?>"></script>
-    <script src="<?php echo assetUrl('js/blog.js'); ?>"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
         // Inicializar AOS
         AOS.init({
             duration: 800,
-            easing: 'ease-in-out',
             once: true
+        });
+
+        // Manejar formulario de newsletter
+        document.querySelectorAll('.newsletter-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const button = this.querySelector('button[type="submit"]');
+                const originalText = button.innerHTML;
+                
+                button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Suscribiendo...';
+                button.disabled = true;
+                
+                fetch('includes/newsletter_simple_handler.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        button.innerHTML = '<i class="bi bi-check me-2"></i>¡Suscrito!';
+                        button.classList.remove('btn-primary');
+                        button.classList.add('btn-success');
+                        this.reset();
+                    } else {
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    alert('Error de conexión. Por favor, intenta de nuevo.');
+                });
+            });
         });
     </script>
 </body>
