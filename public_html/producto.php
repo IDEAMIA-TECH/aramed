@@ -360,10 +360,18 @@ $breadcrumb = [
                                 <?php foreach ($images as $image): ?>
                                 <div class="swiper-slide">
                                     <div class="producto-image-wrapper">
-                                        <img src="<?php echo esc($image['imagen_url']); ?>" 
+                                        <?php
+                                        $imagen_url = $image['imagen_url'];
+                                        // Convertir ruta relativa a URL completa
+                                        if (strpos($imagen_url, '/assets/') === 0) {
+                                            $imagen_url = SITE_URL . $imagen_url;
+                                        }
+                                        ?>
+                                        <img src="<?php echo esc($imagen_url); ?>" 
                                              alt="<?php echo esc($product['nombre']); ?>" 
                                              class="producto-image"
-                                             loading="lazy">
+                                             loading="lazy"
+                                             onerror="this.src='<?php echo imageUrl('design/placeholder-product.jpg'); ?>'">
                                     </div>
                                 </div>
                                 <?php endforeach; ?>
@@ -384,9 +392,17 @@ $breadcrumb = [
                                 <?php foreach ($images as $image): ?>
                                 <div class="swiper-slide">
                                     <div class="producto-thumbnail">
-                                        <img src="<?php echo esc($image['imagen_url']); ?>" 
+                                        <?php
+                                        $imagen_url = $image['imagen_url'];
+                                        // Convertir ruta relativa a URL completa
+                                        if (strpos($imagen_url, '/assets/') === 0) {
+                                            $imagen_url = SITE_URL . $imagen_url;
+                                        }
+                                        ?>
+                                        <img src="<?php echo esc($imagen_url); ?>" 
                                              alt="<?php echo esc($product['nombre']); ?>" 
-                                             class="thumbnail-image">
+                                             class="thumbnail-image"
+                                             onerror="this.src='<?php echo imageUrl('design/placeholder-product.jpg'); ?>'">
                                     </div>
                                 </div>
                                 <?php endforeach; ?>
