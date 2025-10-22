@@ -15,10 +15,32 @@ if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
                     <p class="mb-0 small text-white-75">Suscríbete a nuestro boletín informativo</p>
                 </div>
                 <div class="col-lg-6">
-                    <form class="newsletter-form d-flex gap-2" id="footerNewsletterForm">
-                        <input type="email" class="form-control" placeholder="Tu correo electrónico" required aria-label="Email">
-                        <button type="submit" class="btn btn-light text-primary fw-semibold px-4 flex-shrink-0">
+                    <!-- Mensajes de respuesta -->
+                    <div id="footer-newsletter-success" class="alert alert-success d-none mb-3" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <strong>¡Gracias!</strong> <span id="footer-newsletter-success-message"></span>
+                    </div>
+                    
+                    <div id="footer-newsletter-error" class="alert alert-danger d-none mb-3" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Error:</strong> <span id="footer-newsletter-error-message"></span>
+                    </div>
+                    
+                    <form class="newsletter-form d-flex gap-2" id="footerNewsletterForm" action="includes/newsletter_simple_handler.php" method="POST">
+                        <input type="email" 
+                               class="form-control" 
+                               name="email"
+                               id="footer-newsletter-email"
+                               placeholder="Tu correo electrónico" 
+                               required 
+                               aria-label="Email">
+                        <input type="hidden" name="source" value="footer">
+                        <button type="submit" class="btn btn-light text-primary fw-semibold px-4 flex-shrink-0" id="footer-newsletter-submit">
                             Suscribirse
+                        </button>
+                        <button type="button" class="btn btn-light text-primary fw-semibold px-4 flex-shrink-0 d-none" id="footer-newsletter-loading" disabled>
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                            Suscribiendo...
                         </button>
                     </form>
                 </div>
@@ -394,6 +416,56 @@ document.addEventListener('DOMContentLoaded', function() {
                     AramedForms.showAlert('¡Gracias por suscribirte! Te mantendremos informado.', 'success');
                 }
             }, 1500);
+        });
+    }
+    
+    // Manejar formulario del footer newsletter
+    const footerNewsletterForm = document.getElementById('footerNewsletterForm');
+    if (footerNewsletterForm) {
+        footerNewsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const submitBtn = document.getElementById('footer-newsletter-submit');
+            const loadingBtn = document.getElementById('footer-newsletter-loading');
+            const successAlert = document.getElementById('footer-newsletter-success');
+            const errorAlert = document.getElementById('footer-newsletter-error');
+            const successMessage = document.getElementById('footer-newsletter-success-message');
+            const errorMessage = document.getElementById('footer-newsletter-error-message');
+            
+            // Ocultar mensajes anteriores
+            successAlert.classList.add('d-none');
+            errorAlert.classList.add('d-none');
+            
+            // Mostrar loading
+            submitBtn.classList.add('d-none');
+            loadingBtn.classList.remove('d-none');
+            
+            // Enviar petición
+            fetch('includes/newsletter_simple_handler.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    successMessage.textContent = data.message;
+                    successAlert.classList.remove('d-none');
+                    this.reset(); // Limpiar formulario
+                } else {
+                    errorMessage.textContent = data.message;
+                    errorAlert.classList.remove('d-none');
+                }
+            })
+            .catch(error => {
+                errorMessage.textContent = 'Error de conexión. Por favor, intenta de nuevo.';
+                errorAlert.classList.remove('d-none');
+            })
+            .finally(() => {
+                // Ocultar loading
+                submitBtn.classList.remove('d-none');
+                loadingBtn.classList.add('d-none');
+            });
         });
     }
 });
