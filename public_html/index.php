@@ -411,33 +411,35 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
                                     <div class="hero-content" data-aos="fade-right">
-                                        <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
-                                            <i class="bi bi-star-fill me-2"></i>
-                                            Simulador Obstétrico
-                                        </span>
-                                        <h2 class="hero-title display-3 fw-bold text-white mb-3">
-                                            VICTORIA<sup>®</sup> S2200
-                                        </h2>
-                                        <h3 class="hero-subtitle h4 text-white mb-4">
-                                            El simulador de parto más avanzado del mundo
-                                        </h3>
-                                        <p class="hero-description lead text-white mb-4">
-                                            Entrenamiento realista para partos, emergencias y cuidados maternos
-                                        </p>
-                                        <ul class="hero-features list-unstyled text-white mb-4">
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Ojos interactivos</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 4 abdómenes: vientre para procedimientos de cesárea, trabajo de parto, hemorragia post parto, maniobras de leopold</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Compatible con monitores y equipos clínicos reales</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Neonato con signos vitales y respuesta realista</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Dos simuladores en un solo modelo: simulación obstétrica y ginecológica</li>
-                                        </ul>
-                                        <div class="hero-actions d-flex flex-wrap gap-3">
-                                            <a href="#newsletter" class="btn btn-light btn-lg px-5">
-                                                Solicitar Información
-                                            </a>
-                                            <a href="#productos" class="btn btn-outline-light btn-lg px-5">
-                                                Ver Detalles
-                                            </a>
+                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                                            <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
+                                                <i class="bi bi-star-fill me-2"></i>
+                                                Simulador Obstétrico
+                                            </span>
+                                            <h2 class="hero-title display-3 fw-bold text-white mb-3">
+                                                VICTORIA<sup>®</sup> S2200
+                                            </h2>
+                                            <h3 class="hero-subtitle h4 text-white mb-4">
+                                                El simulador de parto más avanzado del mundo
+                                            </h3>
+                                            <p class="hero-description lead text-white mb-4">
+                                                Entrenamiento realista para partos, emergencias y cuidados maternos
+                                            </p>
+                                            <ul class="hero-features list-unstyled text-white mb-4">
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Ojos interactivos</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 4 abdómenes: vientre para procedimientos de cesárea, trabajo de parto, hemorragia post parto, maniobras de leopold</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Compatible con monitores y equipos clínicos reales</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Neonato con signos vitales y respuesta realista</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Dos simuladores en un solo modelo: simulación obstétrica y ginecológica</li>
+                                            </ul>
+                                            <div class="hero-actions d-flex flex-wrap gap-3">
+                                                <a href="#newsletter" class="btn btn-light btn-lg px-5">
+                                                    Solicitar Información
+                                                </a>
+                                                <a href="#productos" class="btn btn-outline-light btn-lg px-5">
+                                                    Ver Detalles
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -457,30 +459,32 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
                                     <div class="hero-content" data-aos="fade-right">
-                                        <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
-                                            <i class="bi bi-cpu-fill me-2"></i>
-                                            Simulación Avanzada
-                                        </span>
-                                        <h2 class="hero-title display-3 fw-bold text-white mb-3">
-                                            HAL<sup>®</sup> S5301
-                                        </h2>
-                                        <h3 class="hero-subtitle h4 text-white mb-4">
-                                            Donde la simulación se convierte en experiencia real
-                                        </h3>
-                                        <ul class="hero-features list-unstyled text-white mb-4">
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> Audio, expresiones faciales y movimientos realistas</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> Simulación de problemas neurológicos</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> Respuesta activa al dolor y presión</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> Reconocimiento automático de fármacos y fluidos</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> Escenarios SLE™ interdisciplinarios preinstalados</li>
-                                        </ul>
-                                        <div class="hero-actions d-flex flex-wrap gap-3">
-                                            <a href="#newsletter" class="btn btn-light btn-lg px-5">
-                                                Solicitar Demo
-                                            </a>
-                                            <a href="#productos" class="btn btn-outline-light btn-lg px-5">
-                                                Conocer Más
-                                            </a>
+                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                                            <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
+                                                <i class="bi bi-cpu-fill me-2"></i>
+                                                Simulación Avanzada
+                                            </span>
+                                            <h2 class="hero-title display-3 fw-bold text-white mb-3">
+                                                HAL<sup>®</sup> S5301
+                                            </h2>
+                                            <h3 class="hero-subtitle h4 text-white mb-4">
+                                                Donde la simulación se convierte en experiencia real
+                                            </h3>
+                                            <ul class="hero-features list-unstyled text-white mb-4">
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> Audio, expresiones faciales y movimientos realistas</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> Simulación de problemas neurológicos</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> Respuesta activa al dolor y presión</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> Reconocimiento automático de fármacos y fluidos</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> Escenarios SLE™ interdisciplinarios preinstalados</li>
+                                            </ul>
+                                            <div class="hero-actions d-flex flex-wrap gap-3">
+                                                <a href="#newsletter" class="btn btn-light btn-lg px-5">
+                                                    Solicitar Demo
+                                                </a>
+                                                <a href="#productos" class="btn btn-outline-light btn-lg px-5">
+                                                    Conocer Más
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -500,30 +504,32 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
                                     <div class="hero-content" data-aos="fade-right">
-                                        <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
-                                            <i class="bi bi-heart-pulse-fill me-2"></i>
-                                            UCI y Emergencias
-                                        </span>
-                                        <h2 class="hero-title display-3 fw-bold text-white mb-3">
-                                            HAL<sup>®</sup> S3201
-                                        </h2>
-                                        <h3 class="hero-subtitle h4 text-white mb-4">
-                                            Realismo clínico en cada entrenamiento
-                                        </h3>
-                                        <ul class="hero-features list-unstyled text-white mb-4">
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Simulación para emergencias, UCI y medicina general</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Fisiología dinámica y respuesta automática</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Compatible con ventiladores y equipo clínico real</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Control mediante UNI® 3</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Monitoreo ECG, SpO₂, presión y CO₂ en tiempo real</li>
-                                        </ul>
-                                        <div class="hero-actions d-flex flex-wrap gap-3">
-                                            <a href="#newsletter" class="btn btn-light btn-lg px-5">
-                                                Solicitar Cotización
-                                            </a>
-                                            <a href="#productos" class="btn btn-outline-light btn-lg px-5">
-                                                Ver Características
-                                            </a>
+                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                                            <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
+                                                <i class="bi bi-heart-pulse-fill me-2"></i>
+                                                UCI y Emergencias
+                                            </span>
+                                            <h2 class="hero-title display-3 fw-bold text-white mb-3">
+                                                HAL<sup>®</sup> S3201
+                                            </h2>
+                                            <h3 class="hero-subtitle h4 text-white mb-4">
+                                                Realismo clínico en cada entrenamiento
+                                            </h3>
+                                            <ul class="hero-features list-unstyled text-white mb-4">
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Simulación para emergencias, UCI y medicina general</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Fisiología dinámica y respuesta automática</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Compatible con ventiladores y equipo clínico real</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Control mediante UNI® 3</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Monitoreo ECG, SpO₂, presión y CO₂ en tiempo real</li>
+                                            </ul>
+                                            <div class="hero-actions d-flex flex-wrap gap-3">
+                                                <a href="#newsletter" class="btn btn-light btn-lg px-5">
+                                                    Solicitar Cotización
+                                                </a>
+                                                <a href="#productos" class="btn btn-outline-light btn-lg px-5">
+                                                    Ver Características
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -543,30 +549,32 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
                                     <div class="hero-content" data-aos="fade-right">
-                                        <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
-                                            <i class="bi bi-emoji-smile-fill me-2"></i>
-                                            Neonatología
-                                        </span>
-                                        <h2 class="hero-title display-3 fw-bold text-white mb-3">
-                                            Super TORY<sup>®</sup> S2220
-                                        </h2>
-                                        <h3 class="hero-subtitle h4 text-white mb-4">
-                                            Realismo neonatal al máximo
-                                        </h3>
-                                        <ul class="hero-features list-unstyled text-white mb-4">
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-light me-2"></i> Simulación avanzada del recién nacido</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-light me-2"></i> Movimientos faciales y expresiones realistas</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-light me-2"></i> Signos vitales y reacciones en tiempo real</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-light me-2"></i> Respuesta real al soporte ventilatorio</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-light me-2"></i> Operación totalmente inalámbrica y portátil</li>
-                                        </ul>
-                                        <div class="hero-actions d-flex flex-wrap gap-3">
-                                            <a href="#newsletter" class="btn btn-light btn-lg px-5">
-                                                Contactar Ahora
-                                            </a>
-                                            <a href="#productos" class="btn btn-outline-light btn-lg px-5">
-                                                Más Información
-                                            </a>
+                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                                            <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
+                                                <i class="bi bi-emoji-smile-fill me-2"></i>
+                                                Neonatología
+                                            </span>
+                                            <h2 class="hero-title display-3 fw-bold text-white mb-3">
+                                                Super TORY<sup>®</sup> S2220
+                                            </h2>
+                                            <h3 class="hero-subtitle h4 text-white mb-4">
+                                                Realismo neonatal al máximo
+                                            </h3>
+                                            <ul class="hero-features list-unstyled text-white mb-4">
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-light me-2"></i> Simulación avanzada del recién nacido</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-light me-2"></i> Movimientos faciales y expresiones realistas</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-light me-2"></i> Signos vitales y reacciones en tiempo real</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-light me-2"></i> Respuesta real al soporte ventilatorio</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-light me-2"></i> Operación totalmente inalámbrica y portátil</li>
+                                            </ul>
+                                            <div class="hero-actions d-flex flex-wrap gap-3">
+                                                <a href="#newsletter" class="btn btn-light btn-lg px-5">
+                                                    Contactar Ahora
+                                                </a>
+                                                <a href="#productos" class="btn btn-outline-light btn-lg px-5">
+                                                    Más Información
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -586,30 +594,32 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
                                     <div class="hero-content" data-aos="fade-right">
-                                        <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
-                                            <i class="bi bi-person-hearts me-2"></i>
-                                            Enfermería
-                                        </span>
-                                        <h2 class="hero-title display-3 fw-bold text-white mb-3">
-                                            SUSIE<sup>®</sup> S2400
-                                        </h2>
-                                        <h3 class="hero-subtitle h4 text-white mb-4">
-                                            Simulación integral para el cuidado del paciente
-                                        </h3>
-                                        <ul class="hero-features list-unstyled text-white mb-4">
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Entrenamiento en enfermería y salud aliada</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Exploración ginecológica y 7 senos con patologías</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Escenarios SLE™ multidisciplinarios</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Fisiología y signos vitales dinámicos</li>
-                                            <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Reconocimiento automático de medicamentos</li>
-                                        </ul>
-                                        <div class="hero-actions d-flex flex-wrap gap-3">
-                                            <a href="#newsletter" class="btn btn-light btn-lg px-5">
-                                                Agendar Demo
-                                            </a>
-                                            <a href="#productos" class="btn btn-outline-light btn-lg px-5">
-                                                Especificaciones
-                                            </a>
+                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                                            <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
+                                                <i class="bi bi-person-hearts me-2"></i>
+                                                Enfermería
+                                            </span>
+                                            <h2 class="hero-title display-3 fw-bold text-white mb-3">
+                                                SUSIE<sup>®</sup> S2400
+                                            </h2>
+                                            <h3 class="hero-subtitle h4 text-white mb-4">
+                                                Simulación integral para el cuidado del paciente
+                                            </h3>
+                                            <ul class="hero-features list-unstyled text-white mb-4">
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Entrenamiento en enfermería y salud aliada</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Exploración ginecológica y 7 senos con patologías</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Escenarios SLE™ multidisciplinarios</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Fisiología y signos vitales dinámicos</li>
+                                                <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Reconocimiento automático de medicamentos</li>
+                                            </ul>
+                                            <div class="hero-actions d-flex flex-wrap gap-3">
+                                                <a href="#newsletter" class="btn btn-light btn-lg px-5">
+                                                    Agendar Demo
+                                                </a>
+                                                <a href="#productos" class="btn btn-outline-light btn-lg px-5">
+                                                    Especificaciones
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
