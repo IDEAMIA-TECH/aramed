@@ -48,19 +48,19 @@ try {
                     </span>
                     
                     <!-- Filtro de búsqueda -->
-                    <span class='badge bg-primary me-2 mb-2'>
+                    <span class='filter-badge me-2 mb-2'>
                         Búsqueda: \"{$busqueda}\"
                         <a href='#' class='btn-close btn-close-white ms-2' aria-label='Eliminar filtro de búsqueda'></a>
                     </span>
                     
                     <!-- Filtro de marca -->
-                    <span class='badge bg-primary me-2 mb-2'>
+                    <span class='filter-badge me-2 mb-2'>
                         Marca: " . ($marca_seleccionada['nombre'] ?? 'No encontrada') . "
                         <a href='#' class='btn-close btn-close-white ms-2' aria-label='Eliminar filtro de marca'></a>
                     </span>
                     
                     <!-- Filtro de categoría -->
-                    <span class='badge bg-primary me-2 mb-2'>
+                    <span class='filter-badge me-2 mb-2'>
                         Categoría: " . ($categoria_seleccionada['nombre'] ?? 'No encontrada') . "
                         <a href='#' class='btn-close btn-close-white ms-2' aria-label='Eliminar filtro de categoría'></a>
                     </span>

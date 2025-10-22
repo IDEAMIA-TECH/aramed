@@ -649,6 +649,69 @@
     gap: 0.5rem !important;
 }
 
+/* SOBRESCRIBIR BOOTSTRAP CON MAYOR ESPECIFICIDAD */
+.catalogo-page .active-filters .badge.bg-primary,
+.catalogo-page .active-filters span.badge.bg-primary {
+    color: #ffffff !important;
+    background-color: #0066cc !important;
+    border-color: #0066cc !important;
+}
+
+.catalogo-page .active-filters .badge.bg-primary *,
+.catalogo-page .active-filters span.badge.bg-primary * {
+    color: #ffffff !important;
+}
+
+/* Forzar visibilidad del texto en filtros aplicados */
+.catalogo-page .active-filters .badge,
+.catalogo-page .active-filters .badge span,
+.catalogo-page .catalogo-content .active-filters .badge,
+.catalogo-page .catalogo-content .active-filters .badge span {
+    color: #ffffff !important;
+    text-shadow: 0 0 0 #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    -moz-text-fill-color: #ffffff !important;
+}
+
+/* ESTILOS PARA FILTER-BADGE PERSONALIZADA */
+.filter-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    color: #ffffff !important;
+    background-color: #0066cc !important;
+    border: 2px solid #0066cc !important;
+    font-weight: 600 !important;
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 25px !important;
+    box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2) !important;
+    font-size: 0.8rem !important;
+    margin-right: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    text-decoration: none !important;
+}
+
+.filter-badge *,
+.filter-badge span,
+.filter-badge div {
+    color: #ffffff !important;
+}
+
+.filter-badge a {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+.filter-badge .btn-close {
+    filter: brightness(0) invert(1) !important;
+    opacity: 0.8 !important;
+}
+
+.filter-badge .btn-close:hover {
+    opacity: 1 !important;
+    transform: scale(1.1);
+}
+
 .active-filters .badge .btn-close {
     filter: brightness(0) invert(1) !important;
     opacity: 0.8 !important;
