@@ -237,12 +237,20 @@
 }
 
 .product-card {
-    background: white;
+    background: white !important;
     border-radius: var(--product-card-border-radius);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
     overflow: hidden;
     border: 1px solid #f0f0f0;
+}
+
+.product-item {
+    background: white !important;
+}
+
+.col-lg-4.col-md-6.product-item {
+    background: white !important;
 }
 
 .product-card:hover {
@@ -597,11 +605,17 @@
         color: #000000 !important;
     }
     
-    .results-bar,
-    .product-card {
+    .results-bar {
         background: #2d2d2d;
         border-color: #404040;
         color: #e9ecef;
+    }
+    
+    .product-card,
+    .product-item,
+    .col-lg-4.col-md-6.product-item {
+        background: white !important;
+        color: #000000 !important;
     }
     
     .filter-title {
