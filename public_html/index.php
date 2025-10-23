@@ -886,19 +886,9 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             </div>
                         </div>
                         
-                        <!-- Logo 19: Immersive -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/20-immersive.webp'); ?>" 
-                                         alt="Immersive Healthcare" 
-                                         class="aliado-logo"
-                                         loading="lazy">
-                                </div>
-                            </div>
-                        </div>
+                    
                         
-                        <!-- Logo 20: Keklikoğlu -->
+                        <!-- Logo 19: Keklikoğlu -->
                         <div class="swiper-slide">
                             <div class="aliado-card">
                                 <div class="aliado-logo-wrapper">
