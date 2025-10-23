@@ -20,10 +20,19 @@ if (session_status() === PHP_SESSION_NONE) {
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
     // Guardar la URL actual para redirigir después del login
-    $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+    if (isset($_SERVER['REQUEST_URI'])) {
+        $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+    }
     
     // Redirigir al login
-    header('Location: login.php');
+    $login_url = 'login.php';
+    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+        $login_url = 'https://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/login.php';
+    } else {
+        $login_url = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/login.php';
+    }
+    
+    header('Location: ' . $login_url);
     exit;
 }
 

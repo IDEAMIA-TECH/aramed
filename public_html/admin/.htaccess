@@ -1,42 +1,23 @@
 # Proteger directorio admin
-# Redirigir a login si no está autenticado
-
-# Habilitar reescritura de URL
-RewriteEngine On
-
-# Redirigir a login si no es login.php o logout.php
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !^/admin/login\.php$
-RewriteCond %{REQUEST_URI} !^/admin/logout\.php$
-RewriteRule ^(.*)$ login.php [R=302,L]
-
-# Proteger archivos sensibles
-<Files "auth_check.php">
-    Order Allow,Deny
-    Deny from all
-</Files>
-
-# Configuración de seguridad adicional
-<Files "*.php">
-    # Solo permitir acceso desde el mismo servidor
-    Order Allow,Deny
-    Allow from 127.0.0.1
-    Allow from ::1
-    # Agregar IPs específicas si es necesario
-    # Allow from 192.168.1.100
-</Files>
-
-# Headers de seguridad
-<IfModule mod_headers.c>
-    Header always set X-Content-Type-Options nosniff
-    Header always set X-Frame-Options DENY
-    Header always set X-XSS-Protection "1; mode=block"
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
-</IfModule>
+# Configuración básica de seguridad
 
 # Deshabilitar listado de directorios
 Options -Indexes
 
-# Ocultar información del servidor
-ServerTokens Prod
+# Proteger archivos sensibles
+<Files "auth_check.php">
+    Require all denied
+</Files>
+
+# Headers de seguridad básicos
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Configuración de PHP
+<IfModule mod_php.c>
+    php_flag display_errors Off
+    php_flag log_errors On
+</IfModule>
