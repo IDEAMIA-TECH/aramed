@@ -213,7 +213,7 @@ $fuentes = $stmt_fuentes->fetchAll(PDO::FETCH_COLUMN);
                             <i class="bi bi-chat-dots me-2"></i>Comentarios
                         </a>
                         <a class="nav-link" href="newsletter-subscriptions.php">
-                            <i class="bi bi-envelope me-2"></i>Newsletter
+                            <i class="bi bi-envelope me-2"></i>Cotización Simple
                         </a>
                         <a class="nav-link active" href="newsletter-simple.php">
                             <i class="bi bi-envelope-open me-2"></i>Newsletter Simple

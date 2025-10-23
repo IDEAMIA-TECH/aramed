@@ -147,7 +147,7 @@ $estados_geo = $stmt_estados->fetchAll(PDO::FETCH_COLUMN);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newsletter Subscriptions - Admin <?php echo SITE_NAME; ?></title>
+    <title>Cotización Simple - Admin <?php echo SITE_NAME; ?></title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="../assets/images/design/favicon.ico">
@@ -230,7 +230,7 @@ $estados_geo = $stmt_estados->fetchAll(PDO::FETCH_COLUMN);
                             <i class="bi bi-chat-dots me-2"></i>Comentarios
                         </a>
                         <a class="nav-link active" href="newsletter-subscriptions.php">
-                            <i class="bi bi-envelope me-2"></i>Newsletter
+                            <i class="bi bi-envelope me-2"></i>Cotización Simple
                         </a>
                         <a class="nav-link" href="newsletter-simple.php">
                             <i class="bi bi-envelope-open me-2"></i>Newsletter Simple
@@ -255,7 +255,7 @@ $estados_geo = $stmt_estados->fetchAll(PDO::FETCH_COLUMN);
                 <!-- Header -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2>
-                        <i class="bi bi-envelope me-2"></i>Newsletter Subscriptions
+                        <i class="bi bi-envelope me-2"></i>Cotización Simple
                     </h2>
                     <div class="text-end">
                         <small class="text-muted">

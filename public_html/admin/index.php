@@ -202,7 +202,7 @@ $stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_
                             <i class="bi bi-chat-dots me-2"></i>Comentarios
                         </a>
                         <a class="nav-link" href="newsletter-subscriptions.php">
-                            <i class="bi bi-envelope me-2"></i>Newsletter
+                            <i class="bi bi-envelope me-2"></i>Cotización Simple
                         </a>
                         <a class="nav-link" href="newsletter-simple.php">
                             <i class="bi bi-envelope-open me-2"></i>Newsletter Simple
@@ -285,7 +285,7 @@ $stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_
                         <div class="stat-card success">
                             <div class="stat-number"><?php echo number_format($stats['newsletter_activos']); ?></div>
                             <div class="stat-label">
-                                <i class="bi bi-envelope me-1"></i>Newsletter Activos
+                                <i class="bi bi-envelope me-1"></i>Cotizaciones Activas
                             </div>
                         </div>
                     </div>
@@ -334,7 +334,7 @@ $stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_
                                 <div class="row mt-3">
                                     <div class="col-md-6 mb-2">
                                         <a href="newsletter-subscriptions.php" class="btn btn-outline-primary w-100">
-                                            <i class="bi bi-envelope me-2"></i>Gestionar Newsletter
+                                            <i class="bi bi-envelope me-2"></i>Gestionar Cotizaciones
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
