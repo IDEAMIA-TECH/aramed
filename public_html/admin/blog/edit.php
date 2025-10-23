@@ -132,32 +132,7 @@ $tags_string = is_array($tags_array) ? implode(', ', $tags_array) : '';
 <body>
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 admin-sidebar p-0">
-                <div class="p-3">
-                    <h5 class="text-primary mb-4">
-                        <i class="bi bi-newspaper me-2"></i>Blog Admin
-                    </h5>
-                    <nav class="nav flex-column">
-                        <a class="nav-link" href="index.php">
-                            <i class="bi bi-list-ul me-2"></i>Artículos
-                        </a>
-                        <a class="nav-link" href="categorias.php">
-                            <i class="bi bi-folder me-2"></i>Categorías
-                        </a>
-                        <a class="nav-link" href="comentarios.php">
-                            <i class="bi bi-chat-dots me-2"></i>Comentarios
-                        </a>
-                        <a class="nav-link" href="../../blog.php" target="_blank">
-                            <i class="bi bi-eye me-2"></i>Ver Blog
-                        </a>
-                        <hr>
-                        <a class="nav-link" href="../../index.php">
-                            <i class="bi bi-house me-2"></i>Volver al Sitio
-                        </a>
-                    </nav>
-                </div>
-            </div>
+            <?php include __DIR__ . '/../includes/admin_menu.php'; ?>
 
             <!-- Contenido principal -->
             <div class="col-md-9 col-lg-10 admin-content p-4">
