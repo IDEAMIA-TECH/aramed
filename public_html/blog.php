@@ -206,17 +206,7 @@ $pageUrl = SITE_URL . '/blog.php';
          ======================================== -->
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
     
-    <!-- Hero Section -->
-    <section class="blog-hero">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h1 class="display-4 fw-bold mb-4">Blog Aramed</h1>
-                    <p class="lead">Artículos sobre simulación médica, educación en salud y tecnología innovadora</p>
-                </div>
-            </div>
-        </div>
-    </section>
+
     
     <!-- Blog Content -->
     <section class="py-5">
