@@ -43,7 +43,7 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
 ?>
 
 <!-- Sidebar -->
-<div class="col-md-3 col-lg-2 admin-sidebar p-0">
+<div class="col-md-3 col-lg-3 admin-sidebar p-0">
     <div class="p-3">
         <div class="admin-logo mb-4">
             <img src="<?php echo ($current_dir === 'blog') ? '../../assets/images/design/logo.png' : '../assets/images/design/logo.png'; ?>" 
@@ -138,6 +138,15 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
 <style>
 /* Estilos adicionales para el menú */
 
+/* Ancho del sidebar */
+.admin-sidebar {
+    min-width: 280px !important;
+    max-width: 320px !important;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-right: 1px solid #e9ecef;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
 /* Logo del admin */
 .admin-logo {
     display: flex;
@@ -198,5 +207,35 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
 
 .user-info small {
     font-size: 0.75rem;
+}
+
+/* Enlaces del menú */
+.nav-link {
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.25rem;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+    color: var(--dark-color);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    transform: translateX(3px);
+    color: var(--primary-color);
+}
+
+.nav-link.active {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+}
+
+.nav-link i {
+    width: 20px;
+    text-align: center;
 }
 </style>

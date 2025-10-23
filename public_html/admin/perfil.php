@@ -310,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             
             <!-- Main Content -->
-            <div class="col-md-9 col-lg-10">
+            <div class="col-md-9 col-lg-9">
                 <!-- Header -->
                 <div class="admin-header">
                     <div class="container-fluid">
