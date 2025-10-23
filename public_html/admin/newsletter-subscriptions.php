@@ -160,50 +160,407 @@ $estados_geo = $stmt_estados->fetchAll(PDO::FETCH_COLUMN);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     
     <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --border-color: #dee2e6;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-hover: 0 4px 20px rgba(0,0,0,0.15);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
         .admin-sidebar {
-            background: #f8f9fa;
+            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
             min-height: 100vh;
-            border-right: 1px solid #dee2e6;
+            border-right: 1px solid var(--border-color);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
         }
+
         .admin-content {
-            background-color: #ffffff;
+            background: transparent;
             min-height: 100vh;
+            padding: 2rem;
         }
-        .subscription-card {
-            border-left: 4px solid #dee2e6;
-            transition: all 0.3s ease;
-        }
-        .subscription-card.activo {
-            border-left-color: #198754;
-        }
-        .subscription-card.inactivo {
-            border-left-color: #6c757d;
-        }
-        .subscription-card.cancelado {
-            border-left-color: #dc3545;
-        }
-        .subscription-card:hover {
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .stat-card {
+
+        .page-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
             color: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            transition: transform 0.3s ease;
+            box-shadow: var(--shadow);
         }
+
+        .page-header h2 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-color);
+        }
+
+        .stat-card.success::before {
+            background: var(--success-color);
+        }
+
+        .stat-card.warning::before {
+            background: var(--warning-color);
+        }
+
+        .stat-card.danger::before {
+            background: var(--danger-color);
+        }
+
         .stat-card:hover {
             transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
         }
-        .stat-card.success {
-            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
         }
-        .stat-card.warning {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+
+        .stat-label {
+            color: var(--secondary-color);
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .stat-card.danger {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+
+        .filters-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .filters-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .filters-body {
+            padding: 1.5rem;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid var(--border-color);
+            color: var(--secondary-color);
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .subscription-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .subscription-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--border-color);
+            transition: var(--transition);
+        }
+
+        .subscription-card.active::before {
+            background: var(--success-color);
+        }
+
+        .subscription-card.inactive::before {
+            background: var(--secondary-color);
+        }
+
+        .subscription-card.unsubscribed::before {
+            background: var(--danger-color);
+        }
+
+        .subscription-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .subscription-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .subscription-body {
+            padding: 1.5rem;
+        }
+
+        .info-section {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .info-section h6 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-section.success {
+            border-left-color: var(--success-color);
+        }
+
+        .info-section.success h6 {
+            color: var(--success-color);
+        }
+
+        .info-section.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .info-section.warning h6 {
+            color: var(--warning-color);
+        }
+
+        .info-section.secondary {
+            border-left-color: var(--secondary-color);
+        }
+
+        .info-section.secondary h6 {
+            color: var(--secondary-color);
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .info-item strong {
+            color: var(--dark-bg);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .info-item p {
+            margin: 0;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%) !important;
+        }
+
+        .badge.bg-secondary {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #6c757d 100%) !important;
+        }
+
+        .badge.bg-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #e74c3c 100%) !important;
+        }
+
+        .badge.bg-info {
+            background: linear-gradient(135deg, var(--info-color) 0%, #20c997 100%) !important;
+        }
+
+        .actions-panel {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--secondary-color);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .nav-link {
+            border-radius: 8px;
+            margin-bottom: 0.25rem;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            transform: translateX(5px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        }
+
+        .alert {
+            border-radius: var(--border-radius);
+            border: none;
+            box-shadow: var(--shadow);
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+        }
+
+        @media (max-width: 768px) {
+            .admin-content {
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .subscription-card {
+                margin-bottom: 1rem;
+            }
         }
     </style>
 </head>
@@ -253,15 +610,20 @@ $estados_geo = $stmt_estados->fetchAll(PDO::FETCH_COLUMN);
             <!-- Contenido principal -->
             <div class="col-md-9 col-lg-10 admin-content p-4">
                 <!-- Header -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>
-                        <i class="bi bi-envelope me-2"></i>Cotización Simple
-                    </h2>
-                    <div class="text-end">
-                        <small class="text-muted">
-                            <i class="bi bi-person-circle me-1"></i>
-                            <?php echo esc($current_user['nombre']); ?>
-                        </small>
+                <div class="page-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2>
+                                <i class="bi bi-envelope me-2"></i>Cotización Simple
+                            </h2>
+                            <p class="mb-0 opacity-75">Gestiona las cotizaciones y solicitudes de información</p>
+                        </div>
+                        <div class="text-end">
+                            <small class="opacity-75">
+                                <i class="bi bi-person-circle me-1"></i>
+                                <?php echo esc($current_user['nombre']); ?>
+                            </small>
+                        </div>
                     </div>
                 </div>
 
@@ -274,50 +636,55 @@ $estados_geo = $stmt_estados->fetchAll(PDO::FETCH_COLUMN);
                 <?php endif; ?>
 
                 <!-- Estadísticas -->
-                <div class="row mb-4">
-                    <div class="col-md-3">
-                        <div class="stat-card">
-                            <div class="h3 mb-0"><?php echo number_format($estadisticas['total']); ?></div>
-                            <div class="small">Total Suscripciones</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number"><?php echo number_format($estadisticas['total']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-envelope me-1"></i>Total Cotizaciones
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="stat-card success">
-                            <div class="h3 mb-0"><?php echo number_format($estadisticas['activos']); ?></div>
-                            <div class="small">Activos</div>
+                    <div class="stat-card success">
+                        <div class="stat-number"><?php echo number_format($estadisticas['activos']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-check-circle me-1"></i>Activas
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="stat-card warning">
-                            <div class="h3 mb-0"><?php echo number_format($estadisticas['inactivos']); ?></div>
-                            <div class="small">Inactivos</div>
+                    <div class="stat-card warning">
+                        <div class="stat-number"><?php echo number_format($estadisticas['inactivos']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-pause-circle me-1"></i>Inactivas
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="stat-card danger">
-                            <div class="h3 mb-0"><?php echo number_format($estadisticas['cancelados']); ?></div>
-                            <div class="small">Cancelados</div>
+                    <div class="stat-card danger">
+                        <div class="stat-number"><?php echo number_format($estadisticas['cancelados']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-x-circle me-1"></i>Canceladas
                         </div>
                     </div>
                 </div>
 
                 <!-- Filtros -->
-                <div class="card mb-4">
-                    <div class="card-body">
+                <div class="filters-card">
+                    <div class="filters-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-funnel me-2"></i>Filtros de Búsqueda
+                        </h5>
+                    </div>
+                    <div class="filters-body">
                         <form method="GET" class="row g-3">
                             <div class="col-md-3">
-                                <label for="estado" class="form-label">Estado</label>
+                                <label for="estado" class="form-label fw-bold">Estado</label>
                                 <select class="form-select" id="estado" name="estado">
-                                    <option value="todos" <?php echo $filtro_estado === 'todos' ? 'selected' : ''; ?>>Todos</option>
-                                    <option value="active" <?php echo $filtro_estado === 'active' ? 'selected' : ''; ?>>Activos</option>
-                                    <option value="inactive" <?php echo $filtro_estado === 'inactive' ? 'selected' : ''; ?>>Inactivos</option>
-                                    <option value="unsubscribed" <?php echo $filtro_estado === 'unsubscribed' ? 'selected' : ''; ?>>Cancelados</option>
+                                    <option value="todos" <?php echo $filtro_estado === 'todos' ? 'selected' : ''; ?>>Todos los estados</option>
+                                    <option value="active" <?php echo $filtro_estado === 'active' ? 'selected' : ''; ?>>Activas</option>
+                                    <option value="inactive" <?php echo $filtro_estado === 'inactive' ? 'selected' : ''; ?>>Inactivas</option>
+                                    <option value="unsubscribed" <?php echo $filtro_estado === 'unsubscribed' ? 'selected' : ''; ?>>Canceladas</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label for="tipo_institucion" class="form-label">Tipo Institución</label>
+                                <label for="tipo_institucion" class="form-label fw-bold">Tipo Institución</label>
                                 <select class="form-select" id="tipo_institucion" name="tipo_institucion">
-                                    <option value="todos" <?php echo $filtro_tipo_institucion === 'todos' ? 'selected' : ''; ?>>Todos</option>
+                                    <option value="todos" <?php echo $filtro_tipo_institucion === 'todos' ? 'selected' : ''; ?>>Todos los tipos</option>
                                     <?php foreach ($tipos_institucion as $tipo): ?>
                                     <option value="<?php echo esc($tipo); ?>" <?php echo $filtro_tipo_institucion === $tipo ? 'selected' : ''; ?>>
                                         <?php echo esc($tipo); ?>
@@ -326,9 +693,9 @@ $estados_geo = $stmt_estados->fetchAll(PDO::FETCH_COLUMN);
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label for="estado_geo" class="form-label">Estado (Geográfico)</label>
+                                <label for="estado_geo" class="form-label fw-bold">Estado (Geográfico)</label>
                                 <select class="form-select" id="estado_geo" name="estado_geo">
-                                    <option value="todos" <?php echo $filtro_estado_geo === 'todos' ? 'selected' : ''; ?>>Todos</option>
+                                    <option value="todos" <?php echo $filtro_estado_geo === 'todos' ? 'selected' : ''; ?>>Todos los estados</option>
                                     <?php foreach ($estados_geo as $estado): ?>
                                     <option value="<?php echo esc($estado); ?>" <?php echo $filtro_estado_geo === $estado ? 'selected' : ''; ?>>
                                         <?php echo esc($estado); ?>
@@ -337,13 +704,13 @@ $estados_geo = $stmt_estados->fetchAll(PDO::FETCH_COLUMN);
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label for="busqueda" class="form-label">Buscar</label>
+                                <label for="busqueda" class="form-label fw-bold">Búsqueda</label>
                                 <input type="text" class="form-control" id="busqueda" name="busqueda" 
                                        value="<?php echo esc($busqueda); ?>" placeholder="Institución, nombre, email, teléfono, producto o observaciones">
                             </div>
-                            <div class="col-12 d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary me-2">
-                                    <i class="bi bi-funnel me-1"></i>Filtrar
+                            <div class="col-12 d-flex justify-content-end gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-funnel me-1"></i>Aplicar Filtros
                                 </button>
                                 <a href="newsletter-subscriptions.php" class="btn btn-outline-secondary">
                                     <i class="bi bi-x-circle me-1"></i>Limpiar
@@ -358,136 +725,173 @@ $estados_geo = $stmt_estados->fetchAll(PDO::FETCH_COLUMN);
                     <?php if (!empty($suscripciones)): ?>
                         <?php foreach ($suscripciones as $suscripcion): ?>
                         <div class="col-12 mb-3">
-                            <div class="card subscription-card <?php echo $suscripcion['status']; ?>">
-                                <div class="card-body">
+                            <div class="subscription-card <?php echo $suscripcion['status']; ?>">
+                                <div class="subscription-header">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <div>
+                                            <h6 class="mb-1 fw-bold">
+                                                <i class="bi bi-person-circle me-2"></i>
+                                                <?php echo esc($suscripcion['nombre']); ?>
+                                            </h6>
+                                            <small class="text-muted">
+                                                <i class="bi bi-building me-1"></i>
+                                                <?php echo esc($suscripcion['institucion']); ?>
+                                            </small>
+                                        </div>
+                                        <span class="badge bg-<?php echo $suscripcion['status'] === 'active' ? 'success' : ($suscripcion['status'] === 'inactive' ? 'secondary' : 'danger'); ?>">
+                                            <?php echo $suscripcion['status'] === 'active' ? 'Activo' : ($suscripcion['status'] === 'inactive' ? 'Inactivo' : 'Cancelado'); ?>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="subscription-body">
                                     <div class="row">
                                         <div class="col-md-8">
-                                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                                <h6 class="card-title mb-0">
-                                                    <i class="bi bi-person-circle me-1"></i>
-                                                    <?php echo esc($suscripcion['nombre']); ?>
-                                                </h6>
-                                                <span class="badge bg-<?php echo $suscripcion['status'] === 'active' ? 'success' : ($suscripcion['status'] === 'inactive' ? 'secondary' : 'danger'); ?>">
-                                                    <?php echo $suscripcion['status'] === 'active' ? 'Activo' : ($suscripcion['status'] === 'inactive' ? 'Inactivo' : 'Cancelado'); ?>
-                                                </span>
-                                            </div>
                                             
                                             <!-- Información de la Institución -->
-                                            <div class="row mb-3">
-                                                <div class="col-12">
-                                                    <h6 class="text-primary mb-2">
-                                                        <i class="bi bi-building me-1"></i>Información de la Institución
-                                                    </h6>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <p class="mb-1"><strong>Institución:</strong> <?php echo esc($suscripcion['institucion']); ?></p>
-                                                            <p class="mb-1"><strong>Tipo:</strong> <?php echo esc($suscripcion['tipo_institucion']); ?></p>
-                                                            <?php if (!empty($suscripcion['campo_adicional'])): ?>
-                                                            <p class="mb-1"><strong>Campo Adicional:</strong> <?php echo esc($suscripcion['campo_adicional']); ?></p>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <p class="mb-1"><strong>Estado:</strong> <?php echo esc($suscripcion['estado']); ?></p>
-                                                            <p class="mb-1"><strong>Ciudad:</strong> <?php echo esc($suscripcion['ciudad']); ?></p>
-                                                        </div>
+                                            <div class="info-section">
+                                                <h6>
+                                                    <i class="bi bi-building me-1"></i>Información de la Institución
+                                                </h6>
+                                                <div class="info-row">
+                                                    <div class="info-item">
+                                                        <strong>Institución:</strong>
+                                                        <p><?php echo esc($suscripcion['institucion']); ?></p>
+                                                    </div>
+                                                    <div class="info-item">
+                                                        <strong>Tipo:</strong>
+                                                        <p><?php echo esc($suscripcion['tipo_institucion']); ?></p>
+                                                    </div>
+                                                    <?php if (!empty($suscripcion['campo_adicional'])): ?>
+                                                    <div class="info-item">
+                                                        <strong>Campo Adicional:</strong>
+                                                        <p><?php echo esc($suscripcion['campo_adicional']); ?></p>
+                                                    </div>
+                                                    <?php endif; ?>
+                                                    <div class="info-item">
+                                                        <strong>Estado:</strong>
+                                                        <p><?php echo esc($suscripcion['estado']); ?></p>
+                                                    </div>
+                                                    <div class="info-item">
+                                                        <strong>Ciudad:</strong>
+                                                        <p><?php echo esc($suscripcion['ciudad']); ?></p>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <!-- Información del Contacto -->
-                                            <div class="row mb-3">
-                                                <div class="col-12">
-                                                    <h6 class="text-success mb-2">
-                                                        <i class="bi bi-person me-1"></i>Información del Contacto
-                                                    </h6>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <p class="mb-1"><strong>Nombre:</strong> <?php echo esc($suscripcion['nombre']); ?></p>
-                                                            <p class="mb-1"><strong>Puesto:</strong> <?php echo esc($suscripcion['puesto']); ?></p>
-                                                            <p class="mb-1"><strong>Email Oficial:</strong> 
-                                                                <a href="mailto:<?php echo esc($suscripcion['email_oficial']); ?>" class="text-decoration-none">
-                                                                    <?php echo esc($suscripcion['email_oficial']); ?>
-                                                                </a>
-                                                            </p>
-                                                            <?php if (!empty($suscripcion['email_alterno'])): ?>
-                                                            <p class="mb-1"><strong>Email Alterno:</strong> 
-                                                                <a href="mailto:<?php echo esc($suscripcion['email_alterno']); ?>" class="text-decoration-none">
-                                                                    <?php echo esc($suscripcion['email_alterno']); ?>
-                                                                </a>
-                                                            </p>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <p class="mb-1"><strong>Teléfono Oficina:</strong> <?php echo esc($suscripcion['telefono_oficina']); ?></p>
-                                                            <?php if (!empty($suscripcion['extension'])): ?>
-                                                            <p class="mb-1"><strong>Extensión:</strong> <?php echo esc($suscripcion['extension']); ?></p>
-                                                            <?php endif; ?>
-                                                            <?php if (!empty($suscripcion['telefono_celular'])): ?>
-                                                            <p class="mb-1"><strong>Celular:</strong> <?php echo esc($suscripcion['telefono_celular']); ?></p>
-                                                            <?php endif; ?>
-                                                        </div>
+                                            <div class="info-section success">
+                                                <h6>
+                                                    <i class="bi bi-person me-1"></i>Información del Contacto
+                                                </h6>
+                                                <div class="info-row">
+                                                    <div class="info-item">
+                                                        <strong>Puesto:</strong>
+                                                        <p><?php echo esc($suscripcion['puesto']); ?></p>
                                                     </div>
+                                                    <div class="info-item">
+                                                        <strong>Email Oficial:</strong>
+                                                        <p>
+                                                            <a href="mailto:<?php echo esc($suscripcion['email_oficial']); ?>" class="text-decoration-none">
+                                                                <?php echo esc($suscripcion['email_oficial']); ?>
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                    <?php if (!empty($suscripcion['email_alterno'])): ?>
+                                                    <div class="info-item">
+                                                        <strong>Email Alterno:</strong>
+                                                        <p>
+                                                            <a href="mailto:<?php echo esc($suscripcion['email_alterno']); ?>" class="text-decoration-none">
+                                                                <?php echo esc($suscripcion['email_alterno']); ?>
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                    <?php endif; ?>
+                                                    <div class="info-item">
+                                                        <strong>Teléfono Oficina:</strong>
+                                                        <p><?php echo esc($suscripcion['telefono_oficina']); ?></p>
+                                                    </div>
+                                                    <?php if (!empty($suscripcion['extension'])): ?>
+                                                    <div class="info-item">
+                                                        <strong>Extensión:</strong>
+                                                        <p><?php echo esc($suscripcion['extension']); ?></p>
+                                                    </div>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($suscripcion['telefono_celular'])): ?>
+                                                    <div class="info-item">
+                                                        <strong>Celular:</strong>
+                                                        <p><?php echo esc($suscripcion['telefono_celular']); ?></p>
+                                                    </div>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
 
                                             <!-- Información de Interés -->
-                                            <div class="row mb-3">
-                                                <div class="col-12">
-                                                    <h6 class="text-warning mb-2">
-                                                        <i class="bi bi-heart me-1"></i>Información de Interés
-                                                    </h6>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <?php if (!empty($suscripcion['producto_interes'])): ?>
-                                                            <p class="mb-1"><strong>Producto de Interés:</strong> 
-                                                                <span class="badge bg-info"><?php echo esc($suscripcion['producto_interes']); ?></span>
-                                                            </p>
-                                                            <?php endif; ?>
-                                                            <?php if (!empty($suscripcion['fecha_compra_aprox'])): ?>
-                                                            <p class="mb-1"><strong>Fecha Compra Aprox:</strong> <?php echo date('d M Y', strtotime($suscripcion['fecha_compra_aprox'])); ?></p>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <?php if (!empty($suscripcion['observaciones'])): ?>
-                                                            <p class="mb-1"><strong>Observaciones:</strong></p>
-                                                            <p class="mb-0 text-muted small"><?php echo esc($suscripcion['observaciones']); ?></p>
-                                                            <?php endif; ?>
-                                                        </div>
+                                            <div class="info-section warning">
+                                                <h6>
+                                                    <i class="bi bi-heart me-1"></i>Información de Interés
+                                                </h6>
+                                                <div class="info-row">
+                                                    <?php if (!empty($suscripcion['producto_interes'])): ?>
+                                                    <div class="info-item">
+                                                        <strong>Producto de Interés:</strong>
+                                                        <p><span class="badge bg-info"><?php echo esc($suscripcion['producto_interes']); ?></span></p>
                                                     </div>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($suscripcion['fecha_compra_aprox'])): ?>
+                                                    <div class="info-item">
+                                                        <strong>Fecha Compra Aprox:</strong>
+                                                        <p><?php echo date('d M Y', strtotime($suscripcion['fecha_compra_aprox'])); ?></p>
+                                                    </div>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($suscripcion['observaciones'])): ?>
+                                                    <div class="info-item" style="grid-column: 1 / -1;">
+                                                        <strong>Observaciones:</strong>
+                                                        <p class="text-muted small"><?php echo esc($suscripcion['observaciones']); ?></p>
+                                                    </div>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
 
                                             <!-- Metadata -->
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <h6 class="text-secondary mb-2">
-                                                        <i class="bi bi-info-circle me-1"></i>Metadata
-                                                    </h6>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <p class="mb-1"><strong>Fecha Registro:</strong> <?php echo date('d M Y H:i', strtotime($suscripcion['created_at'])); ?></p>
-                                                            <p class="mb-1"><strong>IP:</strong> <?php echo esc($suscripcion['ip_address']); ?></p>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <?php if (!empty($suscripcion['updated_at']) && $suscripcion['updated_at'] !== $suscripcion['created_at']): ?>
-                                                            <p class="mb-1"><strong>Última Actualización:</strong> <?php echo date('d M Y H:i', strtotime($suscripcion['updated_at'])); ?></p>
-                                                            <?php endif; ?>
-                                                            <?php if (!empty($suscripcion['user_agent'])): ?>
-                                                            <p class="mb-1"><strong>User Agent:</strong> 
-                                                                <small class="text-muted"><?php echo esc(truncateText($suscripcion['user_agent'], 50)); ?></small>
-                                                            </p>
-                                                            <?php endif; ?>
-                                                        </div>
+                                            <div class="info-section secondary">
+                                                <h6>
+                                                    <i class="bi bi-info-circle me-1"></i>Metadata
+                                                </h6>
+                                                <div class="info-row">
+                                                    <div class="info-item">
+                                                        <strong>Fecha Registro:</strong>
+                                                        <p><?php echo date('d M Y H:i', strtotime($suscripcion['created_at'])); ?></p>
                                                     </div>
+                                                    <div class="info-item">
+                                                        <strong>IP:</strong>
+                                                        <p><?php echo esc($suscripcion['ip_address']); ?></p>
+                                                    </div>
+                                                    <?php if (!empty($suscripcion['updated_at']) && $suscripcion['updated_at'] !== $suscripcion['created_at']): ?>
+                                                    <div class="info-item">
+                                                        <strong>Última Actualización:</strong>
+                                                        <p><?php echo date('d M Y H:i', strtotime($suscripcion['updated_at'])); ?></p>
+                                                    </div>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($suscripcion['user_agent'])): ?>
+                                                    <div class="info-item" style="grid-column: 1 / -1;">
+                                                        <strong>User Agent:</strong>
+                                                        <p class="text-muted small"><?php echo esc(truncateText($suscripcion['user_agent'], 50)); ?></p>
+                                                    </div>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                         </div>
                                         
                                         <div class="col-md-4">
-                                            <div class="d-grid gap-2">
-                                                <form method="POST" class="d-inline">
+                                            <div class="actions-panel">
+                                                <h6 class="mb-3 fw-bold">
+                                                    <i class="bi bi-gear me-1"></i>Acciones
+                                                </h6>
+                                                
+                                                <form method="POST" class="mb-3">
                                                     <input type="hidden" name="id" value="<?php echo $suscripcion['id']; ?>">
-                                                    <select name="estado" class="form-select form-select-sm mb-2" onchange="this.form.submit()">
+                                                    <label class="form-label fw-bold small">Cambiar Estado:</label>
+                                                    <select name="estado" class="form-select form-select-sm" onchange="this.form.submit()">
                                                         <option value="active" <?php echo $suscripcion['status'] === 'active' ? 'selected' : ''; ?>>Activo</option>
                                                         <option value="inactive" <?php echo $suscripcion['status'] === 'inactive' ? 'selected' : ''; ?>>Inactivo</option>
                                                         <option value="unsubscribed" <?php echo $suscripcion['status'] === 'unsubscribed' ? 'selected' : ''; ?>>Cancelado</option>
@@ -495,7 +899,7 @@ $estados_geo = $stmt_estados->fetchAll(PDO::FETCH_COLUMN);
                                                     <input type="hidden" name="cambiar_estado" value="1">
                                                 </form>
                                                 
-                                                <form method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar esta suscripción?')">
+                                                <form method="POST" onsubmit="return confirm('¿Estás seguro de eliminar esta cotización?')">
                                                     <input type="hidden" name="id" value="<?php echo $suscripcion['id']; ?>">
                                                     <button type="submit" name="eliminar_suscripcion" class="btn btn-danger btn-sm w-100">
                                                         <i class="bi bi-trash me-1"></i>Eliminar
@@ -510,10 +914,10 @@ $estados_geo = $stmt_estados->fetchAll(PDO::FETCH_COLUMN);
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="col-12">
-                            <div class="text-center py-5">
-                                <i class="bi bi-envelope display-1 text-muted mb-3"></i>
-                                <h3>No hay suscripciones</h3>
-                                <p class="text-muted">No se encontraron suscripciones con los filtros seleccionados.</p>
+                            <div class="empty-state">
+                                <i class="bi bi-envelope"></i>
+                                <h3>No hay cotizaciones</h3>
+                                <p>No se encontraron cotizaciones con los filtros seleccionados.</p>
                             </div>
                         </div>
                     <?php endif; ?>
