@@ -45,9 +45,14 @@ function getNavLinkClass($page, $current_page, $current_dir = null) {
 <!-- Sidebar -->
 <div class="col-md-3 col-lg-2 admin-sidebar p-0">
     <div class="p-3">
-        <h5 class="mb-4">
-            <i class="bi bi-shield-lock me-2"></i>Admin Panel
-        </h5>
+        <div class="admin-logo mb-4">
+            <img src="<?php echo ($current_dir === 'blog') ? '../../assets/images/design/logo.png' : '../assets/images/design/logo.png'; ?>" 
+                 alt="Aramed y Laboratorio" 
+                 class="logo-image me-2"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+            <i class="bi bi-shield-lock me-2" style="display: none;"></i>
+            <span class="logo-text">Admin Panel</span>
+        </div>
         
         <!-- Información del usuario -->
         <div class="user-info mb-3">
@@ -142,6 +147,36 @@ function getNavLinkClassPages($page, $current_page, $current_dir) {
 
 <style>
 /* Estilos adicionales para el menú */
+
+/* Logo del admin */
+.admin-logo {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 1px solid #e9ecef;
+}
+
+.logo-image {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    transition: transform 0.3s ease;
+}
+
+.logo-image:hover {
+    transform: scale(1.05);
+}
+
+.logo-text {
+    font-weight: 600;
+    color: var(--dark-color);
+    font-size: 1.1rem;
+    margin-left: 0.5rem;
+}
 .nav-link-sm {
     font-size: 0.85rem;
     padding: 0.5rem 1rem;
