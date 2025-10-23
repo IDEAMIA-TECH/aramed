@@ -67,7 +67,7 @@ function getNavLinkClass($page, $current_page, $current_dir = null) {
         
         <nav class="nav flex-column">
             <!-- Dashboard -->
-            <a class="<?php echo getNavLinkClassPages('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../index.php' : 'index.php'; ?>">
+            <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../index.php' : 'index.php'; ?>">
                 <i class="bi bi-speedometer2 me-2"></i>Dashboard
             </a>
             
@@ -134,26 +134,6 @@ function getNavLinkClass($page, $current_page, $current_dir = null) {
     </div>
 </div>
 
-<?php
-// Función auxiliar para manejar las páginas principales del admin
-function getNavLinkClassPages($page, $current_page, $current_dir) {
-    $classes = ['nav-link'];
-    
-    // Si estamos en el directorio blog, solo activar si es la página exacta
-    if ($current_dir === 'blog') {
-        if ($page === 'index.php' && $current_page === 'index.php') {
-            $classes[] = 'active';
-        }
-    } else {
-        // Para páginas principales del admin
-        if ($page === $current_page) {
-            $classes[] = 'active';
-        }
-    }
-    
-    return implode(' ', $classes);
-}
-?>
 
 <style>
 /* Estilos adicionales para el menú */
