@@ -8,9 +8,10 @@
 // Definir constante del sitio
 define('ARAMED_SITE', true);
 
-// Cargar configuración
+// Cargar configuración y verificar autenticación
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/functions.php';
+require_once __DIR__ . '/../auth_check.php';
 
 // Configuración de subida
 $upload_dir = __DIR__ . '/../../assets/images/blog/';

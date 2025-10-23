@@ -8,10 +8,11 @@
 // Definir constante del sitio
 define('ARAMED_SITE', true);
 
-// Cargar configuración
+// Cargar configuración y verificar autenticación
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/connection.php';
+require_once __DIR__ . '/../auth_check.php';
 
 // Obtener conexión PDO
 $pdo = getDB();

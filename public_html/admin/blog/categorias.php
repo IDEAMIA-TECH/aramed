@@ -14,21 +14,16 @@
 // Definir constante del sitio
 define('ARAMED_SITE', true);
 
-// Cargar configuración
+// Cargar configuración y verificar autenticación
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/connection.php';
+require_once __DIR__ . '/../auth_check.php';
 
 // Obtener conexión PDO
 $pdo = getDB();
 if (!$pdo) {
     die('Error de conexión a la base de datos');
-}
-
-// Verificar autenticación (simplificado para demo)
-session_start();
-if (!isset($_SESSION['admin_logged_in'])) {
-    $_SESSION['admin_logged_in'] = true; // Para demo, siempre logueado
 }
 
 // Obtener parámetros
