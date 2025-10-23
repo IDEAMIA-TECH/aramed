@@ -4,12 +4,32 @@
  */
 if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
 
+// Detectar página actual
+$current_page = basename($_SERVER['PHP_SELF']);
+$current_section = '';
+
+// Determinar sección activa basada en la página actual
+switch ($current_page) {
+    case 'index.php':
+        $current_section = 'home';
+        break;
+    case 'catalogo.php':
+        $current_section = 'catalogo';
+        break;
+    case 'blog.php':
+    case 'blog-detalle.php':
+        $current_section = 'blog';
+        break;
+    default:
+        $current_section = 'home';
+}
+
 // Configurar menú de navegación
 $nav_items = [
-    ['label' => 'Inicio', 'href' => '#home', 'active' => true],
-    ['label' => 'Catálogo', 'href' => siteUrl('catalogo.php'), 'icon' => 'grid-3x3-gap'],
-    ['label' => 'Blog', 'href' => siteUrl('blog.php'), 'icon' => 'newspaper'],
-    ['label' => 'Aliados', 'href' => '#aliados', 'icon' => 'people'],
+    ['label' => 'Inicio', 'href' => siteUrl(), 'icon' => 'house', 'section' => 'home'],
+    ['label' => 'Catálogo', 'href' => siteUrl('catalogo.php'), 'icon' => 'grid-3x3-gap', 'section' => 'catalogo'],
+    ['label' => 'Blog', 'href' => siteUrl('blog.php'), 'icon' => 'newspaper', 'section' => 'blog'],
+    ['label' => 'Aliados', 'href' => siteUrl() . '#aliados', 'icon' => 'people', 'section' => 'aliados'],
 ];
 ?>
 
@@ -38,7 +58,7 @@ $nav_items = [
             <ul class="navbar-nav ms-auto align-items-lg-center">
                 <?php foreach ($nav_items as $item): ?>
                 <li class="nav-item">
-                    <a class="nav-link <?php echo !empty($item['active']) ? 'active' : ''; ?>" 
+                    <a class="nav-link <?php echo ($current_section === $item['section']) ? 'active' : ''; ?>" 
                        href="<?php echo esc($item['href']); ?>"
                        <?php if (!empty($item['icon'])): ?>
                        data-icon="<?php echo esc($item['icon']); ?>"
