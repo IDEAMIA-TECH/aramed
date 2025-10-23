@@ -68,6 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Obtener filtros
 $filtro_estado = isset($_GET['estado']) ? $_GET['estado'] : 'todos';
+$filtro_tipo_institucion = isset($_GET['tipo_institucion']) ? $_GET['tipo_institucion'] : 'todos';
+$filtro_estado_geo = isset($_GET['estado_geo']) ? $_GET['estado_geo'] : 'todos';
 $busqueda = isset($_GET['busqueda']) ? sanitizeInput($_GET['busqueda']) : '';
 
 // Construir consulta
@@ -79,9 +81,24 @@ if ($filtro_estado !== 'todos') {
     $params[] = $filtro_estado;
 }
 
+if ($filtro_tipo_institucion !== 'todos') {
+    $where_conditions[] = 'tipo_institucion = ?';
+    $params[] = $filtro_tipo_institucion;
+}
+
+if ($filtro_estado_geo !== 'todos') {
+    $where_conditions[] = 'estado = ?';
+    $params[] = $filtro_estado_geo;
+}
+
 if (!empty($busqueda)) {
-    $where_conditions[] = '(email LIKE ? OR nombre LIKE ? OR telefono LIKE ?)';
+    $where_conditions[] = '(institucion LIKE ? OR nombre LIKE ? OR email_oficial LIKE ? OR email_alterno LIKE ? OR telefono_oficina LIKE ? OR telefono_celular LIKE ? OR producto_interes LIKE ? OR observaciones LIKE ?)';
     $search_term = '%' . $busqueda . '%';
+    $params[] = $search_term;
+    $params[] = $search_term;
+    $params[] = $search_term;
+    $params[] = $search_term;
+    $params[] = $search_term;
     $params[] = $search_term;
     $params[] = $search_term;
     $params[] = $search_term;
@@ -104,15 +121,26 @@ $suscripciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $sql_stats = "
     SELECT 
         COUNT(*) as total,
-        SUM(CASE WHEN status = 'activo' THEN 1 ELSE 0 END) as activos,
-        SUM(CASE WHEN status = 'inactivo' THEN 1 ELSE 0 END) as inactivos,
-        SUM(CASE WHEN status = 'cancelado' THEN 1 ELSE 0 END) as cancelados
+        SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as activos,
+        SUM(CASE WHEN status = 'inactive' THEN 1 ELSE 0 END) as inactivos,
+        SUM(CASE WHEN status = 'unsubscribed' THEN 1 ELSE 0 END) as cancelados
     FROM newsletter_subscriptions
 ";
 
 $stmt_stats = $pdo->prepare($sql_stats);
 $stmt_stats->execute();
 $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
+
+// Obtener opciones para filtros
+$sql_tipos = "SELECT DISTINCT tipo_institucion FROM newsletter_subscriptions WHERE tipo_institucion IS NOT NULL AND tipo_institucion != '' ORDER BY tipo_institucion";
+$stmt_tipos = $pdo->prepare($sql_tipos);
+$stmt_tipos->execute();
+$tipos_institucion = $stmt_tipos->fetchAll(PDO::FETCH_COLUMN);
+
+$sql_estados = "SELECT DISTINCT estado FROM newsletter_subscriptions WHERE estado IS NOT NULL AND estado != '' ORDER BY estado";
+$stmt_estados = $pdo->prepare($sql_estados);
+$stmt_estados->execute();
+$estados_geo = $stmt_estados->fetchAll(PDO::FETCH_COLUMN);
 ?>
 <!DOCTYPE html>
 <html lang="es-MX">
@@ -277,21 +305,43 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
                 <div class="card mb-4">
                     <div class="card-body">
                         <form method="GET" class="row g-3">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="estado" class="form-label">Estado</label>
                                 <select class="form-select" id="estado" name="estado">
                                     <option value="todos" <?php echo $filtro_estado === 'todos' ? 'selected' : ''; ?>>Todos</option>
-                                    <option value="activo" <?php echo $filtro_estado === 'activo' ? 'selected' : ''; ?>>Activos</option>
-                                    <option value="inactivo" <?php echo $filtro_estado === 'inactivo' ? 'selected' : ''; ?>>Inactivos</option>
-                                    <option value="cancelado" <?php echo $filtro_estado === 'cancelado' ? 'selected' : ''; ?>>Cancelados</option>
+                                    <option value="active" <?php echo $filtro_estado === 'active' ? 'selected' : ''; ?>>Activos</option>
+                                    <option value="inactive" <?php echo $filtro_estado === 'inactive' ? 'selected' : ''; ?>>Inactivos</option>
+                                    <option value="unsubscribed" <?php echo $filtro_estado === 'unsubscribed' ? 'selected' : ''; ?>>Cancelados</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <label for="tipo_institucion" class="form-label">Tipo Institución</label>
+                                <select class="form-select" id="tipo_institucion" name="tipo_institucion">
+                                    <option value="todos" <?php echo $filtro_tipo_institucion === 'todos' ? 'selected' : ''; ?>>Todos</option>
+                                    <?php foreach ($tipos_institucion as $tipo): ?>
+                                    <option value="<?php echo esc($tipo); ?>" <?php echo $filtro_tipo_institucion === $tipo ? 'selected' : ''; ?>>
+                                        <?php echo esc($tipo); ?>
+                                    </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="estado_geo" class="form-label">Estado (Geográfico)</label>
+                                <select class="form-select" id="estado_geo" name="estado_geo">
+                                    <option value="todos" <?php echo $filtro_estado_geo === 'todos' ? 'selected' : ''; ?>>Todos</option>
+                                    <?php foreach ($estados_geo as $estado): ?>
+                                    <option value="<?php echo esc($estado); ?>" <?php echo $filtro_estado_geo === $estado ? 'selected' : ''; ?>>
+                                        <?php echo esc($estado); ?>
+                                    </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
                                 <label for="busqueda" class="form-label">Buscar</label>
                                 <input type="text" class="form-control" id="busqueda" name="busqueda" 
-                                       value="<?php echo esc($busqueda); ?>" placeholder="Email, nombre o teléfono">
+                                       value="<?php echo esc($busqueda); ?>" placeholder="Institución, nombre, email, teléfono, producto o observaciones">
                             </div>
-                            <div class="col-md-4 d-flex align-items-end">
+                            <div class="col-12 d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary me-2">
                                     <i class="bi bi-funnel me-1"></i>Filtrar
                                 </button>
@@ -317,28 +367,120 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
                                                     <i class="bi bi-person-circle me-1"></i>
                                                     <?php echo esc($suscripcion['nombre']); ?>
                                                 </h6>
-                                                <span class="badge bg-<?php echo $suscripcion['status'] === 'activo' ? 'success' : ($suscripcion['status'] === 'inactivo' ? 'secondary' : 'danger'); ?>">
-                                                    <?php echo ucfirst($suscripcion['status']); ?>
+                                                <span class="badge bg-<?php echo $suscripcion['status'] === 'active' ? 'success' : ($suscripcion['status'] === 'inactive' ? 'secondary' : 'danger'); ?>">
+                                                    <?php echo $suscripcion['status'] === 'active' ? 'Activo' : ($suscripcion['status'] === 'inactive' ? 'Inactivo' : 'Cancelado'); ?>
                                                 </span>
                                             </div>
                                             
+                                            <!-- Información de la Institución -->
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <h6 class="text-primary mb-2">
+                                                        <i class="bi bi-building me-1"></i>Información de la Institución
+                                                    </h6>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1"><strong>Institución:</strong> <?php echo esc($suscripcion['institucion']); ?></p>
+                                                            <p class="mb-1"><strong>Tipo:</strong> <?php echo esc($suscripcion['tipo_institucion']); ?></p>
+                                                            <?php if (!empty($suscripcion['campo_adicional'])): ?>
+                                                            <p class="mb-1"><strong>Campo Adicional:</strong> <?php echo esc($suscripcion['campo_adicional']); ?></p>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1"><strong>Estado:</strong> <?php echo esc($suscripcion['estado']); ?></p>
+                                                            <p class="mb-1"><strong>Ciudad:</strong> <?php echo esc($suscripcion['ciudad']); ?></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Información del Contacto -->
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <h6 class="text-success mb-2">
+                                                        <i class="bi bi-person me-1"></i>Información del Contacto
+                                                    </h6>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1"><strong>Nombre:</strong> <?php echo esc($suscripcion['nombre']); ?></p>
+                                                            <p class="mb-1"><strong>Puesto:</strong> <?php echo esc($suscripcion['puesto']); ?></p>
+                                                            <p class="mb-1"><strong>Email Oficial:</strong> 
+                                                                <a href="mailto:<?php echo esc($suscripcion['email_oficial']); ?>" class="text-decoration-none">
+                                                                    <?php echo esc($suscripcion['email_oficial']); ?>
+                                                                </a>
+                                                            </p>
+                                                            <?php if (!empty($suscripcion['email_alterno'])): ?>
+                                                            <p class="mb-1"><strong>Email Alterno:</strong> 
+                                                                <a href="mailto:<?php echo esc($suscripcion['email_alterno']); ?>" class="text-decoration-none">
+                                                                    <?php echo esc($suscripcion['email_alterno']); ?>
+                                                                </a>
+                                                            </p>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1"><strong>Teléfono Oficina:</strong> <?php echo esc($suscripcion['telefono_oficina']); ?></p>
+                                                            <?php if (!empty($suscripcion['extension'])): ?>
+                                                            <p class="mb-1"><strong>Extensión:</strong> <?php echo esc($suscripcion['extension']); ?></p>
+                                                            <?php endif; ?>
+                                                            <?php if (!empty($suscripcion['telefono_celular'])): ?>
+                                                            <p class="mb-1"><strong>Celular:</strong> <?php echo esc($suscripcion['telefono_celular']); ?></p>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Información de Interés -->
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <h6 class="text-warning mb-2">
+                                                        <i class="bi bi-heart me-1"></i>Información de Interés
+                                                    </h6>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <?php if (!empty($suscripcion['producto_interes'])): ?>
+                                                            <p class="mb-1"><strong>Producto de Interés:</strong> 
+                                                                <span class="badge bg-info"><?php echo esc($suscripcion['producto_interes']); ?></span>
+                                                            </p>
+                                                            <?php endif; ?>
+                                                            <?php if (!empty($suscripcion['fecha_compra_aprox'])): ?>
+                                                            <p class="mb-1"><strong>Fecha Compra Aprox:</strong> <?php echo date('d M Y', strtotime($suscripcion['fecha_compra_aprox'])); ?></p>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <?php if (!empty($suscripcion['observaciones'])): ?>
+                                                            <p class="mb-1"><strong>Observaciones:</strong></p>
+                                                            <p class="mb-0 text-muted small"><?php echo esc($suscripcion['observaciones']); ?></p>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Metadata -->
                                             <div class="row">
-                                                <div class="col-md-6">
-                                                    <p class="mb-1"><strong>Email:</strong> <?php echo esc($suscripcion['email']); ?></p>
-                                                    <p class="mb-1"><strong>Teléfono:</strong> <?php echo esc($suscripcion['telefono']); ?></p>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <p class="mb-1"><strong>Fecha:</strong> <?php echo date('d M Y H:i', strtotime($suscripcion['created_at'])); ?></p>
-                                                    <p class="mb-1"><strong>IP:</strong> <?php echo esc($suscripcion['ip_address']); ?></p>
+                                                <div class="col-12">
+                                                    <h6 class="text-secondary mb-2">
+                                                        <i class="bi bi-info-circle me-1"></i>Metadata
+                                                    </h6>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1"><strong>Fecha Registro:</strong> <?php echo date('d M Y H:i', strtotime($suscripcion['created_at'])); ?></p>
+                                                            <p class="mb-1"><strong>IP:</strong> <?php echo esc($suscripcion['ip_address']); ?></p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <?php if (!empty($suscripcion['updated_at']) && $suscripcion['updated_at'] !== $suscripcion['created_at']): ?>
+                                                            <p class="mb-1"><strong>Última Actualización:</strong> <?php echo date('d M Y H:i', strtotime($suscripcion['updated_at'])); ?></p>
+                                                            <?php endif; ?>
+                                                            <?php if (!empty($suscripcion['user_agent'])): ?>
+                                                            <p class="mb-1"><strong>User Agent:</strong> 
+                                                                <small class="text-muted"><?php echo esc(truncateText($suscripcion['user_agent'], 50)); ?></small>
+                                                            </p>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            
-                                            <?php if (!empty($suscripcion['intereses'])): ?>
-                                            <div class="mt-2">
-                                                <strong>Intereses:</strong>
-                                                <span class="badge bg-info me-1"><?php echo esc($suscripcion['intereses']); ?></span>
-                                            </div>
-                                            <?php endif; ?>
                                         </div>
                                         
                                         <div class="col-md-4">
@@ -346,9 +488,9 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
                                                 <form method="POST" class="d-inline">
                                                     <input type="hidden" name="id" value="<?php echo $suscripcion['id']; ?>">
                                                     <select name="estado" class="form-select form-select-sm mb-2" onchange="this.form.submit()">
-                                                        <option value="activo" <?php echo $suscripcion['status'] === 'activo' ? 'selected' : ''; ?>>Activo</option>
-                                                        <option value="inactivo" <?php echo $suscripcion['status'] === 'inactivo' ? 'selected' : ''; ?>>Inactivo</option>
-                                                        <option value="cancelado" <?php echo $suscripcion['status'] === 'cancelado' ? 'selected' : ''; ?>>Cancelado</option>
+                                                        <option value="active" <?php echo $suscripcion['status'] === 'active' ? 'selected' : ''; ?>>Activo</option>
+                                                        <option value="inactive" <?php echo $suscripcion['status'] === 'inactive' ? 'selected' : ''; ?>>Inactivo</option>
+                                                        <option value="unsubscribed" <?php echo $suscripcion['status'] === 'unsubscribed' ? 'selected' : ''; ?>>Cancelado</option>
                                                     </select>
                                                     <input type="hidden" name="cambiar_estado" value="1">
                                                 </form>
