@@ -92,21 +92,86 @@ $sql_categorias = "
 $stmt_categorias = $pdo->prepare($sql_categorias);
 $stmt_categorias->execute();
 $categorias = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
+
+// Variables para meta tags
+$pageTitle = 'Blog - ' . SITE_NAME;
+$pageDescription = 'Blog de Aramed y Laboratorios - Artículos sobre simulación médica, educación en salud y tecnología innovadora para profesionales de la salud.';
+$pageKeywords = 'blog, simulación médica, educación en salud, tecnología médica, artículos, noticias, Aramed';
+$pageUrl = SITE_URL . '/blog.php';
 ?>
 <!DOCTYPE html>
 <html lang="es-MX">
 <head>
+    <!-- ========================================
+         META TAGS BÁSICOS
+         ======================================== -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog - <?php echo SITE_NAME; ?></title>
-    <meta name="description" content="Blog de Aramed y Laboratorios - Artículos sobre simulación médica y educación en salud">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <!-- AOS CSS -->
+    <!-- ========================================
+         SEO BÁSICO
+         ======================================== -->
+    <title><?php echo esc($pageTitle); ?></title>
+    <meta name="description" content="<?php echo esc($pageDescription); ?>">
+    <meta name="keywords" content="<?php echo esc($pageKeywords); ?>">
+    <meta name="author" content="<?php echo esc(SITE_NAME); ?>">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="<?php echo esc($pageUrl); ?>">
+    
+    <!-- ========================================
+         OPEN GRAPH
+         ======================================== -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="<?php echo esc(SITE_NAME); ?>">
+    <meta property="og:title" content="<?php echo esc($pageTitle); ?>">
+    <meta property="og:description" content="<?php echo esc($pageDescription); ?>">
+    <meta property="og:url" content="<?php echo esc($pageUrl); ?>">
+    <meta property="og:image" content="<?php echo imageUrl('design/logo-og.jpg'); ?>">
+    <meta property="og:locale" content="es_MX">
+    
+    <!-- ========================================
+         TWITTER CARD
+         ======================================== -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?php echo esc($pageTitle); ?>">
+    <meta name="twitter:description" content="<?php echo esc($pageDescription); ?>">
+    <meta name="twitter:image" content="<?php echo imageUrl('design/logo-og.jpg'); ?>">
+    
+    <!-- ========================================
+         FAVICON & TOUCH ICONS
+         ======================================== -->
+    <link rel="icon" type="image/x-icon" href="<?php echo imageUrl('design/favicon.ico'); ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo imageUrl('design/favicon-32x32.png'); ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo imageUrl('design/favicon-16x16.png'); ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo imageUrl('design/apple-touch-icon.png'); ?>">
+    
+    <!-- ========================================
+         GOOGLE FONTS
+         ======================================== -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- ========================================
+         BOOTSTRAP 5
+         ======================================== -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <!-- ========================================
+         BOOTSTRAP ICONS
+         ======================================== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- ========================================
+         AOS (Animate On Scroll)
+         ======================================== -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- ========================================
+         CUSTOM CSS
+         ======================================== -->
+    <link rel="stylesheet" href="<?php echo assetUrl('css/main.css'); ?>?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="<?php echo assetUrl('css/blog.css'); ?>?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="<?php echo assetUrl('css/responsive.css'); ?>?v=<?php echo time(); ?>">
     
     <style>
         .blog-hero {
@@ -133,9 +198,13 @@ $categorias = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
         }
     </style>
 </head>
-<body>
-    <!-- Header -->
-    <?php include 'includes/navbar.php'; ?>
+
+<body class="blog-page">
+    
+    <!-- ========================================
+         NAVBAR
+         ======================================== -->
+    <?php include INCLUDES_PATH . '/navbar.php'; ?>
     
     <!-- Hero Section -->
     <section class="blog-hero">
@@ -292,15 +361,34 @@ $categorias = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </section>
     
-    <!-- Footer -->
-    <?php include 'includes/footer.php'; ?>
+    <!-- ========================================
+         FOOTER
+         ======================================== -->
+    <?php include INCLUDES_PATH . '/footer.php'; ?>
     
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- AOS JS -->
+    <!-- ========================================
+         JAVASCRIPT LIBRARIES
+         ======================================== -->
+    
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
+    <!-- AOS -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="<?php echo assetUrl('js/main.js'); ?>?v=<?php echo time(); ?>"></script>
+    <script src="<?php echo assetUrl('js/blog.js'); ?>?v=<?php echo time(); ?>"></script>
+    
+    <!-- Initialize AOS -->
     <script>
-        AOS.init();
+        AOS.init({
+            duration: 600,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 100
+        });
     </script>
+    
 </body>
 </html>

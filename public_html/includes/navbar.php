@@ -36,6 +36,11 @@ $nav_items = [
 function getPageLink($href, $current_page) {
     // Si es un enlace con ancla (#) y no estamos en index.php, redirigir a index.php con la ancla
     if (strpos($href, '#') !== false && $current_page !== 'index.php') {
+        // Si el href ya contiene la URL completa, solo devolverlo
+        if (strpos($href, 'http') === 0 || strpos($href, siteUrl()) === 0) {
+            return $href;
+        }
+        // Si es solo una ancla, agregar la URL base
         return siteUrl() . $href;
     }
     return $href;
