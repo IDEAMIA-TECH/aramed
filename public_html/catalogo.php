@@ -405,11 +405,6 @@ function buildFilterUrl($params = []) {
 <body class="catalogo-page">
     
     <!-- ========================================
-         TOPBAR
-         ======================================== -->
-    <?php include INCLUDES_PATH . '/topbar.php'; ?>
-    
-    <!-- ========================================
          NAVBAR
          ======================================== -->
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
