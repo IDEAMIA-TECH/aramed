@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             // Verificar contraseña actual
-            if (!password_verify($password_actual, $usuario_actual['password'])) {
+            if (!password_verify($password_actual, $usuario_actual['password_hash'])) {
                 throw new Exception('La contraseña actual es incorrecta');
             }
             
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $password_hash = password_hash($password_nueva, PASSWORD_DEFAULT);
             
-            $stmt = $pdo->prepare("UPDATE admin_usuarios SET nombre = ?, email = ?, password = ?, updated_at = NOW() WHERE id = ?");
+            $stmt = $pdo->prepare("UPDATE admin_usuarios SET nombre = ?, email = ?, password_hash = ?, updated_at = NOW() WHERE id = ?");
             $stmt->execute([$nombre, $email, $password_hash, $_SESSION['admin_user_id']]);
             
             $success_message = 'Perfil y contraseña actualizados exitosamente';
@@ -305,9 +305,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2">
+            
                 <?php include 'includes/admin_menu.php'; ?>
-            </div>
+            
             
             <!-- Main Content -->
             <div class="col-md-9 col-lg-9">
@@ -356,7 +356,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="stats-card">
-                                    <div class="stats-number"><?php echo $usuario_actual['activo'] ? 'Activo' : 'Inactivo'; ?></div>
+                                    <div class="stats-number"><?php echo $usuario_actual['estado'] === 'activo' ? 'Activo' : 'Inactivo'; ?></div>
                                     <div class="stats-label">Estado de Cuenta</div>
                                 </div>
                             </div>
@@ -368,7 +368,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <div class="col-md-4">
                                 <div class="stats-card">
-                                    <div class="stats-number"><?php echo $usuario_actual['last_login'] ? date('d/m/Y', strtotime($usuario_actual['last_login'])) : 'Nunca'; ?></div>
+                                    <div class="stats-number"><?php echo $usuario_actual['ultimo_login'] ? date('d/m/Y H:i', strtotime($usuario_actual['ultimo_login'])) : 'Nunca'; ?></div>
                                     <div class="stats-label">Último Acceso</div>
                                 </div>
                             </div>

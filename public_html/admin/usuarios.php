@@ -410,9 +410,9 @@ try {
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2">
+           
                 <?php include 'includes/admin_menu.php'; ?>
-            </div>
+           
             
             <!-- Main Content -->
             <div class="col-md-9 col-lg-9">
