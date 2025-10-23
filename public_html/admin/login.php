@@ -209,15 +209,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         .logo {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 1rem;
-            font-size: 1.5rem;
+            padding: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: brightness(1.1) contrast(1.1);
         }
     </style>
 </head>
@@ -225,7 +234,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="login-container">
         <div class="login-header">
             <div class="logo">
-                <i class="bi bi-shield-lock"></i>
+                <img src="../assets/images/design/logo.png" alt="<?php echo SITE_NAME; ?>" class="logo-image" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; font-size: 1.5rem;">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
             </div>
             <h3 class="mb-0">Panel de Administración</h3>
             <p class="mb-0 opacity-75"><?php echo SITE_NAME; ?></p>
