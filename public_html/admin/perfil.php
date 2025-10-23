@@ -1,13 +1,16 @@
 <?php
 // perfil.php - Edición de Perfil del Usuario
 define('ARAMED_SITE', true);
-require_once __DIR__ . '/auth_check.php';
-require_once __DIR__ . '/includes/admin_menu.php';
-require_once __DIR__ . '/../includes/connection.php';
+require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/connection.php';
+require_once __DIR__ . '/auth_check.php';
 
 $current_page = 'perfil.php';
 $current_dir = 'admin';
+
+// Incluir el menú después de cargar las funciones
+require_once __DIR__ . '/includes/admin_menu.php';
 
 $success_message = '';
 $error_message = '';
