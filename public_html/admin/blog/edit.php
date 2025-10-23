@@ -44,30 +44,7 @@ if (!$articulo) {
     exit;
 }
 
-// Función para generar slug
-function generateSlug($titulo, $exclude_id = 0) {
-    global $pdo;
-    
-    $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $titulo)));
-    $original_slug = $slug;
-    $counter = 1;
-    
-    // Verificar si el slug ya existe (excluyendo el artículo actual)
-    while (true) {
-        $sql = "SELECT id FROM blog_articulos WHERE slug = ? AND id != ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$slug, $exclude_id]);
-        
-        if (!$stmt->fetch()) {
-            break;
-        }
-        
-        $slug = $original_slug . '-' . $counter;
-        $counter++;
-    }
-    
-    return $slug;
-}
+// La función generateSlug ya está disponible desde includes/functions.php
 
 // Procesar formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
