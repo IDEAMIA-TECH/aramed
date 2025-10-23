@@ -122,60 +122,311 @@ $stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     
     <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --border-color: #dee2e6;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-hover: 0 4px 20px rgba(0,0,0,0.15);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
         .admin-sidebar {
-            background: #f8f9fa;
+            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
             min-height: 100vh;
-            border-right: 1px solid #dee2e6;
+            border-right: 1px solid var(--border-color);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
         }
+
         .admin-content {
-            background-color: #ffffff;
+            background: transparent;
             min-height: 100vh;
+            padding: 2rem;
         }
-        .stat-card {
+
+        .page-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
             color: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            transition: transform 0.3s ease;
+            box-shadow: var(--shadow);
         }
+
+        .page-header h2 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-color);
+        }
+
+        .stat-card.success::before {
+            background: var(--success-color);
+        }
+
+        .stat-card.warning::before {
+            background: var(--warning-color);
+        }
+
+        .stat-card.danger::before {
+            background: var(--danger-color);
+        }
+
+        .stat-card.info::before {
+            background: var(--info-color);
+        }
+
         .stat-card:hover {
             transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
         }
-        .stat-card.success {
-            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
-        }
-        .stat-card.warning {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        .stat-card.info {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-        .stat-card.danger {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        }
+
         .stat-number {
             font-size: 2.5rem;
-            font-weight: bold;
+            font-weight: 800;
+            color: var(--primary-color);
             margin-bottom: 0.5rem;
         }
+
         .stat-label {
+            color: var(--secondary-color);
+            font-weight: 500;
             font-size: 0.9rem;
-            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
+
+        .dashboard-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dashboard-body {
+            padding: 1.5rem;
+        }
+
         .recent-item {
-            border-left: 4px solid #0066cc;
+            background: #f8f9fa;
+            border-radius: 8px;
             padding: 1rem;
             margin-bottom: 1rem;
-            background: #f8f9fa;
-            border-radius: 0 8px 8px 0;
+            border-left: 4px solid var(--primary-color);
+            transition: var(--transition);
         }
+
+        .recent-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+
+        .recent-item.success {
+            border-left-color: var(--success-color);
+        }
+
+        .recent-item.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .recent-item.info {
+            border-left-color: var(--info-color);
+        }
+
         .user-info {
-            background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
             color: white;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .action-card.success .action-icon {
+            background: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%);
+        }
+
+        .action-card.warning .action-icon {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #ffc107 100%);
+        }
+
+        .action-card.info .action-icon {
+            background: linear-gradient(135deg, var(--info-color) 0%, #20c997 100%);
+        }
+
+        .action-card.danger .action-icon {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #e74c3c 100%);
+        }
+
+        .nav-link {
+            border-radius: 8px;
+            margin-bottom: 0.25rem;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            transform: translateX(5px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%) !important;
+        }
+
+        .badge.bg-secondary {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #6c757d 100%) !important;
+        }
+
+        .badge.bg-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #e74c3c 100%) !important;
+        }
+
+        .badge.bg-warning {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #ffc107 100%) !important;
+        }
+
+        .badge.bg-info {
+            background: linear-gradient(135deg, var(--info-color) 0%, #20c997 100%) !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--secondary-color);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .admin-content {
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -225,142 +476,138 @@ $stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_
             <!-- Contenido principal -->
             <div class="col-md-9 col-lg-10 admin-content p-4">
                 <!-- Header -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2>
-                            <i class="bi bi-speedometer2 me-2"></i>Dashboard
-                        </h2>
-                        <p class="text-muted mb-0">Bienvenido, <?php echo esc($current_user['nombre']); ?></p>
-                    </div>
-                    <div class="text-end">
-                        <small class="text-muted">
-                            <i class="bi bi-person-circle me-1"></i>
-                            <?php echo esc($current_user['username']); ?> 
-                            <span class="badge bg-<?php echo $current_user['rol'] === 'admin' ? 'danger' : 'primary'; ?> ms-1">
-                                <?php echo ucfirst($current_user['rol']); ?>
-                            </span>
-                        </small>
+                <div class="page-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2>
+                                <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                            </h2>
+                            <p class="mb-0 opacity-75">Bienvenido, <?php echo esc($current_user['nombre']); ?></p>
+                        </div>
+                        <div class="text-end">
+                            <small class="opacity-75">
+                                <i class="bi bi-person-circle me-1"></i>
+                                <?php echo esc($current_user['username']); ?> 
+                                <span class="badge bg-<?php echo $current_user['rol'] === 'admin' ? 'danger' : 'primary'; ?> ms-1">
+                                    <?php echo ucfirst($current_user['rol']); ?>
+                                </span>
+                            </small>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Estadísticas principales -->
-                <div class="row mb-4">
-                    <div class="col-md-3">
-                        <div class="stat-card success">
-                            <div class="stat-number"><?php echo number_format($stats['articulos_publicados']); ?></div>
-                            <div class="stat-label">
-                                <i class="bi bi-check-circle me-1"></i>Artículos Publicados
-                            </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number"><?php echo number_format($stats['total_articulos']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-newspaper me-1"></i>Total Artículos
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="stat-card warning">
-                            <div class="stat-number"><?php echo number_format($stats['articulos_borradores']); ?></div>
-                            <div class="stat-label">
-                                <i class="bi bi-file-earmark-text me-1"></i>Borradores
-                            </div>
+                    <div class="stat-card success">
+                        <div class="stat-number"><?php echo number_format($stats['articulos_publicados']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-check-circle me-1"></i>Publicados
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="stat-card info">
-                            <div class="stat-number"><?php echo number_format($stats['total_vistas']); ?></div>
-                            <div class="stat-label">
-                                <i class="bi bi-eye me-1"></i>Total Vistas
-                            </div>
+                    <div class="stat-card warning">
+                        <div class="stat-number"><?php echo number_format($stats['articulos_borradores']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-pencil me-1"></i>Borradores
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="stat-card danger">
-                            <div class="stat-number"><?php echo number_format($stats['comentarios_pendientes']); ?></div>
-                            <div class="stat-label">
-                                <i class="bi bi-chat-dots me-1"></i>Comentarios Pendientes
-                            </div>
+                    <div class="stat-card info">
+                        <div class="stat-number"><?php echo number_format($stats['total_comentarios']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-chat-dots me-1"></i>Comentarios
+                        </div>
+                    </div>
+                    <div class="stat-card danger">
+                        <div class="stat-number"><?php echo number_format($stats['comentarios_pendientes']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-clock me-1"></i>Pendientes
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number"><?php echo number_format($stats['total_vistas']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-eye me-1"></i>Total Vistas
+                        </div>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="stat-number"><?php echo number_format($stats['newsletter_activos']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-envelope me-1"></i>Cotizaciones
+                        </div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-number"><?php echo number_format($stats['newsletter_simple_activos']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-newspaper me-1"></i>Newsletter
                         </div>
                     </div>
                 </div>
 
-                <!-- Estadísticas de Newsletter -->
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="stat-card success">
-                            <div class="stat-number"><?php echo number_format($stats['newsletter_activos']); ?></div>
-                            <div class="stat-label">
-                                <i class="bi bi-envelope me-1"></i>Cotizaciones Activas
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="stat-card info">
-                            <div class="stat-number"><?php echo number_format($stats['newsletter_simple_activos']); ?></div>
-                            <div class="stat-label">
-                                <i class="bi bi-envelope-open me-1"></i>Newsletter Simple Activos
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Acciones rápidas -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="bi bi-lightning me-2"></i>Acciones Rápidas
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-3 mb-2">
-                                        <a href="blog/create.php" class="btn btn-primary w-100">
-                                            <i class="bi bi-plus-circle me-2"></i>Nuevo Artículo
-                                        </a>
-                                    </div>
-                                    <div class="col-md-3 mb-2">
-                                        <a href="blog/categorias.php" class="btn btn-success w-100">
-                                            <i class="bi bi-folder-plus me-2"></i>Nueva Categoría
-                                        </a>
-                                    </div>
-                                    <div class="col-md-3 mb-2">
-                                        <a href="blog/comentarios.php" class="btn btn-warning w-100">
-                                            <i class="bi bi-chat-dots me-2"></i>Moderar Comentarios
-                                        </a>
-                                    </div>
-                                    <div class="col-md-3 mb-2">
-                                        <a href="../blog.php" target="_blank" class="btn btn-info w-100">
-                                            <i class="bi bi-eye me-2"></i>Ver Blog
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-md-6 mb-2">
-                                        <a href="newsletter-subscriptions.php" class="btn btn-outline-primary w-100">
-                                            <i class="bi bi-envelope me-2"></i>Gestionar Cotizaciones
-                                        </a>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <a href="newsletter-simple.php" class="btn btn-outline-info w-100">
-                                            <i class="bi bi-envelope-open me-2"></i>Gestionar Newsletter Simple
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="quick-actions">
+                    <a href="blog/create.php" class="action-card">
+                        <div class="action-icon">
+                            <i class="bi bi-plus-circle"></i>
                         </div>
-                    </div>
+                        <h6 class="mb-2">Nuevo Artículo</h6>
+                        <p class="text-muted mb-0">Crear un nuevo artículo para el blog</p>
+                    </a>
+                    <a href="blog/categorias.php" class="action-card success">
+                        <div class="action-icon">
+                            <i class="bi bi-folder-plus"></i>
+                        </div>
+                        <h6 class="mb-2">Nueva Categoría</h6>
+                        <p class="text-muted mb-0">Organizar artículos por categorías</p>
+                    </a>
+                    <a href="blog/comentarios.php" class="action-card warning">
+                        <div class="action-icon">
+                            <i class="bi bi-chat-dots"></i>
+                        </div>
+                        <h6 class="mb-2">Gestionar Comentarios</h6>
+                        <p class="text-muted mb-0">Moderar comentarios del blog</p>
+                    </a>
+                    <a href="newsletter-subscriptions.php" class="action-card info">
+                        <div class="action-icon">
+                            <i class="bi bi-envelope"></i>
+                        </div>
+                        <h6 class="mb-2">Gestionar Cotizaciones</h6>
+                        <p class="text-muted mb-0">Ver solicitudes de cotización</p>
+                    </a>
+                    <a href="newsletter-simple.php" class="action-card success">
+                        <div class="action-icon">
+                            <i class="bi bi-newspaper"></i>
+                        </div>
+                        <h6 class="mb-2">Gestionar Newsletter</h6>
+                        <p class="text-muted mb-0">Ver suscripciones del newsletter</p>
+                    </a>
+                    <a href="../blog.php" target="_blank" class="action-card">
+                        <div class="action-icon">
+                            <i class="bi bi-eye"></i>
+                        </div>
+                        <h6 class="mb-2">Ver Blog</h6>
+                        <p class="text-muted mb-0">Ver el blog público</p>
+                    </a>
                 </div>
 
                 <div class="row">
                     <!-- Artículos recientes -->
                     <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
+                        <div class="dashboard-section">
+                            <div class="dashboard-header">
                                 <h5 class="mb-0">
                                     <i class="bi bi-newspaper me-2"></i>Artículos Recientes
                                 </h5>
                             </div>
-                            <div class="card-body">
+                            <div class="dashboard-body">
                                 <?php if (!empty($articulos_recientes)): ?>
                                     <?php foreach ($articulos_recientes as $articulo): ?>
-                                    <div class="recent-item">
+                                    <div class="recent-item success">
                                         <div class="d-flex justify-content-between align-items-start">
                                             <div class="flex-grow-1">
                                                 <h6 class="mb-1">
@@ -380,7 +627,11 @@ $stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_
                                     </div>
                                     <?php endforeach; ?>
                                 <?php else: ?>
-                                    <p class="text-muted text-center py-3">No hay artículos recientes</p>
+                                    <div class="empty-state">
+                                        <i class="bi bi-newspaper"></i>
+                                        <h3>No hay artículos</h3>
+                                        <p>No se han encontrado artículos recientes.</p>
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -388,16 +639,16 @@ $stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_
 
                     <!-- Comentarios recientes -->
                     <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
+                        <div class="dashboard-section">
+                            <div class="dashboard-header">
                                 <h5 class="mb-0">
                                     <i class="bi bi-chat-dots me-2"></i>Comentarios Recientes
                                 </h5>
                             </div>
-                            <div class="card-body">
+                            <div class="dashboard-body">
                                 <?php if (!empty($comentarios_recientes)): ?>
                                     <?php foreach ($comentarios_recientes as $comentario): ?>
-                                    <div class="recent-item">
+                                    <div class="recent-item info">
                                         <div class="d-flex justify-content-between align-items-start">
                                             <div class="flex-grow-1">
                                                 <h6 class="mb-1"><?php echo esc($comentario['nombre']); ?></h6>
@@ -413,7 +664,11 @@ $stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_
                                     </div>
                                     <?php endforeach; ?>
                                 <?php else: ?>
-                                    <p class="text-muted text-center py-3">No hay comentarios recientes</p>
+                                    <div class="empty-state">
+                                        <i class="bi bi-chat-dots"></i>
+                                        <h3>No hay comentarios</h3>
+                                        <p>No se han encontrado comentarios recientes.</p>
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         </div>
