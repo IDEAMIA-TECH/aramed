@@ -862,6 +862,54 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             </div>
                         </div>
                         
+                        <!-- Logo 17: Safeguard Medical -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/17-Safeguard Medical (Simbodies).webp'); ?>" 
+                                         alt="Safeguard Medical - SimBodies" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 18: Lifecast -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/18-Lifecast.webp'); ?>" 
+                                         alt="Lifecast" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 19: Immersive -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/20-immersive.webp'); ?>" 
+                                         alt="Immersive Healthcare" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Logo 20: Keklikoğlu -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/19-KEKLIGOKLU.webp'); ?>" 
+                                         alt="Keklikoğlu" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -1589,7 +1637,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     <div class="swiper-slide">
                     <div class="aliado-detalle-card h-100">
                         <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/5-Simulab.webp'); ?>" 
+                            <img src="<?php echo imageUrl('aliados/21-strategic-operations.webp'); ?>" 
                                  alt="Strategic Operations" 
                                  class="aliado-logo"
                                  loading="lazy">
@@ -1776,6 +1824,66 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 Echo Healthcare desarrolla soluciones inmersivas y realistas para simulación médica 
                                 (maniquíes, máscaras, entornos interactivos). Su innovación eleva nuestra oferta 
                                 formativa con un enfoque de alto impacto.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 18: LIFECAST -->
+                    <div class="swiper-slide">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/18-Lifecast.webp'); ?>" 
+                                 alt="Lifecast" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">LIFECAST</h4>
+                            <p class="aliado-description">
+                                Lifecast desarrolla modelos anatómicos y simuladores médicos de alta fidelidad para 
+                                educación en salud. Su compromiso con la calidad y realismo fortalece nuestra oferta 
+                                educativa con soluciones innovadoras.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 19: IMMERSIVE -->
+                    <div class="swiper-slide">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/20-immersive.webp'); ?>" 
+                                 alt="Immersive Healthcare" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">IMMERSIVE</h4>
+                            <p class="aliado-description">
+                                Immersive Healthcare desarrolla soluciones de simulación médica inmersiva que 
+                                transforman la educación clínica mediante tecnología de realidad virtual y aumentada. 
+                                Su innovación potencia nuestra formación con experiencias de aprendizaje únicas.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aliado 20: KEKLIKOĞLU -->
+                    <div class="swiper-slide">
+                    <div class="aliado-detalle-card h-100">
+                        <div class="aliado-logo-wrapper">
+                            <img src="<?php echo imageUrl('aliados/19-KEKLIGOKLU.webp'); ?>" 
+                                 alt="Keklikoğlu" 
+                                 class="aliado-logo"
+                                 loading="lazy">
+                        </div>
+                        <div class="aliado-info">
+                            <h4 class="aliado-name">KEKLIKOĞLU</h4>
+                            <p class="aliado-description">
+                                Keklikoğlu desarrolla modelos anatómicos de alta fidelidad que elevan la enseñanza 
+                                clínica y veterinaria. Su compromiso con calidad e innovación fortalece nuestra 
+                                misión de aprendizaje seguro y realista.
                             </p>
                         </div>
                     </div>
