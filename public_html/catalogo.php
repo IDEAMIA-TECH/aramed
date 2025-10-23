@@ -430,46 +430,80 @@ function buildFilterUrl($params = []) {
     <!-- ========================================
          HEADER CATÁLOGO
          ======================================== -->
-    <section class="catalogo-header py-5 bg-primary text-white">
-        <div class="container">
-            <div class="row align-items-center">
+    <section class="catalogo-header py-5 bg-gradient-primary text-white position-relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="catalogo-header-bg position-absolute top-0 start-0 w-100 h-100 opacity-10">
+            <div class="pattern-dots"></div>
+        </div>
+        
+        <div class="container position-relative">
+            <div class="row justify-content-center text-center">
                 <div class="col-lg-8">
-                    <h1 class="display-5 fw-bold mb-3">Catálogo de Productos</h1>
-                    <p class="lead mb-4">
-                        Explora nuestra amplia gama de simuladores médicos y equipos de simulación. 
-                        Encuentra el producto perfecto para tu institución educativa.
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb" class="mb-4">
+                        <ol class="breadcrumb justify-content-center mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="<?php echo siteUrl(); ?>" class="text-white-50 text-decoration-none">
+                                    <i class="bi bi-house-fill me-1"></i>Inicio
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">
+                                <i class="bi bi-grid-3x3-gap me-1"></i>Catálogo
+                            </li>
+                        </ol>
+                    </nav>
+                    
+                    <!-- Title -->
+                    <h1 class="display-4 fw-bold mb-4" data-aos="fade-up">
+                        Catálogo de Productos
+                    </h1>
+                    
+                    <!-- Subtitle -->
+                    <p class="lead mb-4 text-white-75" data-aos="fade-up" data-aos-delay="100">
+                        Descubre nuestra colección de simuladores médicos de última generación
                     </p>
-                    <div class="d-flex flex-wrap gap-3 align-items-center">
-                        <span class="badge bg-white text-primary fs-6 px-3 py-2">
-                            <i class="bi bi-box-seam me-2"></i>
-                            <?php echo number_format($total_products); ?> Productos
-                        </span>
-                        <span class="badge bg-light text-dark fs-6 px-3 py-2">
-                            <i class="bi bi-building me-2"></i>
-                            <?php echo count($marcas); ?> Marcas
-                        </span>
-                        <span class="badge bg-secondary fs-6 px-3 py-2">
-                            <i class="bi bi-tags me-2"></i>
-                            <?php echo count($categorias); ?> Categorías
-                        </span>
-                    </div>
-                </div>
-                <div class="col-lg-4 text-lg-end">
-                    <div class="catalogo-stats">
-                        <div class="stat-item">
-                            <i class="bi bi-award-fill display-6 text-warning"></i>
-                            <p class="small mb-0 mt-2">Calidad Premium</p>
+                    
+                    <!-- Stats -->
+                    <div class="catalogo-stats d-flex justify-content-center gap-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="stat-item text-center">
+                            <div class="stat-number h3 mb-1 fw-bold"><?php echo number_format($total_products); ?></div>
+                            <div class="stat-label small text-white-75">Productos</div>
                         </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item text-center">
+                            <div class="stat-number h3 mb-1 fw-bold"><?php echo count($marcas); ?></div>
+                            <div class="stat-label small text-white-75">Marcas</div>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item text-center">
+                            <div class="stat-number h3 mb-1 fw-bold"><?php echo count($categorias); ?></div>
+                            <div class="stat-label small text-white-75">Categorías</div>
+                        </div>
+                    </div>
+                    
+                    <!-- CTA -->
+                    <div class="catalogo-cta" data-aos="fade-up" data-aos-delay="300">
+                        <a href="#filtros" class="btn btn-light btn-lg px-4 py-3 shadow-sm">
+                            <i class="bi bi-funnel me-2"></i>
+                            Explorar Productos
+                        </a>
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator position-absolute bottom-0 start-50 translate-middle-x mb-3">
+            <a href="#filtros" class="scroll-down-btn">
+                <i class="bi bi-chevron-down"></i>
+            </a>
         </div>
     </section>
     
     <!-- ========================================
          FILTROS Y PRODUCTOS
          ======================================== -->
-    <section class="catalogo-content py-5">
+    <section id="filtros" class="catalogo-content py-5">
         <div class="container">
             <div class="row">
                 
