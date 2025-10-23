@@ -24,6 +24,24 @@ require_once __DIR__ . '/../includes/connection.php';
 $action = $_GET['action'] ?? '';
 $message_id = $_GET['id'] ?? '';
 
+// Acción de limpieza automática
+if ($action === 'cleanup') {
+    try {
+        $pdo = getDB();
+        $sql = "UPDATE topbar_messages 
+                SET status = 'inactive', updated_at = NOW() 
+                WHERE status = 'active' 
+                AND end_date IS NOT NULL 
+                AND end_date < NOW()";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        $affected = $stmt->rowCount();
+        $success_message = "Limpieza completada: $affected mensajes desactivados";
+    } catch (Exception $e) {
+        $error_message = "Error en limpieza: " . $e->getMessage();
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'create') {
         $icon = sanitizeInput($_POST['icon'] ?? '');
@@ -268,6 +286,11 @@ try {
                                 <p class="mb-0 opacity-75">Administra los mensajes que aparecen en la barra superior del sitio</p>
                             </div>
                             <div class="col-auto">
+                                <a href="?action=cleanup" class="btn btn-warning me-2" 
+                                   onclick="return confirm('¿Desactivar todos los mensajes expirados?')">
+                                    <i class="bi bi-broom me-2"></i>
+                                    Limpiar Expirados
+                                </a>
                                 <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#messageModal">
                                     <i class="bi bi-plus-circle me-2"></i>
                                     Nuevo Mensaje

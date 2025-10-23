@@ -13,6 +13,19 @@ $topbar_messages = [];
 try {
     $pdo = getDB();
     if ($pdo) {
+        // Primero, desactivar mensajes expirados (solo si no se ha hecho en los últimos 5 minutos)
+        $last_check = $_SESSION['topbar_last_check'] ?? 0;
+        if (time() - $last_check > 300) { // 5 minutos
+            $expire_sql = "UPDATE topbar_messages 
+                           SET status = 'inactive', updated_at = NOW() 
+                           WHERE status = 'active' 
+                           AND end_date IS NOT NULL 
+                           AND end_date < NOW()";
+            $pdo->exec($expire_sql);
+            $_SESSION['topbar_last_check'] = time();
+        }
+        
+        // Luego, obtener mensajes activos
         $sql = "SELECT * FROM topbar_messages 
                 WHERE status = 'active' 
                 AND (start_date IS NULL OR start_date <= NOW()) 
