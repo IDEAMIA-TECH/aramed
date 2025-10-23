@@ -152,12 +152,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 delay: 4000,
                 disableOnInteraction: false,
             },
-            effect: 'fade',
-            fadeEffect: {
-                crossFade: true
-            },
+            effect: 'slide',
             speed: 500,
             allowTouchMove: false, // Deshabilitar swipe manual en topbar
+            direction: 'vertical',
+            slidesPerView: 1,
         });
         
         // Botón cerrar topbar

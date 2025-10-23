@@ -710,7 +710,7 @@ function buildFilterUrl($params = []) {
                                                    title="Ver Detalles">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <a href="#newsletter" 
+                                                <a href="#contacto" 
                                                    class="btn btn-primary btn-sm" 
                                                    title="Solicitar Cotización">
                                                     <i class="bi bi-cart-plus"></i>
@@ -837,7 +837,7 @@ function buildFilterUrl($params = []) {
                         Nuestros asesores pueden ayudarte a encontrar la solución perfecta.
                     </p>
                     <div class="d-flex gap-3 justify-content-center flex-wrap">
-                        <a href="#newsletter" class="btn btn-primary btn-lg">
+                        <a href="#contacto" class="btn btn-primary btn-lg">
                             <i class="bi bi-chat-left-text me-2"></i>
                             Hablar con un Asesor
                         </a>
