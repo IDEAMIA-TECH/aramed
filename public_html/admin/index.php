@@ -97,6 +97,17 @@ $sql = "
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $comentarios_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Obtener estadísticas de newsletter
+$sql_newsletter = "SELECT COUNT(*) as total FROM newsletter_subscriptions WHERE status = 'activo'";
+$stmt_newsletter = $pdo->prepare($sql_newsletter);
+$stmt_newsletter->execute();
+$stats['newsletter_activos'] = $stmt_newsletter->fetch(PDO::FETCH_ASSOC)['total'];
+
+$sql_newsletter_simple = "SELECT COUNT(*) as total FROM newsletter_simple WHERE status = 'activo'";
+$stmt_newsletter_simple = $pdo->prepare($sql_newsletter_simple);
+$stmt_newsletter_simple->execute();
+$stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_ASSOC)['total'];
 ?>
 <!DOCTYPE html>
 <html lang="es-MX">
@@ -190,6 +201,12 @@ $comentarios_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <a class="nav-link" href="blog/comentarios.php">
                             <i class="bi bi-chat-dots me-2"></i>Comentarios
                         </a>
+                        <a class="nav-link" href="newsletter-subscriptions.php">
+                            <i class="bi bi-envelope me-2"></i>Newsletter
+                        </a>
+                        <a class="nav-link" href="newsletter-simple.php">
+                            <i class="bi bi-envelope-open me-2"></i>Newsletter Simple
+                        </a>
                         <hr>
                         <a class="nav-link" href="../blog.php" target="_blank">
                             <i class="bi bi-eye me-2"></i>Ver Blog
@@ -262,6 +279,26 @@ $comentarios_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
 
+                <!-- Estadísticas de Newsletter -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="stat-card success">
+                            <div class="stat-number"><?php echo number_format($stats['newsletter_activos']); ?></div>
+                            <div class="stat-label">
+                                <i class="bi bi-envelope me-1"></i>Newsletter Activos
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="stat-card info">
+                            <div class="stat-number"><?php echo number_format($stats['newsletter_simple_activos']); ?></div>
+                            <div class="stat-label">
+                                <i class="bi bi-envelope-open me-1"></i>Newsletter Simple Activos
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Acciones rápidas -->
                 <div class="row mb-4">
                     <div class="col-12">
@@ -291,6 +328,18 @@ $comentarios_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <div class="col-md-3 mb-2">
                                         <a href="../blog.php" target="_blank" class="btn btn-info w-100">
                                             <i class="bi bi-eye me-2"></i>Ver Blog
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-6 mb-2">
+                                        <a href="newsletter-subscriptions.php" class="btn btn-outline-primary w-100">
+                                            <i class="bi bi-envelope me-2"></i>Gestionar Newsletter
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <a href="newsletter-simple.php" class="btn btn-outline-info w-100">
+                                            <i class="bi bi-envelope-open me-2"></i>Gestionar Newsletter Simple
                                         </a>
                                     </div>
                                 </div>
