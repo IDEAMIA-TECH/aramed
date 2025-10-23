@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = trim($_POST['email']);
             $password = trim($_POST['password']);
             $rol = $_POST['rol'];
-            $activo = isset($_POST['activo']) ? 1 : 0;
+            $estado = isset($_POST['activo']) ? 'activo' : 'inactivo';
             
             if (empty($nombre) || empty($email) || empty($password)) {
                 throw new Exception('Todos los campos son obligatorios');
@@ -41,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
             
-            $stmt = $pdo->prepare("INSERT INTO admin_usuarios (nombre, email, password, rol, activo, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
-            $stmt->execute([$nombre, $email, $password_hash, $rol, $activo]);
+            $stmt = $pdo->prepare("INSERT INTO admin_usuarios (nombre, email, password_hash, rol, estado, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+            $stmt->execute([$nombre, $email, $password_hash, $rol, $estado]);
             
             $success_message = 'Usuario creado exitosamente';
             $action = 'list';
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nombre = trim($_POST['nombre']);
             $email = trim($_POST['email']);
             $rol = $_POST['rol'];
-            $activo = isset($_POST['activo']) ? 1 : 0;
+            $estado = isset($_POST['activo']) ? 'activo' : 'inactivo';
             
             if (empty($nombre) || empty($email)) {
                 throw new Exception('Nombre y email son obligatorios');
@@ -64,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception('El email ya está registrado por otro usuario');
             }
             
-            $stmt = $pdo->prepare("UPDATE admin_usuarios SET nombre = ?, email = ?, rol = ?, activo = ?, updated_at = NOW() WHERE id = ?");
-            $stmt->execute([$nombre, $email, $rol, $activo, $id]);
+            $stmt = $pdo->prepare("UPDATE admin_usuarios SET nombre = ?, email = ?, rol = ?, estado = ?, updated_at = NOW() WHERE id = ?");
+            $stmt->execute([$nombre, $email, $rol, $estado, $id]);
             
             $success_message = 'Usuario actualizado exitosamente';
             $action = 'list';
@@ -126,10 +126,10 @@ try {
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM admin_usuarios");
     $stats['total'] = $stmt->fetchColumn();
     
-    $stmt = $pdo->query("SELECT COUNT(*) as activos FROM admin_usuarios WHERE activo = 1");
+    $stmt = $pdo->query("SELECT COUNT(*) as activos FROM admin_usuarios WHERE estado = 'activo'");
     $stats['activos'] = $stmt->fetchColumn();
     
-    $stmt = $pdo->query("SELECT COUNT(*) as inactivos FROM admin_usuarios WHERE activo = 0");
+    $stmt = $pdo->query("SELECT COUNT(*) as inactivos FROM admin_usuarios WHERE estado = 'inactivo'");
     $stats['inactivos'] = $stmt->fetchColumn();
 } catch (Exception $e) {
     $stats = ['total' => 0, 'activos' => 0, 'inactivos' => 0];
@@ -521,7 +521,7 @@ try {
                                     <div class="form-group">
                                         <div class="form-check mt-4">
                                             <input type="checkbox" class="form-check-input" name="activo" id="activo" 
-                                                   <?php echo ($usuario && $usuario['activo']) ? 'checked' : ''; ?>>
+                                                   <?php echo ($usuario && $usuario['estado'] === 'activo') ? 'checked' : ''; ?>>
                                             <label class="form-check-label" for="activo">
                                                 Usuario Activo
                                             </label>
@@ -593,12 +593,12 @@ try {
                                                 </span>
                                             </td>
                                             <td>
-                                                <span class="badge <?php echo $user['activo'] ? 'bg-success' : 'bg-danger'; ?>">
-                                                    <?php echo $user['activo'] ? 'Activo' : 'Inactivo'; ?>
+                                                <span class="badge <?php echo $user['estado'] === 'activo' ? 'bg-success' : 'bg-danger'; ?>">
+                                                    <?php echo ucfirst($user['estado']); ?>
                                                 </span>
                                             </td>
                                             <td>
-                                                <?php echo $user['last_login'] ? date('d/m/Y H:i', strtotime($user['last_login'])) : 'Nunca'; ?>
+                                                <?php echo $user['ultimo_login'] ? date('d/m/Y H:i', strtotime($user['ultimo_login'])) : 'Nunca'; ?>
                                             </td>
                                             <td>
                                                 <div class="d-flex gap-1">
@@ -606,7 +606,7 @@ try {
                                                        class="btn btn-sm btn-outline-primary" title="Editar">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
-                                                    <?php if ($user['id'] != $_SESSION['admin_user_id']): ?>
+                                                    <?php if ($user['id'] != ($_SESSION['admin_user_id'] ?? 0)): ?>
                                                     <a href="?action=delete&id=<?php echo $user['id']; ?>" 
                                                        class="btn btn-sm btn-outline-danger" title="Eliminar"
                                                        onclick="return confirm('¿Estás seguro de eliminar este usuario?')">

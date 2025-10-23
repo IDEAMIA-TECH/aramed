@@ -17,10 +17,6 @@ $current_user = [
     'username' => $_SESSION['admin_username'] ?? 'admin'
 ];
 
-// Determinar la página actual
-$current_page = basename($_SERVER['PHP_SELF']);
-$current_dir = basename(dirname($_SERVER['PHP_SELF']));
-
 // Función para determinar si un enlace está activo
 function isActive($page, $current_page, $current_dir = null) {
     if ($current_dir === 'blog') {
@@ -40,6 +36,10 @@ function getNavLinkClass($page, $current_page, $current_dir = null) {
     }
     return implode(' ', $classes);
 }
+
+// Determinar la página actual
+$current_page = basename($_SERVER['PHP_SELF']);
+$current_dir = basename(dirname($_SERVER['PHP_SELF']));
 ?>
 
 <!-- Sidebar -->
