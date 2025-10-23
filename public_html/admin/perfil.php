@@ -9,9 +9,6 @@ require_once __DIR__ . '/auth_check.php';
 $current_page = 'perfil.php';
 $current_dir = 'admin';
 
-// Incluir el menú después de cargar las funciones
-require_once __DIR__ . '/includes/admin_menu.php';
-
 $success_message = '';
 $error_message = '';
 
