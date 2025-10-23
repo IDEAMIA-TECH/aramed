@@ -102,9 +102,13 @@ function getNavLinkClass($page, $current_page, $current_dir = null) {
                 <i class="bi bi-envelope me-2"></i>Cotización Simple
             </a>
             
-            <a class="<?php echo getNavLinkClass('newsletter-simple.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../newsletter-simple.php' : 'newsletter-simple.php'; ?>">
-                <i class="bi bi-newspaper me-2"></i>Newsletter Simple
-            </a>
+                <a class="<?php echo getNavLinkClass('newsletter-simple.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../newsletter-simple.php' : 'newsletter-simple.php'; ?>">
+                    <i class="bi bi-newspaper me-2"></i>Newsletter Simple
+                </a>
+                
+                <a class="<?php echo getNavLinkClass('topbar-messages.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../topbar-messages.php' : 'topbar-messages.php'; ?>">
+                    <i class="bi bi-megaphone me-2"></i>Mensajes Topbar
+                </a>
             
             <hr>
             

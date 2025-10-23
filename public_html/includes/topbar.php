@@ -4,29 +4,55 @@
  */
 if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
 
-// Mensajes rotativos (pueden venir de BD en el futuro)
-$topbar_messages = [
-    [
-        'icon' => 'megaphone-fill',
-        'text' => 'Nuevo catálogo 2025: Simuladores de última generación disponibles',
-        'link' => '#catalogos'
-    ],
-    [
-        'icon' => 'calendar-event',
-        'text' => 'Próximo curso de simulación médica avanzada - ¡Inscripciones abiertas!',
-        'link' => '#contacto'
-    ],
-    [
-        'icon' => 'award-fill',
-        'text' => 'Más de 20 años equipando instituciones de salud en México',
-        'link' => '#servicios'
-    ],
-    [
-        'icon' => 'truck',
-        'text' => 'Envíos a toda la República Mexicana - Instalación incluida',
-        'link' => '#contacto'
-    ]
-];
+// Cargar conexión a la base de datos
+require_once __DIR__ . '/connection.php';
+
+// Obtener mensajes desde la base de datos
+$topbar_messages = [];
+
+try {
+    $pdo = getDB();
+    if ($pdo) {
+        $sql = "SELECT * FROM topbar_messages 
+                WHERE status = 'active' 
+                AND (start_date IS NULL OR start_date <= NOW()) 
+                AND (end_date IS NULL OR end_date >= NOW())
+                ORDER BY priority ASC";
+        
+        $stmt = $pdo->query($sql);
+        $topbar_messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+} catch (Exception $e) {
+    // En caso de error, usar mensajes por defecto
+    error_log("Topbar DB Error: " . $e->getMessage());
+    $topbar_messages = [
+        [
+            'icon' => 'megaphone-fill',
+            'text' => 'Nuevo catálogo 2025: Simuladores de última generación disponibles',
+            'link' => '#catalogos'
+        ],
+        [
+            'icon' => 'calendar-event',
+            'text' => 'Próximo curso de simulación médica avanzada - ¡Inscripciones abiertas!',
+            'link' => '#contacto'
+        ],
+        [
+            'icon' => 'award-fill',
+            'text' => 'Más de 20 años equipando instituciones de salud en México',
+            'link' => '#servicios'
+        ],
+        [
+            'icon' => 'truck',
+            'text' => 'Envíos a toda la República Mexicana - Instalación incluida',
+            'link' => '#contacto'
+        ]
+    ];
+}
+
+// Si no hay mensajes activos, no mostrar el topbar
+if (empty($topbar_messages)) {
+    return;
+}
 ?>
 
 <div class="topbar bg-gradient-dark text-white py-2">
