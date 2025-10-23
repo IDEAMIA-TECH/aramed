@@ -106,9 +106,15 @@ function getNavLinkClass($page, $current_page, $current_dir = null) {
                     <i class="bi bi-newspaper me-2"></i>Newsletter Simple
                 </a>
                 
-                <a class="<?php echo getNavLinkClass('topbar-messages.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../topbar-messages.php' : 'topbar-messages.php'; ?>">
-                    <i class="bi bi-megaphone me-2"></i>Mensajes Topbar
-                </a>
+        <a class="<?php echo getNavLinkClass('topbar-messages.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../topbar-messages.php' : 'topbar-messages.php'; ?>">
+            <i class="bi bi-megaphone me-2"></i>Mensajes Topbar
+        </a>
+        <a class="<?php echo getNavLinkClass('usuarios.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../usuarios.php' : 'usuarios.php'; ?>">
+            <i class="bi bi-people-fill me-2"></i>Usuarios
+        </a>
+        <a class="<?php echo getNavLinkClass('perfil.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../perfil.php' : 'perfil.php'; ?>">
+            <i class="bi bi-person-circle me-2"></i>Mi Perfil
+        </a>
             
             <hr>
             

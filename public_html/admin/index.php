@@ -108,6 +108,18 @@ $sql_newsletter_simple = "SELECT COUNT(*) as total FROM newsletter_simple WHERE 
 $stmt_newsletter_simple = $pdo->prepare($sql_newsletter_simple);
 $stmt_newsletter_simple->execute();
 $stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_ASSOC)['total'];
+
+// Obtener estadísticas de usuarios
+$sql_usuarios = "SELECT COUNT(*) as total FROM admin_usuarios";
+$stmt_usuarios = $pdo->prepare($sql_usuarios);
+$stmt_usuarios->execute();
+$stats['usuarios'] = $stmt_usuarios->fetch(PDO::FETCH_ASSOC)['total'];
+
+// Obtener estadísticas de topbar
+$sql_topbar = "SELECT COUNT(*) as total FROM topbar_messages WHERE status = 'active'";
+$stmt_topbar = $pdo->prepare($sql_topbar);
+$stmt_topbar->execute();
+$stats['topbar_messages'] = $stmt_topbar->fetch(PDO::FETCH_ASSOC)['total'];
 ?>
 <!DOCTYPE html>
 <html lang="es-MX">
@@ -508,6 +520,18 @@ $stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_
                             <i class="bi bi-newspaper me-1"></i>Newsletter
                         </div>
                     </div>
+                    <div class="stat-card info">
+                        <div class="stat-number"><?php echo number_format($stats['usuarios']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-people me-1"></i>Usuarios Admin
+                        </div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-number"><?php echo number_format($stats['topbar_messages']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-megaphone me-1"></i>Mensajes Topbar
+                        </div>
+                    </div>
                 </div>
 
 
@@ -554,6 +578,27 @@ $stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_
                         </div>
                         <h6 class="mb-2">Ver Blog</h6>
                         <p class="text-muted mb-0">Ver el blog público</p>
+                    </a>
+                    <a href="usuarios.php" class="action-card info">
+                        <div class="action-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h6 class="mb-2">Gestionar Usuarios</h6>
+                        <p class="text-muted mb-0">Administrar usuarios del sistema</p>
+                    </a>
+                    <a href="perfil.php" class="action-card success">
+                        <div class="action-icon">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <h6 class="mb-2">Mi Perfil</h6>
+                        <p class="text-muted mb-0">Editar información personal</p>
+                    </a>
+                    <a href="topbar-messages.php" class="action-card warning">
+                        <div class="action-icon">
+                            <i class="bi bi-megaphone"></i>
+                        </div>
+                        <h6 class="mb-2">Mensajes Topbar</h6>
+                        <p class="text-muted mb-0">Gestionar mensajes del topbar</p>
                     </a>
                 </div>
 
