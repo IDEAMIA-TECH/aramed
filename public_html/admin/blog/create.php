@@ -26,30 +26,7 @@ $stmt_categorias = $pdo->prepare($sql_categorias);
 $stmt_categorias->execute();
 $categorias = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
 
-// Función para generar slug
-function generateSlug($titulo) {
-    global $pdo;
-    
-    $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $titulo)));
-    $original_slug = $slug;
-    $counter = 1;
-    
-    // Verificar si el slug ya existe
-    while (true) {
-        $sql = "SELECT id FROM blog_articulos WHERE slug = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$slug]);
-        
-        if (!$stmt->fetch()) {
-            break;
-        }
-        
-        $slug = $original_slug . '-' . $counter;
-        $counter++;
-    }
-    
-    return $slug;
-}
+// La función generateSlug ya está definida en includes/functions.php
 
 // Procesar formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

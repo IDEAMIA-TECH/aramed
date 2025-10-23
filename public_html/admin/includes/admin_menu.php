@@ -12,7 +12,10 @@
  */
 
 // Obtener información del usuario actual
-$current_user = getCurrentUser();
+$current_user = [
+    'nombre' => $_SESSION['admin_username'] ?? 'Administrador',
+    'username' => $_SESSION['admin_username'] ?? 'admin'
+];
 
 // Determinar la página actual
 $current_page = basename($_SERVER['PHP_SELF']);
