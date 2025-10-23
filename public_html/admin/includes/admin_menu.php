@@ -62,13 +62,13 @@ function getNavLinkClass($page, $current_page, $current_dir = null) {
         
         <nav class="nav flex-column">
             <!-- Dashboard -->
-            <a class="<?php echo getNavLinkClassPages('index.php', $current_page, $current_dir); ?>" href="../index.php">
+            <a class="<?php echo getNavLinkClassPages('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../index.php' : 'index.php'; ?>">
                 <i class="bi bi-speedometer2 me-2"></i>Dashboard
             </a>
             
             <!-- Blog -->
             <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('blog/index.php', $current_page, $current_dir); ?>" href="../blog/index.php">
+                <a class="<?php echo getNavLinkClass('blog/index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../blog/index.php' : 'blog/index.php'; ?>">
                     <i class="bi bi-newspaper me-2"></i>Blog
                 </a>
                 <?php if ($current_dir === 'blog'): ?>
@@ -93,26 +93,26 @@ function getNavLinkClass($page, $current_page, $current_dir = null) {
             </div>
             
             <!-- Newsletter -->
-            <a class="<?php echo getNavLinkClass('newsletter-subscriptions.php', $current_page, $current_dir); ?>" href="../newsletter-subscriptions.php">
+            <a class="<?php echo getNavLinkClass('newsletter-subscriptions.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../newsletter-subscriptions.php' : 'newsletter-subscriptions.php'; ?>">
                 <i class="bi bi-envelope me-2"></i>Cotización Simple
             </a>
             
-            <a class="<?php echo getNavLinkClass('newsletter-simple.php', $current_page, $current_dir); ?>" href="../newsletter-simple.php">
+            <a class="<?php echo getNavLinkClass('newsletter-simple.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../newsletter-simple.php' : 'newsletter-simple.php'; ?>">
                 <i class="bi bi-newspaper me-2"></i>Newsletter Simple
             </a>
             
             <hr>
             
             <!-- Enlaces externos -->
-            <a class="nav-link" href="../blog.php" target="_blank">
+            <a class="nav-link" href="<?php echo ($current_dir === 'blog') ? '../blog.php' : '../blog.php'; ?>" target="_blank">
                 <i class="bi bi-eye me-2"></i>Ver Blog
             </a>
             
-            <a class="nav-link" href="../index.php">
+            <a class="nav-link" href="<?php echo ($current_dir === 'blog') ? '../index.php' : '../index.php'; ?>">
                 <i class="bi bi-house me-2"></i>Volver al Sitio
             </a>
             
-            <a class="nav-link" href="../logout.php">
+            <a class="nav-link" href="<?php echo ($current_dir === 'blog') ? '../logout.php' : 'logout.php'; ?>">
                 <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
             </a>
         </nav>
