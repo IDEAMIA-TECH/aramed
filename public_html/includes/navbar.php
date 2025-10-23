@@ -31,6 +31,15 @@ $nav_items = [
     ['label' => 'Blog', 'href' => siteUrl('blog.php'), 'icon' => 'newspaper', 'section' => 'blog'],
     ['label' => 'Aliados', 'href' => siteUrl() . '#aliados', 'icon' => 'people', 'section' => 'aliados'],
 ];
+
+// Función para generar enlaces que funcionen en todas las páginas
+function getPageLink($href, $current_page) {
+    // Si es un enlace con ancla (#) y no estamos en index.php, redirigir a index.php con la ancla
+    if (strpos($href, '#') !== false && $current_page !== 'index.php') {
+        return siteUrl() . $href;
+    }
+    return $href;
+}
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top" id="mainNavbar">
@@ -59,7 +68,7 @@ $nav_items = [
                 <?php foreach ($nav_items as $item): ?>
                 <li class="nav-item">
                     <a class="nav-link <?php echo ($current_section === $item['section']) ? 'active' : ''; ?>" 
-                       href="<?php echo esc($item['href']); ?>"
+                       href="<?php echo esc(getPageLink($item['href'], $current_page)); ?>"
                        <?php if (!empty($item['icon'])): ?>
                        data-icon="<?php echo esc($item['icon']); ?>"
                        <?php endif; ?>>
@@ -78,7 +87,7 @@ $nav_items = [
                 
                 <!-- CTA Button -->
                 <li class="nav-item ms-lg-3">
-                    <a href="#newsletter" class="btn btn-primary px-4 py-2 w-100 w-lg-auto shadow-sm">
+                    <a href="<?php echo getPageLink('#newsletter', $current_page); ?>" class="btn btn-primary px-4 py-2 w-100 w-lg-auto shadow-sm">
                         <i class="bi bi-envelope me-2"></i>
                         Contáctanos
                     </a>
