@@ -272,7 +272,7 @@ try {
             <?php include __DIR__ . '/includes/admin_menu.php'; ?>
             
             <!-- Main Content -->
-            <div class="col-md-9 col-lg-10 ms-auto">
+            <div class="col-md-9 col-lg-9 ms-auto">
                 
                 <!-- Page Header -->
                 <div class="page-header">
