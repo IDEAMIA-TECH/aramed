@@ -562,7 +562,7 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
             <?php include __DIR__ . '/../includes/admin_menu.php'; ?>
 
             <!-- Contenido principal -->
-            <div class="col-md-9 col-lg-10 admin-content p-4">
+            <div class="col-md-9 col-lg-9 admin-content p-4">
                 <!-- Header -->
                 <div class="page-header">
                     <div class="d-flex justify-content-between align-items-center">

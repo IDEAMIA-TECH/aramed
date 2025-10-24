@@ -476,7 +476,7 @@ require_once __DIR__ . '/../auth_check.php';
             <?php include __DIR__ . '/../includes/admin_menu.php'; ?>
 
             <!-- Contenido principal -->
-            <div class="col-md-9 col-lg-10 admin-content p-4">
+            <div class="col-md-9 col-lg-9 admin-content p-4">
                 <!-- Header elegante -->
                 <div class="page-header">
                     <h1>

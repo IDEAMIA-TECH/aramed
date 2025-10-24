@@ -138,7 +138,7 @@ try {
             <?php include __DIR__ . '/../includes/admin_menu.php'; ?>
 
             <!-- Contenido principal -->
-            <div class="col-md-9 col-lg-10 admin-content p-4">
+            <div class="col-md-9 col-lg-9 admin-content p-4">
                 <!-- Header -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2>
