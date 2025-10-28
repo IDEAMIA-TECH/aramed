@@ -345,54 +345,41 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </picture>
                     <div class="hero-slide-bg" style="background: transparent;">
                         <div class="container h-100">
-                            <div class="row h-100 align-items-center">
-                                <div class="col-lg-6 col-xl-6">
-                                    <div class="hero-content" data-aos="fade-up">
+                            <div class="row h-100 align-items-center justify-content-center">
+                                <div class="col-lg-8 col-xl-6">
+                                    <div class="hero-content text-center" data-aos="fade-up">
+                                        <!-- Logo arriba -->
+                                        <div class="hero-logo mb-4" data-aos="fade-down" data-aos-delay="200">
+                                            <img src="<?php echo imageUrl('design/logo.png'); ?>" alt="Aramed y Laboratorios" height="120" class="img-fluid">
+                                        </div>
+                                        
+                                        <!-- Contenido de texto -->
                                         <div class="hero-text-wrapper p-4 rounded-3">
-                                            <span class="hero-badge badge mb-3 px-3 py-2" id="hero-badge">
-                                                <i class="bi bi-award-fill me-2"></i>
-                                                +20 Años de Experiencia
-                                            </span>
-                                            <h2 class="hero-subtitle h3 mb-4 fw-normal" id="hero-subtitle">
+                                            <h2 class="hero-subtitle h2 mb-3 fw-bold" id="hero-subtitle">
                                                 Simuladores médicos para la enseñanza
                                             </h2>
-                                            <p class="hero-description lead mb-5" id="hero-description">
+                                            <p class="hero-description mb-4" id="hero-description">
                                                 Distribuidores líderes de tecnología educativa en salud. 
                                                 Equipamos universidades, hospitales e instituciones con 
                                                 simuladores de última generación.
                                             </p>
-                                            <div class="hero-actions d-flex flex-wrap gap-3">
+                                            
+                                            <!-- Botón principal -->
+                                            <div class="hero-actions mb-3">
                                                 <a href="#newsletter" class="btn btn-lg px-5" id="hero-btn-primary">
                                                     <i class="bi bi-envelope me-2"></i>
                                                     Contáctanos
                                                 </a>
-                                                <a href="#catalogos" class="btn btn-lg px-5" id="hero-btn-secondary">
-                                                    <i class="bi bi-book me-2"></i>
-                                                    Ver Catálogos
-                                                </a>
                                             </div>
                                             
-                                            <!-- Stats -->
-                                            <div class="hero-stats row g-4 mt-4">
-                                                <div class="col-6">
-                                                    <div class="stat-item">
-                                                        <h3 class="stat-number fw-bold mb-1" id="stat-number-1">20+</h3>
-                                                        <p class="stat-label small mb-0" id="stat-label-1">Años</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="stat-item">
-                                                        <h3 class="stat-number fw-bold mb-1" id="stat-number-2">100%</h3>
-                                                        <p class="stat-label small mb-0" id="stat-label-2">Satisfacción</p>
-                                                    </div>
-                                                </div>
+                                            <!-- Badge de experiencia -->
+                                            <div class="hero-badge-wrapper">
+                                                <span class="hero-badge badge mb-0 px-3 py-2" id="hero-badge">
+                                                    <i class="bi bi-award-fill me-2"></i>
+                                                    +20 Años de Experiencia
+                                                </span>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-xl-6">
-                                    <div class="hero-logo text-center" data-aos="fade-left" data-aos-delay="300">
-                                        <img src="<?php echo imageUrl('design/logo.png'); ?>" alt="Aramed y Laboratorios" height="200" class="img-fluid">
                                     </div>
                                 </div>
                             </div>
@@ -2417,12 +2404,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 badge: document.getElementById('hero-badge'),
                 subtitle: document.getElementById('hero-subtitle'),
                 description: document.getElementById('hero-description'),
-                btnPrimary: document.getElementById('hero-btn-primary'),
-                btnSecondary: document.getElementById('hero-btn-secondary'),
-                statNumber1: document.getElementById('stat-number-1'),
-                statLabel1: document.getElementById('stat-label-1'),
-                statNumber2: document.getElementById('stat-number-2'),
-                statLabel2: document.getElementById('stat-label-2')
+                btnPrimary: document.getElementById('hero-btn-primary')
             };
 
             function getDominantColor(imageElement) {
@@ -2499,34 +2481,13 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         : '1px 1px 2px rgba(255,255,255,0.3)';
                 }
                 
-                // Botones
+                // Botón principal
                 if (heroElements.btnPrimary) {
                     heroElements.btnPrimary.style.backgroundColor = isLight ? '#0066cc' : '#ffffff';
                     heroElements.btnPrimary.style.color = isLight ? '#ffffff' : '#0066cc';
                     heroElements.btnPrimary.style.border = 'none';
                     heroElements.btnPrimary.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
                 }
-                
-                if (heroElements.btnSecondary) {
-                    heroElements.btnSecondary.style.backgroundColor = 'transparent';
-                    heroElements.btnSecondary.style.color = textColor;
-                    heroElements.btnSecondary.style.border = `2px solid ${textColor}`;
-                }
-                
-                // Stats
-                const statElements = [
-                    heroElements.statNumber1, heroElements.statNumber2,
-                    heroElements.statLabel1, heroElements.statLabel2
-                ];
-                
-                statElements.forEach(element => {
-                    if (element) {
-                        element.style.color = textColor;
-                        element.style.textShadow = isLight 
-                            ? '1px 1px 2px rgba(0,0,0,0.3)' 
-                            : '1px 1px 2px rgba(255,255,255,0.3)';
-                    }
-                });
             }
 
             function initializeDynamicColors() {
