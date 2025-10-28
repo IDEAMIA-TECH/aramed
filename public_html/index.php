@@ -392,7 +392,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
                                     <div class="hero-content" data-aos="fade-right">
-                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(0px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
                                             <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
                                                 <i class="bi bi-star-fill me-2"></i>
                                                 Simulador Obstétrico
@@ -440,7 +440,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
                                     <div class="hero-content" data-aos="fade-right">
-                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(0px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
                                             <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
                                                 <i class="bi bi-cpu-fill me-2"></i>
                                                 Simulación Avanzada
@@ -485,7 +485,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
                                     <div class="hero-content" data-aos="fade-right">
-                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(0px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
                                             <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
                                                 <i class="bi bi-heart-pulse-fill me-2"></i>
                                                 UCI y Emergencias
@@ -530,7 +530,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
                                     <div class="hero-content" data-aos="fade-right">
-                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(0px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
                                             <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
                                                 <i class="bi bi-emoji-smile-fill me-2"></i>
                                                 Neonatología
@@ -575,7 +575,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-7">
                                     <div class="hero-content" data-aos="fade-right">
-                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(0px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
                                             <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
                                                 <i class="bi bi-person-hearts me-2"></i>
                                                 Enfermería
