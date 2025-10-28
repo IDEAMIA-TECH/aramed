@@ -44,6 +44,7 @@
     height: 100%;
     z-index: 0;
     display: block;
+    opacity: 1 !important;
 }
 
 .hero-slide-image img {
@@ -51,6 +52,8 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
+    opacity: 1 !important;
+    filter: none !important;
 }
 
 /* Hero Slide Background (Gradient Overlay) */
