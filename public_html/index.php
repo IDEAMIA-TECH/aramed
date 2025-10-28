@@ -137,9 +137,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
         "description": "<?php echo esc($pageDescription); ?>",
         "address": {
             "@type": "PostalAddress",
-            "streetAddress": "<?php echo esc(ADDRESS_STREET); ?>",
-            "addressLocality": "<?php echo esc(ADDRESS_CITY); ?>",
-            "postalCode": "<?php echo esc(ADDRESS_ZIP); ?>",
             "addressCountry": "<?php echo esc(ADDRESS_COUNTRY); ?>"
         },
         "contactPoint": {
@@ -355,10 +352,10 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                         
                                         <!-- Contenido de texto -->
                                         <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(0px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
-                                            <h2 class="hero-subtitle h2 mb-3 fw-bold" id="hero-subtitle">
+                                            <h2 class="hero-subtitle h2 mb-3 fw-bold text-white" id="hero-subtitle">
                                                 Simuladores médicos para la enseñanza
                                             </h2>
-                                            <p class="hero-description mb-4" id="hero-description">
+                                            <p class="hero-description mb-4 text-white" id="hero-description">
                                                 Distribuidores líderes de tecnología educativa en salud. 
                                                 Equipamos universidades, hospitales e instituciones con 
                                                 simuladores de última generación.
@@ -999,7 +996,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                     <div class="col-6 col-md-4">
                         <div class="stat-box">
-                            <h3 class="stat-number text-primary mb-2" data-target="16">0</h3>
+                            <h3 class="stat-number text-primary mb-2" data-target="21">0</h3>
                             <p class="stat-label text-muted mb-0">Marcas Representadas</p>
                         </div>
                     </div>
@@ -1279,7 +1276,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             <picture>
                                 <source srcset="<?php echo imageUrl('productos/immersive-echo.webp'); ?>" type="image/webp">
                                 <img src="<?php echo imageUrl('productos/immersive-echo.jpg'); ?>" 
-                                     alt="Immerse Interactive - Entornos inmersivos" 
+                                     alt="Immersive Interactive - Entornos inmersivos" 
                                      class="product-image"
                                      loading="lazy">
                             </picture>

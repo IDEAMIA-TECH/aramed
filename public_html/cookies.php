@@ -243,10 +243,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                 <strong><i class="bi bi-telephone-fill text-primary me-2"></i>Teléfono:</strong> 
                                 <a href="tel:<?php echo PHONE_MAIN; ?>"><?php echo PHONE_FORMATTED; ?></a>
                             </p>
-                            <p class="mb-0">
-                                <strong><i class="bi bi-geo-alt-fill text-primary me-2"></i>Domicilio:</strong> 
-                                <?php echo ADDRESS_STREET . ', ' . ADDRESS_CITY . ', ' . ADDRESS_ZIP . ', ' . ADDRESS_COUNTRY; ?>
-                            </p>
                         </div>
                         
                     </div>

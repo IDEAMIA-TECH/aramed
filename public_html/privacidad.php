@@ -135,7 +135,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         
                         <p class="lead mb-4">
                             En <strong><?php echo SITE_NAME; ?></strong> (en adelante "nosotros", "nuestro/a", "la Empresa"), 
-                            con domicilio en <strong><?php echo ADDRESS_STREET . ', ' . ADDRESS_CITY . ', ' . ADDRESS_ZIP . ', ' . ADDRESS_COUNTRY; ?></strong>, 
                             somos responsables de recoger, utilizar, almacenar y proteger los datos personales que usted nos proporciona 
                             a través de nuestro sitio web <strong><?php echo SITE_URL; ?></strong> (el "Sitio"). 
                             Esta Política de Privacidad explica qué datos recogemos, con qué finalidad, cómo los protegemos y los derechos que usted tiene.
@@ -217,7 +216,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="contact-info bg-light p-4 rounded">
                             <p class="mb-2"><strong>Correo electrónico:</strong> <a href="mailto:<?php echo CONTACT_EMAIL; ?>"><?php echo CONTACT_EMAIL; ?></a></p>
                             <p class="mb-2"><strong>Teléfono:</strong> <a href="tel:<?php echo PHONE_MAIN; ?>"><?php echo PHONE_FORMATTED; ?></a></p>
-                            <p class="mb-0"><strong>Domicilio:</strong> <?php echo ADDRESS_STREET . ', ' . ADDRESS_CITY . ', ' . ADDRESS_ZIP . ', ' . ADDRESS_COUNTRY; ?></p>
                         </div>
                         
                     </div>

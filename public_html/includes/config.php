@@ -90,10 +90,10 @@ define('SCHEDULE_WEEKDAY', 'Lunes a Viernes: 9:00–14:00 y 16:00–19:00');
 define('SCHEDULE_SATURDAY', 'Sábados: 10:00–14:00');
 
 // Dirección
-define('ADDRESS_STREET', 'Club de Golf Atlas 535 Int 20');
-define('ADDRESS_CITY', 'Tlaquepaque, Jalisco');
-define('ADDRESS_ZIP', '45623');
-define('ADDRESS_COUNTRY', 'México');
+define('ADDRESS_STREET', '');
+define('ADDRESS_CITY', '');
+define('ADDRESS_ZIP', '');
+define('ADDRESS_COUNTRY', '');
 
 // ========================================
 // REDES SOCIALES

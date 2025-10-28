@@ -111,14 +111,6 @@ if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
                     <h6 class="footer-title mb-3">Contacto</h6>
                     
                     <div class="footer-contact mb-3">
-                        <div class="d-flex align-items-start mb-3">
-                            <i class="bi bi-geo-alt-fill text-primary me-2 mt-1"></i>
-                            <div class="small text-white-75">
-                                <?php echo esc(ADDRESS_STREET); ?><br>
-                                <?php echo esc(ADDRESS_CITY); ?><br>
-                                C.P. <?php echo esc(ADDRESS_ZIP); ?>
-                            </div>
-                        </div>
                         
                         <div class="d-flex align-items-center mb-2">
                             <i class="bi bi-telephone-fill text-primary me-2"></i>

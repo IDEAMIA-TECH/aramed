@@ -135,8 +135,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         
                         <p class="lead mb-4">
                             Estos Términos y Condiciones regulan el acceso y uso del sitio web <strong><?php echo SITE_URL; ?></strong> (el "Sitio"), 
-                            propiedad de <strong><?php echo SITE_NAME; ?></strong>, con domicilio en 
-                            <strong><?php echo ADDRESS_STREET . ', ' . ADDRESS_CITY . ', ' . ADDRESS_ZIP . ', ' . ADDRESS_COUNTRY; ?></strong> 
+                            propiedad de <strong><?php echo SITE_NAME; ?></strong> 
                             y correo electrónico <strong><?php echo CONTACT_EMAIL; ?></strong>.
                         </p>
                         
@@ -202,7 +201,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="contact-info bg-light p-4 rounded">
                             <p class="mb-2"><strong>Correo electrónico:</strong> <a href="mailto:<?php echo CONTACT_EMAIL; ?>"><?php echo CONTACT_EMAIL; ?></a></p>
                             <p class="mb-2"><strong>Teléfono:</strong> <a href="tel:<?php echo PHONE_MAIN; ?>"><?php echo PHONE_FORMATTED; ?></a></p>
-                            <p class="mb-0"><strong>Domicilio:</strong> <?php echo ADDRESS_STREET . ', ' . ADDRESS_CITY . ', ' . ADDRESS_ZIP . ', ' . ADDRESS_COUNTRY; ?></p>
                         </div>
                         
                     </div>
