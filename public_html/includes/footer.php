@@ -217,7 +217,6 @@ if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
 
 /* Logo */
 .footer-logo {
-    filter: brightness(0) invert(1);
     max-width: 200px;
     height: auto;
 }
