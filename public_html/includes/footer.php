@@ -56,7 +56,7 @@ if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
                 <!-- Columna 1: Sobre Nosotros -->
                 <div class="col-lg-4 col-md-6">
                     <div class="footer-about">
-                        <img src="<?php echo imageUrl('design/logo.png'); ?>" 
+                        <img src="<?php echo imageUrl('design/logo-obscuro.png'); ?>" 
                              alt="<?php echo esc(SITE_NAME); ?>" 
                              height="50" 
                              class="mb-3 footer-logo"
