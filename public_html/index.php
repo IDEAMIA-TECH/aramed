@@ -354,7 +354,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                         </div>
                                         
                                         <!-- Contenido de texto -->
-                                        <div class="hero-text-wrapper p-4 rounded-3">
+                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(0px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
                                             <h2 class="hero-subtitle h2 mb-3 fw-bold" id="hero-subtitle">
                                                 Simuladores médicos para la enseñanza
                                             </h2>
