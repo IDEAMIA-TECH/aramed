@@ -340,33 +340,33 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 <!-- Slide 1: Principal -->
                 <div class="swiper-slide hero-slide">
                     <picture class="hero-slide-image">
-                        <source srcset="<?php echo imageUrl('hero/hero-principal.webp'); ?>" type="image/webp">
-                        <img src="<?php echo imageUrl('hero/hero-principal.jpg'); ?>" alt="Aramed y Laboratorios - Simuladores médicos" loading="lazy">
+                        <source srcset="<?php echo imageUrl('hero/aramedylaboratorio.webp'); ?>" type="image/webp">
+                        <img id="hero-main-image" src="<?php echo imageUrl('hero/aramedylaboratorio.jpg'); ?>" alt="Aramed y Laboratorios - Simuladores médicos" loading="lazy">
                     </picture>
-                    <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(0, 102, 204, 0.95) 0%, rgba(44, 62, 80, 0.95) 100%);">
+                    <div class="hero-slide-bg" style="background: transparent;">
                         <div class="container h-100">
                             <div class="row h-100 align-items-center">
                                 <div class="col-lg-6 col-xl-6">
                                     <div class="hero-content" data-aos="fade-up">
-                                        <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
-                                            <span class="hero-badge badge bg-white text-primary mb-3 px-3 py-2">
+                                        <div class="hero-text-wrapper p-4 rounded-3">
+                                            <span class="hero-badge badge mb-3 px-3 py-2" id="hero-badge">
                                                 <i class="bi bi-award-fill me-2"></i>
                                                 +20 Años de Experiencia
                                             </span>
-                                            <h2 class="hero-subtitle h3 text-white mb-4 fw-normal">
+                                            <h2 class="hero-subtitle h3 mb-4 fw-normal" id="hero-subtitle">
                                                 Simuladores médicos para la enseñanza
                                             </h2>
-                                            <p class="hero-description lead text-white mb-5">
+                                            <p class="hero-description lead mb-5" id="hero-description">
                                                 Distribuidores líderes de tecnología educativa en salud. 
                                                 Equipamos universidades, hospitales e instituciones con 
                                                 simuladores de última generación.
                                             </p>
                                             <div class="hero-actions d-flex flex-wrap gap-3">
-                                                <a href="#newsletter" class="btn btn-light btn-lg px-5 shadow">
+                                                <a href="#newsletter" class="btn btn-lg px-5" id="hero-btn-primary">
                                                     <i class="bi bi-envelope me-2"></i>
                                                     Contáctanos
                                                 </a>
-                                                <a href="#catalogos" class="btn btn-outline-light btn-lg px-5">
+                                                <a href="#catalogos" class="btn btn-lg px-5" id="hero-btn-secondary">
                                                     <i class="bi bi-book me-2"></i>
                                                     Ver Catálogos
                                                 </a>
@@ -376,14 +376,14 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                             <div class="hero-stats row g-4 mt-4">
                                                 <div class="col-6">
                                                     <div class="stat-item">
-                                                        <h3 class="stat-number text-white fw-bold mb-1">20+</h3>
-                                                        <p class="stat-label text-white small mb-0">Años</p>
+                                                        <h3 class="stat-number fw-bold mb-1" id="stat-number-1">20+</h3>
+                                                        <p class="stat-label small mb-0" id="stat-label-1">Años</p>
                                                     </div>
                                                 </div>
                                                 <div class="col-6">
                                                     <div class="stat-item">
-                                                        <h3 class="stat-number text-white fw-bold mb-1">100%</h3>
-                                                        <p class="stat-label text-white small mb-0">Satisfacción</p>
+                                                        <h3 class="stat-number fw-bold mb-1" id="stat-number-2">100%</h3>
+                                                        <p class="stat-label small mb-0" id="stat-label-2">Satisfacción</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -2406,6 +2406,154 @@ $pageImage = imageUrl('design/logo-og.jpg');
             easing: 'ease-in-out',
             once: true,
             offset: 100
+        });
+    </script>
+    
+    <!-- Dynamic Text Color System -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const heroImage = document.getElementById('hero-main-image');
+            const heroElements = {
+                badge: document.getElementById('hero-badge'),
+                subtitle: document.getElementById('hero-subtitle'),
+                description: document.getElementById('hero-description'),
+                btnPrimary: document.getElementById('hero-btn-primary'),
+                btnSecondary: document.getElementById('hero-btn-secondary'),
+                statNumber1: document.getElementById('stat-number-1'),
+                statLabel1: document.getElementById('stat-label-1'),
+                statNumber2: document.getElementById('stat-number-2'),
+                statLabel2: document.getElementById('stat-label-2')
+            };
+
+            function getDominantColor(imageElement) {
+                return new Promise((resolve) => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Reducir el tamaño para análisis más rápido
+                    const size = 50;
+                    canvas.width = size;
+                    canvas.height = size;
+                    
+                    ctx.drawImage(imageElement, 0, 0, size, size);
+                    
+                    const imageData = ctx.getImageData(0, 0, size, size);
+                    const data = imageData.data;
+                    
+                    let r = 0, g = 0, b = 0;
+                    let pixelCount = 0;
+                    
+                    // Muestrear cada 4 píxeles para mejor rendimiento
+                    for (let i = 0; i < data.length; i += 16) {
+                        r += data[i];
+                        g += data[i + 1];
+                        b += data[i + 2];
+                        pixelCount++;
+                    }
+                    
+                    r = Math.floor(r / pixelCount);
+                    g = Math.floor(g / pixelCount);
+                    b = Math.floor(b / pixelCount);
+                    
+                    resolve({ r, g, b });
+                });
+            }
+
+            function getBrightness(r, g, b) {
+                // Fórmula de luminancia relativa
+                return (0.299 * r + 0.587 * g + 0.114 * b);
+            }
+
+            function adjustTextColors(dominantColor) {
+                const brightness = getBrightness(dominantColor.r, dominantColor.g, dominantColor.b);
+                const isLight = brightness > 128;
+                
+                // Colores base
+                const lightTextColor = '#ffffff';
+                const darkTextColor = '#1a1a1a';
+                const lightBgColor = 'rgba(255, 255, 255, 0.9)';
+                const darkBgColor = 'rgba(0, 0, 0, 0.7)';
+                
+                // Color de texto principal
+                const textColor = isLight ? darkTextColor : lightTextColor;
+                const bgColor = isLight ? lightBgColor : darkBgColor;
+                
+                // Aplicar estilos
+                if (heroElements.badge) {
+                    heroElements.badge.style.backgroundColor = bgColor;
+                    heroElements.badge.style.color = textColor;
+                    heroElements.badge.style.border = `1px solid ${isLight ? '#e0e0e0' : '#333'}`;
+                }
+                
+                if (heroElements.subtitle) {
+                    heroElements.subtitle.style.color = textColor;
+                    heroElements.subtitle.style.textShadow = isLight 
+                        ? '2px 2px 4px rgba(0,0,0,0.3)' 
+                        : '2px 2px 4px rgba(255,255,255,0.3)';
+                }
+                
+                if (heroElements.description) {
+                    heroElements.description.style.color = textColor;
+                    heroElements.description.style.textShadow = isLight 
+                        ? '1px 1px 2px rgba(0,0,0,0.3)' 
+                        : '1px 1px 2px rgba(255,255,255,0.3)';
+                }
+                
+                // Botones
+                if (heroElements.btnPrimary) {
+                    heroElements.btnPrimary.style.backgroundColor = isLight ? '#0066cc' : '#ffffff';
+                    heroElements.btnPrimary.style.color = isLight ? '#ffffff' : '#0066cc';
+                    heroElements.btnPrimary.style.border = 'none';
+                    heroElements.btnPrimary.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+                }
+                
+                if (heroElements.btnSecondary) {
+                    heroElements.btnSecondary.style.backgroundColor = 'transparent';
+                    heroElements.btnSecondary.style.color = textColor;
+                    heroElements.btnSecondary.style.border = `2px solid ${textColor}`;
+                }
+                
+                // Stats
+                const statElements = [
+                    heroElements.statNumber1, heroElements.statNumber2,
+                    heroElements.statLabel1, heroElements.statLabel2
+                ];
+                
+                statElements.forEach(element => {
+                    if (element) {
+                        element.style.color = textColor;
+                        element.style.textShadow = isLight 
+                            ? '1px 1px 2px rgba(0,0,0,0.3)' 
+                            : '1px 1px 2px rgba(255,255,255,0.3)';
+                    }
+                });
+            }
+
+            function initializeDynamicColors() {
+                if (heroImage && heroImage.complete) {
+                    getDominantColor(heroImage).then(adjustTextColors);
+                } else if (heroImage) {
+                    heroImage.addEventListener('load', function() {
+                        getDominantColor(heroImage).then(adjustTextColors);
+                    });
+                }
+            }
+
+            // Inicializar cuando la imagen esté lista
+            initializeDynamicColors();
+            
+            // Re-analizar cuando cambie la imagen (para el slider)
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+                        setTimeout(initializeDynamicColors, 100);
+                    }
+                });
+            });
+            
+            if (heroImage) {
+                observer.observe(heroImage, { attributes: true });
+            }
         });
     </script>
     

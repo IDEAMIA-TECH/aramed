@@ -408,3 +408,30 @@ IDEAMIA Tech - soporte@ideamia.com.mx
 *Este documento es una guía viva y debe actualizarse conforme evolucione la identidad visual de Aramed y Laboratorio.*
 
 
+
+Header / Simulador 	
+H1: HAL® S3201 — Realismo clínico en cada entrenamiento
+
+H2: Simulación avanzada para emergencias, cuidados intensivos y medicina general
+
+
+
+Características / Bullet points
+●	Movimientos faciales
+
+●	Signos vitales y reacciones en tiempo real.
+
+●	Diseño respiratorio que reproduce la respuesta real al soporte ventilatorio.
+
+●	Llanto, cianosis y respiración 
+programables al nacer
+
+●	Escenarios SLE™ neonatales listos para uso inmediato
+
+●	Operación totalmente inalámbrica y portátil
+
+
+
+
+
+

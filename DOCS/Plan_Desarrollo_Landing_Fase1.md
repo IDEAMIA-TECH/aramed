@@ -738,3 +738,24 @@ header("Permissions-Policy: geolocation=(), microphone=(), camera=()");
 
 > *Este documento es confidencial y propiedad de IDEAMIA Tech y Aramed y Laboratorios. Su distribución sin autorización está prohibida.*
 
+
+
+
+
+1.	GAUMARD: 	Gaumard Scientific desarrolla simuladores médicos de alta fidelidad que transforman la enseñanza clínica. Su innovación tecnológica complementa nuestra misión de ofrecer experiencias de aprendizaje realistas y seguras en salud.
+2.	MEDICAL X	Medical-X desarrolla simuladores médicos de alta fidelidad para entrenamiento clínico. Su tecnología avanzada potencia a Aramed en formación realista y segura.
+3.	ANATOMAGE	Anatomage crea plataformas 3D interactivas que revolucionan la enseñanza anatómica mediante visualizaciones precisas del cuerpo humano. Su innovación eleva nuestros estándares en simulación médica educativa.
+4.	SARATOGA	Saratoga Dental diseña y fabrica equipos dentales, laboratorios técnicos y simuladores formativos. Su enfoque “a medida” refuerza nuestra oferta educativa con soluciones profesionales y personalizadas.
+5.	3B SCIENTIFIC 	3B Scientific fabrica modelos anatómicos y simuladores médicos para educación en salud. Su calidad global refuerza nuestra oferta educativa y credibilidad como aliado estratégico.
+6.	3D Med	3-Dmed diseña simuladores quirúrgicos y entrenadores médicos de alta precisión. Su enfoque en realismo y desempeño mejora nuestras soluciones para la práctica clínica y educativa.
+7.	(SafeGuard) SIMBODIES	Safeguard Medical provee tecnología, equipamiento y entrenamiento en medicina de emergencia. Su enfoque en salvamento y realismo fortalece nuestro respaldo en formación crítica.
+8.	STRATEGIC OPERATIONS	Strategic Operations desarrolla simuladores quirúrgicos de alta fidelidad que replican con exactitud la anatomía humana y las condiciones del quirófano. Gracias a esta alianza, potenciamos nuestra capacidad para brindar capacitación avanzada en entornos controlados
+9.	KYOTO KAGAKU	Kyoto Kagaku fabrica modelos anatómicos, simuladores y “phantoms” para imagen médica. Su precisión e innovación fortalecen nuestra excelencia educativa y liderazgo en simulación.
+10.	SIMX	SimX desarrolla simulaciones médicas en realidad virtual inmersiva que entrenan juicio clínico realista. Su innovación potencia nuestra oferta formativa de alto impacto.
+11.	NASCO	Nasco Healthcare provee simuladores clínicos, maniquíes y herramientas de entrenamiento para emergencias y cuidados avanzados. Su oferta robustece nuestra formación con tecnología confiable.
+12.	TRUCORP	TruCorp fabrica maniquíes y simuladores médicos con retroalimentación en tiempo real para entrenamiento clínico. Su realismo y precisión elevan nuestra formación práctica y eficacia educativa.
+13.	ERLER ZIMMER	Erler-Zimmer diseña modelos anatómicos y simuladores médicos con altísima calidad histórica. Su innovación y rigor elevan nuestra formación práctica con precisión educativa.
+14.	VATA 	VATA Inc. desarrolla herramientas de simulación médica realistas (acceso vascular, heridas, modelos de ultrasonido). Su precisión eleva nuestras prácticas clínicas y fortalece nuestra formación.
+15.	ADAM ROUILLY		AdamRouilly diseña desde 1918 modelos anatómicos, simuladores clínicos y herramientas formativas. Su legado, innovación y versatilidad enriquecen nuestro portafolio educativo.
+16.	RUDIGER 				Rüdiger Anatomie produce modelos anatómicos y pósters educativos “Made in Germany” con manufactura artesanal. Su precisión y autenticidad enriquecen nuestra enseñanza de ciencias de la salud.
+17.	ECHO HEALTHCARE			Echo Healthcare desarrolla soluciones inmersivas y realistas para simulación médica (maniquíes, máscaras, entornos interactivos). Su innovación eleva nuestra oferta formativa con un enfoque de alto impacto.

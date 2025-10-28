@@ -200,3 +200,57 @@
 - **Contacto:** `atencionacliente@aramedylaboratorio.com` · **(800) 999‑0407**
 - **Social:** LinkedIn · Facebook · Instagram · Twitter/X
 - **Legal:** © Derechos Reservados Aramed y Laboratorio
+
+
+
+
+
+
+
+
+ 
+
+
+H1: 
+Revoluciona la enseñanza médica con Anatomage Table
+
+H2:
+La Anatomage Table es la plataforma de educación médica más avanzada basada en cuerpos humanos reales digitalizados. Su tecnología de visualización 3D permite a los estudiantes explorar la anatomía, la fisiología y las patologías en tamaño real, con una precisión sumamente realista
+
+Gracias a sus herramientas interactivas de disección virtual, simulaciones clínicas y visor DICOM, los futuros médicos desarrollan un aprendizaje práctico y profundo sin necesidad de laboratorios tradicionales.
+	 
+ 	
+  
+
+
+(poner a 3B Scientific company) 
+
+
+H1: 
+
+Transforma la educación médica con entornos inmersivos y realistas
+
+H2:
+
+El sistema Immersive Interactive de Echo Healthcare convierte cualquier aula o espacio en un entorno virtual envolvente, multisensorial e interactivo, diseñado para fomentar el aprendizaje activo en estudiantes de medicina. 
+
+Gracias a su tecnología sin gafas ni auriculares, los alumnos pueden participar en escenarios clínicos realistas que estimulan la toma de decisiones, la colaboración y la retención del conocimiento.
+
+ 
+
+H1:
+
+Lifecast: Realismo y precisión en simulación pediátrica
+
+H2:
+
+Diseñados para ofrecer una experiencia de capacitación médica inigualable, los maniquíes Lifecast para niños pequeños y niños brindan un nivel de realismo anatómico y funcional que transforma la enseñanza y la práctica clínica.
+
+Lifecast Trauma Torácico Infantil lleva la simulación a otro nivel al incorporar funciones únicas como la recreación de ahogamiento pulmonar húmedo y seco, hemorragia torácica, sangría y efectos de vómito, ideales para escenarios de rescate acuático y emergencias pediátricas complejas.	 
+ 	 
+
+H1:
+Simulación clínica avanzada con el realismo total de ADAM-X
+H2:
+ADAM-X Xtreme es un simulador de paciente adulto de alta fidelidad que reproduce fielmente la anatomía y fisiología humana. Destaca por su realismo extremo, con parpadeo, sudoración, secreciones, respiración espontánea y pulsos sincronizados. Su control táctil Command-X permite escenarios clínicos personalizados y entrenamiento integral en vía aérea, RCP y ventilación real.
+
