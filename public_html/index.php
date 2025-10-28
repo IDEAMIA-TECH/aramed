@@ -372,13 +372,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                                 </a>
                                             </div>
                                             
-                                            <!-- Badge de experiencia -->
-                                            <div class="hero-badge-wrapper">
-                                                <span class="hero-badge badge mb-0 px-3 py-2" id="hero-badge">
-                                                    <i class="bi bi-award-fill me-2"></i>
-                                                    +20 Años de Experiencia
-                                                </span>
-                                            </div>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -2469,16 +2463,12 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 
                 if (heroElements.subtitle) {
                     heroElements.subtitle.style.color = textColor;
-                    heroElements.subtitle.style.textShadow = isLight 
-                        ? '2px 2px 4px rgba(0,0,0,0.3)' 
-                        : '2px 2px 4px rgba(255,255,255,0.3)';
+                    heroElements.subtitle.style.textShadow = 'none';
                 }
                 
                 if (heroElements.description) {
                     heroElements.description.style.color = textColor;
-                    heroElements.description.style.textShadow = isLight 
-                        ? '1px 1px 2px rgba(0,0,0,0.3)' 
-                        : '1px 1px 2px rgba(255,255,255,0.3)';
+                    heroElements.description.style.textShadow = 'none';
                 }
                 
                 // Botón principal
