@@ -1043,12 +1043,10 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         </div>
                         <h3 class="service-title">Diseño y Desarrollo</h3>
                         <p class="service-description">
-                            Diseñamos y construimos centros de simulación médica completos, desde la conceptualización 
-                            hasta la implementación. Incluye planificación arquitectónica, distribución de espacios y 
-                            selección de equipamiento.
+                            Diseñamos y planificamos centros de simulación médica completos, desde la conceptualización hasta la implementación. Incluye planificación arquitectónica, distribución de espacios y selección de equipamiento.
                         </p>
                         <ul class="service-features">
-                            <li><i class="bi bi-check-circle-fill text-primary"></i> Diseño arquitectónico especializado</li>
+                            <li><i class="bi bi-check-circle-fill text-primary"></i> Diseño Arquitectónico especializado</li>
                             <li><i class="bi bi-check-circle-fill text-primary"></i> Distribución óptima de espacios</li>
                             <li><i class="bi bi-check-circle-fill text-primary"></i> Selección de equipamiento</li>
                             <li><i class="bi bi-check-circle-fill text-primary"></i> Instalación y puesta en marcha</li>
@@ -1073,12 +1071,11 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         </div>
                         <h3 class="service-title">Mantenimiento Preventivo</h3>
                         <p class="service-description">
-                            Programas de mantenimiento preventivo y correctivo que aseguran el funcionamiento óptimo 
-                            de sus simuladores. Extendemos la vida útil de su inversión con servicios técnicos especializados.
+                            Programas de mantenimiento preventivo y correctivo que aseguran el funcionamiento óptimo de sus simuladores. Extendemos la vida útil de su inversión con servicios técnicos especializados.
                         </p>
                         <ul class="service-features">
                             <li><i class="bi bi-check-circle-fill text-success"></i> Revisiones periódicas programadas</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Reparaciones y refacciones</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Reparaciones y refacciones (correctivo)</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i> Actualización de software</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i> Soporte técnico prioritario</li>
                         </ul>
@@ -1089,8 +1086,33 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                 </div>
                 
-                <!-- Service 3: Asesoría Curricular -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <!-- Service 3: Mantenimiento Correctivo -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="250">
+                    <div class="service-card h-100">
+                        <div class="service-icon-wrapper">
+                            <div class="service-icon bg-warning">
+                                <img src="<?php echo imageUrl('iconos/iconos-04.png'); ?>" alt="Mantenimiento Correctivo" class="service-icon-image">
+                            </div>
+                        </div>
+                        <h3 class="service-title">Mantenimiento Correctivo</h3>
+                        <p class="service-description">
+                            Servicio especializado que soluciona fallas o averías en equipos de simulación médica. Brindamos atención ágil y profesional, utilizando refacciones originales y procedimientos certificados para restablecer el funcionamiento óptimo del sistema.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="bi bi-check-circle-fill text-warning"></i> Reparación de módulos y componentes electrónicos</li>
+                            <li><i class="bi bi-check-circle-fill text-warning"></i> Sustitución de piezas y refacciones originales</li>
+                            <li><i class="bi bi-check-circle-fill text-warning"></i> Diagnóstico técnico especializado en sitio</li>
+                            <li><i class="bi bi-check-circle-fill text-warning"></i> Soporte técnico prioritario hasta la resolución completa</li>
+                        </ul>
+                        <a href="#newsletter" class="btn btn-outline-warning w-100 mt-auto service-cta">
+                            Solicitar Servicio
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Service 4: Asesoría Curricular -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="350">
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-info">
@@ -1099,13 +1121,12 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         </div>
                         <h3 class="service-title">Asesoría Curricular</h3>
                         <p class="service-description">
-                            Apoyo integral en el diseño e implementación de programas educativos de simulación médica. 
-                            Desarrollamos currículos basados en competencias adaptados a sus necesidades institucionales.
+                            Apoyo integral en el diseño e implementación de programas educativos de simulación médica. Desarrollamos currículos basados en competencias adaptados a sus necesidades institucionales.
                         </p>
                         <ul class="service-features">
                             <li><i class="bi bi-check-circle-fill text-info"></i> Diseño de currículos por competencias</li>
                             <li><i class="bi bi-check-circle-fill text-info"></i> Escenarios clínicos personalizados</li>
-                            <li><i class="bi bi-check-circle-fill text-info"></i> Metodología de evaluación</li>
+                            <li><i class="bi bi-check-circle-fill text-info"></i> Metodologías de evaluación</li>
                             <li><i class="bi bi-check-circle-fill text-info"></i> Certificación de programas</li>
                         </ul>
                         <a href="#newsletter" class="btn btn-outline-info w-100 mt-auto service-cta">
@@ -1115,8 +1136,33 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                 </div>
                 
-                <!-- Service 4: Capacitación -->
+                <!-- Service 5: Asesoría en Simulación -->
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="service-card h-100">
+                        <div class="service-icon-wrapper">
+                            <div class="service-icon bg-secondary">
+                                <img src="<?php echo imageUrl('iconos/iconos-05.png'); ?>" alt="Asesoría en Simulación" class="service-icon-image">
+                            </div>
+                        </div>
+                        <h3 class="service-title">Asesoría en Simulación</h3>
+                        <p class="service-description">
+                            Brindamos apoyo integral en la planeación, selección e implementación de programas educativos de simulación. Asesoramos en la elección de simuladores según cada especialidad médica y en la modernización o ampliación de centros existentes.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Selección de simuladores por especialidad médica</li>
+                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Diseño y optimización de centros de simulación</li>
+                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Integración de nuevas tecnologías y equipos</li>
+                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Actualización y modernización de laboratorios existentes</li>
+                        </ul>
+                        <a href="#newsletter" class="btn btn-outline-secondary w-100 mt-auto service-cta">
+                            Solicitar Asesoría
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Service 6: Capacitación -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="450">
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-warning">
@@ -1125,14 +1171,13 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         </div>
                         <h3 class="service-title">Capacitación y Entrenamiento</h3>
                         <p class="service-description">
-                            Programas de capacitación técnica y pedagógica para instructores y personal técnico. 
-                            Certificaciones en el uso de simuladores y metodologías de enseñanza basadas en simulación.
+                            Ofrecemos programas de capacitación dirigidos a docentes y personal técnico, orientados al uso eficiente de simuladores y a la aplicación de estrategias didácticas en entornos de simulación médica.
                         </p>
                         <ul class="service-features">
-                            <li><i class="bi bi-check-circle-fill text-warning"></i> Formación de instructores</li>
-                            <li><i class="bi bi-check-circle-fill text-warning"></i> Capacitación técnica especializada</li>
-                            <li><i class="bi bi-check-circle-fill text-warning"></i> Certificaciones oficiales</li>
-                            <li><i class="bi bi-check-circle-fill text-warning"></i> Talleres y seminarios</li>
+                            <li><i class="bi bi-check-circle-fill text-warning"></i> Capacitación técnica especializada en simuladores</li>
+                            <li><i class="bi bi-check-circle-fill text-warning"></i> Entrenamiento en operación y mantenimiento de equipos</li>
+                            <li><i class="bi bi-check-circle-fill text-warning"></i> Asesoría en prácticas de enseñanza con simulación</li>
+                            <li><i class="bi bi-check-circle-fill text-warning"></i> Exposiciones en eventos académicos y de innovación médica</li>
                         </ul>
                         <a href="#newsletter" class="btn btn-outline-warning w-100 mt-auto service-cta">
                             Ver Calendario
@@ -1141,8 +1186,33 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                 </div>
                 
-                <!-- Service 5: Financiamiento -->
+                <!-- Service 7: Atención a Cliente -->
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                    <div class="service-card h-100">
+                        <div class="service-icon-wrapper">
+                            <div class="service-icon bg-dark">
+                                <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Atención a Cliente" class="service-icon-image">
+                            </div>
+                        </div>
+                        <h3 class="service-title">Atención a Cliente</h3>
+                        <p class="service-description">
+                            Ofrecemos acompañamiento personalizado para orientar a cada institución en la selección de simuladores y soluciones educativas que respondan a sus necesidades académicas.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="bi bi-check-circle-fill text-dark"></i> Cotizaciones personalizadas</li>
+                            <li><i class="bi bi-check-circle-fill text-dark"></i> Asesoría técnica y comercial</li>
+                            <li><i class="bi bi-check-circle-fill text-dark"></i> Seguimiento de proyectos</li>
+                            <li><i class="bi bi-check-circle-fill text-dark"></i> Soporte postventa continuo</li>
+                        </ul>
+                        <a href="#newsletter" class="btn btn-outline-dark w-100 mt-auto service-cta">
+                            Contactar Asesor
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Service 8: Financiamiento -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="550">
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-danger">
