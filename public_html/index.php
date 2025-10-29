@@ -1111,33 +1111,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                 </div>
                 
-                <!-- Service 4: Asesoría Curricular -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="350">
-                    <div class="service-card h-100">
-                        <div class="service-icon-wrapper">
-                            <div class="service-icon bg-info">
-                                <img src="<?php echo imageUrl('iconos/iconos-03.png'); ?>" alt="Asesoría Curricular" class="service-icon-image">
-                            </div>
-                        </div>
-                        <h3 class="service-title">Asesoría Curricular</h3>
-                        <p class="service-description">
-                            Apoyo integral en el diseño e implementación de programas educativos de simulación médica. Desarrollamos currículos basados en competencias adaptados a sus necesidades institucionales.
-                        </p>
-                        <ul class="service-features">
-                            <li><i class="bi bi-check-circle-fill text-info"></i> Diseño de currículos por competencias</li>
-                            <li><i class="bi bi-check-circle-fill text-info"></i> Escenarios clínicos personalizados</li>
-                            <li><i class="bi bi-check-circle-fill text-info"></i> Metodologías de evaluación</li>
-                            <li><i class="bi bi-check-circle-fill text-info"></i> Certificación de programas</li>
-                        </ul>
-                        <a href="#newsletter" class="btn btn-outline-info w-100 mt-auto service-cta">
-                            Consultar Programa
-                            <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Service 5: Asesoría en Simulación -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <!-- Service 4: Asesoría en Simulación -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-secondary">
@@ -1161,8 +1136,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                 </div>
                 
-                <!-- Service 6: Capacitación -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="450">
+                <!-- Service 5: Capacitación -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-warning">
@@ -1186,8 +1161,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                 </div>
                 
-                <!-- Service 7: Atención a Cliente -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                <!-- Service 6: Atención a Cliente -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="450">
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-dark">
@@ -1211,8 +1186,8 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                 </div>
                 
-                <!-- Service 8: Financiamiento -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="550">
+                <!-- Service 7: Financiamiento -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-danger">
