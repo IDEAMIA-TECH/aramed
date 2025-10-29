@@ -878,6 +878,18 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             </div>
                         </div>
                         
+                        <!-- Logo 20: iSimulate -->
+                        <div class="swiper-slide">
+                            <div class="aliado-card">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/18-iSimulate-1.webp'); ?>" 
+                                         alt="iSimulate" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -1900,7 +1912,23 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             </p>
                         </div>
                     </div>
-                </div>
+                    <!-- Aliado 20: iSimulate -->
+                    <div class="swiper-slide">
+                        <div class="aliado-detalle-card h-100">
+                            <div class="aliado-logo-wrapper">
+                                <img src="<?php echo imageUrl('aliados/18-iSimulate-1.webp'); ?>" 
+                                     alt="iSimulate" 
+                                     class="aliado-logo"
+                                     loading="lazy">
+                            </div>
+                            <div class="aliado-info">
+                                <h4 class="aliado-name">iSimulate</h4>
+                                <p class="aliado-description">
+                                    iSimulate desarrolla soluciones de simulación médica móviles e inteligentes que elevan la formación clínica. Su tecnología complementa nuestra misión de brindar capacitación realista, eficiente y accesible en salud.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 
                 </div>
                 
