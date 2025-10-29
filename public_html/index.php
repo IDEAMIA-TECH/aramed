@@ -1103,7 +1103,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-warning">
-                                <img src="<?php echo imageUrl('iconos/iconos-04.png'); ?>" alt="Mantenimiento Correctivo" class="service-icon-image">
+                                <img src="<?php echo imageUrl('iconos/iconos-05.png'); ?>" alt="Mantenimiento Correctivo" class="service-icon-image">
                             </div>
                         </div>
                         <h3 class="service-title">Mantenimiento Correctivo</h3>
@@ -1128,7 +1128,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-secondary">
-                                <img src="<?php echo imageUrl('iconos/iconos-05.png'); ?>" alt="Asesoría en Simulación" class="service-icon-image">
+                                <img src="<?php echo imageUrl('iconos/iconos-04.png'); ?>" alt="Asesoría en Simulación" class="service-icon-image">
                             </div>
                         </div>
                         <h3 class="service-title">Asesoría en Simulación</h3>
@@ -1153,7 +1153,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-warning">
-                                <img src="<?php echo imageUrl('iconos/iconos-04.png'); ?>" alt="Capacitación y Entrenamiento" class="service-icon-image">
+                                <img src="<?php echo imageUrl('iconos/iconos-03.png'); ?>" alt="Capacitación y Entrenamiento" class="service-icon-image">
                             </div>
                         </div>
                         <h3 class="service-title">Capacitación y Entrenamiento</h3>
@@ -1178,7 +1178,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <div class="service-icon bg-dark">
-                                <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Atención a Cliente" class="service-icon-image">
+                                <img src="<?php echo imageUrl('iconos/icono6.png'); ?>" alt="Atención a Cliente" class="service-icon-image">
                             </div>
                         </div>
                         <h3 class="service-title">Atención a Cliente</h3>
@@ -1193,32 +1193,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         </ul>
                         <a href="#newsletter" class="btn btn-outline-dark w-100 mt-auto service-cta">
                             Contactar Asesor
-                            <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Service 7: Financiamiento -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
-                    <div class="service-card h-100">
-                        <div class="service-icon-wrapper">
-                            <div class="service-icon bg-danger">
-                                <img src="<?php echo imageUrl('iconos/iconos-05.png'); ?>" alt="Opciones de Financiamiento" class="service-icon-image">
-                            </div>
-                        </div>
-                        <h3 class="service-title">Opciones de Financiamiento</h3>
-                        <p class="service-description">
-                            Facilitamos el acceso a tecnología de simulación médica con opciones de financiamiento flexibles. 
-                            Planes de pago personalizados que se adaptan al presupuesto de su institución.
-                        </p>
-                        <ul class="service-features">
-                            <li><i class="bi bi-check-circle-fill text-danger"></i> Planes de pago flexibles</li>
-                            <li><i class="bi bi-check-circle-fill text-danger"></i> Arrendamiento de equipos</li>
-                            <li><i class="bi bi-check-circle-fill text-danger"></i> Financiamiento a largo plazo</li>
-                            <li><i class="bi bi-check-circle-fill text-danger"></i> Asesoría financiera especializada</li>
-                        </ul>
-                        <a href="#newsletter" class="btn btn-outline-danger w-100 mt-auto service-cta">
-                            Solicitar Información
                             <i class="bi bi-arrow-right ms-2"></i>
                         </a>
                     </div>
