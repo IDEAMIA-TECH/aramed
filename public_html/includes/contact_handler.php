@@ -28,21 +28,6 @@ try {
     require_once __DIR__ . '/connection.php';
     require_once __DIR__ . '/functions.php';
     require_once __DIR__ . '/email_functions.php';
-    
-    // Cargar debug logger si existe, sino usar fallback
-    if (file_exists(__DIR__ . '/debug_logger.php')) {
-        require_once __DIR__ . '/debug_logger.php';
-    } else {
-        // Fallback: función básica de logging
-        if (!function_exists('debugLog')) {
-            function debugLog($message, $data = null) {
-                error_log("[Contact] $message");
-                if ($data !== null) {
-                    error_log("[Contact Data] " . print_r($data, true));
-                }
-            }
-        }
-    }
 } catch (Exception $e) {
     http_response_code(500);
     header('Content-Type: application/json');
@@ -60,7 +45,6 @@ try {
         throw new Exception("No se pudo conectar a la base de datos");
     }
 } catch (Exception $e) {
-    debugLog("❌ Database connection failed: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,
@@ -219,11 +203,6 @@ try {
     // Enviar email al admin usando PHPMailer
     $emailResult = sendEmail($to, $subject, $message);
     
-    // Log si hay error
-    if (!$emailResult['success']) {
-        error_log("Contact Email Error (Admin): " . $emailResult['message']);
-    }
-    
     // Email de confirmación al cliente
     $clientSubject = "Hemos recibido tu mensaje - Aramed y Laboratorios";
     $clientMessage = "
@@ -280,11 +259,6 @@ try {
     // Enviar confirmación al cliente usando PHPMailer
     $clientEmailResult = sendEmail($data['email'], $clientSubject, $clientMessage, $data['nombre']);
     
-    // Log si hay error
-    if (!$clientEmailResult['success']) {
-        error_log("Contact Email Error (Client): " . $clientEmailResult['message']);
-    }
-    
     // Respuesta exitosa
     $response = [
         'success' => true,
@@ -292,9 +266,6 @@ try {
     ];
     
 } catch (Exception $e) {
-    // Log error
-    error_log("Contact Form Error: " . $e->getMessage());
-    
     // Respuesta de error
     $response = [
         'success' => false,
