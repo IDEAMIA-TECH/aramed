@@ -16,7 +16,7 @@
 */15 * * * * /usr/bin/php /ruta/completa/a/public_html/cron/expire_topbar_messages.php
 
 # O usando wget (si no tienes acceso a cron)
-*/15 * * * * wget -q -O /dev/null "https://aramedylaboratorio.com/NUEVO/aramed/public_html/cron/expire_topbar_messages.php?cron_key=aramed_topbar_cron_2025"
+*/15 * * * * wget -q -O /dev/null "https://aramedylaboratorio.com/cron/expire_topbar_messages.php?cron_key=aramed_topbar_cron_2025"
 ```
 
 ### 2. Configuración en cPanel
@@ -28,13 +28,13 @@
    - **Day:** `*`
    - **Month:** `*`
    - **Weekday:** `*`
-   - **Command:** `/usr/bin/php /home/usuario/public_html/NUEVO/aramed/public_html/cron/expire_topbar_messages.php`
+   - **Command:** `/usr/bin/php /home/usuario/public_html/cron/expire_topbar_messages.php`
 
 ### 3. Verificación Manual
 
 Puedes ejecutar el script manualmente visitando:
 ```
-https://aramedylaboratorio.com/NUEVO/aramed/public_html/cron/expire_topbar_messages.php?cron_key=aramed_topbar_cron_2025
+https://aramedylaboratorio.com/cron/expire_topbar_messages.php?cron_key=aramed_topbar_cron_2025
 ```
 
 ### 4. Logs

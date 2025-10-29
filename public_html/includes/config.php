@@ -52,7 +52,7 @@ define('DB_CHARSET', 'utf8mb4');
 // URLs
 define('SITE_URL', (ENVIRONMENT === 'development') 
     ? 'http://localhost/aramed' 
-    : 'https://aramedylaboratorio.com/NUEVO/aramed/public_html'
+    : 'https://aramedylaboratorio.com'
 );
 define('ASSETS_URL', SITE_URL . '/assets');
 define('IMAGES_URL', ASSETS_URL . '/images');
