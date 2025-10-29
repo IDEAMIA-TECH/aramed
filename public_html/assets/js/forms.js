@@ -197,14 +197,31 @@
                 loadingBtn.classList.remove('d-none');
                 
                 try {
+                    console.log('📤 Enviando formulario a:', newsletterForm.action);
+                    console.log('📋 Datos del formulario:', Object.fromEntries(formData));
+                    
                     const response = await fetch(newsletterForm.action, {
                         method: 'POST',
                         body: formData
                     });
                     
+                    console.log('📥 Respuesta recibida. Status:', response.status);
+                    console.log('📥 Content-Type:', response.headers.get('content-type'));
+                    
+                    // Verificar si la respuesta es JSON
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        const textResponse = await response.text();
+                        console.error('❌ Respuesta no es JSON:', textResponse);
+                        throw new Error('El servidor no respondió con JSON. Respuesta: ' + textResponse.substring(0, 200));
+                    }
+                    
                     const data = await response.json();
+                    console.log('✅ Datos recibidos:', data);
                     
                     if (data.success) {
+                        console.log('✅ Operación exitosa');
+                        
                         // Mostrar mensaje de éxito
                         successAlert.classList.remove('d-none');
                         successAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -223,6 +240,7 @@
                             successAlert.classList.add('d-none');
                         }, 5000);
                     } else {
+                        console.error('❌ Operación falló:', data.message);
                         // Mostrar error
                         errorMessage.textContent = data.message || 'Hubo un error al procesar tu solicitud.';
                         errorAlert.classList.remove('d-none');
@@ -234,8 +252,16 @@
                         }, 7000);
                     }
                 } catch (error) {
-                    console.error('Error:', error);
-                    errorMessage.textContent = 'Error de conexión. Por favor, intenta de nuevo.';
+                    console.error('❌ Error completo:', error);
+                    console.error('❌ Stack trace:', error.stack);
+                    
+                    let errorText = 'Error de conexión. Por favor, intenta de nuevo.';
+                    
+                    if (error.message) {
+                        errorText = error.message;
+                    }
+                    
+                    errorMessage.textContent = errorText;
                     errorAlert.classList.remove('d-none');
                     errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     
