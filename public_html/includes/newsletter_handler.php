@@ -330,9 +330,6 @@ try {
             debugLog("This is a CRITICAL ERROR - data was not saved!");
             throw new Exception("Error crítico: La suscripción no se guardó correctamente en la base de datos.");
         }
-    } else {
-        debugLog("⚠️ INSERT executed but could not verify with lastInsertId()");
-        debugLog("This might be normal if the table doesn't have AUTO_INCREMENT");
     }
     
     // Enviar notificación por email
