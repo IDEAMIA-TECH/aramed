@@ -883,7 +883,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
             </div>
             
             <!-- Testimonios -->
-            <div class="testimonios-section mt-5 pt-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="testimonios-section mt-5 pt-4" data-aos="fade-up" data-aos-delay="200" style="display: none;">
                 <div class="row justify-content-center mb-4">
                     <div class="col-lg-8 text-center">
                         <h3 class="h4 fw-bold mb-3">Lo que dicen nuestros clientes</h3>
