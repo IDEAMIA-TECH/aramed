@@ -237,30 +237,74 @@ try {
             ]);
             
             if ($updateResult) {
-                debugLog("✅ Subscription information updated successfully");
+                debugLog("✅ Subscription information updated successfully in database");
                 
-                // Respuesta exitosa de actualización
-                $response = [
-                    'success' => true,
-                    'message' => '¡Gracias! Hemos actualizado tu información de suscripción.'
-                ];
-                
-                // Enviar notificación por email
+                // Enviar notificación por email con información completa
                 $to = CONTACT_EMAIL;
-                $subject = "Actualización de suscripción - {$data['institucion']}";
+                $subject = "Actualización de suscripción al Newsletter - {$data['institucion']}";
+                
                 $message = "
                 <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #28a745; color: white; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f8f9fa; }
+                        .field { margin-bottom: 15px; }
+                        .label { font-weight: bold; color: #555; }
+                        .value { color: #000; }
+                        .footer { text-align: center; padding: 20px; font-size: 12px; color: #777; }
+                    </style>
+                </head>
                 <body>
-                    <h2>Actualización de Suscripción</h2>
-                    <p>El correo <strong>{$data['email_oficial']}</strong> ha actualizado su información de suscripción.</p>
-                    <p><strong>Institución:</strong> {$data['institucion']}</p>
-                    <p><strong>Nombre:</strong> {$data['nombre']}</p>
-                    <p>Fecha: " . date('Y-m-d H:i:s') . "</p>
+                    <div class='container'>
+                        <div class='header'>
+                            <h2>Actualización de Suscripción al Newsletter</h2>
+                        </div>
+                        <div class='content'>
+                            <h3>Información de la Institución</h3>
+                            <div class='field'><span class='label'>Institución:</span> <span class='value'>{$data['institucion']}</span></div>
+                            <div class='field'><span class='label'>Tipo:</span> <span class='value'>{$data['tipo_institucion']}</span></div>
+                            " . (!empty($data['campo_adicional']) ? "<div class='field'><span class='label'>Especificación:</span> <span class='value'>{$data['campo_adicional']}</span></div>" : "") . "
+                            <div class='field'><span class='label'>Estado:</span> <span class='value'>{$data['estado']}</span></div>
+                            <div class='field'><span class='label'>Ciudad:</span> <span class='value'>{$data['ciudad']}</span></div>
+                            
+                            <h3>Información del Contacto</h3>
+                            <div class='field'><span class='label'>Nombre:</span> <span class='value'>{$data['nombre']}</span></div>
+                            <div class='field'><span class='label'>Puesto:</span> <span class='value'>{$data['puesto']}</span></div>
+                            <div class='field'><span class='label'>Email Oficial:</span> <span class='value'>{$data['email_oficial']}</span></div>
+                            " . (!empty($data['email_alterno']) ? "<div class='field'><span class='label'>Email Alterno:</span> <span class='value'>{$data['email_alterno']}</span></div>" : "") . "
+                            <div class='field'><span class='label'>Teléfono Oficina:</span> <span class='value'>{$data['telefono_oficina']}" . (!empty($data['extension']) ? " Ext. {$data['extension']}" : "") . "</span></div>
+                            " . (!empty($data['telefono_celular']) ? "<div class='field'><span class='label'>Teléfono Celular:</span> <span class='value'>{$data['telefono_celular']}</span></div>" : "") . "
+                            
+                            <h3>Información de Interés</h3>
+                            " . (!empty($data['producto_interes']) ? "<div class='field'><span class='label'>Producto de Interés:</span> <span class='value'>{$data['producto_interes']}</span></div>" : "") . "
+                            " . (!empty($fecha_compra) ? "<div class='field'><span class='label'>Fecha Aprox. de Compra:</span> <span class='value'>" . date('F Y', strtotime($fecha_compra)) . "</span></div>" : "") . "
+                            " . (!empty($data['observaciones']) ? "<div class='field'><span class='label'>Observaciones:</span> <span class='value'>" . nl2br($data['observaciones']) . "</span></div>" : "") . "
+                        </div>
+                        <div class='footer'>
+                            <p><strong>Nota:</strong> Esta es una actualización de una suscripción existente</p>
+                            <p>Notificación automática de Aramed y Laboratorios</p>
+                            <p>IP: {$data['ip_address']} | " . date('Y-m-d H:i:s') . "</p>
+                        </div>
+                    </div>
                 </body>
                 </html>
                 ";
                 
-                sendEmail($to, $subject, $message);
+                $emailResult = sendEmail($to, $subject, $message);
+                if (!$emailResult['success']) {
+                    debugLog("⚠️ Email notification failed, but data was saved: " . $emailResult['message']);
+                } else {
+                    debugLog("✅ Update notification email sent successfully");
+                }
+                
+                // Respuesta exitosa de actualización
+                $response = [
+                    'success' => true,
+                    'message' => '¡Gracias! Hemos actualizado tu información de suscripción en nuestra base de datos.'
+                ];
                 
                 echo json_encode($response);
                 exit;
@@ -316,29 +360,73 @@ try {
             ]);
             
             if ($reactivateResult) {
-                debugLog("✅ Subscription reactivated successfully");
+                debugLog("✅ Subscription reactivated and updated successfully in database");
                 
-                $response = [
-                    'success' => true,
-                    'message' => '¡Bienvenido de nuevo! Hemos reactivado tu suscripción con la información actualizada.'
-                ];
-                
-                // Enviar notificación por email
+                // Enviar notificación por email con información completa
                 $to = CONTACT_EMAIL;
-                $subject = "Reactivación de suscripción - {$data['institucion']}";
+                $subject = "Reactivación de suscripción al Newsletter - {$data['institucion']}";
+                
                 $message = "
                 <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #ffc107; color: #000; padding: 20px; text-align: center; }
+                        .content { padding: 20px; background: #f8f9fa; }
+                        .field { margin-bottom: 15px; }
+                        .label { font-weight: bold; color: #555; }
+                        .value { color: #000; }
+                        .footer { text-align: center; padding: 20px; font-size: 12px; color: #777; }
+                    </style>
+                </head>
                 <body>
-                    <h2>Reactivación de Suscripción</h2>
-                    <p>El correo <strong>{$data['email_oficial']}</strong> ha reactivado su suscripción.</p>
-                    <p><strong>Institución:</strong> {$data['institucion']}</p>
-                    <p><strong>Nombre:</strong> {$data['nombre']}</p>
-                    <p>Fecha: " . date('Y-m-d H:i:s') . "</p>
+                    <div class='container'>
+                        <div class='header'>
+                            <h2>Reactivación de Suscripción al Newsletter</h2>
+                        </div>
+                        <div class='content'>
+                            <h3>Información de la Institución</h3>
+                            <div class='field'><span class='label'>Institución:</span> <span class='value'>{$data['institucion']}</span></div>
+                            <div class='field'><span class='label'>Tipo:</span> <span class='value'>{$data['tipo_institucion']}</span></div>
+                            " . (!empty($data['campo_adicional']) ? "<div class='field'><span class='label'>Especificación:</span> <span class='value'>{$data['campo_adicional']}</span></div>" : "") . "
+                            <div class='field'><span class='label'>Estado:</span> <span class='value'>{$data['estado']}</span></div>
+                            <div class='field'><span class='label'>Ciudad:</span> <span class='value'>{$data['ciudad']}</span></div>
+                            
+                            <h3>Información del Contacto</h3>
+                            <div class='field'><span class='label'>Nombre:</span> <span class='value'>{$data['nombre']}</span></div>
+                            <div class='field'><span class='label'>Puesto:</span> <span class='value'>{$data['puesto']}</span></div>
+                            <div class='field'><span class='label'>Email Oficial:</span> <span class='value'>{$data['email_oficial']}</span></div>
+                            " . (!empty($data['email_alterno']) ? "<div class='field'><span class='label'>Email Alterno:</span> <span class='value'>{$data['email_alterno']}</span></div>" : "") . "
+                            <div class='field'><span class='label'>Teléfono Oficina:</span> <span class='value'>{$data['telefono_oficina']}" . (!empty($data['extension']) ? " Ext. {$data['extension']}" : "") . "</span></div>
+                            " . (!empty($data['telefono_celular']) ? "<div class='field'><span class='label'>Teléfono Celular:</span> <span class='value'>{$data['telefono_celular']}</span></div>" : "") . "
+                            
+                            <h3>Información de Interés</h3>
+                            " . (!empty($data['producto_interes']) ? "<div class='field'><span class='label'>Producto de Interés:</span> <span class='value'>{$data['producto_interes']}</span></div>" : "") . "
+                            " . (!empty($fecha_compra) ? "<div class='field'><span class='label'>Fecha Aprox. de Compra:</span> <span class='value'>" . date('F Y', strtotime($fecha_compra)) . "</span></div>" : "") . "
+                            " . (!empty($data['observaciones']) ? "<div class='field'><span class='label'>Observaciones:</span> <span class='value'>" . nl2br($data['observaciones']) . "</span></div>" : "") . "
+                        </div>
+                        <div class='footer'>
+                            <p><strong>Nota:</strong> Esta suscripción fue reactivada y actualizada</p>
+                            <p>Notificación automática de Aramed y Laboratorios</p>
+                            <p>IP: {$data['ip_address']} | " . date('Y-m-d H:i:s') . "</p>
+                        </div>
+                    </div>
                 </body>
                 </html>
                 ";
                 
-                sendEmail($to, $subject, $message);
+                $emailResult = sendEmail($to, $subject, $message);
+                if (!$emailResult['success']) {
+                    debugLog("⚠️ Email notification failed, but data was saved: " . $emailResult['message']);
+                } else {
+                    debugLog("✅ Reactivation notification email sent successfully");
+                }
+                
+                $response = [
+                    'success' => true,
+                    'message' => '¡Bienvenido de nuevo! Hemos reactivado tu suscripción y actualizado tu información en nuestra base de datos.'
+                ];
                 
                 echo json_encode($response);
                 exit;
