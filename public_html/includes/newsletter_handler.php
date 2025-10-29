@@ -174,273 +174,24 @@ try {
         throw new Exception("El correo alterno no es válido.");
     }
     
-    // Preparar fecha aproximada de compra (necesaria para actualizaciones)
+    // Preparar fecha aproximada de compra
     $fecha_compra = null;
     if (!empty($data['compra_mes']) && !empty($data['compra_anio'])) {
         $fecha_compra = $data['compra_anio'] . '-' . $data['compra_mes'] . '-01';
         debugLog("Purchase date: " . $fecha_compra);
     }
     
-    // Verificar si ya está suscrito
+    // COTIZADOR: Permitir múltiples solicitudes (no verificar duplicados)
     debugLog("--- Database Operations ---");
-    debugLog("Checking for existing subscription...");
+    debugLog("COTIZADOR: Proceeding with INSERT (allowing multiple submissions)");
     
-    $stmt = $pdo->prepare("SELECT id, status, nombre, institucion FROM newsletter_subscriptions WHERE email_oficial = ?");
-    $stmt->execute([$data['email_oficial']]);
-    $existing = $stmt->fetch();
-    
-    if ($existing) {
-        // Si existe y está activo, intentar actualizar la información
-        if ($existing['status'] === 'active') {
-            debugLog("⚠️ Email already subscribed, updating information...");
-            
-            // Actualizar información existente
-            $updateSql = "UPDATE newsletter_subscriptions SET 
-                institucion = :institucion,
-                tipo_institucion = :tipo_institucion,
-                campo_adicional = :campo_adicional,
-                estado = :estado,
-                ciudad = :ciudad,
-                nombre = :nombre,
-                puesto = :puesto,
-                email_alterno = :email_alterno,
-                telefono_oficina = :telefono_oficina,
-                extension = :extension,
-                telefono_celular = :telefono_celular,
-                producto_interes = :producto_interes,
-                fecha_compra_aprox = :fecha_compra,
-                observaciones = :observaciones,
-                ip_address = :ip_address,
-                user_agent = :user_agent,
-                updated_at = NOW()
-                WHERE email_oficial = :email_oficial AND status = 'active'";
-            
-            $updateStmt = $pdo->prepare($updateSql);
-            $updateResult = $updateStmt->execute([
-                ':institucion' => $data['institucion'],
-                ':tipo_institucion' => $data['tipo_institucion'],
-                ':campo_adicional' => $data['campo_adicional'],
-                ':estado' => $data['estado'],
-                ':ciudad' => $data['ciudad'],
-                ':nombre' => $data['nombre'],
-                ':puesto' => $data['puesto'],
-                ':email_alterno' => $data['email_alterno'],
-                ':telefono_oficina' => $data['telefono_oficina'],
-                ':extension' => $data['extension'],
-                ':telefono_celular' => $data['telefono_celular'],
-                ':producto_interes' => $data['producto_interes'],
-                ':fecha_compra' => $fecha_compra,
-                ':observaciones' => $data['observaciones'],
-                ':ip_address' => $data['ip_address'],
-                ':user_agent' => $data['user_agent'],
-                ':email_oficial' => $data['email_oficial']
-            ]);
-            
-            if ($updateResult) {
-                debugLog("✅ Subscription information updated successfully in database");
-                
-                // Enviar notificación por email con información completa
-                $to = CONTACT_EMAIL;
-                $subject = "Actualización de suscripción al Newsletter - {$data['institucion']}";
-                
-                $message = "
-                <html>
-                <head>
-                    <style>
-                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                        .header { background: #28a745; color: white; padding: 20px; text-align: center; }
-                        .content { padding: 20px; background: #f8f9fa; }
-                        .field { margin-bottom: 15px; }
-                        .label { font-weight: bold; color: #555; }
-                        .value { color: #000; }
-                        .footer { text-align: center; padding: 20px; font-size: 12px; color: #777; }
-                    </style>
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='header'>
-                            <h2>Actualización de Suscripción al Newsletter</h2>
-                        </div>
-                        <div class='content'>
-                            <h3>Información de la Institución</h3>
-                            <div class='field'><span class='label'>Institución:</span> <span class='value'>{$data['institucion']}</span></div>
-                            <div class='field'><span class='label'>Tipo:</span> <span class='value'>{$data['tipo_institucion']}</span></div>
-                            " . (!empty($data['campo_adicional']) ? "<div class='field'><span class='label'>Especificación:</span> <span class='value'>{$data['campo_adicional']}</span></div>" : "") . "
-                            <div class='field'><span class='label'>Estado:</span> <span class='value'>{$data['estado']}</span></div>
-                            <div class='field'><span class='label'>Ciudad:</span> <span class='value'>{$data['ciudad']}</span></div>
-                            
-                            <h3>Información del Contacto</h3>
-                            <div class='field'><span class='label'>Nombre:</span> <span class='value'>{$data['nombre']}</span></div>
-                            <div class='field'><span class='label'>Puesto:</span> <span class='value'>{$data['puesto']}</span></div>
-                            <div class='field'><span class='label'>Email Oficial:</span> <span class='value'>{$data['email_oficial']}</span></div>
-                            " . (!empty($data['email_alterno']) ? "<div class='field'><span class='label'>Email Alterno:</span> <span class='value'>{$data['email_alterno']}</span></div>" : "") . "
-                            <div class='field'><span class='label'>Teléfono Oficina:</span> <span class='value'>{$data['telefono_oficina']}" . (!empty($data['extension']) ? " Ext. {$data['extension']}" : "") . "</span></div>
-                            " . (!empty($data['telefono_celular']) ? "<div class='field'><span class='label'>Teléfono Celular:</span> <span class='value'>{$data['telefono_celular']}</span></div>" : "") . "
-                            
-                            <h3>Información de Interés</h3>
-                            " . (!empty($data['producto_interes']) ? "<div class='field'><span class='label'>Producto de Interés:</span> <span class='value'>{$data['producto_interes']}</span></div>" : "") . "
-                            " . (!empty($fecha_compra) ? "<div class='field'><span class='label'>Fecha Aprox. de Compra:</span> <span class='value'>" . date('F Y', strtotime($fecha_compra)) . "</span></div>" : "") . "
-                            " . (!empty($data['observaciones']) ? "<div class='field'><span class='label'>Observaciones:</span> <span class='value'>" . nl2br($data['observaciones']) . "</span></div>" : "") . "
-                        </div>
-                        <div class='footer'>
-                            <p><strong>Nota:</strong> Esta es una actualización de una suscripción existente</p>
-                            <p>Notificación automática de Aramed y Laboratorios</p>
-                            <p>IP: {$data['ip_address']} | " . date('Y-m-d H:i:s') . "</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-                ";
-                
-                $emailResult = sendEmail($to, $subject, $message);
-                if (!$emailResult['success']) {
-                    debugLog("⚠️ Email notification failed, but data was saved: " . $emailResult['message']);
-                } else {
-                    debugLog("✅ Update notification email sent successfully");
-                }
-                
-                // Respuesta exitosa de actualización
-                $response = [
-                    'success' => true,
-                    'message' => '¡Gracias! Hemos actualizado tu información de suscripción en nuestra base de datos.'
-                ];
-                
-                echo json_encode($response);
-                exit;
-            } else {
-                debugLog("❌ Failed to update subscription");
-                throw new Exception("No se pudo actualizar la información. Por favor, intenta nuevamente.");
-            }
-        } else {
-            // Si existe pero está inactivo o cancelado, reactivar y actualizar
-            debugLog("⚠️ Email exists but inactive, reactivating...");
-            
-            $reactivateSql = "UPDATE newsletter_subscriptions SET 
-                institucion = :institucion,
-                tipo_institucion = :tipo_institucion,
-                campo_adicional = :campo_adicional,
-                estado = :estado,
-                ciudad = :ciudad,
-                nombre = :nombre,
-                puesto = :puesto,
-                email_alterno = :email_alterno,
-                telefono_oficina = :telefono_oficina,
-                extension = :extension,
-                telefono_celular = :telefono_celular,
-                producto_interes = :producto_interes,
-                fecha_compra_aprox = :fecha_compra,
-                observaciones = :observaciones,
-                ip_address = :ip_address,
-                user_agent = :user_agent,
-                status = 'active',
-                unsubscribed_at = NULL,
-                updated_at = NOW()
-                WHERE email_oficial = :email_oficial";
-            
-            $reactivateStmt = $pdo->prepare($reactivateSql);
-            $reactivateResult = $reactivateStmt->execute([
-                ':institucion' => $data['institucion'],
-                ':tipo_institucion' => $data['tipo_institucion'],
-                ':campo_adicional' => $data['campo_adicional'],
-                ':estado' => $data['estado'],
-                ':ciudad' => $data['ciudad'],
-                ':nombre' => $data['nombre'],
-                ':puesto' => $data['puesto'],
-                ':email_alterno' => $data['email_alterno'],
-                ':telefono_oficina' => $data['telefono_oficina'],
-                ':extension' => $data['extension'],
-                ':telefono_celular' => $data['telefono_celular'],
-                ':producto_interes' => $data['producto_interes'],
-                ':fecha_compra' => $fecha_compra,
-                ':observaciones' => $data['observaciones'],
-                ':ip_address' => $data['ip_address'],
-                ':user_agent' => $data['user_agent'],
-                ':email_oficial' => $data['email_oficial']
-            ]);
-            
-            if ($reactivateResult) {
-                debugLog("✅ Subscription reactivated and updated successfully in database");
-                
-                // Enviar notificación por email con información completa
-                $to = CONTACT_EMAIL;
-                $subject = "Reactivación de suscripción al Newsletter - {$data['institucion']}";
-                
-                $message = "
-                <html>
-                <head>
-                    <style>
-                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                        .header { background: #ffc107; color: #000; padding: 20px; text-align: center; }
-                        .content { padding: 20px; background: #f8f9fa; }
-                        .field { margin-bottom: 15px; }
-                        .label { font-weight: bold; color: #555; }
-                        .value { color: #000; }
-                        .footer { text-align: center; padding: 20px; font-size: 12px; color: #777; }
-                    </style>
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='header'>
-                            <h2>Reactivación de Suscripción al Newsletter</h2>
-                        </div>
-                        <div class='content'>
-                            <h3>Información de la Institución</h3>
-                            <div class='field'><span class='label'>Institución:</span> <span class='value'>{$data['institucion']}</span></div>
-                            <div class='field'><span class='label'>Tipo:</span> <span class='value'>{$data['tipo_institucion']}</span></div>
-                            " . (!empty($data['campo_adicional']) ? "<div class='field'><span class='label'>Especificación:</span> <span class='value'>{$data['campo_adicional']}</span></div>" : "") . "
-                            <div class='field'><span class='label'>Estado:</span> <span class='value'>{$data['estado']}</span></div>
-                            <div class='field'><span class='label'>Ciudad:</span> <span class='value'>{$data['ciudad']}</span></div>
-                            
-                            <h3>Información del Contacto</h3>
-                            <div class='field'><span class='label'>Nombre:</span> <span class='value'>{$data['nombre']}</span></div>
-                            <div class='field'><span class='label'>Puesto:</span> <span class='value'>{$data['puesto']}</span></div>
-                            <div class='field'><span class='label'>Email Oficial:</span> <span class='value'>{$data['email_oficial']}</span></div>
-                            " . (!empty($data['email_alterno']) ? "<div class='field'><span class='label'>Email Alterno:</span> <span class='value'>{$data['email_alterno']}</span></div>" : "") . "
-                            <div class='field'><span class='label'>Teléfono Oficina:</span> <span class='value'>{$data['telefono_oficina']}" . (!empty($data['extension']) ? " Ext. {$data['extension']}" : "") . "</span></div>
-                            " . (!empty($data['telefono_celular']) ? "<div class='field'><span class='label'>Teléfono Celular:</span> <span class='value'>{$data['telefono_celular']}</span></div>" : "") . "
-                            
-                            <h3>Información de Interés</h3>
-                            " . (!empty($data['producto_interes']) ? "<div class='field'><span class='label'>Producto de Interés:</span> <span class='value'>{$data['producto_interes']}</span></div>" : "") . "
-                            " . (!empty($fecha_compra) ? "<div class='field'><span class='label'>Fecha Aprox. de Compra:</span> <span class='value'>" . date('F Y', strtotime($fecha_compra)) . "</span></div>" : "") . "
-                            " . (!empty($data['observaciones']) ? "<div class='field'><span class='label'>Observaciones:</span> <span class='value'>" . nl2br($data['observaciones']) . "</span></div>" : "") . "
-                        </div>
-                        <div class='footer'>
-                            <p><strong>Nota:</strong> Esta suscripción fue reactivada y actualizada</p>
-                            <p>Notificación automática de Aramed y Laboratorios</p>
-                            <p>IP: {$data['ip_address']} | " . date('Y-m-d H:i:s') . "</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-                ";
-                
-                $emailResult = sendEmail($to, $subject, $message);
-                if (!$emailResult['success']) {
-                    debugLog("⚠️ Email notification failed, but data was saved: " . $emailResult['message']);
-                } else {
-                    debugLog("✅ Reactivation notification email sent successfully");
-                }
-                
-                $response = [
-                    'success' => true,
-                    'message' => '¡Bienvenido de nuevo! Hemos reactivado tu suscripción y actualizado tu información en nuestra base de datos.'
-                ];
-                
-                echo json_encode($response);
-                exit;
-            } else {
-                debugLog("❌ Failed to reactivate subscription");
-                throw new Exception("No se pudo reactivar la suscripción. Por favor, intenta nuevamente.");
-            }
-        }
-    }
-    
-    debugLog("✅ Email not subscribed yet, proceeding with new subscription");
+    debugLog("✅ Proceeding with NEW INSERT (cotizador allows multiple submissions)");
+    debugLog("========================================");
+    debugLog("STARTING INSERT OPERATION");
+    debugLog("========================================");
     
     // Insertar en base de datos
-    debugLog("Preparing INSERT query...");
+    debugLog("Step 1: Preparing INSERT query...");
     
     $sql = "INSERT INTO newsletter_subscriptions (
         institucion, tipo_institucion, campo_adicional, estado, ciudad,
@@ -457,8 +208,19 @@ try {
     )";
     
     $stmt = $pdo->prepare($sql);
+    debugLog("Step 2: Query prepared successfully");
     
-    debugLog("Executing INSERT...");
+    // Log de datos antes del INSERT
+    debugLog("Step 3: Data to INSERT:");
+    debugLog("  - Institución: " . $data['institucion']);
+    debugLog("  - Email: " . $data['email_oficial']);
+    debugLog("  - Nombre: " . $data['nombre']);
+    debugLog("  - Estado: " . $data['estado']);
+    debugLog("  - Ciudad: " . $data['ciudad']);
+    debugLog("  - Teléfono: " . $data['telefono_oficina']);
+    debugLog("  - Fecha compra: " . ($fecha_compra ?? 'N/A'));
+    
+    debugLog("Step 4: Executing INSERT statement...");
     
     $result = $stmt->execute([
         ':institucion' => $data['institucion'],
@@ -481,17 +243,59 @@ try {
     ]);
     
     if (!$result) {
-        debugLog("❌ INSERT failed");
-        debugLog("PDO Error: " . print_r($stmt->errorInfo(), true));
-        throw new Exception("Error al guardar la suscripción.");
+        $errorInfo = $stmt->errorInfo();
+        debugLog("❌ INSERT FAILED");
+        debugLog("PDO Error Code: " . $errorInfo[0]);
+        debugLog("PDO SQL State: " . ($errorInfo[1] ?? 'N/A'));
+        debugLog("PDO Error Message: " . ($errorInfo[2] ?? 'Unknown error'));
+        debugLog("Full Error Info: " . print_r($errorInfo, true));
+        
+        // Detectar error de clave duplicada (UNIQUE constraint violation)
+        if ($errorInfo[0] == '23000' || (isset($errorInfo[1]) && $errorInfo[1] == 1062)) {
+            debugLog("❌ CRITICAL: UNIQUE KEY constraint violation detected!");
+            debugLog("La tabla tiene UNIQUE KEY en email_oficial que impide múltiples solicitudes");
+            debugLog("SOLUCIÓN: Ejecutar el script: database/remove_unique_email_cotizador.sql");
+            throw new Exception("Error: La base de datos tiene una restricción que impide múltiples solicitudes del mismo correo. Por favor contacta al administrador.");
+        }
+        
+        throw new Exception("Error al guardar la solicitud en la base de datos: " . ($errorInfo[2] ?? 'Error desconocido (Código: ' . ($errorInfo[0] ?? 'N/A') . ')'));
     }
     
     $insertId = $pdo->lastInsertId();
-    debugLog("✅ INSERT successful. ID: " . $insertId);
+    if (!$insertId) {
+        debugLog("⚠️ WARNING: INSERT executed but lastInsertId() returned NULL");
+        debugLog("This might mean the INSERT didn't actually create a record");
+        // Continuar de todos modos, pero registrar el warning
+    } else {
+        debugLog("✅ INSERT successful! New record ID: " . $insertId);
+        
+        // Verificar que realmente se insertó haciendo una consulta
+        $verifyStmt = $pdo->prepare("SELECT id, email_oficial, nombre, institucion FROM newsletter_subscriptions WHERE id = ?");
+        $verifyStmt->execute([$insertId]);
+        $verifyRecord = $verifyStmt->fetch();
+        
+        if ($verifyRecord) {
+            debugLog("✅ VERIFICATION SUCCESSFUL: Record confirmed in database:");
+            debugLog("  - ID: " . $verifyRecord['id']);
+            debugLog("  - Email: " . $verifyRecord['email_oficial']);
+            debugLog("  - Nombre: " . $verifyRecord['nombre']);
+            debugLog("  - Institución: " . $verifyRecord['institucion']);
+            debugLog("========================================");
+            debugLog("INSERT OPERATION COMPLETED SUCCESSFULLY");
+            debugLog("========================================");
+        } else {
+            debugLog("❌ VERIFICATION FAILED: Record not found after INSERT!");
+            debugLog("This is a CRITICAL ERROR - data was not saved!");
+            throw new Exception("Error crítico: La suscripción no se guardó correctamente en la base de datos.");
+        }
+    } else {
+        debugLog("⚠️ INSERT executed but could not verify with lastInsertId()");
+        debugLog("This might be normal if the table doesn't have AUTO_INCREMENT");
+    }
     
     // Enviar notificación por email
     $to = CONTACT_EMAIL; // Definido en config.php
-    $subject = "Nueva suscripción al Newsletter - {$data['institucion']}";
+    $subject = "Nueva solicitud de cotización - {$data['institucion']}";
     
     $message = "
     <html>
@@ -510,7 +314,7 @@ try {
     <body>
         <div class='container'>
             <div class='header'>
-                <h2>Nueva Suscripción al Newsletter</h2>
+                <h2>Nueva Solicitud de Cotización</h2>
             </div>
             <div class='content'>
                 <h3>Información de la Institución</h3>
@@ -561,7 +365,7 @@ try {
     
     $response = [
         'success' => true,
-        'message' => '¡Gracias por suscribirte! Pronto recibirás información relevante en tu correo.'
+        'message' => '¡Gracias por tu solicitud! Hemos recibido tu información correctamente. Pronto nos pondremos en contacto contigo.'
     ];
     
 } catch (Exception $e) {
