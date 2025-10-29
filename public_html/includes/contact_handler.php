@@ -13,11 +13,42 @@
 
 // Configuración
 define('ARAMED_SITE', true);
-require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/connection.php';
-require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/email_functions.php';
-require_once __DIR__ . '/debug_logger.php';
+
+// Cargar archivos con manejo de errores
+try {
+    require_once __DIR__ . '/config.php';
+} catch (Exception $e) {
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'message' => 'Error de configuración: ' . $e->getMessage()]);
+    exit;
+}
+
+try {
+    require_once __DIR__ . '/connection.php';
+    require_once __DIR__ . '/functions.php';
+    require_once __DIR__ . '/email_functions.php';
+    
+    // Cargar debug logger si existe, sino usar fallback
+    if (file_exists(__DIR__ . '/debug_logger.php')) {
+        require_once __DIR__ . '/debug_logger.php';
+    } else {
+        // Fallback: función básica de logging
+        if (!function_exists('debugLog')) {
+            function debugLog($message, $data = null) {
+                error_log("[Contact] $message");
+                if ($data !== null) {
+                    error_log("[Contact Data] " . print_r($data, true));
+                }
+            }
+        }
+    }
+} catch (Exception $e) {
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'message' => 'Error al cargar dependencias: ' . $e->getMessage()]);
+    exit;
+}
 
 // Headers para JSON
 header('Content-Type: application/json');
