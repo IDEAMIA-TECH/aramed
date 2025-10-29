@@ -16,7 +16,7 @@ define('ARAMED_SITE', true);
 
 // Cargar archivos con manejo de errores
 try {
-    require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/config.php';
 } catch (Exception $e) {
     http_response_code(500);
     header('Content-Type: application/json');
@@ -25,13 +25,13 @@ try {
 }
 
 try {
-    require_once __DIR__ . '/connection.php';
-    require_once __DIR__ . '/functions.php';
-    require_once __DIR__ . '/email_functions.php';
+require_once __DIR__ . '/connection.php';
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/email_functions.php';
     
     // Cargar debug logger si existe, sino usar fallback
     if (file_exists(__DIR__ . '/debug_logger.php')) {
-        require_once __DIR__ . '/debug_logger.php';
+require_once __DIR__ . '/debug_logger.php';
     } else {
         // Fallback: función básica de logging
         if (!function_exists('debugLog')) {
@@ -174,25 +174,182 @@ try {
         throw new Exception("El correo alterno no es válido.");
     }
     
-    // Verificar si ya está suscrito
-    debugLog("--- Database Operations ---");
-    debugLog("Checking for existing subscription...");
-    
-    $stmt = $pdo->prepare("SELECT id FROM newsletter_subscriptions WHERE email_oficial = ? AND status = 'active' ");
-    $stmt->execute([$data['email_oficial']]);
-    if ($stmt->fetch()) {
-        debugLog("❌ Email already subscribed: " . $data['email_oficial']);
-        throw new Exception("Este correo ya está suscrito a nuestro newsletter.");
-    }
-    
-    debugLog("✅ Email not subscribed yet");
-    
-    // Preparar fecha aproximada de compra
+    // Preparar fecha aproximada de compra (necesaria para actualizaciones)
     $fecha_compra = null;
     if (!empty($data['compra_mes']) && !empty($data['compra_anio'])) {
         $fecha_compra = $data['compra_anio'] . '-' . $data['compra_mes'] . '-01';
         debugLog("Purchase date: " . $fecha_compra);
     }
+    
+    // Verificar si ya está suscrito
+    debugLog("--- Database Operations ---");
+    debugLog("Checking for existing subscription...");
+    
+    $stmt = $pdo->prepare("SELECT id, status, nombre, institucion FROM newsletter_subscriptions WHERE email_oficial = ?");
+    $stmt->execute([$data['email_oficial']]);
+    $existing = $stmt->fetch();
+    
+    if ($existing) {
+        // Si existe y está activo, intentar actualizar la información
+        if ($existing['status'] === 'active') {
+            debugLog("⚠️ Email already subscribed, updating information...");
+            
+            // Actualizar información existente
+            $updateSql = "UPDATE newsletter_subscriptions SET 
+                institucion = :institucion,
+                tipo_institucion = :tipo_institucion,
+                campo_adicional = :campo_adicional,
+                estado = :estado,
+                ciudad = :ciudad,
+                nombre = :nombre,
+                puesto = :puesto,
+                email_alterno = :email_alterno,
+                telefono_oficina = :telefono_oficina,
+                extension = :extension,
+                telefono_celular = :telefono_celular,
+                producto_interes = :producto_interes,
+                fecha_compra_aprox = :fecha_compra,
+                observaciones = :observaciones,
+                ip_address = :ip_address,
+                user_agent = :user_agent,
+                updated_at = NOW()
+                WHERE email_oficial = :email_oficial AND status = 'active'";
+            
+            $updateStmt = $pdo->prepare($updateSql);
+            $updateResult = $updateStmt->execute([
+                ':institucion' => $data['institucion'],
+                ':tipo_institucion' => $data['tipo_institucion'],
+                ':campo_adicional' => $data['campo_adicional'],
+                ':estado' => $data['estado'],
+                ':ciudad' => $data['ciudad'],
+                ':nombre' => $data['nombre'],
+                ':puesto' => $data['puesto'],
+                ':email_alterno' => $data['email_alterno'],
+                ':telefono_oficina' => $data['telefono_oficina'],
+                ':extension' => $data['extension'],
+                ':telefono_celular' => $data['telefono_celular'],
+                ':producto_interes' => $data['producto_interes'],
+                ':fecha_compra' => $fecha_compra,
+                ':observaciones' => $data['observaciones'],
+                ':ip_address' => $data['ip_address'],
+                ':user_agent' => $data['user_agent'],
+                ':email_oficial' => $data['email_oficial']
+            ]);
+            
+            if ($updateResult) {
+                debugLog("✅ Subscription information updated successfully");
+                
+                // Respuesta exitosa de actualización
+                $response = [
+                    'success' => true,
+                    'message' => '¡Gracias! Hemos actualizado tu información de suscripción.'
+                ];
+                
+                // Enviar notificación por email
+                $to = CONTACT_EMAIL;
+                $subject = "Actualización de suscripción - {$data['institucion']}";
+                $message = "
+                <html>
+                <body>
+                    <h2>Actualización de Suscripción</h2>
+                    <p>El correo <strong>{$data['email_oficial']}</strong> ha actualizado su información de suscripción.</p>
+                    <p><strong>Institución:</strong> {$data['institucion']}</p>
+                    <p><strong>Nombre:</strong> {$data['nombre']}</p>
+                    <p>Fecha: " . date('Y-m-d H:i:s') . "</p>
+                </body>
+                </html>
+                ";
+                
+                sendEmail($to, $subject, $message);
+                
+                echo json_encode($response);
+                exit;
+            } else {
+                debugLog("❌ Failed to update subscription");
+                throw new Exception("No se pudo actualizar la información. Por favor, intenta nuevamente.");
+            }
+        } else {
+            // Si existe pero está inactivo o cancelado, reactivar y actualizar
+            debugLog("⚠️ Email exists but inactive, reactivating...");
+            
+            $reactivateSql = "UPDATE newsletter_subscriptions SET 
+                institucion = :institucion,
+                tipo_institucion = :tipo_institucion,
+                campo_adicional = :campo_adicional,
+                estado = :estado,
+                ciudad = :ciudad,
+                nombre = :nombre,
+                puesto = :puesto,
+                email_alterno = :email_alterno,
+                telefono_oficina = :telefono_oficina,
+                extension = :extension,
+                telefono_celular = :telefono_celular,
+                producto_interes = :producto_interes,
+                fecha_compra_aprox = :fecha_compra,
+                observaciones = :observaciones,
+                ip_address = :ip_address,
+                user_agent = :user_agent,
+                status = 'active',
+                unsubscribed_at = NULL,
+                updated_at = NOW()
+                WHERE email_oficial = :email_oficial";
+            
+            $reactivateStmt = $pdo->prepare($reactivateSql);
+            $reactivateResult = $reactivateStmt->execute([
+                ':institucion' => $data['institucion'],
+                ':tipo_institucion' => $data['tipo_institucion'],
+                ':campo_adicional' => $data['campo_adicional'],
+                ':estado' => $data['estado'],
+                ':ciudad' => $data['ciudad'],
+                ':nombre' => $data['nombre'],
+                ':puesto' => $data['puesto'],
+                ':email_alterno' => $data['email_alterno'],
+                ':telefono_oficina' => $data['telefono_oficina'],
+                ':extension' => $data['extension'],
+                ':telefono_celular' => $data['telefono_celular'],
+                ':producto_interes' => $data['producto_interes'],
+                ':fecha_compra' => $fecha_compra,
+                ':observaciones' => $data['observaciones'],
+                ':ip_address' => $data['ip_address'],
+                ':user_agent' => $data['user_agent'],
+                ':email_oficial' => $data['email_oficial']
+            ]);
+            
+            if ($reactivateResult) {
+                debugLog("✅ Subscription reactivated successfully");
+                
+                $response = [
+                    'success' => true,
+                    'message' => '¡Bienvenido de nuevo! Hemos reactivado tu suscripción con la información actualizada.'
+                ];
+                
+                // Enviar notificación por email
+                $to = CONTACT_EMAIL;
+                $subject = "Reactivación de suscripción - {$data['institucion']}";
+                $message = "
+                <html>
+                <body>
+                    <h2>Reactivación de Suscripción</h2>
+                    <p>El correo <strong>{$data['email_oficial']}</strong> ha reactivado su suscripción.</p>
+                    <p><strong>Institución:</strong> {$data['institucion']}</p>
+                    <p><strong>Nombre:</strong> {$data['nombre']}</p>
+                    <p>Fecha: " . date('Y-m-d H:i:s') . "</p>
+                </body>
+                </html>
+                ";
+                
+                sendEmail($to, $subject, $message);
+                
+                echo json_encode($response);
+                exit;
+            } else {
+                debugLog("❌ Failed to reactivate subscription");
+                throw new Exception("No se pudo reactivar la suscripción. Por favor, intenta nuevamente.");
+            }
+        }
+    }
+    
+    debugLog("✅ Email not subscribed yet, proceeding with new subscription");
     
     // Insertar en base de datos
     debugLog("Preparing INSERT query...");
