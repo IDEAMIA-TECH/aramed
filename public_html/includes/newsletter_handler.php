@@ -4,19 +4,59 @@
  * ARAMED Y LABORATORIOS - Newsletter Handler
  * ========================================
  * 
- * Procesa suscripciones al newsletter
+ * Procesa suscripciones al newsletter (COTIZADOR)
  * 
  * @package    Aramed
  * @author     IDEAMIA Tech
  * @copyright  2025 Aramed y Laboratorios
  */
 
+// Configurar manejo de errores ANTES de cualquier cosa
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error !== NULL && in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE])) {
+        // Solo responder JSON si no se ha enviado contenido aún
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error interno del servidor: ' . $error['message'] . ' en línea ' . $error['line']
+            ]);
+            exit;
+        }
+    }
+});
+
 // Configuración
 define('ARAMED_SITE', true);
 
+// Establecer headers JSON inmediatamente para asegurar respuesta JSON
+header('Content-Type: application/json');
+
+// Verificar que los archivos existan antes de cargar
+$requiredFiles = [
+    'config.php',
+    'connection.php',
+    'functions.php',
+    'email_functions.php'
+];
+
+foreach ($requiredFiles as $file) {
+    $filePath = __DIR__ . '/' . $file;
+    if (!file_exists($filePath)) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => "Error: Archivo faltante: {$file}. Ruta esperada: {$filePath}"
+        ]);
+        exit;
+    }
+}
+
 // Cargar archivos con manejo de errores
 try {
-require_once __DIR__ . '/config.php';
+    require_once __DIR__ . '/config.php';
 } catch (Exception $e) {
     http_response_code(500);
     header('Content-Type: application/json');
@@ -25,13 +65,13 @@ require_once __DIR__ . '/config.php';
 }
 
 try {
-require_once __DIR__ . '/connection.php';
-require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/email_functions.php';
+    require_once __DIR__ . '/connection.php';
+    require_once __DIR__ . '/functions.php';
+    require_once __DIR__ . '/email_functions.php';
     
     // Cargar debug logger si existe, sino usar fallback
     if (file_exists(__DIR__ . '/debug_logger.php')) {
-require_once __DIR__ . '/debug_logger.php';
+        require_once __DIR__ . '/debug_logger.php';
     } else {
         // Fallback: función básica de logging
         if (!function_exists('debugLog')) {
@@ -50,8 +90,10 @@ require_once __DIR__ . '/debug_logger.php';
     exit;
 }
 
-// Headers para JSON
-header('Content-Type: application/json');
+// Headers para JSON (ya se establecieron arriba, pero por si acaso)
+if (!headers_sent()) {
+    header('Content-Type: application/json');
+}
 
 // Obtener conexión a la base de datos
 try {
