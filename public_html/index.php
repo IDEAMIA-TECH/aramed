@@ -1083,13 +1083,13 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         </div>
                         <h3 class="service-title">Mantenimiento Preventivo</h3>
                         <p class="service-description">
-                            Programas de mantenimiento preventivo y correctivo que aseguran el funcionamiento óptimo de sus simuladores. Extendemos la vida útil de su inversión con servicios técnicos especializados.
+                            Programas de mantenimiento diseñados para preservar el rendimiento y prolongar la vida útil de los simuladores. Nuestros técnicos biomédicos realizan inspecciones y ajustes programados que garantizan el funcionamiento continuo y seguro del equipo.
                         </p>
                         <ul class="service-features">
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Revisiones periódicas programadas</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Reparaciones y refacciones (correctivo)</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Actualización de software</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Soporte técnico prioritario</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Revisiones periódicas y calibraciones técnicas</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Limpieza y verificación de componentes críticos</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Actualización de software y firmware</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Reporte técnico con diagnóstico preventivo y recomendaciones</li>
                         </ul>
                         <a href="#newsletter" class="btn btn-success w-100 mt-auto service-cta">
                             Agendar Mantenimiento
