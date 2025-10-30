@@ -1295,7 +1295,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
             </div>
             
-            <!-- Product 2: IMMERSE INTERACTIVE (Imagen Derecha) -->
+            <!-- Product 2: IMMERSIVE INTERACTIVE (Imagen Derecha) -->
             <div class="product-showcase mb-5 product-reverse" data-aos="fade-up" data-aos-delay="200">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-6 order-lg-2">
@@ -1322,7 +1322,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                      class="company-logo"
                                      style="height: 30px; width: auto;">
                             </div>
-                            <h3 class="product-title">IMMERSE INTERACTIVE</h3>
+                            <h3 class="product-title">IMMERSIVE INTERACTIVE</h3>
                             <p class="product-subtitle">Transforma la educación médica con entornos inmersivos y realistas</p>
                             <p class="product-description">
                                 El sistema Immersive Interactive de Echo Healthcare convierte cualquier aula o espacio en un entorno virtual envolvente, multisensorial e interactivo, diseñado para fomentar el aprendizaje activo en estudiantes de medicina.
