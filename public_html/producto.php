@@ -111,6 +111,8 @@ $breadcrumb = [
 <!DOCTYPE html>
 <html lang="es-MX">
 <head>
+    <?php // Google Analytics ?>
+    <?php include INCLUDES_PATH . '/analytics.php'; ?>
     <!-- ========================================
          META TAGS BÁSICOS
          ======================================== -->

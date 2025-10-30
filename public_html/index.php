@@ -91,6 +91,9 @@ $pageImage = imageUrl('design/logo-og.jpg');
     <link rel="preconnect" href="https://unpkg.com">
     <link rel="dns-prefetch" href="https://www.google-analytics.com">
     <link rel="dns-prefetch" href="https://www.google.com">
+
+    <?php // Google Analytics ?>
+    <?php include INCLUDES_PATH . '/analytics.php'; ?>
     
     <!-- ========================================
          GOOGLE FONTS

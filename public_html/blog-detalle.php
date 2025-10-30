@@ -121,6 +121,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_comentario']))
 <!DOCTYPE html>
 <html lang="es-MX">
 <head>
+    <?php // Google Analytics ?>
+    <?php include INCLUDES_PATH . '/analytics.php'; ?>
     <!-- ========================================
          META TAGS BÁSICOS
          ======================================== -->

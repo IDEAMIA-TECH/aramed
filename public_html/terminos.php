@@ -101,6 +101,9 @@ $pageImage = imageUrl('design/logo-og.jpg');
          ======================================== -->
     <link rel="stylesheet" href="<?php echo assetUrl('css/main.css'); ?>?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="<?php echo assetUrl('css/responsive.css'); ?>?v=<?php echo time(); ?>">
+
+    <?php // Google Analytics ?>
+    <?php include INCLUDES_PATH . '/analytics.php'; ?>
 </head>
 
 <body class="legal-page">

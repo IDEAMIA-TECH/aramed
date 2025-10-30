@@ -119,6 +119,9 @@ $pageUrl = SITE_URL . '/blog.php';
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="<?php echo esc($pageUrl); ?>">
     
+    <?php // Google Analytics ?>
+    <?php include INCLUDES_PATH . '/analytics.php'; ?>
+    
     <!-- ========================================
          OPEN GRAPH
          ======================================== -->
