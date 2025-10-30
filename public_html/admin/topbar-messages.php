@@ -21,8 +21,8 @@ require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/connection.php';
 
 // Procesar acciones
-$action = $_GET['action'] ?? '';
-$message_id = $_GET['id'] ?? '';
+$action = $_GET['action'] ?? $_POST['action'] ?? '';
+$message_id = $_GET['id'] ?? $_POST['id'] ?? '';
 
 // Acción de limpieza automática
 if ($action === 'cleanup') {
@@ -40,6 +40,27 @@ if ($action === 'cleanup') {
     } catch (Exception $e) {
         $error_message = "Error en limpieza: " . $e->getMessage();
     }
+}
+
+// Acción de eliminación (puede ser GET o POST)
+if ($action === 'delete' && $message_id) {
+    try {
+        $pdo = getDB();
+        $sql = "DELETE FROM topbar_messages WHERE id=?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$message_id]);
+        $success_message = "Mensaje eliminado exitosamente";
+        // Redirigir para evitar reenvío del formulario
+        header("Location: topbar-messages.php?deleted=1");
+        exit;
+    } catch (Exception $e) {
+        $error_message = "Error al eliminar mensaje: " . $e->getMessage();
+    }
+}
+
+// Manejar mensaje de éxito después de redirección
+if (isset($_GET['deleted'])) {
+    $success_message = "Mensaje eliminado exitosamente";
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -80,16 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success_message = "Mensaje actualizado exitosamente";
         } catch (Exception $e) {
             $error_message = "Error al actualizar mensaje: " . $e->getMessage();
-        }
-    } elseif ($action === 'delete') {
-        try {
-            $pdo = getDB();
-            $sql = "DELETE FROM topbar_messages WHERE id=?";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([$message_id]);
-            $success_message = "Mensaje eliminado exitosamente";
-        } catch (Exception $e) {
-            $error_message = "Error al eliminar mensaje: " . $e->getMessage();
         }
     }
 }

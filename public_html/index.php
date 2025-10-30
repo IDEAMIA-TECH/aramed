@@ -124,6 +124,13 @@ $pageImage = imageUrl('design/logo-og.jpg');
     <link rel="stylesheet" href="<?php echo assetUrl('css/landing.css'); ?>?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="<?php echo assetUrl('css/responsive.css'); ?>?v=<?php echo time(); ?>">
     
+
+    <style>
+        section {
+    padding: 0rem 0;
+}
+        </style>
+
     <!-- ========================================
          STRUCTURED DATA (Schema.org)
          ======================================== -->
