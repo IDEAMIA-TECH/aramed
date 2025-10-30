@@ -4,13 +4,40 @@
  */
 if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
 
-// Cargar conexión a la base de datos
-require_once __DIR__ . '/connection.php';
+// Iniciar sesión si no está iniciada
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Mensajes por defecto (se usarán si no hay mensajes en BD o si hay error)
+$default_messages = [
+    [
+        'icon' => 'megaphone-fill',
+        'text' => 'Nuevo catálogo 2025: Simuladores de última generación disponibles',
+        'link' => '#productos'
+    ],
+    [
+        'icon' => 'calendar-event',
+        'text' => 'Próximo curso de simulación médica avanzada - ¡Inscripciones abiertas!',
+        'link' => '#newsletter'
+    ],
+    [
+        'icon' => 'award-fill',
+        'text' => 'Más de 20 años equipando instituciones de salud en México',
+        'link' => '#servicios'
+    ],
+    [
+        'icon' => 'truck',
+        'text' => 'Envíos a toda la República Mexicana - Instalación incluida',
+        'link' => '#newsletter'
+    ]
+];
 
 // Obtener mensajes desde la base de datos
 $topbar_messages = [];
 
 try {
+    require_once __DIR__ . '/connection.php';
     $pdo = getDB();
     if ($pdo) {
         // Primero, desactivar mensajes expirados (solo si no se ha hecho en los últimos 5 minutos)
@@ -37,34 +64,15 @@ try {
     }
 } catch (Exception $e) {
     // En caso de error, usar mensajes por defecto
-    error_log("Topbar DB Error: " . $e->getMessage());
-    $topbar_messages = [
-        [
-            'icon' => 'megaphone-fill',
-            'text' => 'Nuevo catálogo 2025: Simuladores de última generación disponibles',
-            'link' => '#catalogos'
-        ],
-        [
-            'icon' => 'calendar-event',
-            'text' => 'Próximo curso de simulación médica avanzada - ¡Inscripciones abiertas!',
-            'link' => '#contacto'
-        ],
-        [
-            'icon' => 'award-fill',
-            'text' => 'Más de 20 años equipando instituciones de salud en México',
-            'link' => '#servicios'
-        ],
-        [
-            'icon' => 'truck',
-            'text' => 'Envíos a toda la República Mexicana - Instalación incluida',
-            'link' => '#contacto'
-        ]
-    ];
+    $topbar_messages = $default_messages;
+} catch (Error $e) {
+    // Error fatal de PHP (ej. tabla no existe)
+    $topbar_messages = $default_messages;
 }
 
-// Si no hay mensajes activos, no mostrar el topbar
+// Si no hay mensajes de BD, usar los mensajes por defecto
 if (empty($topbar_messages)) {
-    return;
+    $topbar_messages = $default_messages;
 }
 ?>
 
