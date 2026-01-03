@@ -29,10 +29,18 @@ if (ENVIRONMENT === 'development') {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
 } else {
-    error_reporting(0);
+    error_reporting(E_ALL); // Cambiar a E_ALL para logging completo
     ini_set('display_errors', 0);
     ini_set('log_errors', 1);
-    ini_set('error_log', __DIR__ . '/../logs/php-errors.log');
+    $log_file = __DIR__ . '/../logs/php-errors.log';
+    // Crear directorio de logs si no existe
+    $log_dir = dirname($log_file);
+    if (!is_dir($log_dir)) {
+        @mkdir($log_dir, 0755, true);
+    }
+    ini_set('error_log', $log_file);
+    error_log("=== CONFIG.PHP CARGADO ===");
+    error_log("Log file: " . $log_file);
 }
 
 // ========================================

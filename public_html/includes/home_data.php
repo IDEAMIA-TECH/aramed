@@ -22,18 +22,27 @@ if (!defined('ARAMED_SITE')) {
  * @return array
  */
 function getHomeBanners() {
+    error_log("getHomeBanners() - INICIO");
     $pdo = getDB();
     if (!$pdo) {
+        error_log("getHomeBanners() - ERROR: No hay conexión PDO");
         return [];
     }
+    error_log("getHomeBanners() - Conexión PDO obtenida");
     
     try {
         // Verificar si la tabla existe
+        error_log("getHomeBanners() - Verificando existencia de tabla...");
         $stmt = $pdo->query("SHOW TABLES LIKE 'home_banners'");
-        if ($stmt->rowCount() === 0) {
+        $tableExists = $stmt->rowCount() > 0;
+        error_log("getHomeBanners() - Tabla existe: " . ($tableExists ? 'SÍ' : 'NO'));
+        
+        if (!$tableExists) {
+            error_log("getHomeBanners() - Tabla no existe, retornando array vacío");
             return [];
         }
         
+        error_log("getHomeBanners() - Ejecutando query...");
         $stmt = $pdo->query("
             SELECT * FROM home_banners 
             WHERE estado = 'publicado' 
@@ -41,13 +50,17 @@ function getHomeBanners() {
             AND (fecha_fin IS NULL OR fecha_fin >= NOW())
             ORDER BY orden ASC, created_at DESC
         ");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        error_log("getHomeBanners() - Query exitosa, retornando " . count($result) . " banners");
+        return $result;
     } catch (PDOException $e) {
-        // Si la tabla no existe o hay error, retornar array vacío
-        error_log("Error en getHomeBanners: " . $e->getMessage());
+        error_log("getHomeBanners() - PDOException: " . $e->getMessage());
+        error_log("getHomeBanners() - Código: " . $e->getCode());
+        error_log("getHomeBanners() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
         return [];
     } catch (Exception $e) {
-        error_log("Error en getHomeBanners: " . $e->getMessage());
+        error_log("getHomeBanners() - Exception: " . $e->getMessage());
+        error_log("getHomeBanners() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
         return [];
     }
 }
@@ -57,18 +70,22 @@ function getHomeBanners() {
  * @return array
  */
 function getHomeProductosDestacados() {
+    error_log("getHomeProductosDestacados() - INICIO");
     $pdo = getDB();
     if (!$pdo) {
+        error_log("getHomeProductosDestacados() - ERROR: No hay conexión PDO");
         return [];
     }
     
     try {
-        // Verificar si la tabla existe
+        error_log("getHomeProductosDestacados() - Verificando existencia de tabla...");
         $stmt = $pdo->query("SHOW TABLES LIKE 'home_productos_destacados'");
         if ($stmt->rowCount() === 0) {
+            error_log("getHomeProductosDestacados() - Tabla no existe, retornando array vacío");
             return [];
         }
         
+        error_log("getHomeProductosDestacados() - Ejecutando query...");
         $stmt = $pdo->query("
             SELECT hpd.*, 
                    p.id as producto_id,
@@ -89,12 +106,17 @@ function getHomeProductosDestacados() {
             ORDER BY hpd.orden ASC, hpd.created_at DESC
             LIMIT 6
         ");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        error_log("getHomeProductosDestacados() - Query exitosa, retornando " . count($result) . " productos");
+        return $result;
     } catch (PDOException $e) {
-        error_log("Error en getHomeProductosDestacados: " . $e->getMessage());
+        error_log("getHomeProductosDestacados() - PDOException: " . $e->getMessage());
+        error_log("getHomeProductosDestacados() - Código: " . $e->getCode());
+        error_log("getHomeProductosDestacados() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
         return [];
     } catch (Exception $e) {
-        error_log("Error en getHomeProductosDestacados: " . $e->getMessage());
+        error_log("getHomeProductosDestacados() - Exception: " . $e->getMessage());
+        error_log("getHomeProductosDestacados() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
         return [];
     }
 }
@@ -104,30 +126,39 @@ function getHomeProductosDestacados() {
  * @return array
  */
 function getHomeServicios() {
+    error_log("getHomeServicios() - INICIO");
     $pdo = getDB();
     if (!$pdo) {
+        error_log("getHomeServicios() - ERROR: No hay conexión PDO");
         return [];
     }
     
     try {
-        // Verificar si la tabla existe
+        error_log("getHomeServicios() - Verificando existencia de tabla...");
         $stmt = $pdo->query("SHOW TABLES LIKE 'home_servicios'");
         if ($stmt->rowCount() === 0) {
+            error_log("getHomeServicios() - Tabla no existe, retornando array vacío");
             return [];
         }
         
+        error_log("getHomeServicios() - Ejecutando query...");
         $stmt = $pdo->query("
             SELECT * FROM home_servicios 
             WHERE estado = 'activo'
             ORDER BY orden ASC, created_at DESC
             LIMIT 6
         ");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        error_log("getHomeServicios() - Query exitosa, retornando " . count($result) . " servicios");
+        return $result;
     } catch (PDOException $e) {
-        error_log("Error en getHomeServicios: " . $e->getMessage());
+        error_log("getHomeServicios() - PDOException: " . $e->getMessage());
+        error_log("getHomeServicios() - Código: " . $e->getCode());
+        error_log("getHomeServicios() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
         return [];
     } catch (Exception $e) {
-        error_log("Error en getHomeServicios: " . $e->getMessage());
+        error_log("getHomeServicios() - Exception: " . $e->getMessage());
+        error_log("getHomeServicios() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
         return [];
     }
 }
@@ -137,33 +168,42 @@ function getHomeServicios() {
  * @return array ['mision' => [...], 'vision' => [...]]
  */
 function getHomeMisionVision() {
+    error_log("getHomeMisionVision() - INICIO");
     $pdo = getDB();
     if (!$pdo) {
+        error_log("getHomeMisionVision() - ERROR: No hay conexión PDO");
         return ['mision' => null, 'vision' => null];
     }
     
     try {
-        // Verificar si la tabla existe
+        error_log("getHomeMisionVision() - Verificando existencia de tabla...");
         $stmt = $pdo->query("SHOW TABLES LIKE 'home_mision_vision'");
         if ($stmt->rowCount() === 0) {
+            error_log("getHomeMisionVision() - Tabla no existe, retornando valores null");
             return ['mision' => null, 'vision' => null];
         }
         
+        error_log("getHomeMisionVision() - Obteniendo misión...");
         $stmt = $pdo->query("SELECT * FROM home_mision_vision WHERE tipo = 'mision'");
         $mision = $stmt->fetch(PDO::FETCH_ASSOC);
         
+        error_log("getHomeMisionVision() - Obteniendo visión...");
         $stmt = $pdo->query("SELECT * FROM home_mision_vision WHERE tipo = 'vision'");
         $vision = $stmt->fetch(PDO::FETCH_ASSOC);
         
+        error_log("getHomeMisionVision() - Completado. Misión: " . ($mision ? 'SÍ' : 'NO') . ", Visión: " . ($vision ? 'SÍ' : 'NO'));
         return [
             'mision' => $mision ?: null,
             'vision' => $vision ?: null
         ];
     } catch (PDOException $e) {
-        error_log("Error en getHomeMisionVision: " . $e->getMessage());
+        error_log("getHomeMisionVision() - PDOException: " . $e->getMessage());
+        error_log("getHomeMisionVision() - Código: " . $e->getCode());
+        error_log("getHomeMisionVision() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
         return ['mision' => null, 'vision' => null];
     } catch (Exception $e) {
-        error_log("Error en getHomeMisionVision: " . $e->getMessage());
+        error_log("getHomeMisionVision() - Exception: " . $e->getMessage());
+        error_log("getHomeMisionVision() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
         return ['mision' => null, 'vision' => null];
     }
 }
@@ -173,18 +213,22 @@ function getHomeMisionVision() {
  * @return array
  */
 function getHomeCategoriasDestacadas() {
+    error_log("getHomeCategoriasDestacadas() - INICIO");
     $pdo = getDB();
     if (!$pdo) {
+        error_log("getHomeCategoriasDestacadas() - ERROR: No hay conexión PDO");
         return [];
     }
     
     try {
-        // Verificar si la tabla existe
+        error_log("getHomeCategoriasDestacadas() - Verificando existencia de tabla...");
         $stmt = $pdo->query("SHOW TABLES LIKE 'home_categorias_destacadas'");
         if ($stmt->rowCount() === 0) {
+            error_log("getHomeCategoriasDestacadas() - Tabla no existe, retornando array vacío");
             return [];
         }
         
+        error_log("getHomeCategoriasDestacadas() - Ejecutando query...");
         $stmt = $pdo->query("
             SELECT hcd.*, 
                    c.id as categoria_id,
@@ -202,12 +246,17 @@ function getHomeCategoriasDestacadas() {
             ORDER BY hcd.orden ASC, hcd.created_at DESC
             LIMIT 6
         ");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        error_log("getHomeCategoriasDestacadas() - Query exitosa, retornando " . count($result) . " categorías");
+        return $result;
     } catch (PDOException $e) {
-        error_log("Error en getHomeCategoriasDestacadas: " . $e->getMessage());
+        error_log("getHomeCategoriasDestacadas() - PDOException: " . $e->getMessage());
+        error_log("getHomeCategoriasDestacadas() - Código: " . $e->getCode());
+        error_log("getHomeCategoriasDestacadas() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
         return [];
     } catch (Exception $e) {
-        error_log("Error en getHomeCategoriasDestacadas: " . $e->getMessage());
+        error_log("getHomeCategoriasDestacadas() - Exception: " . $e->getMessage());
+        error_log("getHomeCategoriasDestacadas() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
         return [];
     }
 }

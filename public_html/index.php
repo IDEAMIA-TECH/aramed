@@ -14,21 +14,84 @@
 // Definir constante del sitio
 define('ARAMED_SITE', true);
 
+// Iniciar logging de errores
+error_log("=== INDEX.PHP INICIADO ===");
+error_log("Directorio: " . __DIR__);
+
 // Cargar configuración
-require_once __DIR__ . '/includes/config.php';
+try {
+    error_log("Cargando config.php...");
+    require_once __DIR__ . '/includes/config.php';
+    error_log("config.php cargado correctamente");
+} catch (Exception $e) {
+    error_log("ERROR cargando config.php: " . $e->getMessage());
+    die("Error de configuración: " . $e->getMessage());
+}
 
 // Cargar funciones
-require_once INCLUDES_PATH . '/functions.php';
+try {
+    error_log("Cargando functions.php...");
+    require_once INCLUDES_PATH . '/functions.php';
+    error_log("functions.php cargado correctamente");
+} catch (Exception $e) {
+    error_log("ERROR cargando functions.php: " . $e->getMessage());
+    die("Error cargando funciones: " . $e->getMessage());
+}
+
+// Cargar conexión
+try {
+    error_log("Cargando connection.php...");
+    require_once INCLUDES_PATH . '/connection.php';
+    error_log("connection.php cargado correctamente");
+} catch (Exception $e) {
+    error_log("ERROR cargando connection.php: " . $e->getMessage());
+    die("Error cargando conexión: " . $e->getMessage());
+}
 
 // Cargar helper de datos del home
-require_once INCLUDES_PATH . '/home_data.php';
+try {
+    error_log("Cargando home_data.php...");
+    require_once INCLUDES_PATH . '/home_data.php';
+    error_log("home_data.php cargado correctamente");
+} catch (Exception $e) {
+    error_log("ERROR cargando home_data.php: " . $e->getMessage());
+    // Continuar sin home_data, usar contenido hardcodeado
+    $home_banners = [];
+    $home_servicios = [];
+    $home_productos_destacados = [];
+    $home_mision_vision = ['mision' => null, 'vision' => null];
+    $home_categorias_destacadas = [];
+}
 
 // Cargar datos del home desde BD
-$home_banners = getHomeBanners();
-$home_servicios = getHomeServicios();
-$home_productos_destacados = getHomeProductosDestacados();
-$home_mision_vision = getHomeMisionVision();
-$home_categorias_destacadas = getHomeCategoriasDestacadas();
+try {
+    error_log("Obteniendo datos del home...");
+    $home_banners = getHomeBanners();
+    error_log("getHomeBanners() retornó: " . count($home_banners) . " banners");
+    
+    $home_servicios = getHomeServicios();
+    error_log("getHomeServicios() retornó: " . count($home_servicios) . " servicios");
+    
+    $home_productos_destacados = getHomeProductosDestacados();
+    error_log("getHomeProductosDestacados() retornó: " . count($home_productos_destacados) . " productos");
+    
+    $home_mision_vision = getHomeMisionVision();
+    error_log("getHomeMisionVision() completado");
+    
+    $home_categorias_destacadas = getHomeCategoriasDestacadas();
+    error_log("getHomeCategoriasDestacadas() retornó: " . count($home_categorias_destacadas) . " categorías");
+    
+    error_log("Datos del home cargados correctamente");
+} catch (Exception $e) {
+    error_log("ERROR obteniendo datos del home: " . $e->getMessage());
+    error_log("Stack trace: " . $e->getTraceAsString());
+    // Usar valores por defecto
+    $home_banners = [];
+    $home_servicios = [];
+    $home_productos_destacados = [];
+    $home_mision_vision = ['mision' => null, 'vision' => null];
+    $home_categorias_destacadas = [];
+}
 
 // Variables para meta tags
 $pageTitle = SITE_NAME . ' - ' . SITE_TAGLINE;

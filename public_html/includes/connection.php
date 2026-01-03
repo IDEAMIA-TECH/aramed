@@ -24,13 +24,24 @@ $GLOBALS['db_connection'] = null;
  * Función para obtener la conexión PDO
  */
 function getDB() {
+    error_log("getDB() - INICIO");
+    
     // Si ya existe una conexión, devolverla
     if ($GLOBALS['db_connection'] !== null) {
+        error_log("getDB() - Reutilizando conexión existente");
         return $GLOBALS['db_connection'];
     }
     
     try {
+        error_log("getDB() - Creando nueva conexión...");
+        error_log("getDB() - DB_HOST: " . (defined('DB_HOST') ? DB_HOST : 'NO DEFINIDO'));
+        error_log("getDB() - DB_NAME: " . (defined('DB_NAME') ? DB_NAME : 'NO DEFINIDO'));
+        error_log("getDB() - DB_USER: " . (defined('DB_USER') ? DB_USER : 'NO DEFINIDO'));
+        error_log("getDB() - DB_CHARSET: " . (defined('DB_CHARSET') ? DB_CHARSET : 'NO DEFINIDO'));
+        
         $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
+        error_log("getDB() - DSN: " . $dsn);
+        
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -38,15 +49,23 @@ function getDB() {
             PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES " . DB_CHARSET
         ];
         
+        error_log("getDB() - Intentando conectar...");
         $GLOBALS['db_connection'] = new PDO($dsn, DB_USER, DB_PASS, $options);
+        error_log("getDB() - Conexión exitosa");
         
         return $GLOBALS['db_connection'];
         
     } catch (PDOException $e) {
-        // Registrar el error
-        error_log("Database Connection Error: " . $e->getMessage());
+        error_log("getDB() - ERROR PDOException: " . $e->getMessage());
+        error_log("getDB() - Código: " . $e->getCode());
+        error_log("getDB() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
+        error_log("getDB() - Stack trace: " . $e->getTraceAsString());
         
         // Retornar false en lugar de die()
+        return false;
+    } catch (Exception $e) {
+        error_log("getDB() - ERROR Exception: " . $e->getMessage());
+        error_log("getDB() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
         return false;
     }
 }
