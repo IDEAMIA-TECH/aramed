@@ -28,15 +28,26 @@ function getHomeBanners() {
     }
     
     try {
+        // Verificar si la tabla existe
+        $stmt = $pdo->query("SHOW TABLES LIKE 'home_banners'");
+        if ($stmt->rowCount() === 0) {
+            return [];
+        }
+        
         $stmt = $pdo->query("
             SELECT * FROM home_banners 
-            WHERE estado = 'activo' 
-            AND (fecha_inicio IS NULL OR fecha_inicio <= CURDATE())
-            AND (fecha_fin IS NULL OR fecha_fin >= CURDATE())
+            WHERE estado = 'publicado' 
+            AND (fecha_inicio IS NULL OR fecha_inicio <= NOW())
+            AND (fecha_fin IS NULL OR fecha_fin >= NOW())
             ORDER BY orden ASC, created_at DESC
         ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Si la tabla no existe o hay error, retornar array vacío
+        error_log("Error en getHomeBanners: " . $e->getMessage());
+        return [];
     } catch (Exception $e) {
+        error_log("Error en getHomeBanners: " . $e->getMessage());
         return [];
     }
 }
@@ -52,6 +63,12 @@ function getHomeProductosDestacados() {
     }
     
     try {
+        // Verificar si la tabla existe
+        $stmt = $pdo->query("SHOW TABLES LIKE 'home_productos_destacados'");
+        if ($stmt->rowCount() === 0) {
+            return [];
+        }
+        
         $stmt = $pdo->query("
             SELECT hpd.*, 
                    p.id as producto_id,
@@ -73,7 +90,11 @@ function getHomeProductosDestacados() {
             LIMIT 6
         ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error en getHomeProductosDestacados: " . $e->getMessage());
+        return [];
     } catch (Exception $e) {
+        error_log("Error en getHomeProductosDestacados: " . $e->getMessage());
         return [];
     }
 }
@@ -89,6 +110,12 @@ function getHomeServicios() {
     }
     
     try {
+        // Verificar si la tabla existe
+        $stmt = $pdo->query("SHOW TABLES LIKE 'home_servicios'");
+        if ($stmt->rowCount() === 0) {
+            return [];
+        }
+        
         $stmt = $pdo->query("
             SELECT * FROM home_servicios 
             WHERE estado = 'activo'
@@ -96,7 +123,11 @@ function getHomeServicios() {
             LIMIT 6
         ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error en getHomeServicios: " . $e->getMessage());
+        return [];
     } catch (Exception $e) {
+        error_log("Error en getHomeServicios: " . $e->getMessage());
         return [];
     }
 }
@@ -112,6 +143,12 @@ function getHomeMisionVision() {
     }
     
     try {
+        // Verificar si la tabla existe
+        $stmt = $pdo->query("SHOW TABLES LIKE 'home_mision_vision'");
+        if ($stmt->rowCount() === 0) {
+            return ['mision' => null, 'vision' => null];
+        }
+        
         $stmt = $pdo->query("SELECT * FROM home_mision_vision WHERE tipo = 'mision'");
         $mision = $stmt->fetch(PDO::FETCH_ASSOC);
         
@@ -122,7 +159,11 @@ function getHomeMisionVision() {
             'mision' => $mision ?: null,
             'vision' => $vision ?: null
         ];
+    } catch (PDOException $e) {
+        error_log("Error en getHomeMisionVision: " . $e->getMessage());
+        return ['mision' => null, 'vision' => null];
     } catch (Exception $e) {
+        error_log("Error en getHomeMisionVision: " . $e->getMessage());
         return ['mision' => null, 'vision' => null];
     }
 }
@@ -138,6 +179,12 @@ function getHomeCategoriasDestacadas() {
     }
     
     try {
+        // Verificar si la tabla existe
+        $stmt = $pdo->query("SHOW TABLES LIKE 'home_categorias_destacadas'");
+        if ($stmt->rowCount() === 0) {
+            return [];
+        }
+        
         $stmt = $pdo->query("
             SELECT hcd.*, 
                    c.id as categoria_id,
@@ -156,7 +203,11 @@ function getHomeCategoriasDestacadas() {
             LIMIT 6
         ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error en getHomeCategoriasDestacadas: " . $e->getMessage());
+        return [];
     } catch (Exception $e) {
+        error_log("Error en getHomeCategoriasDestacadas: " . $e->getMessage());
         return [];
     }
 }
