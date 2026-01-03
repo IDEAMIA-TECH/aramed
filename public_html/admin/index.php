@@ -14,20 +14,78 @@
 // Definir constante del sitio
 define('ARAMED_SITE', true);
 
-// Cargar configuración y verificar autenticación
-require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/functions.php';
-require_once __DIR__ . '/../includes/connection.php';
-require_once __DIR__ . '/auth_check.php';
+// Iniciar logging
+error_log("=== ADMIN INDEX.PHP INICIADO ===");
 
-// Obtener conexión PDO
-$pdo = getDB();
-if (!$pdo) {
-    die('Error de conexión a la base de datos');
+// Cargar configuración y verificar autenticación
+try {
+    error_log("Cargando config.php...");
+    require_once __DIR__ . '/../includes/config.php';
+    error_log("config.php cargado");
+} catch (Exception $e) {
+    error_log("ERROR cargando config.php: " . $e->getMessage());
+    die("Error de configuración");
 }
 
+try {
+    error_log("Cargando functions.php...");
+    require_once __DIR__ . '/../includes/functions.php';
+    error_log("functions.php cargado");
+} catch (Exception $e) {
+    error_log("ERROR cargando functions.php: " . $e->getMessage());
+    die("Error cargando funciones");
+}
+
+try {
+    error_log("Cargando connection.php...");
+    require_once __DIR__ . '/../includes/connection.php';
+    error_log("connection.php cargado");
+} catch (Exception $e) {
+    error_log("ERROR cargando connection.php: " . $e->getMessage());
+    die("Error cargando conexión");
+}
+
+try {
+    error_log("Cargando auth_check.php...");
+    require_once __DIR__ . '/auth_check.php';
+    error_log("auth_check.php cargado");
+} catch (Exception $e) {
+    error_log("ERROR cargando auth_check.php: " . $e->getMessage());
+    die("Error de autenticación");
+}
+
+// Obtener conexión PDO
+error_log("Obteniendo conexión PDO...");
+$pdo = getDB();
+if (!$pdo) {
+    error_log("ERROR: No se pudo obtener conexión PDO");
+    die('Error de conexión a la base de datos');
+}
+error_log("Conexión PDO obtenida exitosamente");
+
 // Obtener información del usuario actual
-$current_user = getCurrentUser();
+$current_user = null;
+if (function_exists('getCurrentUser')) {
+    $current_user = getCurrentUser();
+} else {
+    // Fallback: obtener usuario desde sesión
+    if (isset($_SESSION['admin_user_id'])) {
+        try {
+            $sql_user = "SELECT * FROM admin_usuarios WHERE id = ?";
+            $stmt_user = $pdo->prepare($sql_user);
+            $stmt_user->execute([$_SESSION['admin_user_id']]);
+            $current_user = $stmt_user->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Error obteniendo usuario: " . $e->getMessage());
+            $current_user = [
+                'id' => $_SESSION['admin_user_id'] ?? 0,
+                'username' => $_SESSION['admin_username'] ?? 'Usuario',
+                'nombre' => $_SESSION['admin_nombre'] ?? 'Usuario',
+                'rol' => $_SESSION['admin_rol'] ?? 'editor'
+            ];
+        }
+    }
+}
 
 // Publicar artículos programados automáticamente
 if (function_exists('publicarArticulosProgramados')) {
@@ -37,94 +95,159 @@ if (function_exists('publicarArticulosProgramados')) {
 // Obtener estadísticas del blog
 $stats = [];
 
-// Total de artículos
-$sql = "SELECT COUNT(*) as total FROM blog_articulos";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$stats['total_articulos'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+try {
+    // Total de artículos
+    $sql = "SELECT COUNT(*) as total FROM blog_articulos";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $stats['total_articulos'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+} catch (Exception $e) {
+    error_log("Error obteniendo total artículos: " . $e->getMessage());
+    $stats['total_articulos'] = 0;
+}
 
-// Artículos publicados
-$sql = "SELECT COUNT(*) as total FROM blog_articulos WHERE estado = 'publicado'";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$stats['articulos_publicados'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+try {
+    // Artículos publicados
+    $sql = "SELECT COUNT(*) as total FROM blog_articulos WHERE estado = 'publicado'";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $stats['articulos_publicados'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+} catch (Exception $e) {
+    error_log("Error obteniendo artículos publicados: " . $e->getMessage());
+    $stats['articulos_publicados'] = 0;
+}
 
-// Artículos borradores
-$sql = "SELECT COUNT(*) as total FROM blog_articulos WHERE estado = 'borrador'";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$stats['articulos_borradores'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+try {
+    // Artículos borradores
+    $sql = "SELECT COUNT(*) as total FROM blog_articulos WHERE estado = 'borrador'";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $stats['articulos_borradores'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+} catch (Exception $e) {
+    error_log("Error obteniendo artículos borradores: " . $e->getMessage());
+    $stats['articulos_borradores'] = 0;
+}
 
-// Total de categorías
-$sql = "SELECT COUNT(*) as total FROM blog_categorias WHERE estado = 'activo'";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$stats['total_categorias'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+try {
+    // Total de categorías
+    $sql = "SELECT COUNT(*) as total FROM blog_categorias WHERE estado = 'activo'";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $stats['total_categorias'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+} catch (Exception $e) {
+    error_log("Error obteniendo categorías: " . $e->getMessage());
+    $stats['total_categorias'] = 0;
+}
 
-// Total de comentarios
-$sql = "SELECT COUNT(*) as total FROM blog_comentarios";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$stats['total_comentarios'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+try {
+    // Total de comentarios
+    $sql = "SELECT COUNT(*) as total FROM blog_comentarios";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $stats['total_comentarios'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+} catch (Exception $e) {
+    error_log("Error obteniendo comentarios: " . $e->getMessage());
+    $stats['total_comentarios'] = 0;
+}
 
-// Comentarios pendientes
-$sql = "SELECT COUNT(*) as total FROM blog_comentarios WHERE estado = 'pendiente'";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$stats['comentarios_pendientes'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+try {
+    // Comentarios pendientes
+    $sql = "SELECT COUNT(*) as total FROM blog_comentarios WHERE estado = 'pendiente'";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $stats['comentarios_pendientes'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+} catch (Exception $e) {
+    error_log("Error obteniendo comentarios pendientes: " . $e->getMessage());
+    $stats['comentarios_pendientes'] = 0;
+}
 
-// Total de vistas
-$sql = "SELECT SUM(vistas) as total FROM blog_articulos";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$stats['total_vistas'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?: 0;
+try {
+    // Total de vistas
+    $sql = "SELECT SUM(vistas) as total FROM blog_articulos";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $stats['total_vistas'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?: 0;
+} catch (Exception $e) {
+    error_log("Error obteniendo vistas: " . $e->getMessage());
+    $stats['total_vistas'] = 0;
+}
 
 // Obtener artículos recientes
-$sql = "
-    SELECT a.*, c.nombre as categoria_nombre, c.color as categoria_color
-    FROM blog_articulos a
-    LEFT JOIN blog_categorias c ON a.categoria_id = c.id
-    ORDER BY a.created_at DESC
-    LIMIT 5
-";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$articulos_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $sql = "
+        SELECT a.*, c.nombre as categoria_nombre, c.color as categoria_color
+        FROM blog_articulos a
+        LEFT JOIN blog_categorias c ON a.categoria_id = c.id
+        ORDER BY a.created_at DESC
+        LIMIT 5
+    ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $articulos_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    error_log("Error obteniendo artículos recientes: " . $e->getMessage());
+    $articulos_recientes = [];
+}
 
 // Obtener comentarios recientes
-$sql = "
-    SELECT c.*, a.titulo as articulo_titulo, a.slug as articulo_slug
-    FROM blog_comentarios c
-    LEFT JOIN blog_articulos a ON c.articulo_id = a.id
-    ORDER BY c.created_at DESC
-    LIMIT 5
-";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$comentarios_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $sql = "
+        SELECT c.*, a.titulo as articulo_titulo, a.slug as articulo_slug
+        FROM blog_comentarios c
+        LEFT JOIN blog_articulos a ON c.articulo_id = a.id
+        ORDER BY c.created_at DESC
+        LIMIT 5
+    ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $comentarios_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    error_log("Error obteniendo comentarios recientes: " . $e->getMessage());
+    $comentarios_recientes = [];
+}
 
 // Obtener estadísticas de newsletter
-$sql_newsletter = "SELECT COUNT(*) as total FROM newsletter_subscriptions WHERE status = 'activo'";
-$stmt_newsletter = $pdo->prepare($sql_newsletter);
-$stmt_newsletter->execute();
-$stats['newsletter_activos'] = $stmt_newsletter->fetch(PDO::FETCH_ASSOC)['total'];
+try {
+    $sql_newsletter = "SELECT COUNT(*) as total FROM newsletter_subscriptions WHERE status = 'activo'";
+    $stmt_newsletter = $pdo->prepare($sql_newsletter);
+    $stmt_newsletter->execute();
+    $stats['newsletter_activos'] = $stmt_newsletter->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+} catch (Exception $e) {
+    error_log("Error obteniendo newsletter: " . $e->getMessage());
+    $stats['newsletter_activos'] = 0;
+}
 
-$sql_newsletter_simple = "SELECT COUNT(*) as total FROM newsletter_simple WHERE status = 'activo'";
-$stmt_newsletter_simple = $pdo->prepare($sql_newsletter_simple);
-$stmt_newsletter_simple->execute();
-$stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_ASSOC)['total'];
+try {
+    $sql_newsletter_simple = "SELECT COUNT(*) as total FROM newsletter_simple WHERE status = 'activo'";
+    $stmt_newsletter_simple = $pdo->prepare($sql_newsletter_simple);
+    $stmt_newsletter_simple->execute();
+    $stats['newsletter_simple_activos'] = $stmt_newsletter_simple->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+} catch (Exception $e) {
+    error_log("Error obteniendo newsletter_simple: " . $e->getMessage());
+    $stats['newsletter_simple_activos'] = 0;
+}
 
 // Obtener estadísticas de usuarios
-$sql_usuarios = "SELECT COUNT(*) as total FROM admin_usuarios";
-$stmt_usuarios = $pdo->prepare($sql_usuarios);
-$stmt_usuarios->execute();
-$stats['usuarios'] = $stmt_usuarios->fetch(PDO::FETCH_ASSOC)['total'];
+try {
+    $sql_usuarios = "SELECT COUNT(*) as total FROM admin_usuarios";
+    $stmt_usuarios = $pdo->prepare($sql_usuarios);
+    $stmt_usuarios->execute();
+    $stats['usuarios'] = $stmt_usuarios->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+} catch (Exception $e) {
+    error_log("Error obteniendo usuarios: " . $e->getMessage());
+    $stats['usuarios'] = 0;
+}
 
 // Obtener estadísticas de topbar
-$sql_topbar = "SELECT COUNT(*) as total FROM topbar_messages WHERE status = 'active'";
-$stmt_topbar = $pdo->prepare($sql_topbar);
-$stmt_topbar->execute();
-$stats['topbar_messages'] = $stmt_topbar->fetch(PDO::FETCH_ASSOC)['total'];
+try {
+    $sql_topbar = "SELECT COUNT(*) as total FROM topbar_messages WHERE status = 'active'";
+    $stmt_topbar = $pdo->prepare($sql_topbar);
+    $stmt_topbar->execute();
+    $stats['topbar_messages'] = $stmt_topbar->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+} catch (Exception $e) {
+    error_log("Error obteniendo topbar_messages: " . $e->getMessage());
+    $stats['topbar_messages'] = 0;
+}
 
 // Obtener KPIs adicionales
 try {
@@ -175,8 +298,18 @@ try {
 }
 
 // Cargar helper de alertas
-require_once __DIR__ . '/includes/dashboard_alerts.php';
-$alerts = getDashboardAlerts($pdo);
+$alerts = [];
+try {
+    if (file_exists(__DIR__ . '/includes/dashboard_alerts.php')) {
+        require_once __DIR__ . '/includes/dashboard_alerts.php';
+        if (function_exists('getDashboardAlerts')) {
+            $alerts = getDashboardAlerts($pdo);
+        }
+    }
+} catch (Exception $e) {
+    error_log("Error cargando alertas: " . $e->getMessage());
+    $alerts = [];
+}
 
 // Obtener últimas cotizaciones
 try {
