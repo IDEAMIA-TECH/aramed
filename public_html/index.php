@@ -1188,6 +1188,131 @@ $pageImage = imageUrl('design/logo-og.jpg');
                             </a>
                         </div>
                     </div>
+                    
+                    <!-- Fallback: Service 2: Instalación y Configuración -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                        <div class="service-card h-100">
+                            <div class="service-icon-wrapper">
+                                <div class="service-icon bg-primary">
+                                    <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Instalación y Configuración" class="service-icon-image">
+                                </div>
+                            </div>
+                            <h3 class="service-title">Instalación y Configuración</h3>
+                            <p class="service-description">
+                                Realizamos la instalación profesional de todos los equipos de simulación médica, garantizando su correcto funcionamiento y optimización desde el primer día.
+                            </p>
+                            <ul class="service-features">
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Instalación profesional certificada</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Configuración de software y sistemas</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Pruebas de funcionamiento</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Documentación técnica completa</li>
+                            </ul>
+                            <a href="#newsletter" class="btn btn-outline-primary w-100 mt-auto service-cta">
+                                Solicitar Cotización
+                                <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Fallback: Service 3: Capacitación y Entrenamiento -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                        <div class="service-card h-100">
+                            <div class="service-icon-wrapper">
+                                <div class="service-icon bg-primary">
+                                    <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Capacitación y Entrenamiento" class="service-icon-image">
+                                </div>
+                            </div>
+                            <h3 class="service-title">Capacitación y Entrenamiento</h3>
+                            <p class="service-description">
+                                Ofrecemos programas de capacitación integral para instructores y personal técnico, asegurando el máximo aprovechamiento de los equipos de simulación.
+                            </p>
+                            <ul class="service-features">
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Capacitación para instructores</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Entrenamiento en operación de equipos</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Desarrollo de escenarios clínicos</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Soporte continuo y actualizaciones</li>
+                            </ul>
+                            <a href="#newsletter" class="btn btn-outline-primary w-100 mt-auto service-cta">
+                                Solicitar Cotización
+                                <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Fallback: Service 4: Mantenimiento y Soporte -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                        <div class="service-card h-100">
+                            <div class="service-icon-wrapper">
+                                <div class="service-icon bg-primary">
+                                    <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Mantenimiento y Soporte" class="service-icon-image">
+                                </div>
+                            </div>
+                            <h3 class="service-title">Mantenimiento y Soporte</h3>
+                            <p class="service-description">
+                                Servicios de mantenimiento preventivo y correctivo para mantener sus equipos en óptimas condiciones, con planes de soporte técnico disponibles 24/7.
+                            </p>
+                            <ul class="service-features">
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Mantenimiento preventivo programado</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Reparación y servicio técnico</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Soporte remoto y presencial</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Disponibilidad de refacciones</li>
+                            </ul>
+                            <a href="#newsletter" class="btn btn-outline-primary w-100 mt-auto service-cta">
+                                Solicitar Cotización
+                                <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Fallback: Service 5: Asesoría Especializada -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                        <div class="service-card h-100">
+                            <div class="service-icon-wrapper">
+                                <div class="service-icon bg-primary">
+                                    <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Asesoría Especializada" class="service-icon-image">
+                                </div>
+                            </div>
+                            <h3 class="service-title">Asesoría Especializada</h3>
+                            <p class="service-description">
+                                Consultoría personalizada para ayudarle a seleccionar los equipos más adecuados según sus necesidades educativas y presupuesto disponible.
+                            </p>
+                            <ul class="service-features">
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Análisis de necesidades educativas</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Recomendaciones de equipamiento</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Planificación de presupuestos</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Estrategias de implementación</li>
+                            </ul>
+                            <a href="#newsletter" class="btn btn-outline-primary w-100 mt-auto service-cta">
+                                Solicitar Cotización
+                                <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Fallback: Service 6: Consultoría en Simulación -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+                        <div class="service-card h-100">
+                            <div class="service-icon-wrapper">
+                                <div class="service-icon bg-primary">
+                                    <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Consultoría en Simulación" class="service-icon-image">
+                                </div>
+                            </div>
+                            <h3 class="service-title">Consultoría en Simulación</h3>
+                            <p class="service-description">
+                                Asesoría estratégica para el desarrollo de programas de simulación clínica, diseño de currículos y evaluación de competencias médicas.
+                            </p>
+                            <ul class="service-features">
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Diseño de programas educativos</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Desarrollo de escenarios clínicos</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Evaluación y acreditación</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Mejora continua de procesos</li>
+                            </ul>
+                            <a href="#newsletter" class="btn btn-outline-primary w-100 mt-auto service-cta">
+                                Solicitar Cotización
+                                <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
                 <?php endif; ?>
             </div>
             
