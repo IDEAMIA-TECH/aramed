@@ -92,29 +92,77 @@ if (isset($_GET['expired']) && $_GET['expired'] == '1') {
 
 // Procesar login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log("=== LOGIN INTENTO ===");
+    error_log("Username recibido: " . ($_POST['username'] ?? 'NO DEFINIDO'));
+    
     $username = sanitizeInput($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
     
+    error_log("Username sanitizado: " . $username);
+    error_log("Password recibido: " . (empty($password) ? 'VACÍO' : 'PRESENTE'));
+    
     if (empty($username) || empty($password)) {
         $error = 'Por favor completa todos los campos';
+        error_log("ERROR: Campos vacíos");
     } else {
         // Buscar usuario
+        error_log("Buscando usuario en BD...");
         $sql = "SELECT * FROM admin_usuarios WHERE (username = ? OR email = ?) AND estado = 'activo'";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$username, $username]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
         
+        error_log("Usuario encontrado: " . ($usuario ? 'SÍ (ID: ' . $usuario['id'] . ')' : 'NO'));
         if ($usuario) {
-            // Verificar si el usuario está bloqueado
-            if ($usuario['bloqueado_hasta'] && strtotime($usuario['bloqueado_hasta']) > time()) {
+            error_log("Username BD: " . $usuario['username']);
+            error_log("Email BD: " . $usuario['email']);
+            error_log("Estado: " . $usuario['estado']);
+            error_log("Password hash presente: " . (isset($usuario['password_hash']) ? 'SÍ' : 'NO'));
+        }
+        
+        if ($usuario) {
+            // Verificar si el usuario está bloqueado (si el campo existe)
+            $bloqueado = false;
+            if (isset($usuario['bloqueado_hasta']) && $usuario['bloqueado_hasta'] && strtotime($usuario['bloqueado_hasta']) > time()) {
+                $bloqueado = true;
                 $error = 'Usuario bloqueado temporalmente. Intente más tarde.';
-            } else {
+            }
+            
+            if (!$bloqueado) {
                 // Verificar contraseña
-                if (password_verify($password, $usuario['password_hash'])) {
-                    // Login exitoso - Resetear intentos fallidos
-                    $sql_reset = "UPDATE admin_usuarios SET intentos_fallidos = 0, bloqueado_hasta = NULL, ultimo_login = NOW() WHERE id = ?";
-                    $stmt_reset = $pdo->prepare($sql_reset);
-                    $stmt_reset->execute([$usuario['id']]);
+                error_log("Verificando contraseña...");
+                $password_ok = password_verify($password, $usuario['password_hash']);
+                error_log("Password verify resultado: " . ($password_ok ? 'CORRECTO' : 'INCORRECTO'));
+                
+                if ($password_ok) {
+                    // Login exitoso - Actualizar último login
+                    try {
+                        // Intentar actualizar campos de seguridad si existen
+                        $sql_reset = "UPDATE admin_usuarios SET ultimo_login = NOW()";
+                        $params = [];
+                        
+                        // Verificar si los campos de seguridad existen
+                        $columns_check = $pdo->query("SHOW COLUMNS FROM admin_usuarios LIKE 'intentos_fallidos'")->fetch();
+                        if ($columns_check) {
+                            $sql_reset .= ", intentos_fallidos = 0, bloqueado_hasta = NULL";
+                        }
+                        
+                        $sql_reset .= " WHERE id = ?";
+                        $params[] = $usuario['id'];
+                        
+                        $stmt_reset = $pdo->prepare($sql_reset);
+                        $stmt_reset->execute($params);
+                    } catch (PDOException $e) {
+                        // Si falla, intentar solo con ultimo_login
+                        try {
+                            $sql_simple = "UPDATE admin_usuarios SET ultimo_login = NOW() WHERE id = ?";
+                            $stmt_simple = $pdo->prepare($sql_simple);
+                            $stmt_simple->execute([$usuario['id']]);
+                        } catch (PDOException $e2) {
+                            // Ignorar error de actualización, continuar con login
+                            error_log("Error actualizando último login: " . $e2->getMessage());
+                        }
+                    }
                     
                     // Iniciar sesión
                     $_SESSION['admin_logged_in'] = true;
@@ -125,10 +173,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     // Registrar actividad
                     if (function_exists('logActivity')) {
-                        logActivity($usuario['id'], 'login', null, null, null, [
-                            'ip' => $_SERVER['REMOTE_ADDR'] ?? '',
-                            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
-                        ]);
+                        try {
+                            logActivity($usuario['id'], 'login', null, null, null, [
+                                'ip' => $_SERVER['REMOTE_ADDR'] ?? '',
+                                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
+                            ]);
+                        } catch (Exception $e) {
+                            // Ignorar error de logging, continuar con login
+                            error_log("Error en logActivity: " . $e->getMessage());
+                        }
                     }
                     
                     // Regenerar session ID por seguridad
@@ -137,27 +190,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     header('Location: index.php');
                     exit;
                 } else {
-                    // Contraseña incorrecta - Incrementar intentos fallidos
-                    $intentos_fallidos = ($usuario['intentos_fallidos'] ?? 0) + 1;
-                    $max_intentos = 5;
-                    $bloqueo_minutos = 30;
-                    
-                    if ($intentos_fallidos >= $max_intentos) {
-                        // Bloquear usuario por 30 minutos
-                        $bloqueado_hasta = date('Y-m-d H:i:s', time() + ($bloqueo_minutos * 60));
-                        $sql_bloqueo = "UPDATE admin_usuarios SET intentos_fallidos = ?, bloqueado_hasta = ? WHERE id = ?";
-                        $stmt_bloqueo = $pdo->prepare($sql_bloqueo);
-                        $stmt_bloqueo->execute([$intentos_fallidos, $bloqueado_hasta, $usuario['id']]);
-                        
-                        $error = "Usuario bloqueado temporalmente por {$bloqueo_minutos} minutos debido a múltiples intentos fallidos.";
-                    } else {
-                        // Solo incrementar contador
-                        $sql_intentos = "UPDATE admin_usuarios SET intentos_fallidos = ? WHERE id = ?";
-                        $stmt_intentos = $pdo->prepare($sql_intentos);
-                        $stmt_intentos->execute([$intentos_fallidos, $usuario['id']]);
-                        
-                        $intentos_restantes = $max_intentos - $intentos_fallidos;
-                        $error = "Usuario o contraseña incorrectos. Intentos restantes: {$intentos_restantes}";
+                    // Contraseña incorrecta
+                    // Intentar manejar intentos fallidos si los campos existen
+                    try {
+                        $columns_check = $pdo->query("SHOW COLUMNS FROM admin_usuarios LIKE 'intentos_fallidos'")->fetch();
+                        if ($columns_check) {
+                            // Los campos existen, usar lógica de bloqueo
+                            $intentos_fallidos = (isset($usuario['intentos_fallidos']) ? (int)$usuario['intentos_fallidos'] : 0) + 1;
+                            $max_intentos = 5;
+                            $bloqueo_minutos = 30;
+                            
+                            if ($intentos_fallidos >= $max_intentos) {
+                                // Bloquear usuario por 30 minutos
+                                $bloqueado_hasta = date('Y-m-d H:i:s', time() + ($bloqueo_minutos * 60));
+                                $sql_bloqueo = "UPDATE admin_usuarios SET intentos_fallidos = ?, bloqueado_hasta = ? WHERE id = ?";
+                                $stmt_bloqueo = $pdo->prepare($sql_bloqueo);
+                                $stmt_bloqueo->execute([$intentos_fallidos, $bloqueado_hasta, $usuario['id']]);
+                                
+                                $error = "Usuario bloqueado temporalmente por {$bloqueo_minutos} minutos debido a múltiples intentos fallidos.";
+                            } else {
+                                // Solo incrementar contador
+                                $sql_intentos = "UPDATE admin_usuarios SET intentos_fallidos = ? WHERE id = ?";
+                                $stmt_intentos = $pdo->prepare($sql_intentos);
+                                $stmt_intentos->execute([$intentos_fallidos, $usuario['id']]);
+                                
+                                $intentos_restantes = $max_intentos - $intentos_fallidos;
+                                $error = "Usuario o contraseña incorrectos. Intentos restantes: {$intentos_restantes}";
+                            }
+                        } else {
+                            // Los campos no existen, solo mostrar error simple
+                            $error = 'Usuario o contraseña incorrectos';
+                        }
+                    } catch (PDOException $e) {
+                        // Si hay error, mostrar mensaje simple
+                        error_log("Error en manejo de intentos fallidos: " . $e->getMessage());
+                        $error = 'Usuario o contraseña incorrectos';
                     }
                 }
             }
