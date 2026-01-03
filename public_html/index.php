@@ -1194,7 +1194,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="service-card h-100">
                             <div class="service-icon-wrapper">
                                 <div class="service-icon bg-primary">
-                                    <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Instalación y Configuración" class="service-icon-image">
+                                    <img src="<?php echo imageUrl('iconos/iconos-02.png'); ?>" alt="Instalación y Configuración" class="service-icon-image">
                                 </div>
                             </div>
                             <h3 class="service-title">Instalación y Configuración</h3>
@@ -1219,7 +1219,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="service-card h-100">
                             <div class="service-icon-wrapper">
                                 <div class="service-icon bg-primary">
-                                    <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Capacitación y Entrenamiento" class="service-icon-image">
+                                    <img src="<?php echo imageUrl('iconos/iconos-04.png'); ?>" alt="Capacitación y Entrenamiento" class="service-icon-image">
                                 </div>
                             </div>
                             <h3 class="service-title">Capacitación y Entrenamiento</h3>
@@ -1244,7 +1244,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="service-card h-100">
                             <div class="service-icon-wrapper">
                                 <div class="service-icon bg-primary">
-                                    <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Mantenimiento y Soporte" class="service-icon-image">
+                                    <img src="<?php echo imageUrl('iconos/iconos-02.png'); ?>" alt="Mantenimiento y Soporte" class="service-icon-image">
                                 </div>
                             </div>
                             <h3 class="service-title">Mantenimiento y Soporte</h3>
@@ -1269,7 +1269,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="service-card h-100">
                             <div class="service-icon-wrapper">
                                 <div class="service-icon bg-primary">
-                                    <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Asesoría Especializada" class="service-icon-image">
+                                    <img src="<?php echo imageUrl('iconos/iconos-03.png'); ?>" alt="Asesoría Especializada" class="service-icon-image">
                                 </div>
                             </div>
                             <h3 class="service-title">Asesoría Especializada</h3>
@@ -1294,7 +1294,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <div class="service-card h-100">
                             <div class="service-icon-wrapper">
                                 <div class="service-icon bg-primary">
-                                    <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Consultoría en Simulación" class="service-icon-image">
+                                    <img src="<?php echo imageUrl('iconos/iconos-05.png'); ?>" alt="Consultoría en Simulación" class="service-icon-image">
                                 </div>
                             </div>
                             <h3 class="service-title">Consultoría en Simulación</h3>
