@@ -27,7 +27,7 @@ switch ($current_page) {
 // Configurar menú de navegación
 $nav_items = [
     ['label' => 'Inicio', 'href' => siteUrl(), 'icon' => 'house', 'section' => 'home'],
-    // ['label' => 'Catálogo', 'href' => siteUrl('catalogo.php'), 'icon' => 'grid-3x3-gap', 'section' => 'catalogo'], // Oculto hasta Fase 2
+    ['label' => 'Catálogo', 'href' => siteUrl('catalogo.php'), 'icon' => 'grid-3x3-gap', 'section' => 'catalogo'],
     ['label' => 'Blog', 'href' => siteUrl('blog.php'), 'icon' => 'newspaper', 'section' => 'blog'],
     ['label' => 'Aliados', 'href' => siteUrl() . '#aliados', 'icon' => 'people', 'section' => 'aliados'],
 ];

@@ -20,6 +20,16 @@ require_once __DIR__ . '/includes/config.php';
 // Cargar funciones
 require_once INCLUDES_PATH . '/functions.php';
 
+// Cargar helper de datos del home
+require_once INCLUDES_PATH . '/home_data.php';
+
+// Cargar datos del home desde BD
+$home_banners = getHomeBanners();
+$home_servicios = getHomeServicios();
+$home_productos_destacados = getHomeProductosDestacados();
+$home_mision_vision = getHomeMisionVision();
+$home_categorias_destacadas = getHomeCategoriasDestacadas();
+
 // Variables para meta tags
 $pageTitle = SITE_NAME . ' - ' . SITE_TAGLINE;
 $pageDescription = SITE_DESCRIPTION;
@@ -1054,161 +1064,68 @@ $pageImage = imageUrl('design/logo-og.jpg');
             
             <!-- Services Grid -->
             <div class="row g-4">
-                
-                <!-- Service 1: Diseño y Desarrollo -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                    <div class="service-card h-100">
-                        <div class="service-icon-wrapper">
-                            <div class="service-icon bg-primary">
-                                <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Diseño y Desarrollo" class="service-icon-image">
+                <?php if (!empty($home_servicios)): ?>
+                    <?php foreach ($home_servicios as $index => $servicio): ?>
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="<?php echo ($index + 1) * 100; ?>">
+                        <div class="service-card h-100">
+                            <div class="service-icon-wrapper">
+                                <div class="service-icon bg-primary">
+                                    <?php if ($servicio['icono']): ?>
+                                        <i class="bi <?php echo esc($servicio['icono']); ?>" style="font-size: 3rem; color: white;"></i>
+                                    <?php else: ?>
+                                        <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="<?php echo esc($servicio['titulo']); ?>" class="service-icon-image">
+                                    <?php endif; ?>
+                                </div>
                             </div>
-                        </div>
-                        <h3 class="service-title">Diseño y Desarrollo</h3>
-                        <p class="service-description">
-                            Diseñamos y planificamos centros de simulación médica completos, desde la conceptualización hasta la implementación. Incluye planificación arquitectónica, distribución de espacios y selección de equipamiento.
-                        </p>
-                        <ul class="service-features">
-                            <li><i class="bi bi-check-circle-fill text-primary"></i> Diseño Arquitectónico especializado</li>
-                            <li><i class="bi bi-check-circle-fill text-primary"></i> Distribución óptima de espacios</li>
-                            <li><i class="bi bi-check-circle-fill text-primary"></i> Selección de equipamiento</li>
-                            <li><i class="bi bi-check-circle-fill text-primary"></i> Instalación y puesta en marcha</li>
-                        </ul>
-                        <a href="#newsletter" class="btn btn-outline-primary w-100 mt-auto service-cta">
-                            Solicitar Cotización
-                            <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Service 2: Mantenimiento Preventivo -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                    <div class="service-card h-100 featured">
-                        <div class="featured-badge">
-                            <i class="bi bi-star-fill me-1"></i> Más Solicitado
-                        </div>
-                        <div class="service-icon-wrapper">
-                            <div class="service-icon bg-success">
-                                <img src="<?php echo imageUrl('iconos/iconos-02.png'); ?>" alt="Mantenimiento Preventivo" class="service-icon-image">
+                            <h3 class="service-title"><?php echo esc($servicio['titulo']); ?></h3>
+                            <p class="service-description">
+                                <?php echo $servicio['resumen'] ? esc($servicio['resumen']) : strip_tags($servicio['texto_largo']); ?>
+                            </p>
+                            <?php if ($servicio['texto_largo']): ?>
+                            <div class="service-features">
+                                <?php echo $servicio['texto_largo']; ?>
                             </div>
+                            <?php endif; ?>
+                            <?php if ($servicio['cta_texto'] && $servicio['cta_url']): ?>
+                            <a href="<?php echo esc($servicio['cta_url']); ?>" class="btn btn-outline-primary w-100 mt-auto service-cta">
+                                <?php echo esc($servicio['cta_texto']); ?>
+                                <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                            <?php else: ?>
+                            <a href="#newsletter" class="btn btn-outline-primary w-100 mt-auto service-cta">
+                                Solicitar Cotización
+                                <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                            <?php endif; ?>
                         </div>
-                        <h3 class="service-title">Mantenimiento Preventivo</h3>
-                        <p class="service-description">
-                            Programas de mantenimiento diseñados para preservar el rendimiento y prolongar la vida útil de los simuladores. Nuestros técnicos biomédicos realizan inspecciones y ajustes programados que garantizan el funcionamiento continuo y seguro del equipo.
-                        </p>
-                        <ul class="service-features">
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Revisiones periódicas y calibraciones técnicas</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Limpieza y verificación de componentes críticos</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Actualización de software y firmware</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Reporte técnico con diagnóstico preventivo y recomendaciones</li>
-                        </ul>
-                        <a href="#newsletter" class="btn btn-success w-100 mt-auto service-cta">
-                            Agendar Mantenimiento
-                            <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
                     </div>
-                </div>
-                
-                <!-- Service 3: Mantenimiento Correctivo -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="250">
-                    <div class="service-card h-100">
-                        <div class="service-icon-wrapper">
-                            <div class="service-icon bg-warning">
-                                <img src="<?php echo imageUrl('iconos/iconos-05.png'); ?>" alt="Mantenimiento Correctivo" class="service-icon-image">
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <!-- Fallback: Service 1: Diseño y Desarrollo -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-card h-100">
+                            <div class="service-icon-wrapper">
+                                <div class="service-icon bg-primary">
+                                    <img src="<?php echo imageUrl('iconos/iconos-01.png'); ?>" alt="Diseño y Desarrollo" class="service-icon-image">
+                                </div>
                             </div>
+                            <h3 class="service-title">Diseño y Desarrollo</h3>
+                            <p class="service-description">
+                                Diseñamos y planificamos centros de simulación médica completos, desde la conceptualización hasta la implementación. Incluye planificación arquitectónica, distribución de espacios y selección de equipamiento.
+                            </p>
+                            <ul class="service-features">
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Diseño Arquitectónico especializado</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Distribución óptima de espacios</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Selección de equipamiento</li>
+                                <li><i class="bi bi-check-circle-fill text-primary"></i> Instalación y puesta en marcha</li>
+                            </ul>
+                            <a href="#newsletter" class="btn btn-outline-primary w-100 mt-auto service-cta">
+                                Solicitar Cotización
+                                <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
                         </div>
-                        <h3 class="service-title">Mantenimiento Correctivo</h3>
-                        <p class="service-description">
-                            Servicio especializado que soluciona fallas o averías en equipos de simulación médica. Brindamos atención ágil y profesional, utilizando refacciones originales y procedimientos certificados para restablecer el funcionamiento óptimo del sistema.
-                        </p>
-                        <ul class="service-features">
-                            <li><i class="bi bi-check-circle-fill text-warning"></i> Reparación de módulos y componentes electrónicos</li>
-                            <li><i class="bi bi-check-circle-fill text-warning"></i> Sustitución de piezas y refacciones originales</li>
-                            <li><i class="bi bi-check-circle-fill text-warning"></i> Diagnóstico técnico especializado en sitio</li>
-                            <li><i class="bi bi-check-circle-fill text-warning"></i> Soporte técnico prioritario hasta la resolución completa</li>
-                        </ul>
-                        <a href="#newsletter" class="btn btn-outline-warning w-100 mt-auto service-cta">
-                            Solicitar Servicio
-                            <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
                     </div>
-                </div>
-                
-                <!-- Service 4: Asesoría en Simulación -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                    <div class="service-card h-100">
-                        <div class="service-icon-wrapper">
-                            <div class="service-icon bg-secondary">
-                                <img src="<?php echo imageUrl('iconos/iconos-04.png'); ?>" alt="Asesoría en Simulación" class="service-icon-image">
-                            </div>
-                        </div>
-                        <h3 class="service-title">Asesoría en Simulación</h3>
-                        <p class="service-description">
-                            Brindamos apoyo integral en la planeación, selección e implementación de programas educativos de simulación. Asesoramos en la elección de simuladores según cada especialidad médica y en la modernización o ampliación de centros existentes.
-                        </p>
-                        <ul class="service-features">
-                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Selección de simuladores por especialidad médica</li>
-                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Diseño y optimización de centros de simulación</li>
-                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Integración de nuevas tecnologías y equipos</li>
-                            <li><i class="bi bi-check-circle-fill text-secondary"></i> Actualización y modernización de laboratorios existentes</li>
-                        </ul>
-                        <a href="#newsletter" class="btn btn-outline-secondary w-100 mt-auto service-cta">
-                            Solicitar Asesoría
-                            <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Service 5: Capacitación -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                    <div class="service-card h-100">
-                        <div class="service-icon-wrapper">
-                            <div class="service-icon bg-warning">
-                                <img src="<?php echo imageUrl('iconos/iconos-03.png'); ?>" alt="Capacitación y Entrenamiento" class="service-icon-image">
-                            </div>
-                        </div>
-                        <h3 class="service-title">Capacitación y Entrenamiento</h3>
-                        <p class="service-description">
-                            Ofrecemos programas de capacitación dirigidos a docentes y personal técnico, orientados al uso eficiente de simuladores y a la aplicación de estrategias didácticas en entornos de simulación médica.
-                        </p>
-                        <ul class="service-features">
-                            <li><i class="bi bi-check-circle-fill text-warning"></i> Capacitación técnica especializada en simuladores</li>
-                            <li><i class="bi bi-check-circle-fill text-warning"></i> Entrenamiento en operación y mantenimiento de equipos</li>
-                            <li><i class="bi bi-check-circle-fill text-warning"></i> Asesoría en prácticas de enseñanza con simulación</li>
-                            <li><i class="bi bi-check-circle-fill text-warning"></i> Exposiciones en eventos académicos y de innovación médica</li>
-                        </ul>
-                        <a href="#newsletter" class="btn btn-outline-warning w-100 mt-auto service-cta">
-                            Ver Calendario
-                            <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Service 6: Atención a Cliente -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="450">
-                    <div class="service-card h-100">
-                        <div class="service-icon-wrapper">
-                            <div class="service-icon bg-dark">
-                                <img src="<?php echo imageUrl('iconos/icono6.png'); ?>" alt="Atención a Cliente" class="service-icon-image">
-                            </div>
-                        </div>
-                        <h3 class="service-title">Atención a Cliente</h3>
-                        <p class="service-description">
-                            Ofrecemos acompañamiento personalizado para orientar a cada institución en la selección de simuladores y soluciones educativas que respondan a sus necesidades académicas.
-                        </p>
-                        <ul class="service-features">
-                            <li><i class="bi bi-check-circle-fill text-dark"></i> Cotizaciones personalizadas</li>
-                            <li><i class="bi bi-check-circle-fill text-dark"></i> Asesoría técnica y comercial</li>
-                            <li><i class="bi bi-check-circle-fill text-dark"></i> Seguimiento de proyectos</li>
-                            <li><i class="bi bi-check-circle-fill text-dark"></i> Soporte postventa continuo</li>
-                        </ul>
-                        <a href="#newsletter" class="btn btn-outline-dark w-100 mt-auto service-cta">
-                            Contactar Asesor
-                            <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                
+                <?php endif; ?>
             </div>
             
             <!-- CTA Section -->

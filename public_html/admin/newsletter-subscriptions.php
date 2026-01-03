@@ -20,6 +20,11 @@ require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/connection.php';
 require_once __DIR__ . '/auth_check.php';
 
+// Verificar permisos RBAC
+if (function_exists('checkPermission')) {
+    checkPermission('cotizaciones', 'ver');
+}
+
 // Obtener conexión PDO
 $pdo = getDB();
 if (!$pdo) {

@@ -542,3 +542,216 @@ function generateSlug($text) {
     return $slug;
 }
 
+/**
+ * Registrar actividad en la bitácora de auditoría
+ * 
+ * @param int $usuario_id ID del usuario que realiza la acción
+ * @param string $accion Tipo de acción (login, logout, crear, editar, eliminar, etc.)
+ * @param string $modulo Módulo donde se realizó la acción (opcional)
+ * @param int $entidad_id ID de la entidad afectada (opcional)
+ * @param string $entidad_tipo Tipo de entidad (opcional)
+ * @param array $detalles Detalles adicionales (opcional)
+ * @return bool True si se registró correctamente
+ */
+function logActivity($usuario_id, $accion, $modulo = null, $entidad_id = null, $entidad_tipo = null, $detalles = null) {
+    $pdo = getDB();
+    if (!$pdo) {
+        return false;
+    }
+    
+    // Verificar si existe la tabla audit_logs
+    try {
+        $sql = "
+            INSERT INTO audit_logs 
+            (usuario_id, accion, modulo, entidad_id, entidad_tipo, detalles, ip_address, user_agent)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ";
+        
+        $detalles_json = $detalles ? json_encode($detalles, JSON_UNESCAPED_UNICODE) : null;
+        $ip_address = $_SERVER['REMOTE_ADDR'] ?? null;
+        $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            $usuario_id,
+            $accion,
+            $modulo,
+            $entidad_id,
+            $entidad_tipo,
+            $detalles_json,
+            $ip_address,
+            $user_agent
+        ]);
+        
+        return true;
+    } catch (Exception $e) {
+        // Si la tabla no existe aún, no hacer nada (evitar errores durante desarrollo)
+        if (ENVIRONMENT === 'development') {
+            error_log("Error en logActivity: " . $e->getMessage());
+        }
+        return false;
+    }
+}
+
+/**
+ * Obtiene un valor de configuración desde la base de datos
+ * @param string $clave Clave de la configuración
+ * @param mixed $default Valor por defecto si no existe
+ * @return mixed Valor de la configuración
+ */
+function getConfig($clave, $default = null) {
+    static $config_cache = [];
+    
+    // Verificar cache
+    if (isset($config_cache[$clave])) {
+        return $config_cache[$clave];
+    }
+    
+    $pdo = getDB();
+    if (!$pdo) {
+        return $default;
+    }
+    
+    try {
+        $stmt = $pdo->prepare("SELECT valor, tipo FROM configuracion WHERE clave = ?");
+        $stmt->execute([$clave]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($result) {
+            $valor = $result['valor'];
+            
+            // Convertir según tipo
+            switch ($result['tipo']) {
+                case 'boolean':
+                    $valor = (bool)$valor;
+                    break;
+                case 'number':
+                    $valor = is_numeric($valor) ? (float)$valor : $default;
+                    break;
+                case 'json':
+                    $valor = json_decode($valor, true);
+                    break;
+            }
+            
+            $config_cache[$clave] = $valor;
+            return $valor;
+        }
+    } catch (Exception $e) {
+        // Si la tabla no existe, retornar default
+    }
+    
+    return $default;
+}
+
+/**
+ * Establece un valor de configuración en la base de datos
+ * @param string $clave Clave de la configuración
+ * @param mixed $valor Valor a guardar
+ * @param string $tipo Tipo de dato (text, number, boolean, json, html)
+ * @param string $categoria Categoría de la configuración
+ * @return bool True si se guardó correctamente
+ */
+function setConfig($clave, $valor, $tipo = 'text', $categoria = 'general') {
+    $pdo = getDB();
+    if (!$pdo) {
+        return false;
+    }
+    
+    try {
+        // Convertir valor según tipo
+        if ($tipo === 'json' && is_array($valor)) {
+            $valor = json_encode($valor);
+        } elseif ($tipo === 'boolean') {
+            $valor = $valor ? '1' : '0';
+        }
+        
+        $stmt = $pdo->prepare("
+            INSERT INTO configuracion (clave, valor, tipo, categoria, updated_at)
+            VALUES (?, ?, ?, ?, NOW())
+            ON DUPLICATE KEY UPDATE
+                valor = VALUES(valor),
+                tipo = VALUES(tipo),
+                categoria = VALUES(categoria),
+                updated_at = NOW()
+        ");
+        
+        return $stmt->execute([$clave, $valor, $tipo, $categoria]);
+    } catch (Exception $e) {
+        error_log("Error al guardar configuración: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Obtiene todas las configuraciones de una categoría
+ * @param string $categoria Categoría de configuración
+ * @return array Array asociativo clave => valor
+ */
+function getConfigByCategory($categoria) {
+    $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
+    
+    try {
+        $stmt = $pdo->prepare("SELECT clave, valor, tipo FROM configuracion WHERE categoria = ?");
+        $stmt->execute([$categoria]);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $config = [];
+        foreach ($results as $row) {
+            $valor = $row['valor'];
+            
+            switch ($row['tipo']) {
+                case 'boolean':
+                    $valor = (bool)$valor;
+                    break;
+                case 'number':
+                    $valor = is_numeric($valor) ? (float)$valor : 0;
+                    break;
+                case 'json':
+                    $valor = json_decode($valor, true);
+                    break;
+            }
+            
+            $config[$row['clave']] = $valor;
+        }
+        
+        return $config;
+    } catch (Exception $e) {
+        return [];
+    }
+}
+
+/**
+ * Publica automáticamente artículos programados cuya fecha_programada haya llegado
+ * @return int Número de artículos publicados
+ */
+function publicarArticulosProgramados() {
+    $pdo = getDB();
+    if (!$pdo) {
+        return 0;
+    }
+    
+    try {
+        // Buscar artículos programados cuya fecha ya llegó
+        $sql = "
+            UPDATE blog_articulos 
+            SET estado = 'publicado', 
+                fecha_publicacion = COALESCE(fecha_publicacion, NOW()),
+                updated_at = NOW()
+            WHERE estado = 'programado' 
+            AND fecha_programada IS NOT NULL 
+            AND fecha_programada <= NOW()
+        ";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        
+        return $stmt->rowCount();
+    } catch (Exception $e) {
+        error_log("Error en publicarArticulosProgramados: " . $e->getMessage());
+        return 0;
+    }
+}
+

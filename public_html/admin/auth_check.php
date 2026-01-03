@@ -53,7 +53,50 @@ if (isset($_SESSION['admin_last_activity']) &&
 // Actualizar tiempo de última actividad
 $_SESSION['admin_last_activity'] = time();
 
-// Función para verificar permisos de rol
+// Cargar funciones RBAC si existen
+if (file_exists(__DIR__ . '/../includes/rbac_functions.php')) {
+    require_once __DIR__ . '/../includes/rbac_functions.php';
+}
+
+// Verificar si el usuario debe cambiar su contraseña
+if (isset($_SESSION['admin_user_id'])) {
+    $pdo = getDB();
+    if ($pdo) {
+        $sql = "SELECT forzar_cambio_password FROM admin_usuarios WHERE id = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$_SESSION['admin_user_id']]);
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($usuario && $usuario['forzar_cambio_password'] == 1) {
+            // No redirigir si ya está en la página de cambiar contraseña
+            $current_page = basename($_SERVER['PHP_SELF']);
+            if ($current_page !== 'cambiar-password.php' && $current_page !== 'logout.php') {
+                header('Location: usuarios/cambiar-password.php?forzar=1');
+                exit;
+            }
+        }
+    }
+}
+
+// Verificar si el usuario está bloqueado
+if (isset($_SESSION['admin_user_id'])) {
+    $pdo = getDB();
+    if ($pdo) {
+        $sql = "SELECT bloqueado_hasta FROM admin_usuarios WHERE id = ? AND bloqueado_hasta IS NOT NULL AND bloqueado_hasta > NOW()";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$_SESSION['admin_user_id']]);
+        $bloqueado = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($bloqueado) {
+            session_unset();
+            session_destroy();
+            header('Location: login.php?bloqueado=1');
+            exit;
+        }
+    }
+}
+
+// Función para verificar permisos de rol (mantener compatibilidad)
 function hasPermission($required_role = 'editor') {
     $user_role = $_SESSION['admin_rol'] ?? 'editor';
     

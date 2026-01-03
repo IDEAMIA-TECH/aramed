@@ -6,6 +6,11 @@ require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/connection.php';
 require_once __DIR__ . '/auth_check.php';
 
+// Verificar permisos RBAC
+if (function_exists('checkPermission')) {
+    checkPermission('usuarios', 'ver');
+}
+
 $current_page = 'usuarios.php';
 $current_dir = 'admin';
 
@@ -81,6 +86,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $success_message = 'Usuario eliminado exitosamente';
             $action = 'list';
+            
+        } elseif ($action === 'update_permissions') {
+            // Verificar permisos para gestionar permisos
+            if (function_exists('checkPermission')) {
+                checkPermission('usuarios', 'editar');
+            }
+            
+            $permisos_seleccionados = isset($_POST['permisos']) ? $_POST['permisos'] : [];
+            
+            // Eliminar permisos actuales del usuario
+            $stmt = $pdo->prepare("DELETE FROM usuario_permisos WHERE usuario_id = ?");
+            $stmt->execute([$id]);
+            
+            // Insertar nuevos permisos
+            if (!empty($permisos_seleccionados)) {
+                $stmt = $pdo->prepare("INSERT INTO usuario_permisos (usuario_id, permiso_id) VALUES (?, ?)");
+                foreach ($permisos_seleccionados as $permiso_id) {
+                    $stmt->execute([$id, (int)$permiso_id]);
+                }
+            }
+            
+            // Registrar actividad
+            if (function_exists('logActivity')) {
+                logActivity($_SESSION['admin_user_id'], 'editar', 'usuarios', $id, 'permisos', [
+                    'permisos_asignados' => count($permisos_seleccionados)
+                ]);
+            }
+            
+            $success_message = 'Permisos actualizados exitosamente';
+            $action = 'permisos';
         }
         
     } catch (Exception $e) {
@@ -90,7 +125,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Obtener datos para formularios
 $usuario = null;
-if ($action === 'edit' && $id) {
+$permisos_usuario = [];
+$permisos_disponibles = [];
+
+if (($action === 'edit' || $action === 'permisos') && $id) {
     try {
         $pdo = getDB();
         $stmt = $pdo->prepare("SELECT * FROM admin_usuarios WHERE id = ?");
@@ -100,6 +138,24 @@ if ($action === 'edit' && $id) {
         if (!$usuario) {
             $error_message = 'Usuario no encontrado';
             $action = 'list';
+        } else {
+            // Obtener permisos del usuario
+            $stmt = $pdo->prepare("SELECT permiso_id FROM usuario_permisos WHERE usuario_id = ?");
+            $stmt->execute([$id]);
+            $permisos_usuario = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            
+            // Obtener todos los permisos disponibles
+            $stmt = $pdo->query("
+                SELECT p.*, 
+                       rp.rol_id,
+                       GROUP_CONCAT(DISTINCT r.nombre) as roles_con_permiso
+                FROM permisos p
+                LEFT JOIN rol_permisos rp ON p.id = rp.permiso_id
+                LEFT JOIN roles r ON rp.rol_id = r.id
+                GROUP BY p.id
+                ORDER BY p.modulo, p.nombre
+            ");
+            $permisos_disponibles = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     } catch (Exception $e) {
         $error_message = $e->getMessage();
@@ -474,7 +530,85 @@ try {
                 </div>
 
                 <!-- Content -->
-                <?php if ($action === 'create' || $action === 'edit'): ?>
+                <?php if ($action === 'permisos' && $usuario): ?>
+                    
+                    <div class="form-card">
+                        <h3 class="mb-4">
+                            <i class="bi bi-shield-check me-2"></i>
+                            Gestionar Permisos: <?php echo esc($usuario['nombre']); ?>
+                        </h3>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Los permisos asignados directamente al usuario tienen prioridad sobre los permisos del rol.
+                        </div>
+                        
+                        <form method="POST" action="?action=update_permissions&id=<?php echo $id; ?>">
+                            <?php 
+                            // Agrupar permisos por módulo
+                            $permisos_por_modulo = [];
+                            foreach ($permisos_disponibles as $permiso) {
+                                $modulo = $permiso['modulo'] ?? 'general';
+                                if (!isset($permisos_por_modulo[$modulo])) {
+                                    $permisos_por_modulo[$modulo] = [];
+                                }
+                                $permisos_por_modulo[$modulo][] = $permiso;
+                            }
+                            
+                            foreach ($permisos_por_modulo as $modulo => $permisos_modulo): 
+                            ?>
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-folder me-2"></i>
+                                        <?php echo ucfirst(str_replace('_', ' ', $modulo)); ?>
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <?php foreach ($permisos_modulo as $permiso): ?>
+                                        <div class="col-md-6 mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" 
+                                                       type="checkbox" 
+                                                       name="permisos[]" 
+                                                       value="<?php echo $permiso['id']; ?>"
+                                                       id="permiso_<?php echo $permiso['id']; ?>"
+                                                       <?php echo in_array($permiso['id'], $permisos_usuario) ? 'checked' : ''; ?>>
+                                                <label class="form-check-label" for="permiso_<?php echo $permiso['id']; ?>">
+                                                    <strong><?php echo esc($permiso['nombre']); ?></strong>
+                                                    <?php if ($permiso['descripcion']): ?>
+                                                    <br>
+                                                    <small class="text-muted"><?php echo esc($permiso['descripcion']); ?></small>
+                                                    <?php endif; ?>
+                                                    <?php if ($permiso['roles_con_permiso']): ?>
+                                                    <br>
+                                                    <small class="text-info">
+                                                        <i class="bi bi-tag me-1"></i>
+                                                        Roles: <?php echo esc($permiso['roles_con_permiso']); ?>
+                                                    </small>
+                                                    <?php endif; ?>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                            
+                            <div class="d-flex gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-2"></i>Guardar Permisos
+                                </button>
+                                <a href="?action=list" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Volver a Lista
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                    
+                <?php elseif ($action === 'create' || $action === 'edit'): ?>
                     <!-- Form -->
                     <div class="form-card">
                         <h3 class="mb-4">
@@ -606,6 +740,12 @@ try {
                                                        class="btn btn-sm btn-outline-primary" title="Editar">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
+                                                    <?php if (function_exists('checkPermission') && can('usuarios', 'editar')): ?>
+                                                    <a href="?action=permisos&id=<?php echo $user['id']; ?>" 
+                                                       class="btn btn-sm btn-outline-info" title="Gestionar Permisos">
+                                                        <i class="bi bi-shield-check"></i>
+                                                    </a>
+                                                    <?php endif; ?>
                                                     <?php if ($user['id'] != ($_SESSION['admin_user_id'] ?? 0)): ?>
                                                     <a href="?action=delete&id=<?php echo $user['id']; ?>" 
                                                        class="btn btn-sm btn-outline-danger" title="Eliminar"

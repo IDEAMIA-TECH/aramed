@@ -11,11 +11,35 @@
  * @copyright  2025 Aramed y Laboratorios
  */
 
+// Cargar funciones RBAC si existen
+if (file_exists(__DIR__ . '/../../includes/rbac_functions.php')) {
+    require_once __DIR__ . '/../../includes/rbac_functions.php';
+}
+
 // Obtener información del usuario actual
 $current_user = [
     'nombre' => $_SESSION['admin_username'] ?? 'Administrador',
-    'username' => $_SESSION['admin_username'] ?? 'admin'
+    'username' => $_SESSION['admin_username'] ?? 'admin',
+    'id' => $_SESSION['admin_user_id'] ?? null,
+    'rol' => $_SESSION['admin_rol'] ?? 'editor'
 ];
+
+// Obtener permisos del usuario actual (si RBAC está disponible)
+$user_permissions = [];
+if (function_exists('getUserPermissions') && isset($current_user['id'])) {
+    $user_permissions = getUserPermissions($current_user['id']);
+}
+
+// Función helper para verificar si el usuario puede ver un módulo
+function canSeeModule($modulo, $user_permissions) {
+    // Si no hay permisos cargados, mostrar todo (compatibilidad)
+    if (empty($user_permissions)) {
+        return true;
+    }
+    
+    // Si tiene permiso de "ver" en el módulo, mostrar
+    return isset($user_permissions[$modulo]) && in_array('ver', $user_permissions[$modulo]);
+}
 
 // Función para determinar si un enlace está activo
 function isActive($page, $current_page, $current_dir = null) {
@@ -71,7 +95,64 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
                 <i class="bi bi-speedometer2 me-2"></i>Dashboard
             </a>
             
+            <!-- Home -->
+            <?php if (canSeeModule('home', $user_permissions)): ?>
+            <div class="nav-item">
+                <a class="<?php echo getNavLinkClass('home/index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'home') ? '../home/index.php' : 'home/index.php'; ?>">
+                    <i class="bi bi-house-door me-2"></i>Home
+                </a>
+                <?php if ($current_dir === 'home'): ?>
+                <div class="ms-3 mt-1">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
+                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                    </a>
+                    <a class="<?php echo getNavLinkClass('banners.php', $current_page, $current_dir); ?> nav-link-sm" href="banners.php">
+                        <i class="bi bi-image me-2"></i>Banners
+                    </a>
+                    <a class="<?php echo getNavLinkClass('productos-destacados.php', $current_page, $current_dir); ?> nav-link-sm" href="productos-destacados.php">
+                        <i class="bi bi-star me-2"></i>Productos Destacados
+                    </a>
+                    <a class="<?php echo getNavLinkClass('servicios.php', $current_page, $current_dir); ?> nav-link-sm" href="servicios.php">
+                        <i class="bi bi-gear me-2"></i>Servicios
+                    </a>
+                    <a class="<?php echo getNavLinkClass('mision-vision.php', $current_page, $current_dir); ?> nav-link-sm" href="mision-vision.php">
+                        <i class="bi bi-bullseye me-2"></i>Misión/Visión
+                    </a>
+                    <a class="<?php echo getNavLinkClass('categorias-destacadas.php', $current_page, $current_dir); ?> nav-link-sm" href="categorias-destacadas.php">
+                        <i class="bi bi-folder me-2"></i>Categorías
+                    </a>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+            
+            <!-- Catálogo -->
+            <?php if (canSeeModule('catalogo', $user_permissions)): ?>
+            <div class="nav-item">
+                <a class="<?php echo getNavLinkClass('catalogo/index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'catalogo') ? '../catalogo/index.php' : 'catalogo/index.php'; ?>">
+                    <i class="bi bi-box-seam me-2"></i>Catálogo
+                </a>
+                <?php if ($current_dir === 'catalogo'): ?>
+                <div class="ms-3 mt-1">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
+                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                    </a>
+                    <a class="<?php echo getNavLinkClass('productos/index.php', $current_page, $current_dir); ?> nav-link-sm" href="productos/index.php">
+                        <i class="bi bi-box me-2"></i>Productos
+                    </a>
+                    <a class="<?php echo getNavLinkClass('categorias.php', $current_page, $current_dir); ?> nav-link-sm" href="categorias.php">
+                        <i class="bi bi-folder me-2"></i>Categorías
+                    </a>
+                    <a class="<?php echo getNavLinkClass('marcas.php', $current_page, $current_dir); ?> nav-link-sm" href="marcas.php">
+                        <i class="bi bi-tags me-2"></i>Marcas
+                    </a>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+            
             <!-- Blog -->
+            <?php if (canSeeModule('blog', $user_permissions)): ?>
             <div class="nav-item">
                 <a class="<?php echo getNavLinkClass('blog/index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../blog/index.php' : 'blog/index.php'; ?>">
                     <i class="bi bi-newspaper me-2"></i>Blog
@@ -96,22 +177,169 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
                 </div>
                 <?php endif; ?>
             </div>
+            <?php endif; ?>
+            
+            <!-- Proyectos -->
+            <?php if (canSeeModule('proyectos', $user_permissions)): ?>
+            <div class="nav-item">
+                <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'catalogo' || $current_dir === 'home' || $current_dir === 'contacto') ? '../proyectos/index.php' : 'proyectos/index.php'; ?>">
+                    <i class="bi bi-folder me-2"></i>Proyectos
+                </a>
+                <?php if ($current_dir === 'proyectos'): ?>
+                <div class="ms-3 mt-1">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
+                        <i class="bi bi-list me-2"></i>Listado
+                    </a>
+                    <?php if (hasPermission('proyectos', 'crear')): ?>
+                    <a class="<?php echo getNavLinkClass('create.php', $current_page, $current_dir); ?> nav-link-sm" href="create.php">
+                        <i class="bi bi-plus-circle me-2"></i>Crear
+                    </a>
+                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+            
+            <!-- Contacto -->
+            <?php if (canSeeModule('contacto', $user_permissions)): ?>
+            <div class="nav-item">
+                <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'catalogo' || $current_dir === 'home' || $current_dir === 'proyectos') ? '../contacto/index.php' : 'contacto/index.php'; ?>">
+                    <i class="bi bi-chat-dots me-2"></i>Contacto
+                </a>
+                <?php if ($current_dir === 'contacto'): ?>
+                <div class="ms-3 mt-1">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
+                        <i class="bi bi-list me-2"></i>Listado
+                    </a>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+            
+            <!-- Cotizaciones -->
+            <?php if (canSeeModule('cotizaciones', $user_permissions)): ?>
+            <div class="nav-item">
+                <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'catalogo' || $current_dir === 'home' || $current_dir === 'contacto') ? '../cotizaciones/index.php' : 'cotizaciones/index.php'; ?>">
+                    <i class="bi bi-file-earmark-text me-2"></i>Cotizaciones
+                </a>
+                <?php if ($current_dir === 'cotizaciones'): ?>
+                <div class="ms-3 mt-1">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
+                        <i class="bi bi-list me-2"></i>Listado
+                    </a>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
             
             <!-- Newsletter -->
-            <a class="<?php echo getNavLinkClass('newsletter-subscriptions.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../newsletter-subscriptions.php' : 'newsletter-subscriptions.php'; ?>">
-                <i class="bi bi-envelope me-2"></i>Cotización Simple
-            </a>
-            
-                <a class="<?php echo getNavLinkClass('newsletter-simple.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../newsletter-simple.php' : 'newsletter-simple.php'; ?>">
-                    <i class="bi bi-newspaper me-2"></i>Newsletter Simple
+            <?php if (hasPermission('newsletter', 'ver')): ?>
+            <div class="nav-item">
+                <a class="<?php echo getNavLinkClass('newsletter-simple.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'newsletter') ? '../newsletter-simple.php' : 'newsletter-simple.php'; ?>">
+                    <i class="bi bi-newspaper me-2"></i>Newsletter
                 </a>
-                
-        <a class="<?php echo getNavLinkClass('topbar-messages.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../topbar-messages.php' : 'topbar-messages.php'; ?>">
-            <i class="bi bi-megaphone me-2"></i>Mensajes Topbar
-        </a>
-        <a class="<?php echo getNavLinkClass('usuarios.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../usuarios.php' : 'usuarios.php'; ?>">
-            <i class="bi bi-people-fill me-2"></i>Usuarios
-        </a>
+                <?php if ($current_dir === 'newsletter'): ?>
+                <div class="ms-3 mt-1">
+                    <a class="<?php echo getNavLinkClass('import.php', $current_page, $current_dir); ?> nav-link-sm" href="import.php">
+                        <i class="bi bi-upload me-2"></i>Importar CSV
+                    </a>
+                    <a class="<?php echo getNavLinkClass('export.php', $current_page, $current_dir); ?> nav-link-sm" href="export.php">
+                        <i class="bi bi-download me-2"></i>Exportar CSV
+                    </a>
+                    <a class="<?php echo getNavLinkClass('plantillas.php', $current_page, $current_dir); ?> nav-link-sm" href="plantillas.php">
+                        <i class="bi bi-file-earmark-code me-2"></i>Plantillas
+                    </a>
+                    <a class="<?php echo getNavLinkClass('config.php', $current_page, $current_dir); ?> nav-link-sm" href="config.php">
+                        <i class="bi bi-gear me-2"></i>Configuración
+                    </a>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+            
+            <!-- Analytics -->
+            <?php if (hasPermission('analytics', 'ver')): ?>
+            <div class="nav-item">
+                <a class="<?php echo getNavLinkClass('dashboard.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'newsletter' || $current_dir === 'analytics') ? '../analytics/dashboard.php' : 'analytics/dashboard.php'; ?>">
+                    <i class="bi bi-graph-up me-2"></i>Analytics
+                </a>
+                <?php if ($current_dir === 'analytics'): ?>
+                <div class="ms-3 mt-1">
+                    <a class="<?php echo getNavLinkClass('dashboard.php', $current_page, $current_dir); ?> nav-link-sm" href="dashboard.php">
+                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                    </a>
+                    <a class="<?php echo getNavLinkClass('config.php', $current_page, $current_dir); ?> nav-link-sm" href="config.php">
+                        <i class="bi bi-gear me-2"></i>Configuración
+                    </a>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+            
+            <!-- Topbar Messages -->
+            <?php if (canSeeModule('home', $user_permissions) || canSeeModule('configuracion', $user_permissions)): ?>
+            <a class="<?php echo getNavLinkClass('topbar-messages.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../topbar-messages.php' : 'topbar-messages.php'; ?>">
+                <i class="bi bi-megaphone me-2"></i>Mensajes Topbar
+            </a>
+            <?php endif; ?>
+            
+            <!-- Usuarios -->
+            <?php if (canSeeModule('usuarios', $user_permissions)): ?>
+            <div class="nav-item">
+                <a class="<?php echo getNavLinkClass('usuarios.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../usuarios.php' : 'usuarios.php'; ?>">
+                    <i class="bi bi-people-fill me-2"></i>Usuarios
+                </a>
+                <?php if ($current_dir === 'usuarios'): ?>
+                <div class="ms-3 mt-1">
+                    <a class="<?php echo getNavLinkClass('logs.php', $current_page, $current_dir); ?> nav-link-sm" href="logs.php">
+                        <i class="bi bi-journal-text me-2"></i>Logs de Auditoría
+                    </a>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+            
+            <!-- SEO -->
+            <?php if (hasPermission('seo', 'ver')): ?>
+            <div class="nav-item">
+                <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'catalogo' || $current_dir === 'home' || $current_dir === 'contacto' || $current_dir === 'cotizaciones' || $current_dir === 'proyectos') ? '../seo/index.php' : 'seo/index.php'; ?>">
+                    <i class="bi bi-search me-2"></i>SEO & Metadatos
+                </a>
+                <?php if ($current_dir === 'seo'): ?>
+                <div class="ms-3 mt-1">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
+                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                    </a>
+                    <a class="<?php echo getNavLinkClass('config.php', $current_page, $current_dir); ?> nav-link-sm" href="config.php">
+                        <i class="bi bi-gear me-2"></i>Configuración
+                    </a>
+                    <a class="<?php echo getNavLinkClass('redirects.php', $current_page, $current_dir); ?> nav-link-sm" href="redirects.php">
+                        <i class="bi bi-arrow-left-right me-2"></i>Redirecciones
+                    </a>
+                    <a class="<?php echo getNavLinkClass('sitemap.php', $current_page, $current_dir); ?> nav-link-sm" href="sitemap.php">
+                        <i class="bi bi-diagram-3 me-2"></i>Sitemap
+                    </a>
+                    <a class="<?php echo getNavLinkClass('robots.php', $current_page, $current_dir); ?> nav-link-sm" href="robots.php">
+                        <i class="bi bi-shield-check me-2"></i>Robots.txt
+                    </a>
+                    <a class="<?php echo getNavLinkClass('schema.php', $current_page, $current_dir); ?> nav-link-sm" href="schema.php">
+                        <i class="bi bi-code-square me-2"></i>Schema.org
+                    </a>
+                    <a class="<?php echo getNavLinkClass('metadatos.php', $current_page, $current_dir); ?> nav-link-sm" href="metadatos.php">
+                        <i class="bi bi-tags me-2"></i>Metadatos
+                    </a>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+            
+            <!-- Configuración -->
+            <?php if (canSeeModule('configuracion', $user_permissions)): ?>
+            <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'catalogo' || $current_dir === 'home' || $current_dir === 'contacto' || $current_dir === 'cotizaciones' || $current_dir === 'proyectos' || $current_dir === 'seo') ? '../configuracion/index.php' : 'configuracion/index.php'; ?>">
+                <i class="bi bi-gear me-2"></i>Configuración
+            </a>
+            <?php endif; ?>
+            
         <a class="<?php echo getNavLinkClass('perfil.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../perfil.php' : 'perfil.php'; ?>">
             <i class="bi bi-person-circle me-2"></i>Mi Perfil
         </a>

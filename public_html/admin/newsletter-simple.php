@@ -20,6 +20,11 @@ require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/connection.php';
 require_once __DIR__ . '/auth_check.php';
 
+// Verificar permisos RBAC
+if (function_exists('checkPermission')) {
+    checkPermission('newsletter', 'ver');
+}
+
 // Obtener conexión PDO
 $pdo = getDB();
 if (!$pdo) {
@@ -579,6 +584,27 @@ $fuentes = $stmt_fuentes->fetchAll(PDO::FETCH_COLUMN);
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
                 <?php endif; ?>
+
+                <!-- Acciones Rápidas -->
+                <div class="card mb-4" style="background: white; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <div class="card-body">
+                        <h6 class="mb-3"><i class="bi bi-lightning-charge me-2"></i>Acciones Rápidas</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="newsletter/import.php" class="btn btn-outline-primary">
+                                <i class="bi bi-upload me-2"></i>Importar CSV
+                            </a>
+                            <a href="newsletter/export.php" class="btn btn-outline-success">
+                                <i class="bi bi-download me-2"></i>Exportar CSV
+                            </a>
+                            <a href="newsletter/plantillas.php" class="btn btn-outline-info">
+                                <i class="bi bi-file-earmark-code me-2"></i>Plantillas HTML
+                            </a>
+                            <a href="newsletter/config.php" class="btn btn-outline-secondary">
+                                <i class="bi bi-gear me-2"></i>Configuración
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Estadísticas -->
                 <div class="stats-grid">

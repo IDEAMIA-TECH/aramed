@@ -14,6 +14,11 @@ require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/connection.php';
 require_once __DIR__ . '/../auth_check.php';
 
+// Verificar permisos RBAC
+if (function_exists('checkPermission')) {
+    checkPermission('blog', 'editar');
+}
+
 // Obtener conexión PDO
 $pdo = getDB();
 if (!$pdo) {
@@ -67,15 +72,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'estado' => $_POST['estado'],
             'destacado' => isset($_POST['destacado']) ? 1 : 0,
             'fecha_publicacion' => $_POST['fecha_publicacion'] ?: null,
+            'fecha_programada' => !empty($_POST['fecha_programada']) ? $_POST['fecha_programada'] : null,
             'id' => $id
         ];
+        
+        // Si hay fecha programada y es futura, cambiar estado a "programado"
+        if (!empty($data['fecha_programada'])) {
+            $fecha_programada = new DateTime($data['fecha_programada']);
+            $ahora = new DateTime();
+            if ($fecha_programada > $ahora) {
+                $data['estado'] = 'programado';
+            }
+        }
         
         $sql = "
             UPDATE blog_articulos SET 
                 titulo = ?, slug = ?, resumen = ?, contenido = ?, imagen_principal = ?, 
                 imagen_og = ?, categoria_id = ?, autor = ?, autor_email = ?, tags = ?, 
                 meta_title = ?, meta_description = ?, meta_keywords = ?, estado = ?, 
-                destacado = ?, fecha_publicacion = ?, updated_at = NOW()
+                destacado = ?, fecha_publicacion = ?, fecha_programada = ?, updated_at = NOW()
             WHERE id = ?
         ";
         
@@ -236,6 +251,7 @@ $tags_string = is_array($tags_array) ? implode(', ', $tags_array) : '';
                                     <label for="estado" class="form-label">Estado *</label>
                                     <select class="form-select" id="estado" name="estado" required>
                                         <option value="borrador" <?php echo $articulo['estado'] === 'borrador' ? 'selected' : ''; ?>>Borrador</option>
+                                        <option value="programado" <?php echo $articulo['estado'] === 'programado' ? 'selected' : ''; ?>>Programado</option>
                                         <option value="publicado" <?php echo $articulo['estado'] === 'publicado' ? 'selected' : ''; ?>>Publicado</option>
                                         <option value="archivado" <?php echo $articulo['estado'] === 'archivado' ? 'selected' : ''; ?>>Archivado</option>
                                     </select>
@@ -245,6 +261,14 @@ $tags_string = is_array($tags_array) ? implode(', ', $tags_array) : '';
                                     <label for="fecha_publicacion" class="form-label">Fecha de Publicación</label>
                                     <input type="datetime-local" class="form-control" id="fecha_publicacion" name="fecha_publicacion" 
                                            value="<?php echo $articulo['fecha_publicacion'] ? date('Y-m-d\TH:i', strtotime($articulo['fecha_publicacion'])) : ''; ?>">
+                                    <small class="form-text text-muted">Fecha histórica de publicación (para ordenamiento)</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="fecha_programada" class="form-label">Programar Publicación</label>
+                                    <input type="datetime-local" class="form-control" id="fecha_programada" name="fecha_programada"
+                                           value="<?php echo isset($articulo['fecha_programada']) && $articulo['fecha_programada'] ? date('Y-m-d\TH:i', strtotime($articulo['fecha_programada'])) : ''; ?>">
+                                    <small class="form-text text-muted">Si se establece una fecha futura, el artículo se publicará automáticamente en esa fecha</small>
                                 </div>
 
                                 <div class="form-check mb-3">

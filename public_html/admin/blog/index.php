@@ -20,6 +20,11 @@ require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/connection.php';
 require_once __DIR__ . '/../auth_check.php';
 
+// Verificar permisos RBAC
+if (function_exists('checkPermission')) {
+    checkPermission('blog', 'ver');
+}
+
 // Obtener conexión PDO
 $pdo = getDB();
 if (!$pdo) {
@@ -48,12 +53,46 @@ $stmt_categorias = $pdo->prepare($sql_categorias);
 $stmt_categorias->execute();
 $categorias = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
 
+// Filtros
+$filtro_estado = isset($_GET['estado']) ? $_GET['estado'] : '';
+$filtro_categoria = isset($_GET['categoria']) ? (int)$_GET['categoria'] : 0;
+
+// Construir consulta con filtros
+$where_conditions = [];
+$params = [];
+
+if ($filtro_estado) {
+    $where_conditions[] = 'a.estado = ?';
+    $params[] = $filtro_estado;
+}
+
+if ($filtro_categoria > 0) {
+    $where_conditions[] = 'a.categoria_id = ?';
+    $params[] = $filtro_categoria;
+}
+
+$where_clause = !empty($where_conditions) ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
+
+// Obtener artículos con filtros
+$sql = "
+    SELECT a.*, c.nombre as categoria_nombre, c.color as categoria_color
+    FROM blog_articulos a
+    LEFT JOIN blog_categorias c ON a.categoria_id = c.id
+    $where_clause
+    ORDER BY a.created_at DESC
+";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+$articulos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // Estadísticas
 $sql_stats = "
     SELECT 
         COUNT(*) as total,
         SUM(CASE WHEN estado = 'publicado' THEN 1 ELSE 0 END) as publicados,
         SUM(CASE WHEN estado = 'borrador' THEN 1 ELSE 0 END) as borradores,
+        SUM(CASE WHEN estado = 'programado' THEN 1 ELSE 0 END) as programados,
         SUM(CASE WHEN estado = 'archivado' THEN 1 ELSE 0 END) as archivados,
         SUM(CASE WHEN destacado = 1 THEN 1 ELSE 0 END) as destacados,
         SUM(vistas) as total_vistas
@@ -598,6 +637,14 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
                             <i class="bi bi-pencil me-1"></i>Borradores
                         </div>
                     </div>
+                    <?php if (isset($estadisticas['programados']) && $estadisticas['programados'] > 0): ?>
+                    <div class="stat-card info">
+                        <div class="stat-number"><?php echo number_format($estadisticas['programados']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-clock me-1"></i>Programados
+                        </div>
+                    </div>
+                    <?php endif; ?>
                     <div class="stat-card danger">
                         <div class="stat-number"><?php echo number_format($estadisticas['archivados']); ?></div>
                         <div class="stat-label">
@@ -618,11 +665,48 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
                     </div>
                 </div>
 
+                <!-- Filtros -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form method="GET" action="" class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Estado</label>
+                                <select class="form-select" name="estado" onchange="this.form.submit()">
+                                    <option value="">Todos los estados</option>
+                                    <option value="publicado" <?php echo $filtro_estado === 'publicado' ? 'selected' : ''; ?>>Publicados</option>
+                                    <option value="programado" <?php echo $filtro_estado === 'programado' ? 'selected' : ''; ?>>Programados</option>
+                                    <option value="borrador" <?php echo $filtro_estado === 'borrador' ? 'selected' : ''; ?>>Borradores</option>
+                                    <option value="archivado" <?php echo $filtro_estado === 'archivado' ? 'selected' : ''; ?>>Archivados</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Categoría</label>
+                                <select class="form-select" name="categoria" onchange="this.form.submit()">
+                                    <option value="">Todas las categorías</option>
+                                    <?php foreach ($categorias as $cat): ?>
+                                    <option value="<?php echo $cat['id']; ?>" <?php echo $filtro_categoria == $cat['id'] ? 'selected' : ''; ?>>
+                                        <?php echo esc($cat['nombre']); ?>
+                                    </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">&nbsp;</label>
+                                <div>
+                                    <a href="index.php" class="btn btn-secondary w-100">
+                                        <i class="bi bi-x-circle me-2"></i>Limpiar Filtros
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <!-- Tabla de artículos -->
                 <div class="table-card">
                     <div class="table-header">
                         <h5 class="mb-0">
-                            <i class="bi bi-list-ul me-2"></i>Lista de Artículos
+                            <i class="bi bi-list-ul me-2"></i>Lista de Artículos (<?php echo count($articulos); ?>)
                         </h5>
                     </div>
                     <div class="table-responsive">
@@ -695,11 +779,13 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
                                                 <?php
                                                 $estado_classes = [
                                                     'borrador' => 'bg-secondary',
+                                                    'programado' => 'bg-info',
                                                     'publicado' => 'bg-success',
                                                     'archivado' => 'bg-warning'
                                                 ];
                                                 $estado_texts = [
                                                     'borrador' => 'Borrador',
+                                                    'programado' => 'Programado',
                                                     'publicado' => 'Publicado',
                                                     'archivado' => 'Archivado'
                                                 ];
@@ -718,6 +804,12 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
                                                 <small class="text-muted">
                                                     <?php echo date('H:i', strtotime($articulo['created_at'])); ?>
                                                 </small>
+                                                <?php if (isset($articulo['fecha_programada']) && $articulo['fecha_programada'] && $articulo['estado'] === 'programado'): ?>
+                                                <br>
+                                                <small class="text-info">
+                                                    <i class="bi bi-clock me-1"></i>Programado: <?php echo date('d/m/Y H:i', strtotime($articulo['fecha_programada'])); ?>
+                                                </small>
+                                                <?php endif; ?>
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm" role="group">

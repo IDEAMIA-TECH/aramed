@@ -20,6 +20,14 @@ require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/connection.php';
 
+// Verificar permisos RBAC (topbar puede ser parte de home o configuración)
+if (function_exists('checkPermission')) {
+    // Intentar con home primero, si no tiene permiso, verificar configuración
+    if (!can('home', 'editar') && !can('configuracion', 'editar')) {
+        checkPermission('home', 'editar', true);
+    }
+}
+
 // Procesar acciones
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
 $message_id = $_GET['id'] ?? $_POST['id'] ?? '';

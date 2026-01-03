@@ -14,6 +14,11 @@ require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/connection.php';
 require_once __DIR__ . '/../auth_check.php';
 
+// Verificar permisos RBAC
+if (function_exists('checkPermission')) {
+    checkPermission('blog', 'crear');
+}
+
 // Obtener conexión PDO
 $pdo = getDB();
 if (!$pdo) {
@@ -47,15 +52,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'meta_keywords' => sanitizeInput($_POST['meta_keywords']),
             'estado' => $_POST['estado'],
             'destacado' => isset($_POST['destacado']) ? 1 : 0,
-            'fecha_publicacion' => $_POST['fecha_publicacion'] ?: null
+            'fecha_publicacion' => $_POST['fecha_publicacion'] ?: null,
+            'fecha_programada' => !empty($_POST['fecha_programada']) ? $_POST['fecha_programada'] : null
         ];
+        
+        // Si hay fecha programada y es futura, cambiar estado a "programado"
+        if (!empty($data['fecha_programada'])) {
+            $fecha_programada = new DateTime($data['fecha_programada']);
+            $ahora = new DateTime();
+            if ($fecha_programada > $ahora) {
+                $data['estado'] = 'programado';
+            }
+        }
         
         $sql = "
             INSERT INTO blog_articulos (
                 titulo, slug, resumen, contenido, imagen_principal, imagen_og,
                 categoria_id, autor, autor_email, tags, meta_title, meta_description,
-                meta_keywords, estado, destacado, fecha_publicacion, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                meta_keywords, estado, destacado, fecha_publicacion, fecha_programada, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
         ";
         
         $stmt = $pdo->prepare($sql);
@@ -463,6 +478,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <label for="estado" class="form-label">Estado *</label>
                                     <select class="form-select" id="estado" name="estado" required>
                                         <option value="borrador">Borrador</option>
+                                        <option value="programado">Programado</option>
                                         <option value="publicado">Publicado</option>
                                         <option value="archivado">Archivado</option>
                                     </select>
@@ -472,6 +488,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <label for="fecha_publicacion" class="form-label">Fecha de Publicación</label>
                                     <input type="datetime-local" class="form-control" id="fecha_publicacion" name="fecha_publicacion" 
                                            value="<?php echo date('Y-m-d\TH:i'); ?>">
+                                    <small class="form-text text-muted">Fecha histórica de publicación (para ordenamiento)</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="fecha_programada" class="form-label">Programar Publicación</label>
+                                    <input type="datetime-local" class="form-control" id="fecha_programada" name="fecha_programada">
+                                    <small class="form-text text-muted">Si se establece una fecha futura, el artículo se publicará automáticamente en esa fecha</small>
                                 </div>
 
                                 <div class="form-check mb-3">

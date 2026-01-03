@@ -104,21 +104,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$username, $username]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        if ($usuario && password_verify($password, $usuario['password_hash'])) {
-            // Login exitoso
-            $_SESSION['admin_logged_in'] = true;
-            $_SESSION['admin_user_id'] = $usuario['id'];
-            $_SESSION['admin_username'] = $usuario['username'];
-            $_SESSION['admin_nombre'] = $usuario['nombre'];
-            $_SESSION['admin_rol'] = $usuario['rol'];
-            
-            // Actualizar último login
-            $sql_update_login = "UPDATE admin_usuarios SET ultimo_login = NOW() WHERE id = ?";
-            $stmt_update = $pdo->prepare($sql_update_login);
-            $stmt_update->execute([$usuario['id']]);
-            
-            header('Location: index.php');
-            exit;
+        if ($usuario) {
+            // Verificar si el usuario está bloqueado
+            if ($usuario['bloqueado_hasta'] && strtotime($usuario['bloqueado_hasta']) > time()) {
+                $error = 'Usuario bloqueado temporalmente. Intente más tarde.';
+            } else {
+                // Verificar contraseña
+                if (password_verify($password, $usuario['password_hash'])) {
+                    // Login exitoso - Resetear intentos fallidos
+                    $sql_reset = "UPDATE admin_usuarios SET intentos_fallidos = 0, bloqueado_hasta = NULL, ultimo_login = NOW() WHERE id = ?";
+                    $stmt_reset = $pdo->prepare($sql_reset);
+                    $stmt_reset->execute([$usuario['id']]);
+                    
+                    // Iniciar sesión
+                    $_SESSION['admin_logged_in'] = true;
+                    $_SESSION['admin_user_id'] = $usuario['id'];
+                    $_SESSION['admin_username'] = $usuario['username'];
+                    $_SESSION['admin_nombre'] = $usuario['nombre'];
+                    $_SESSION['admin_rol'] = $usuario['rol'];
+                    
+                    // Registrar actividad
+                    if (function_exists('logActivity')) {
+                        logActivity($usuario['id'], 'login', null, null, null, [
+                            'ip' => $_SERVER['REMOTE_ADDR'] ?? '',
+                            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
+                        ]);
+                    }
+                    
+                    // Regenerar session ID por seguridad
+                    session_regenerate_id(true);
+                    
+                    header('Location: index.php');
+                    exit;
+                } else {
+                    // Contraseña incorrecta - Incrementar intentos fallidos
+                    $intentos_fallidos = ($usuario['intentos_fallidos'] ?? 0) + 1;
+                    $max_intentos = 5;
+                    $bloqueo_minutos = 30;
+                    
+                    if ($intentos_fallidos >= $max_intentos) {
+                        // Bloquear usuario por 30 minutos
+                        $bloqueado_hasta = date('Y-m-d H:i:s', time() + ($bloqueo_minutos * 60));
+                        $sql_bloqueo = "UPDATE admin_usuarios SET intentos_fallidos = ?, bloqueado_hasta = ? WHERE id = ?";
+                        $stmt_bloqueo = $pdo->prepare($sql_bloqueo);
+                        $stmt_bloqueo->execute([$intentos_fallidos, $bloqueado_hasta, $usuario['id']]);
+                        
+                        $error = "Usuario bloqueado temporalmente por {$bloqueo_minutos} minutos debido a múltiples intentos fallidos.";
+                    } else {
+                        // Solo incrementar contador
+                        $sql_intentos = "UPDATE admin_usuarios SET intentos_fallidos = ? WHERE id = ?";
+                        $stmt_intentos = $pdo->prepare($sql_intentos);
+                        $stmt_intentos->execute([$intentos_fallidos, $usuario['id']]);
+                        
+                        $intentos_restantes = $max_intentos - $intentos_fallidos;
+                        $error = "Usuario o contraseña incorrectos. Intentos restantes: {$intentos_restantes}";
+                    }
+                }
+            }
         } else {
             $error = 'Usuario o contraseña incorrectos';
         }
@@ -298,6 +340,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </button>
                 </div>
             </form>
+            
+            <div class="text-center mt-3">
+                <a href="recuperar-password.php" class="text-muted text-decoration-none">
+                    <i class="bi bi-question-circle me-1"></i>¿Olvidaste tu contraseña?
+                </a>
+            </div>
             
             <div class="text-center mt-4">
                 <small class="text-muted">

@@ -29,6 +29,11 @@ if (!$pdo) {
 // Obtener información del usuario actual
 $current_user = getCurrentUser();
 
+// Publicar artículos programados automáticamente
+if (function_exists('publicarArticulosProgramados')) {
+    publicarArticulosProgramados();
+}
+
 // Obtener estadísticas del blog
 $stats = [];
 
@@ -120,6 +125,81 @@ $sql_topbar = "SELECT COUNT(*) as total FROM topbar_messages WHERE status = 'act
 $stmt_topbar = $pdo->prepare($sql_topbar);
 $stmt_topbar->execute();
 $stats['topbar_messages'] = $stmt_topbar->fetch(PDO::FETCH_ASSOC)['total'];
+
+// Obtener KPIs adicionales
+try {
+    // Productos publicados
+    $sql = "SELECT COUNT(*) as total FROM catalogo_productos WHERE estado = 'activo'";
+    $stmt = $pdo->query($sql);
+    $stats['productos_activos'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+} catch (Exception $e) {
+    $stats['productos_activos'] = 0;
+}
+
+try {
+    // Mensajes de contacto por estado
+    $sql = "SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN status = 'nuevo' THEN 1 ELSE 0 END) as nuevos,
+        SUM(CASE WHEN status = 'en_proceso' THEN 1 ELSE 0 END) as en_proceso
+    FROM contact_messages";
+    $stmt = $pdo->query($sql);
+    $contact_stats = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stats['contactos_total'] = $contact_stats['total'] ?? 0;
+    $stats['contactos_nuevos'] = $contact_stats['nuevos'] ?? 0;
+} catch (Exception $e) {
+    $stats['contactos_total'] = 0;
+    $stats['contactos_nuevos'] = 0;
+}
+
+// Cotizaciones: hoy/semana/mes/acumulado
+try {
+    $sql = "SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN DATE(created_at) = CURDATE() THEN 1 ELSE 0 END) as hoy,
+        SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 ELSE 0 END) as semana,
+        SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) as mes
+    FROM newsletter_subscriptions 
+    WHERE status = 'active'";
+    $stmt = $pdo->query($sql);
+    $cotiz_stats = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stats['cotizaciones_hoy'] = $cotiz_stats['hoy'] ?? 0;
+    $stats['cotizaciones_semana'] = $cotiz_stats['semana'] ?? 0;
+    $stats['cotizaciones_mes'] = $cotiz_stats['mes'] ?? 0;
+    $stats['cotizaciones_total'] = $cotiz_stats['total'] ?? 0;
+} catch (Exception $e) {
+    $stats['cotizaciones_hoy'] = 0;
+    $stats['cotizaciones_semana'] = 0;
+    $stats['cotizaciones_mes'] = 0;
+    $stats['cotizaciones_total'] = 0;
+}
+
+// Cargar helper de alertas
+require_once __DIR__ . '/includes/dashboard_alerts.php';
+$alerts = getDashboardAlerts($pdo);
+
+// Obtener últimas cotizaciones
+try {
+    $sql = "SELECT * FROM newsletter_subscriptions 
+            WHERE status = 'active' 
+            ORDER BY created_at DESC 
+            LIMIT 5";
+    $stmt = $pdo->query($sql);
+    $ultimas_cotizaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $ultimas_cotizaciones = [];
+}
+
+// Obtener últimos contactos
+try {
+    $sql = "SELECT * FROM contact_messages 
+            ORDER BY created_at DESC 
+            LIMIT 5";
+    $stmt = $pdo->query($sql);
+    $ultimos_contactos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $ultimos_contactos = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="es-MX">
@@ -132,6 +212,8 @@ $stats['topbar_messages'] = $stmt_topbar->fetch(PDO::FETCH_ASSOC)['total'];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
     <style>
         :root {
@@ -532,6 +614,94 @@ $stats['topbar_messages'] = $stmt_topbar->fetch(PDO::FETCH_ASSOC)['total'];
                             <i class="bi bi-megaphone me-1"></i>Mensajes Topbar
                         </div>
                     </div>
+                    <?php if ($stats['productos_activos'] > 0): ?>
+                    <div class="stat-card success">
+                        <div class="stat-number"><?php echo number_format($stats['productos_activos']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-box-seam me-1"></i>Productos Activos
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($stats['contactos_total'] > 0): ?>
+                    <div class="stat-card info">
+                        <div class="stat-number"><?php echo number_format($stats['contactos_total']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-chat-dots me-1"></i>Mensajes Contacto
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <div class="stat-card">
+                        <div class="stat-number"><?php echo number_format($stats['cotizaciones_hoy']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-calendar-day me-1"></i>Cotizaciones Hoy
+                        </div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-number"><?php echo number_format($stats['cotizaciones_semana']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-calendar-week me-1"></i>Esta Semana
+                        </div>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="stat-number"><?php echo number_format($stats['cotizaciones_mes']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-calendar-month me-1"></i>Este Mes
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Alertas Automáticas -->
+                <?php if (!empty($alerts)): ?>
+                <div class="dashboard-section mb-4">
+                    <div class="dashboard-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bell me-2"></i>Alertas y Notificaciones
+                        </h5>
+                    </div>
+                    <div class="dashboard-body">
+                        <?php foreach ($alerts as $alert): ?>
+                        <div class="alert alert-<?php echo $alert['type']; ?> alert-dismissible fade show" role="alert">
+                            <i class="bi <?php echo $alert['icon']; ?> me-2"></i>
+                            <strong><?php echo esc($alert['title']); ?>:</strong>
+                            <?php echo esc($alert['message']); ?>
+                            <?php if (isset($alert['link'])): ?>
+                            <a href="<?php echo esc($alert['link']); ?>" class="alert-link ms-2">
+                                <?php echo esc($alert['link_text']); ?>
+                            </a>
+                            <?php endif; ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+                
+                <!-- Gráficas de Tendencias -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="dashboard-section">
+                            <div class="dashboard-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-graph-up me-2"></i>Cotizaciones por Mes
+                                </h5>
+                            </div>
+                            <div class="dashboard-body">
+                                <canvas id="chartCotizaciones" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dashboard-section">
+                            <div class="dashboard-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-graph-up me-2"></i>Contactos por Mes
+                                </h5>
+                            </div>
+                            <div class="dashboard-body">
+                                <canvas id="chartContactos" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -602,6 +772,91 @@ $stats['topbar_messages'] = $stmt_topbar->fetch(PDO::FETCH_ASSOC)['total'];
                     </a>
                 </div>
 
+                <div class="row">
+                    <!-- Últimas Cotizaciones -->
+                    <?php if (!empty($ultimas_cotizaciones)): ?>
+                    <div class="col-md-6 mb-4">
+                        <div class="dashboard-section">
+                            <div class="dashboard-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-envelope me-2"></i>Últimas Cotizaciones
+                                </h5>
+                            </div>
+                            <div class="dashboard-body">
+                                <?php foreach ($ultimas_cotizaciones as $cot): ?>
+                                <div class="recent-item info">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1"><?php echo esc($cot['institucion']); ?></h6>
+                                            <small class="text-muted">
+                                                <i class="bi bi-person me-1"></i><?php echo esc($cot['nombre']); ?>
+                                                | <i class="bi bi-envelope me-1"></i><?php echo esc($cot['email_oficial']); ?>
+                                            </small>
+                                            <?php if ($cot['producto_interes']): ?>
+                                            <div class="mt-1">
+                                                <small><strong>Producto:</strong> <?php echo esc($cot['producto_interes']); ?></small>
+                                            </div>
+                                            <?php endif; ?>
+                                        </div>
+                                        <small class="text-muted">
+                                            <?php echo date('d/m/Y', strtotime($cot['created_at'])); ?>
+                                        </small>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                                <div class="text-center mt-3">
+                                    <a href="cotizaciones/index.php" class="btn btn-sm btn-outline-primary">
+                                        Ver todas las cotizaciones
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <!-- Últimos Contactos -->
+                    <?php if (!empty($ultimos_contactos)): ?>
+                    <div class="col-md-6 mb-4">
+                        <div class="dashboard-section">
+                            <div class="dashboard-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-chat-dots me-2"></i>Últimos Mensajes de Contacto
+                                </h5>
+                            </div>
+                            <div class="dashboard-body">
+                                <?php foreach ($ultimos_contactos as $contact): ?>
+                                <div class="recent-item <?php echo $contact['status'] === 'nuevo' ? 'warning' : 'success'; ?>">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1"><?php echo esc($contact['nombre']); ?></h6>
+                                            <p class="mb-1 small"><?php echo esc(truncateText($contact['asunto'], 40)); ?></p>
+                                            <small class="text-muted">
+                                                <i class="bi bi-envelope me-1"></i><?php echo esc($contact['email']); ?>
+                                            </small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-<?php echo $contact['status'] === 'nuevo' ? 'danger' : 'success'; ?>">
+                                                <?php echo ucfirst($contact['status']); ?>
+                                            </span>
+                                            <br>
+                                            <small class="text-muted">
+                                                <?php echo date('d/m/Y', strtotime($contact['created_at'])); ?>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                                <div class="text-center mt-3">
+                                    <a href="contacto/index.php" class="btn btn-sm btn-outline-primary">
+                                        Ver todos los mensajes
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </div>
+                
                 <div class="row">
                     <!-- Artículos recientes -->
                     <div class="col-md-6">
@@ -686,5 +941,62 @@ $stats['topbar_messages'] = $stmt_topbar->fetch(PDO::FETCH_ASSOC)['total'];
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Cargar datos para gráficas
+        async function loadChartData(chartId, tipo, label, color) {
+            try {
+                const response = await fetch(`includes/dashboard_data.php?tipo=${tipo}`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    return;
+                }
+                
+                const ctx = document.getElementById(chartId);
+                if (!ctx) return;
+                
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: label,
+                            data: data.data,
+                            borderColor: color,
+                            backgroundColor: color + '20',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error cargando gráfica:', error);
+            }
+        }
+        
+        // Cargar gráficas al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadChartData('chartCotizaciones', 'cotizaciones_mes', 'Cotizaciones', 'rgb(102, 126, 234)');
+            loadChartData('chartContactos', 'contactos_mes', 'Contactos', 'rgb(23, 162, 184)');
+        });
+    </script>
 </body>
 </html>
