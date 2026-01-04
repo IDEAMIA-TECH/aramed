@@ -38,9 +38,22 @@ if (ENVIRONMENT === 'development') {
     if (!is_dir($log_dir)) {
         @mkdir($log_dir, 0755, true);
     }
-    ini_set('error_log', $log_file);
-    error_log("=== CONFIG.PHP CARGADO ===");
-    error_log("Log file: " . $log_file);
+    // Configurar error_log solo si el archivo es escribible
+    if (file_exists($log_file) && is_writable($log_file)) {
+        ini_set('error_log', $log_file);
+    } elseif (!file_exists($log_file)) {
+        // Crear archivo si no existe
+        @touch($log_file);
+        @chmod($log_file, 0666);
+        if (is_writable($log_file)) {
+            ini_set('error_log', $log_file);
+        }
+    }
+    // Solo escribir log si está configurado correctamente
+    if (ini_get('error_log') === $log_file) {
+        error_log("=== CONFIG.PHP CARGADO ===");
+        error_log("Log file: " . $log_file);
+    }
 }
 
 // ========================================
