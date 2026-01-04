@@ -609,7 +609,7 @@ div.nav-item div.ms-3 {
     margin-bottom: 0.25rem;
     border-radius: var(--border-radius);
     transition: all 0.3s ease;
-    color: var(--dark-color);
+    color: #212529 !important; /* Color oscuro explícito */
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -619,17 +619,29 @@ div.nav-item div.ms-3 {
 .nav-link:hover {
     background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
     transform: translateX(3px);
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
 }
 
 .nav-link.active {
     background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
-    color: white;
+    color: white !important;
     box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
 }
 
 .nav-link i {
     width: 20px;
     text-align: center;
+    color: inherit !important; /* Heredar el color del enlace padre */
+}
+
+/* Asegurar que los enlaces del menú NO sean afectados por .user-info */
+.admin-sidebar .nav-link,
+.admin-sidebar .nav-link *:not(.user-info *) {
+    color: #212529 !important;
+}
+
+.admin-sidebar .nav-link.active,
+.admin-sidebar .nav-link.active * {
+    color: white !important;
 }
 </style>
