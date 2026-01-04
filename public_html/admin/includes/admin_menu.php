@@ -42,17 +42,40 @@ function canSeeModule($modulo, $user_permissions) {
 }
 
 // Determinar la página y directorio actual
-$script_path = $_SERVER['SCRIPT_NAME'];
-$current_page = basename($script_path);
-$script_dir = dirname($script_path);
-$current_dir = basename($script_dir);
+// Usar $_SERVER['PHP_SELF'] que es más confiable
+$php_self = $_SERVER['PHP_SELF'] ?? '';
+$current_page = basename($php_self);
 
-// Si estamos en la raíz del admin, current_dir será '.' o '/admin'
-if ($current_dir === '.' || $current_dir === '/' || $current_dir === 'admin' || empty($current_dir)) {
-    $current_dir = '';
-    $base_path = '';
+// Extraer el path relativo desde /admin/
+// Ejemplo: /admin/catalogo/index.php -> catalogo
+$admin_path = '/admin/';
+$pos = strpos($php_self, $admin_path);
+
+if ($pos !== false) {
+    $relative_path = substr($php_self, $pos + strlen($admin_path));
+    $path_parts = explode('/', $relative_path);
+    
+    // Si hay al menos una parte (el directorio), usarla
+    if (count($path_parts) > 1 && !empty($path_parts[0])) {
+        $current_dir = $path_parts[0];
+        $base_path = '../';
+    } else {
+        // Estamos en admin/ directamente
+        $current_dir = '';
+        $base_path = '';
+    }
 } else {
-    $base_path = '../';
+    // Fallback: usar dirname
+    $script_dir = dirname($php_self);
+    $current_dir = basename($script_dir);
+    
+    // Si estamos en la raíz del admin
+    if ($current_dir === '.' || $current_dir === '/' || $current_dir === 'admin' || empty($current_dir)) {
+        $current_dir = '';
+        $base_path = '';
+    } else {
+        $base_path = '../';
+    }
 }
 
 // Función helper para generar rutas correctas
@@ -167,7 +190,7 @@ function getLogoPath($current_dir, $base_path) {
                     <i class="bi bi-box-seam me-2"></i>Catálogo
                 </a>
                 <?php if ($current_dir === 'catalogo'): ?>
-                <div class="ms-3 mt-1">
+                <div class="ms-3 mt-1" style="display: block !important; visibility: visible !important;">
                     <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
                         <i class="bi bi-speedometer2 me-2"></i>Dashboard
                     </a>
@@ -453,6 +476,9 @@ function getLogoPath($current_dir, $base_path) {
     font-size: 0.85rem;
     padding: 0.5rem 1rem;
     margin-bottom: 0.25rem;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .nav-link-sm:hover {
@@ -464,6 +490,15 @@ function getLogoPath($current_dir, $base_path) {
     background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
     color: white;
     box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+}
+
+/* Asegurar que los submenús se muestren */
+.nav-item .ms-3 {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin-left: 1rem !important;
+    margin-top: 0.5rem !important;
 }
 
 .user-info {
