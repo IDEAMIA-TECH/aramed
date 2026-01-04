@@ -53,18 +53,34 @@ try {
     die("Error cargando auth_check: " . $e->getMessage());
 }
 
-// Verificar permisos (solo admin)
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+// Verificar permisos (solo admin) - con manejo de errores
+try {
+    if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+        header('Location: login.php');
+        exit;
+    }
+    
+    if (!isset($_SESSION['admin_rol']) || $_SESSION['admin_rol'] !== 'admin') {
+        header('Location: sin-permiso.php');
+        exit;
+    }
+} catch (Exception $e) {
+    // Si hay error en la sesión, redirigir al login
     header('Location: login.php');
     exit;
 }
 
-if (!isset($_SESSION['admin_rol']) || $_SESSION['admin_rol'] !== 'admin') {
-    header('Location: sin-permiso.php');
-    exit;
+// Intentar usar el archivo de log configurado en PHP primero
+$log_file_php = ini_get('error_log');
+$log_file_local = __DIR__ . '/../logs/php-errors.log';
+
+// Usar el archivo de PHP si existe y es legible, sino usar el local
+if (!empty($log_file_php) && file_exists($log_file_php) && is_readable($log_file_php)) {
+    $log_file = $log_file_php;
+} else {
+    $log_file = $log_file_local;
 }
 
-$log_file = __DIR__ . '/../logs/php-errors.log';
 $lines_to_show = isset($_GET['lines']) ? (int)$_GET['lines'] : 100;
 $filter = isset($_GET['filter']) ? trim($_GET['filter']) : '';
 
@@ -174,22 +190,16 @@ try {
     </style>
 </head>
 <body>
-    <?php 
-    try {
-        if (file_exists(__DIR__ . '/includes/admin_menu.php')) {
-            include __DIR__ . '/includes/admin_menu.php';
-        } else {
-            // Menú simple si no existe el archivo
-            echo '<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">';
-            echo '<div class="container-fluid">';
-            echo '<a class="navbar-brand" href="index.php">' . (defined('SITE_NAME') ? SITE_NAME : 'Admin') . '</a>';
-            echo '<a href="index.php" class="btn btn-light btn-sm">Volver al Dashboard</a>';
-            echo '</div></nav>';
-        }
-    } catch (Exception $e) {
-        // Ignorar error del menú
-    }
-    ?>
+    <!-- Menú simplificado para evitar errores -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.php"><?php echo defined('SITE_NAME') ? SITE_NAME : 'Admin'; ?></a>
+            <div>
+                <a href="view-logs-simple.php" class="btn btn-light btn-sm me-2">Versión Simple</a>
+                <a href="index.php" class="btn btn-light btn-sm">Volver al Dashboard</a>
+            </div>
+        </div>
+    </nav>
     
     <div class="container-fluid mt-4">
         <div class="row">

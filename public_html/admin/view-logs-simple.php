@@ -9,8 +9,16 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 
-$log_file = __DIR__ . '/../logs/php-errors.log';
-ini_set('error_log', $log_file);
+// Intentar usar el archivo de log configurado en PHP primero
+$log_file_php = ini_get('error_log');
+$log_file_local = __DIR__ . '/../logs/php-errors.log';
+
+// Usar el archivo de PHP si existe y es legible, sino usar el local
+if (!empty($log_file_php) && file_exists($log_file_php) && is_readable($log_file_php)) {
+    $log_file = $log_file_php;
+} else {
+    $log_file = $log_file_local;
+}
 
 // Leer logs
 $logs = [];
@@ -99,7 +107,12 @@ $file_modified = $log_exists ? @date('Y-m-d H:i:s', filemtime($log_file)) : 'N/A
                             </div>
                             <div class="col-md-3">
                                 <strong>Ubicación:</strong><br>
-                                <code style="font-size: 0.7rem;"><?php echo basename($log_file); ?></code>
+                                <code style="font-size: 0.7rem;" title="<?php echo htmlspecialchars($log_file, ENT_QUOTES, 'UTF-8'); ?>">
+                                    <?php echo htmlspecialchars(basename($log_file), ENT_QUOTES, 'UTF-8'); ?>
+                                </code>
+                                <?php if ($log_file !== $log_file_local): ?>
+                                <br><small class="text-muted">(Log del servidor)</small>
+                                <?php endif; ?>
                             </div>
                         </div>
                         
