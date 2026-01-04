@@ -575,18 +575,32 @@ div.nav-item div.ms-3 {
 
 .user-info {
     background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
-    color: white;
+    color: white !important;
     padding: 1rem;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
 }
 
+/* Solo afectar elementos directos dentro de .user-info, no los enlaces del menú */
+.user-info > div,
+.user-info .fw-bold,
+.user-info small,
+.user-info i.bi-person-circle {
+    color: white !important;
+}
+
 .user-info .fw-bold {
     font-size: 0.9rem;
+    color: white !important;
 }
 
 .user-info small {
     font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.user-info i.bi-person-circle {
+    color: white !important;
 }
 
 /* Enlaces del menú */
