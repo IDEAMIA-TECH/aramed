@@ -1,0 +1,15 @@
+# Proteger archivos de logs
+<Files "*.log">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Permitir acceso solo desde localhost o IPs específicas
+# Descomenta y ajusta según tus necesidades:
+# <Files "*.log">
+#     Order deny,allow
+#     Deny from all
+#     Allow from 127.0.0.1
+#     Allow from ::1
+# </Files>
+
