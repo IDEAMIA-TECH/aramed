@@ -201,17 +201,17 @@ function getLogoPath($current_dir, $base_path) {
                     <i class="bi bi-box-seam me-2"></i>Catálogo
                 </a>
                 <?php if ($current_dir === 'catalogo'): ?>
-                <div class="ms-3 mt-1" style="display: block !important; visibility: visible !important;">
-                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
+                <div class="ms-3 mt-1 catalogo-submenu" style="display: block !important; visibility: visible !important; opacity: 1 !important; height: auto !important; padding: 0.5rem 0 !important;">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php" style="display: block !important;">
                         <i class="bi bi-speedometer2 me-2"></i>Dashboard
                     </a>
-                    <a class="<?php echo getNavLinkClass('productos/index.php', $current_page, $current_dir); ?> nav-link-sm" href="productos/index.php">
+                    <a class="<?php echo getNavLinkClass('productos/index.php', $current_page, $current_dir); ?> nav-link-sm" href="productos/index.php" style="display: block !important;">
                         <i class="bi bi-box me-2"></i>Productos
                     </a>
-                    <a class="<?php echo getNavLinkClass('categorias.php', $current_page, $current_dir); ?> nav-link-sm" href="categorias.php">
+                    <a class="<?php echo getNavLinkClass('categorias.php', $current_page, $current_dir); ?> nav-link-sm" href="categorias.php" style="display: block !important;">
                         <i class="bi bi-folder me-2"></i>Categorías
                     </a>
-                    <a class="<?php echo getNavLinkClass('marcas.php', $current_page, $current_dir); ?> nav-link-sm" href="marcas.php">
+                    <a class="<?php echo getNavLinkClass('marcas.php', $current_page, $current_dir); ?> nav-link-sm" href="marcas.php" style="display: block !important;">
                         <i class="bi bi-tags me-2"></i>Marcas
                     </a>
                 </div>
@@ -254,16 +254,19 @@ function getLogoPath($current_dir, $base_path) {
                     <i class="bi bi-folder me-2"></i>Proyectos
                 </a>
                 <?php if ($current_dir === 'proyectos'): ?>
-                <div class="ms-3 mt-1" style="display: block !important; visibility: visible !important;">
-                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
+                <!-- DEBUG: Submenú de proyectos debería mostrarse aquí -->
+                <div class="ms-3 mt-1 proyectos-submenu" style="display: block !important; visibility: visible !important; opacity: 1 !important; height: auto !important; padding: 0.5rem 0 !important;">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php" style="display: block !important;">
                         <i class="bi bi-list me-2"></i>Listado
                     </a>
                     <?php if (function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'proyectos', 'crear')): ?>
-                    <a class="<?php echo getNavLinkClass('create.php', $current_page, $current_dir); ?> nav-link-sm" href="create.php">
+                    <a class="<?php echo getNavLinkClass('create.php', $current_page, $current_dir); ?> nav-link-sm" href="create.php" style="display: block !important;">
                         <i class="bi bi-plus-circle me-2"></i>Crear
                     </a>
                     <?php endif; ?>
                 </div>
+                <?php else: ?>
+                <!-- DEBUG: current_dir no es 'proyectos', es: <?php echo htmlspecialchars($current_dir); ?> -->
                 <?php endif; ?>
             </div>
             <?php endif; ?>
@@ -504,12 +507,39 @@ function getLogoPath($current_dir, $base_path) {
 }
 
 /* Asegurar que los submenús se muestren */
-.nav-item .ms-3 {
+.nav-item .ms-3,
+.nav-item > .ms-3,
+div.nav-item div.ms-3 {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     margin-left: 1rem !important;
     margin-top: 0.5rem !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+/* Forzar visualización de todos los submenús */
+.admin-sidebar .nav-item div[class*="ms-3"],
+.admin-sidebar .nav-item .proyectos-submenu,
+.admin-sidebar .nav-item .catalogo-submenu {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 0.5rem 0 !important;
+}
+
+/* Asegurar que los enlaces dentro de los submenús sean visibles */
+.nav-item .ms-3 a,
+.nav-item .proyectos-submenu a,
+.nav-item .catalogo-submenu a {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .user-info {
