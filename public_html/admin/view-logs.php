@@ -23,55 +23,35 @@ if (file_exists($log_file_path) && is_writable($log_file_path)) {
     ini_set('error_log', $log_file_path);
 }
 
-error_log("=== VIEW-LOGS.PHP INICIADO ===");
-
 // Iniciar sesión si no está iniciada
 if (session_status() === PHP_SESSION_NONE) {
-    error_log("Iniciando sesión...");
     session_start();
-    error_log("Sesión iniciada");
 }
 
 // Cargar configuración y verificar autenticación
 try {
-    error_log("Cargando config.php...");
     require_once __DIR__ . '/../includes/config.php';
-    error_log("config.php cargado");
 } catch (Exception $e) {
-    error_log("ERROR cargando config.php: " . $e->getMessage());
     die("Error cargando configuración: " . $e->getMessage());
 }
 
 try {
-    error_log("Cargando functions.php...");
     require_once __DIR__ . '/../includes/functions.php';
-    error_log("functions.php cargado");
 } catch (Exception $e) {
-    error_log("ERROR cargando functions.php: " . $e->getMessage());
     die("Error cargando funciones: " . $e->getMessage());
 }
 
 try {
-    error_log("Cargando connection.php...");
     require_once __DIR__ . '/../includes/connection.php';
-    error_log("connection.php cargado");
 } catch (Exception $e) {
-    error_log("ERROR cargando connection.php: " . $e->getMessage());
     die("Error cargando conexión: " . $e->getMessage());
 }
 
 try {
-    error_log("Cargando auth_check.php...");
     require_once __DIR__ . '/auth_check.php';
-    error_log("auth_check.php cargado");
 } catch (Exception $e) {
-    error_log("ERROR cargando auth_check.php: " . $e->getMessage());
     die("Error cargando auth_check: " . $e->getMessage());
 }
-
-error_log("Verificando autenticación...");
-error_log("admin_logged_in: " . (isset($_SESSION['admin_logged_in']) ? 'SÍ' : 'NO'));
-error_log("admin_rol: " . ($_SESSION['admin_rol'] ?? 'NO DEFINIDO'));
 
 // Verificar permisos (solo admin)
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
