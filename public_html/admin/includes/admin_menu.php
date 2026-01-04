@@ -603,31 +603,35 @@ div.nav-item div.ms-3 {
     color: white !important;
 }
 
-/* Enlaces del menú */
+/* Enlaces del menú - Estilos consistentes para todas las páginas */
+.admin-sidebar .nav-link,
 .nav-link {
     padding: 0.75rem 1rem;
     margin-bottom: 0.25rem;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius, 12px);
     transition: all 0.3s ease;
     color: #212529 !important; /* Color oscuro explícito */
-    text-decoration: none;
-    display: flex;
+    text-decoration: none !important;
+    display: flex !important;
     align-items: center;
     font-weight: 500;
 }
 
+.admin-sidebar .nav-link:hover,
 .nav-link:hover {
     background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
     transform: translateX(3px);
-    color: var(--primary-color) !important;
+    color: var(--primary-color, #0066cc) !important;
 }
 
+.admin-sidebar .nav-link.active,
 .nav-link.active {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+    background: linear-gradient(135deg, var(--primary-color, #0066cc) 0%, #0056b3 100%);
     color: white !important;
     box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
 }
 
+.admin-sidebar .nav-link i,
 .nav-link i {
     width: 20px;
     text-align: center;
@@ -636,7 +640,7 @@ div.nav-item div.ms-3 {
 
 /* Asegurar que los enlaces del menú NO sean afectados por .user-info */
 .admin-sidebar .nav-link,
-.admin-sidebar .nav-link *:not(.user-info *) {
+.admin-sidebar .nav-link *:not(.user-info *):not(.user-info) {
     color: #212529 !important;
 }
 

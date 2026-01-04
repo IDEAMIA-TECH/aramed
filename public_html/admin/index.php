@@ -376,17 +376,7 @@ try {
             overflow-x: hidden;
         }
 
-        .admin-sidebar {
-            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
-            min-height: 100vh;
-            border-right: 1px solid var(--border-color);
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
+        /* Estilos del sidebar movidos a admin_menu.php para consistencia */
 
         .admin-content {
             background: transparent;
@@ -584,23 +574,7 @@ try {
             background: linear-gradient(135deg, var(--danger-color) 0%, #e74c3c 100%);
         }
 
-        .nav-link {
-            border-radius: 8px;
-            margin-bottom: 0.25rem;
-            transition: var(--transition);
-            font-weight: 500;
-        }
-
-        .nav-link:hover {
-            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
-            transform: translateX(5px);
-        }
-
-        .nav-link.active {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
-        }
+        /* Estilos de .nav-link movidos a admin_menu.php para consistencia en todas las páginas */
 
         .badge {
             padding: 0.5rem 1rem;
