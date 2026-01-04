@@ -56,7 +56,12 @@ if ($pos !== false) {
     $path_parts = explode('/', $relative_path);
     
     // Si hay al menos una parte (el directorio), usarla
+    // path_parts será ['catalogo', 'index.php'] para /admin/catalogo/index.php
     if (count($path_parts) > 1 && !empty($path_parts[0])) {
+        $current_dir = $path_parts[0];
+        $base_path = '../';
+    } elseif (count($path_parts) === 1 && !empty($path_parts[0]) && $path_parts[0] !== 'index.php') {
+        // Caso especial: /admin/catalogo (sin index.php)
         $current_dir = $path_parts[0];
         $base_path = '../';
     } else {
@@ -76,6 +81,11 @@ if ($pos !== false) {
     } else {
         $base_path = '../';
     }
+}
+
+// Debug temporal
+if (isset($_GET['debug_menu'])) {
+    error_log("MENU DEBUG - php_self: $php_self | current_dir: '$current_dir' | current_page: '$current_page' | path_parts: " . print_r($path_parts ?? [], true));
 }
 
 // Función helper para generar rutas correctas
@@ -200,21 +210,31 @@ function getLogoPath($current_dir, $base_path) {
                 <a class="<?php echo getNavLinkClass('catalogo/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('catalogo/index.php', $base_path); ?>">
                     <i class="bi bi-box-seam me-2"></i>Catálogo
                 </a>
-                <?php if ($current_dir === 'catalogo'): ?>
-                <div class="ms-3 mt-1 catalogo-submenu" style="display: block !important; visibility: visible !important; opacity: 1 !important; height: auto !important; padding: 0.5rem 0 !important;">
-                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php" style="display: block !important;">
+                <?php 
+                // Debug: verificar valores
+                $is_catalogo = ($current_dir === 'catalogo');
+                if (isset($_GET['debug_menu'])) {
+                    error_log("CATALOGO DEBUG - current_dir: '$current_dir' | is_catalogo: " . ($is_catalogo ? 'true' : 'false'));
+                }
+                ?>
+                <?php if ($is_catalogo): ?>
+                <!-- SUBMENÚ CATÁLOGO - DEBERÍA SER VISIBLE -->
+                <div class="ms-3 mt-1 catalogo-submenu" style="display: block !important; visibility: visible !important; opacity: 1 !important; height: auto !important; padding: 0.5rem 0 !important; background: rgba(0,255,0,0.1) !important; border-left: 3px solid green !important;">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php" style="display: block !important; visibility: visible !important;">
                         <i class="bi bi-speedometer2 me-2"></i>Dashboard
                     </a>
-                    <a class="<?php echo getNavLinkClass('productos/index.php', $current_page, $current_dir); ?> nav-link-sm" href="productos/index.php" style="display: block !important;">
+                    <a class="<?php echo getNavLinkClass('productos/index.php', $current_page, $current_dir); ?> nav-link-sm" href="productos/index.php" style="display: block !important; visibility: visible !important;">
                         <i class="bi bi-box me-2"></i>Productos
                     </a>
-                    <a class="<?php echo getNavLinkClass('categorias.php', $current_page, $current_dir); ?> nav-link-sm" href="categorias.php" style="display: block !important;">
+                    <a class="<?php echo getNavLinkClass('categorias.php', $current_page, $current_dir); ?> nav-link-sm" href="categorias.php" style="display: block !important; visibility: visible !important;">
                         <i class="bi bi-folder me-2"></i>Categorías
                     </a>
-                    <a class="<?php echo getNavLinkClass('marcas.php', $current_page, $current_dir); ?> nav-link-sm" href="marcas.php" style="display: block !important;">
+                    <a class="<?php echo getNavLinkClass('marcas.php', $current_page, $current_dir); ?> nav-link-sm" href="marcas.php" style="display: block !important; visibility: visible !important;">
                         <i class="bi bi-tags me-2"></i>Marcas
                     </a>
                 </div>
+                <?php else: ?>
+                <!-- DEBUG: No se muestra submenú. current_dir='<?php echo htmlspecialchars($current_dir); ?>' ?> -->
                 <?php endif; ?>
             </div>
             <?php endif; ?>
