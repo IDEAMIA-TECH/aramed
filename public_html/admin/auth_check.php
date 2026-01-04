@@ -59,40 +59,60 @@ if (file_exists(__DIR__ . '/../includes/rbac_functions.php')) {
 }
 
 // Verificar si el usuario debe cambiar su contraseña
-if (isset($_SESSION['admin_user_id'])) {
-    $pdo = getDB();
-    if ($pdo) {
-        $sql = "SELECT forzar_cambio_password FROM admin_usuarios WHERE id = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$_SESSION['admin_user_id']]);
-        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($usuario && $usuario['forzar_cambio_password'] == 1) {
-            // No redirigir si ya está en la página de cambiar contraseña
-            $current_page = basename($_SERVER['PHP_SELF']);
-            if ($current_page !== 'cambiar-password.php' && $current_page !== 'logout.php') {
-                header('Location: usuarios/cambiar-password.php?forzar=1');
-                exit;
+// Solo si getDB() está disponible (connection.php ya cargado)
+if (isset($_SESSION['admin_user_id']) && function_exists('getDB')) {
+    try {
+        $pdo = getDB();
+        if ($pdo) {
+            // Verificar si la columna existe antes de consultarla
+            $columns_check = $pdo->query("SHOW COLUMNS FROM admin_usuarios LIKE 'forzar_cambio_password'")->fetch();
+            if ($columns_check) {
+                $sql = "SELECT forzar_cambio_password FROM admin_usuarios WHERE id = ?";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([$_SESSION['admin_user_id']]);
+                $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($usuario && isset($usuario['forzar_cambio_password']) && $usuario['forzar_cambio_password'] == 1) {
+                    // No redirigir si ya está en la página de cambiar contraseña
+                    $current_page = basename($_SERVER['PHP_SELF']);
+                    if ($current_page !== 'cambiar-password.php' && $current_page !== 'logout.php') {
+                        header('Location: usuarios/cambiar-password.php?forzar=1');
+                        exit;
+                    }
+                }
             }
         }
+    } catch (Exception $e) {
+        // Ignorar errores de BD en auth_check
+        error_log("Error en auth_check (forzar_cambio_password): " . $e->getMessage());
     }
 }
 
 // Verificar si el usuario está bloqueado
-if (isset($_SESSION['admin_user_id'])) {
-    $pdo = getDB();
-    if ($pdo) {
-        $sql = "SELECT bloqueado_hasta FROM admin_usuarios WHERE id = ? AND bloqueado_hasta IS NOT NULL AND bloqueado_hasta > NOW()";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$_SESSION['admin_user_id']]);
-        $bloqueado = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($bloqueado) {
-            session_unset();
-            session_destroy();
-            header('Location: login.php?bloqueado=1');
-            exit;
+// Solo si getDB() está disponible (connection.php ya cargado)
+if (isset($_SESSION['admin_user_id']) && function_exists('getDB')) {
+    try {
+        $pdo = getDB();
+        if ($pdo) {
+            // Verificar si la columna existe antes de consultarla
+            $columns_check = $pdo->query("SHOW COLUMNS FROM admin_usuarios LIKE 'bloqueado_hasta'")->fetch();
+            if ($columns_check) {
+                $sql = "SELECT bloqueado_hasta FROM admin_usuarios WHERE id = ? AND bloqueado_hasta IS NOT NULL AND bloqueado_hasta > NOW()";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([$_SESSION['admin_user_id']]);
+                $bloqueado = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($bloqueado) {
+                    session_unset();
+                    session_destroy();
+                    header('Location: login.php?bloqueado=1');
+                    exit;
+                }
+            }
         }
+    } catch (Exception $e) {
+        // Ignorar errores de BD en auth_check
+        error_log("Error en auth_check (bloqueado_hasta): " . $e->getMessage());
     }
 }
 

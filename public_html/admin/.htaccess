@@ -4,10 +4,10 @@
 # Deshabilitar listado de directorios
 Options -Indexes
 
-# Proteger archivos sensibles
-<Files "auth_check.php">
-    Require all denied
-</Files>
+# Proteger archivos sensibles (comentado temporalmente para debugging)
+# <Files "auth_check.php">
+#     Require all denied
+# </Files>
 
 # Headers de seguridad básicos
 <IfModule mod_headers.c>
@@ -16,8 +16,8 @@ Options -Indexes
     Header always set X-XSS-Protection "1; mode=block"
 </IfModule>
 
-# Configuración de PHP
-<IfModule mod_php.c>
-    php_flag display_errors Off
-    php_flag log_errors On
-</IfModule>
+# Configuración de PHP (comentado para debugging)
+# <IfModule mod_php.c>
+#     php_flag display_errors Off
+#     php_flag log_errors On
+# </IfModule>
