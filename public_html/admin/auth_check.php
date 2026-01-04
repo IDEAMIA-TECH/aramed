@@ -53,8 +53,10 @@ if (isset($_SESSION['admin_last_activity']) &&
 // Actualizar tiempo de última actividad
 $_SESSION['admin_last_activity'] = time();
 
-// Cargar funciones RBAC si existen
-if (file_exists(__DIR__ . '/../includes/rbac_functions.php')) {
+// Cargar funciones RBAC si existen y getDB() está disponible
+// IMPORTANTE: Cargar ANTES de declarar funciones locales para evitar conflictos
+// Pero solo si connection.php ya fue cargado (getDB() disponible)
+if (function_exists('getDB') && file_exists(__DIR__ . '/../includes/rbac_functions.php')) {
     require_once __DIR__ . '/../includes/rbac_functions.php';
 }
 
@@ -117,19 +119,26 @@ if (isset($_SESSION['admin_user_id']) && function_exists('getDB')) {
 }
 
 // Función para verificar permisos de rol (mantener compatibilidad)
-function hasPermission($required_role = 'editor') {
-    $user_role = $_SESSION['admin_rol'] ?? 'editor';
-    
-    $role_hierarchy = [
-        'editor' => 1,
-        'admin' => 2
-    ];
-    
-    $user_level = $role_hierarchy[$user_role] ?? 1;
-    $required_level = $role_hierarchy[$required_role] ?? 1;
-    
-    return $user_level >= $required_level;
+// NOTA: hasPermission() está definida en rbac_functions.php con diferente firma
+// Esta función es solo para verificación simple de roles (sin BD)
+if (!function_exists('hasRolePermission')) {
+    function hasRolePermission($required_role = 'editor') {
+        $user_role = $_SESSION['admin_rol'] ?? 'editor';
+        
+        $role_hierarchy = [
+            'editor' => 1,
+            'admin' => 2
+        ];
+        
+        $user_level = $role_hierarchy[$user_role] ?? 1;
+        $required_level = $role_hierarchy[$required_role] ?? 1;
+        
+        return $user_level >= $required_level;
+    }
 }
+
+// NO declarar hasPermission aquí - está en rbac_functions.php
+// Si se necesita antes de cargar rbac_functions.php, usar hasRolePermission()
 
 // Función para obtener información del usuario actual
 function getCurrentUser() {

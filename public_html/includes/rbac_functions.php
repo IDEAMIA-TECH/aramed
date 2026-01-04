@@ -24,7 +24,9 @@ if (!defined('ARAMED_SITE')) {
  * @param string $accion Acción a verificar
  * @return bool True si tiene permiso, False si no
  */
-function hasPermission($usuario_id, $modulo, $accion) {
+// Verificar si la función ya existe (puede estar en auth_check.php)
+if (!function_exists('hasPermission')) {
+    function hasPermission($usuario_id, $modulo, $accion) {
     $pdo = getDB();
     if (!$pdo) {
         return false;
