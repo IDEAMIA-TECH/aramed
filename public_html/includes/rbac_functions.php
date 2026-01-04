@@ -27,41 +27,41 @@ if (!defined('ARAMED_SITE')) {
 // Verificar si la función ya existe (puede estar en auth_check.php)
 if (!function_exists('hasPermission')) {
     function hasPermission($usuario_id, $modulo, $accion) {
-    $pdo = getDB();
-    if (!$pdo) {
-        return false;
-    }
-    
-    // Obtener rol del usuario
-    $sql_usuario = "SELECT rol FROM admin_usuarios WHERE id = ? AND estado = 'activo'";
-    $stmt_usuario = $pdo->prepare($sql_usuario);
-    $stmt_usuario->execute([$usuario_id]);
-    $usuario = $stmt_usuario->fetch(PDO::FETCH_ASSOC);
-    
-    if (!$usuario) {
-        return false;
-    }
-    
-    $rol = $usuario['rol'];
-    
-    // Si es admin, tiene todos los permisos
-    if ($rol === 'admin') {
-        return true;
-    }
-    
-    // Verificar permiso específico
-    $sql = "
-        SELECT COUNT(*) as tiene_permiso
-        FROM rol_permisos rp
-        INNER JOIN permisos p ON rp.permiso_id = p.id
-        WHERE rp.rol = ? AND p.modulo = ? AND p.accion = ?
-    ";
-    
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$rol, $modulo, $accion]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    return ($result['tiene_permiso'] > 0);
+        $pdo = getDB();
+        if (!$pdo) {
+            return false;
+        }
+        
+        // Obtener rol del usuario
+        $sql_usuario = "SELECT rol FROM admin_usuarios WHERE id = ? AND estado = 'activo'";
+        $stmt_usuario = $pdo->prepare($sql_usuario);
+        $stmt_usuario->execute([$usuario_id]);
+        $usuario = $stmt_usuario->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$usuario) {
+            return false;
+        }
+        
+        $rol = $usuario['rol'];
+        
+        // Si es admin, tiene todos los permisos
+        if ($rol === 'admin') {
+            return true;
+        }
+        
+        // Verificar permiso específico
+        $sql = "
+            SELECT COUNT(*) as tiene_permiso
+            FROM rol_permisos rp
+            INNER JOIN permisos p ON rp.permiso_id = p.id
+            WHERE rp.rol = ? AND p.modulo = ? AND p.accion = ?
+        ";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$rol, $modulo, $accion]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return ($result['tiene_permiso'] > 0);
     }
 }
 

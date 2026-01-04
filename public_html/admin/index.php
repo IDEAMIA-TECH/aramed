@@ -368,6 +368,12 @@ try {
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .container-fluid {
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         .admin-sidebar {
@@ -377,12 +383,17 @@ try {
             box-shadow: 2px 0 10px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
+            z-index: 100;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .admin-content {
             background: transparent;
             min-height: 100vh;
             padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
 
         .page-header {

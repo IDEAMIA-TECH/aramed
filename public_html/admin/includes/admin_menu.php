@@ -68,7 +68,7 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
 
 <!-- Sidebar -->
 <div class="col-md-3 col-lg-3 admin-sidebar p-0">
-    <div class="p-3">
+    <div class="p-3" style="max-width: 100%; overflow-x: hidden;">
         <div class="admin-logo mb-4">
             <img src="<?php echo ($current_dir === 'blog') ? '../../assets/images/design/logo.png' : '../assets/images/design/logo.png'; ?>" 
                  alt="Aramed y Laboratorio" 
@@ -373,6 +373,10 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     border-right: 1px solid #e9ecef;
     box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+    z-index: 100;
 }
 
 /* Logo del admin */
@@ -384,14 +388,21 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     border: 1px solid #e9ecef;
+    max-width: 100%;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
 }
 
 .logo-image {
     height: 40px;
+    max-height: 40px;
     width: auto;
+    max-width: 150px;
     object-fit: contain;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
     transition: transform 0.3s ease;
+    flex-shrink: 0;
 }
 
 .logo-image:hover {
