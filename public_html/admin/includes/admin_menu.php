@@ -41,36 +41,70 @@ function canSeeModule($modulo, $user_permissions) {
     return isset($user_permissions[$modulo]) && in_array('ver', $user_permissions[$modulo]);
 }
 
-// Función para determinar si un enlace está activo
-function isActive($page, $current_page, $current_dir = null) {
-    if ($current_dir === 'blog') {
-        // Para páginas del blog
-        return $page === $current_page;
-    } else {
-        // Para páginas principales del admin
-        return $page === $current_page;
+// Determinar la página y directorio actual
+$script_path = $_SERVER['SCRIPT_NAME'];
+$current_page = basename($script_path);
+$script_dir = dirname($script_path);
+$current_dir = basename($script_dir);
+
+// Si estamos en la raíz del admin, current_dir será '.' o '/admin'
+if ($current_dir === '.' || $current_dir === '/' || $current_dir === 'admin' || empty($current_dir)) {
+    $current_dir = '';
+    $base_path = '';
+} else {
+    $base_path = '../';
+}
+
+// Función helper para generar rutas correctas
+function adminUrl($path, $base_path = '') {
+    // Si la ruta ya comienza con http:// o https://, devolverla tal cual
+    if (strpos($path, 'http://') === 0 || strpos($path, 'https://') === 0) {
+        return $path;
     }
+    
+    // Si la ruta comienza con /, es absoluta desde la raíz del sitio
+    if (strpos($path, '/') === 0) {
+        return $path;
+    }
+    
+    // Rutas relativas
+    return $base_path . $path;
+}
+
+// Función para determinar si un enlace está activo
+function isActive($target_page, $current_page, $current_dir) {
+    // Si estamos en la raíz del admin
+    if (empty($current_dir)) {
+        return $target_page === $current_page;
+    }
+    
+    // Si estamos en un subdirectorio, comparar solo el nombre del archivo
+    return basename($target_page) === $current_page;
 }
 
 // Función para generar clases CSS del enlace
-function getNavLinkClass($page, $current_page, $current_dir = null) {
+function getNavLinkClass($target_page, $current_page, $current_dir) {
     $classes = ['nav-link'];
-    if (isActive($page, $current_page, $current_dir)) {
+    if (isActive($target_page, $current_page, $current_dir)) {
         $classes[] = 'active';
     }
     return implode(' ', $classes);
 }
 
-// Determinar la página actual
-$current_page = basename($_SERVER['PHP_SELF']);
-$current_dir = basename(dirname($_SERVER['PHP_SELF']));
+// Función helper para obtener la ruta del logo
+function getLogoPath($current_dir, $base_path) {
+    if (empty($current_dir)) {
+        return '../assets/images/design/logo.png';
+    }
+    return '../../assets/images/design/logo.png';
+}
 ?>
 
 <!-- Sidebar -->
 <div class="col-md-3 col-lg-3 admin-sidebar p-0">
     <div class="p-3" style="max-width: 100%; overflow-x: hidden;">
         <div class="admin-logo mb-4">
-            <img src="<?php echo ($current_dir === 'blog') ? '../../assets/images/design/logo.png' : '../assets/images/design/logo.png'; ?>" 
+            <img src="<?php echo getLogoPath($current_dir, $base_path); ?>" 
                  alt="Aramed y Laboratorio" 
                  class="logo-image me-2"
                  onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
@@ -91,14 +125,14 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
         
         <nav class="nav flex-column">
             <!-- Dashboard -->
-            <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../index.php' : 'index.php'; ?>">
+            <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('index.php', $base_path); ?>">
                 <i class="bi bi-speedometer2 me-2"></i>Dashboard
             </a>
             
             <!-- Home -->
             <?php if (canSeeModule('home', $user_permissions)): ?>
             <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('home/index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'home') ? '../home/index.php' : 'home/index.php'; ?>">
+                <a class="<?php echo getNavLinkClass('home/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('home/index.php', $base_path); ?>">
                     <i class="bi bi-house-door me-2"></i>Home
                 </a>
                 <?php if ($current_dir === 'home'): ?>
@@ -129,7 +163,7 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
             <!-- Catálogo -->
             <?php if (canSeeModule('catalogo', $user_permissions)): ?>
             <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('catalogo/index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'catalogo') ? '../catalogo/index.php' : 'catalogo/index.php'; ?>">
+                <a class="<?php echo getNavLinkClass('catalogo/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('catalogo/index.php', $base_path); ?>">
                     <i class="bi bi-box-seam me-2"></i>Catálogo
                 </a>
                 <?php if ($current_dir === 'catalogo'): ?>
@@ -154,7 +188,7 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
             <!-- Blog -->
             <?php if (canSeeModule('blog', $user_permissions)): ?>
             <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('blog/index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../blog/index.php' : 'blog/index.php'; ?>">
+                <a class="<?php echo getNavLinkClass('blog/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('blog/index.php', $base_path); ?>">
                     <i class="bi bi-newspaper me-2"></i>Blog
                 </a>
                 <?php if ($current_dir === 'blog'): ?>
@@ -182,7 +216,7 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
             <!-- Proyectos -->
             <?php if (canSeeModule('proyectos', $user_permissions)): ?>
             <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'catalogo' || $current_dir === 'home' || $current_dir === 'contacto') ? '../proyectos/index.php' : 'proyectos/index.php'; ?>">
+                <a class="<?php echo getNavLinkClass('proyectos/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('proyectos/index.php', $base_path); ?>">
                     <i class="bi bi-folder me-2"></i>Proyectos
                 </a>
                 <?php if ($current_dir === 'proyectos'): ?>
@@ -190,7 +224,7 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
                     <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
                         <i class="bi bi-list me-2"></i>Listado
                     </a>
-                    <?php if (hasPermission('proyectos', 'crear')): ?>
+                    <?php if (function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'proyectos', 'crear')): ?>
                     <a class="<?php echo getNavLinkClass('create.php', $current_page, $current_dir); ?> nav-link-sm" href="create.php">
                         <i class="bi bi-plus-circle me-2"></i>Crear
                     </a>
@@ -203,7 +237,7 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
             <!-- Contacto -->
             <?php if (canSeeModule('contacto', $user_permissions)): ?>
             <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'catalogo' || $current_dir === 'home' || $current_dir === 'proyectos') ? '../contacto/index.php' : 'contacto/index.php'; ?>">
+                <a class="<?php echo getNavLinkClass('contacto/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('contacto/index.php', $base_path); ?>">
                     <i class="bi bi-chat-dots me-2"></i>Contacto
                 </a>
                 <?php if ($current_dir === 'contacto'): ?>
@@ -219,7 +253,7 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
             <!-- Cotizaciones -->
             <?php if (canSeeModule('cotizaciones', $user_permissions)): ?>
             <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'catalogo' || $current_dir === 'home' || $current_dir === 'contacto') ? '../cotizaciones/index.php' : 'cotizaciones/index.php'; ?>">
+                <a class="<?php echo getNavLinkClass('cotizaciones/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('cotizaciones/index.php', $base_path); ?>">
                     <i class="bi bi-file-earmark-text me-2"></i>Cotizaciones
                 </a>
                 <?php if ($current_dir === 'cotizaciones'): ?>
@@ -233,9 +267,9 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
             <?php endif; ?>
             
             <!-- Newsletter -->
-            <?php if (hasPermission('newsletter', 'ver')): ?>
+            <?php if (function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'newsletter', 'ver')): ?>
             <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('newsletter-simple.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'newsletter') ? '../newsletter-simple.php' : 'newsletter-simple.php'; ?>">
+                <a class="<?php echo getNavLinkClass('newsletter-simple.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('newsletter-simple.php', $base_path); ?>">
                     <i class="bi bi-newspaper me-2"></i>Newsletter
                 </a>
                 <?php if ($current_dir === 'newsletter'): ?>
@@ -258,9 +292,9 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
             <?php endif; ?>
             
             <!-- Analytics -->
-            <?php if (hasPermission('analytics', 'ver')): ?>
+            <?php if (function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'analytics', 'ver')): ?>
             <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('dashboard.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'newsletter' || $current_dir === 'analytics') ? '../analytics/dashboard.php' : 'analytics/dashboard.php'; ?>">
+                <a class="<?php echo getNavLinkClass('analytics/dashboard.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('analytics/dashboard.php', $base_path); ?>">
                     <i class="bi bi-graph-up me-2"></i>Analytics
                 </a>
                 <?php if ($current_dir === 'analytics'): ?>
@@ -278,7 +312,7 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
             
             <!-- Topbar Messages -->
             <?php if (canSeeModule('home', $user_permissions) || canSeeModule('configuracion', $user_permissions)): ?>
-            <a class="<?php echo getNavLinkClass('topbar-messages.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../topbar-messages.php' : 'topbar-messages.php'; ?>">
+            <a class="<?php echo getNavLinkClass('topbar-messages.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('topbar-messages.php', $base_path); ?>">
                 <i class="bi bi-megaphone me-2"></i>Mensajes Topbar
             </a>
             <?php endif; ?>
@@ -286,7 +320,7 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
             <!-- Usuarios -->
             <?php if (canSeeModule('usuarios', $user_permissions)): ?>
             <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('usuarios.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../usuarios.php' : 'usuarios.php'; ?>">
+                <a class="<?php echo getNavLinkClass('usuarios.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('usuarios.php', $base_path); ?>">
                     <i class="bi bi-people-fill me-2"></i>Usuarios
                 </a>
                 <?php if ($current_dir === 'usuarios'): ?>
@@ -300,9 +334,9 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
             <?php endif; ?>
             
             <!-- SEO -->
-            <?php if (hasPermission('seo', 'ver')): ?>
+            <?php if (function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'seo', 'ver')): ?>
             <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'catalogo' || $current_dir === 'home' || $current_dir === 'contacto' || $current_dir === 'cotizaciones' || $current_dir === 'proyectos') ? '../seo/index.php' : 'seo/index.php'; ?>">
+                <a class="<?php echo getNavLinkClass('seo/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('seo/index.php', $base_path); ?>">
                     <i class="bi bi-search me-2"></i>SEO & Metadatos
                 </a>
                 <?php if ($current_dir === 'seo'): ?>
@@ -335,33 +369,32 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
             
             <!-- Configuración -->
             <?php if (canSeeModule('configuracion', $user_permissions)): ?>
-            <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog' || $current_dir === 'catalogo' || $current_dir === 'home' || $current_dir === 'contacto' || $current_dir === 'cotizaciones' || $current_dir === 'proyectos' || $current_dir === 'seo') ? '../configuracion/index.php' : 'configuracion/index.php'; ?>">
+            <a class="<?php echo getNavLinkClass('configuracion/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('configuracion/index.php', $base_path); ?>">
                 <i class="bi bi-gear me-2"></i>Configuración
             </a>
             <?php endif; ?>
             
-        <a class="<?php echo getNavLinkClass('perfil.php', $current_page, $current_dir); ?>" href="<?php echo ($current_dir === 'blog') ? '../perfil.php' : 'perfil.php'; ?>">
-            <i class="bi bi-person-circle me-2"></i>Mi Perfil
-        </a>
+            <a class="<?php echo getNavLinkClass('perfil.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('perfil.php', $base_path); ?>">
+                <i class="bi bi-person-circle me-2"></i>Mi Perfil
+            </a>
             
             <hr>
             
             <!-- Enlaces externos -->
-            <a class="nav-link" href="<?php echo ($current_dir === 'blog') ? '../blog.php' : '../blog.php'; ?>" target="_blank">
+            <a class="nav-link" href="<?php echo adminUrl('../blog.php', $base_path); ?>" target="_blank">
                 <i class="bi bi-eye me-2"></i>Ver Blog
             </a>
             
-            <a class="nav-link" href="<?php echo ($current_dir === 'blog') ? '../index.php' : '../index.php'; ?>">
+            <a class="nav-link" href="<?php echo adminUrl('../index.php', $base_path); ?>">
                 <i class="bi bi-house me-2"></i>Volver al Sitio
             </a>
             
-            <a class="nav-link" href="<?php echo ($current_dir === 'blog') ? '../logout.php' : 'logout.php'; ?>">
+            <a class="nav-link" href="<?php echo adminUrl('logout.php', $base_path); ?>">
                 <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
             </a>
         </nav>
     </div>
 </div>
-
 
 <style>
 /* Estilos adicionales para el menú */
@@ -415,6 +448,7 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
     font-size: 1.1rem;
     margin-left: 0.5rem;
 }
+
 .nav-link-sm {
     font-size: 0.85rem;
     padding: 0.5rem 1rem;
