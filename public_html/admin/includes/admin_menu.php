@@ -181,22 +181,22 @@ function getLogoPath($current_dir, $base_path) {
                 </a>
                 <?php if ($current_dir === 'home'): ?>
                 <div class="ms-3 mt-1" style="display: block !important; visibility: visible !important;">
-                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php" style="color: #212529 !important;">
                         <i class="bi bi-speedometer2 me-2"></i>Dashboard
                     </a>
-                    <a class="<?php echo getNavLinkClass('banners.php', $current_page, $current_dir); ?> nav-link-sm" href="banners.php">
+                    <a class="<?php echo getNavLinkClass('banners.php', $current_page, $current_dir); ?> nav-link-sm" href="banners.php" style="color: #212529 !important;">
                         <i class="bi bi-image me-2"></i>Banners
                     </a>
-                    <a class="<?php echo getNavLinkClass('productos-destacados.php', $current_page, $current_dir); ?> nav-link-sm" href="productos-destacados.php">
+                    <a class="<?php echo getNavLinkClass('productos-destacados.php', $current_page, $current_dir); ?> nav-link-sm" href="productos-destacados.php" style="color: #212529 !important;">
                         <i class="bi bi-star me-2"></i>Productos Destacados
                     </a>
-                    <a class="<?php echo getNavLinkClass('servicios.php', $current_page, $current_dir); ?> nav-link-sm" href="servicios.php">
+                    <a class="<?php echo getNavLinkClass('servicios.php', $current_page, $current_dir); ?> nav-link-sm" href="servicios.php" style="color: #212529 !important;">
                         <i class="bi bi-gear me-2"></i>Servicios
                     </a>
-                    <a class="<?php echo getNavLinkClass('mision-vision.php', $current_page, $current_dir); ?> nav-link-sm" href="mision-vision.php">
+                    <a class="<?php echo getNavLinkClass('mision-vision.php', $current_page, $current_dir); ?> nav-link-sm" href="mision-vision.php" style="color: #212529 !important;">
                         <i class="bi bi-bullseye me-2"></i>Misión/Visión
                     </a>
-                    <a class="<?php echo getNavLinkClass('categorias-destacadas.php', $current_page, $current_dir); ?> nav-link-sm" href="categorias-destacadas.php">
+                    <a class="<?php echo getNavLinkClass('categorias-destacadas.php', $current_page, $current_dir); ?> nav-link-sm" href="categorias-destacadas.php" style="color: #212529 !important;">
                         <i class="bi bi-folder me-2"></i>Categorías
                     </a>
                 </div>
@@ -219,17 +219,17 @@ function getLogoPath($current_dir, $base_path) {
                 ?>
                 <?php if ($is_catalogo): ?>
                 <!-- SUBMENÚ CATÁLOGO - DEBERÍA SER VISIBLE -->
-                <div class="ms-3 mt-1 catalogo-submenu" style="display: block !important; visibility: visible !important; opacity: 1 !important; height: auto !important; padding: 0.5rem 0 !important; background: rgba(0,255,0,0.1) !important; border-left: 3px solid green !important;">
-                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php" style="display: block !important; visibility: visible !important;">
+                <div class="ms-3 mt-1 catalogo-submenu" style="display: block !important; visibility: visible !important; opacity: 1 !important; height: auto !important; padding: 0.5rem 0 !important;">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php" style="display: block !important; visibility: visible !important; color: #212529 !important;">
                         <i class="bi bi-speedometer2 me-2"></i>Dashboard
                     </a>
-                    <a class="<?php echo getNavLinkClass('productos/index.php', $current_page, $current_dir); ?> nav-link-sm" href="productos/index.php" style="display: block !important; visibility: visible !important;">
+                    <a class="<?php echo getNavLinkClass('productos/index.php', $current_page, $current_dir); ?> nav-link-sm" href="productos/index.php" style="display: block !important; visibility: visible !important; color: #212529 !important;">
                         <i class="bi bi-box me-2"></i>Productos
                     </a>
-                    <a class="<?php echo getNavLinkClass('categorias.php', $current_page, $current_dir); ?> nav-link-sm" href="categorias.php" style="display: block !important; visibility: visible !important;">
+                    <a class="<?php echo getNavLinkClass('categorias.php', $current_page, $current_dir); ?> nav-link-sm" href="categorias.php" style="display: block !important; visibility: visible !important; color: #212529 !important;">
                         <i class="bi bi-folder me-2"></i>Categorías
                     </a>
-                    <a class="<?php echo getNavLinkClass('marcas.php', $current_page, $current_dir); ?> nav-link-sm" href="marcas.php" style="display: block !important; visibility: visible !important;">
+                    <a class="<?php echo getNavLinkClass('marcas.php', $current_page, $current_dir); ?> nav-link-sm" href="marcas.php" style="display: block !important; visibility: visible !important; color: #212529 !important;">
                         <i class="bi bi-tags me-2"></i>Marcas
                     </a>
                 </div>
@@ -247,19 +247,19 @@ function getLogoPath($current_dir, $base_path) {
                 </a>
                 <?php if ($current_dir === 'blog'): ?>
                 <div class="ms-3 mt-1" style="display: block !important; visibility: visible !important;">
-                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php" style="color: #212529 !important;">
                         <i class="bi bi-list-ul me-2"></i>Artículos
                     </a>
-                    <a class="<?php echo getNavLinkClass('create.php', $current_page, $current_dir); ?> nav-link-sm" href="create.php">
+                    <a class="<?php echo getNavLinkClass('create.php', $current_page, $current_dir); ?> nav-link-sm" href="create.php" style="color: #212529 !important;">
                         <i class="bi bi-plus-circle me-2"></i>Crear Artículo
                     </a>
-                    <a class="<?php echo getNavLinkClass('categorias.php', $current_page, $current_dir); ?> nav-link-sm" href="categorias.php">
+                    <a class="<?php echo getNavLinkClass('categorias.php', $current_page, $current_dir); ?> nav-link-sm" href="categorias.php" style="color: #212529 !important;">
                         <i class="bi bi-folder me-2"></i>Categorías
                     </a>
-                    <a class="<?php echo getNavLinkClass('comentarios.php', $current_page, $current_dir); ?> nav-link-sm" href="comentarios.php">
+                    <a class="<?php echo getNavLinkClass('comentarios.php', $current_page, $current_dir); ?> nav-link-sm" href="comentarios.php" style="color: #212529 !important;">
                         <i class="bi bi-chat-dots me-2"></i>Comentarios
                     </a>
-                    <a class="<?php echo getNavLinkClass('image-manager.php', $current_page, $current_dir); ?> nav-link-sm" href="image-manager.php">
+                    <a class="<?php echo getNavLinkClass('image-manager.php', $current_page, $current_dir); ?> nav-link-sm" href="image-manager.php" style="color: #212529 !important;">
                         <i class="bi bi-images me-2"></i>Imágenes
                     </a>
                 </div>
@@ -299,7 +299,7 @@ function getLogoPath($current_dir, $base_path) {
                 </a>
                 <?php if ($current_dir === 'contacto'): ?>
                 <div class="ms-3 mt-1" style="display: block !important; visibility: visible !important;">
-                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php" style="color: #212529 !important;">
                         <i class="bi bi-list me-2"></i>Listado
                     </a>
                 </div>
@@ -315,7 +315,7 @@ function getLogoPath($current_dir, $base_path) {
                 </a>
                 <?php if ($current_dir === 'cotizaciones'): ?>
                 <div class="ms-3 mt-1" style="display: block !important; visibility: visible !important;">
-                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php" style="color: #212529 !important;">
                         <i class="bi bi-list me-2"></i>Listado
                     </a>
                 </div>
@@ -331,16 +331,16 @@ function getLogoPath($current_dir, $base_path) {
                 </a>
                 <?php if ($current_dir === 'newsletter'): ?>
                 <div class="ms-3 mt-1" style="display: block !important; visibility: visible !important;">
-                    <a class="<?php echo getNavLinkClass('import.php', $current_page, $current_dir); ?> nav-link-sm" href="import.php">
+                    <a class="<?php echo getNavLinkClass('import.php', $current_page, $current_dir); ?> nav-link-sm" href="import.php" style="color: #212529 !important;">
                         <i class="bi bi-upload me-2"></i>Importar CSV
                     </a>
-                    <a class="<?php echo getNavLinkClass('export.php', $current_page, $current_dir); ?> nav-link-sm" href="export.php">
+                    <a class="<?php echo getNavLinkClass('export.php', $current_page, $current_dir); ?> nav-link-sm" href="export.php" style="color: #212529 !important;">
                         <i class="bi bi-download me-2"></i>Exportar CSV
                     </a>
-                    <a class="<?php echo getNavLinkClass('plantillas.php', $current_page, $current_dir); ?> nav-link-sm" href="plantillas.php">
+                    <a class="<?php echo getNavLinkClass('plantillas.php', $current_page, $current_dir); ?> nav-link-sm" href="plantillas.php" style="color: #212529 !important;">
                         <i class="bi bi-file-earmark-code me-2"></i>Plantillas
                     </a>
-                    <a class="<?php echo getNavLinkClass('config.php', $current_page, $current_dir); ?> nav-link-sm" href="config.php">
+                    <a class="<?php echo getNavLinkClass('config.php', $current_page, $current_dir); ?> nav-link-sm" href="config.php" style="color: #212529 !important;">
                         <i class="bi bi-gear me-2"></i>Configuración
                     </a>
                 </div>
@@ -356,10 +356,10 @@ function getLogoPath($current_dir, $base_path) {
                 </a>
                 <?php if ($current_dir === 'analytics'): ?>
                 <div class="ms-3 mt-1" style="display: block !important; visibility: visible !important;">
-                    <a class="<?php echo getNavLinkClass('dashboard.php', $current_page, $current_dir); ?> nav-link-sm" href="dashboard.php">
+                    <a class="<?php echo getNavLinkClass('dashboard.php', $current_page, $current_dir); ?> nav-link-sm" href="dashboard.php" style="color: #212529 !important;">
                         <i class="bi bi-speedometer2 me-2"></i>Dashboard
                     </a>
-                    <a class="<?php echo getNavLinkClass('config.php', $current_page, $current_dir); ?> nav-link-sm" href="config.php">
+                    <a class="<?php echo getNavLinkClass('config.php', $current_page, $current_dir); ?> nav-link-sm" href="config.php" style="color: #212529 !important;">
                         <i class="bi bi-gear me-2"></i>Configuración
                     </a>
                 </div>
@@ -382,7 +382,7 @@ function getLogoPath($current_dir, $base_path) {
                 </a>
                 <?php if ($current_dir === 'usuarios'): ?>
                 <div class="ms-3 mt-1" style="display: block !important; visibility: visible !important;">
-                    <a class="<?php echo getNavLinkClass('logs.php', $current_page, $current_dir); ?> nav-link-sm" href="logs.php">
+                    <a class="<?php echo getNavLinkClass('logs.php', $current_page, $current_dir); ?> nav-link-sm" href="logs.php" style="color: #212529 !important;">
                         <i class="bi bi-journal-text me-2"></i>Logs de Auditoría
                     </a>
                 </div>
@@ -398,25 +398,25 @@ function getLogoPath($current_dir, $base_path) {
                 </a>
                 <?php if ($current_dir === 'seo'): ?>
                 <div class="ms-3 mt-1" style="display: block !important; visibility: visible !important;">
-                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php" style="color: #212529 !important;">
                         <i class="bi bi-speedometer2 me-2"></i>Dashboard
                     </a>
-                    <a class="<?php echo getNavLinkClass('config.php', $current_page, $current_dir); ?> nav-link-sm" href="config.php">
+                    <a class="<?php echo getNavLinkClass('config.php', $current_page, $current_dir); ?> nav-link-sm" href="config.php" style="color: #212529 !important;">
                         <i class="bi bi-gear me-2"></i>Configuración
                     </a>
-                    <a class="<?php echo getNavLinkClass('redirects.php', $current_page, $current_dir); ?> nav-link-sm" href="redirects.php">
+                    <a class="<?php echo getNavLinkClass('redirects.php', $current_page, $current_dir); ?> nav-link-sm" href="redirects.php" style="color: #212529 !important;">
                         <i class="bi bi-arrow-left-right me-2"></i>Redirecciones
                     </a>
-                    <a class="<?php echo getNavLinkClass('sitemap.php', $current_page, $current_dir); ?> nav-link-sm" href="sitemap.php">
+                    <a class="<?php echo getNavLinkClass('sitemap.php', $current_page, $current_dir); ?> nav-link-sm" href="sitemap.php" style="color: #212529 !important;">
                         <i class="bi bi-diagram-3 me-2"></i>Sitemap
                     </a>
-                    <a class="<?php echo getNavLinkClass('robots.php', $current_page, $current_dir); ?> nav-link-sm" href="robots.php">
+                    <a class="<?php echo getNavLinkClass('robots.php', $current_page, $current_dir); ?> nav-link-sm" href="robots.php" style="color: #212529 !important;">
                         <i class="bi bi-shield-check me-2"></i>Robots.txt
                     </a>
-                    <a class="<?php echo getNavLinkClass('schema.php', $current_page, $current_dir); ?> nav-link-sm" href="schema.php">
+                    <a class="<?php echo getNavLinkClass('schema.php', $current_page, $current_dir); ?> nav-link-sm" href="schema.php" style="color: #212529 !important;">
                         <i class="bi bi-code-square me-2"></i>Schema.org
                     </a>
-                    <a class="<?php echo getNavLinkClass('metadatos.php', $current_page, $current_dir); ?> nav-link-sm" href="metadatos.php">
+                    <a class="<?php echo getNavLinkClass('metadatos.php', $current_page, $current_dir); ?> nav-link-sm" href="metadatos.php" style="color: #212529 !important;">
                         <i class="bi bi-tags me-2"></i>Metadatos
                     </a>
                 </div>
@@ -513,16 +513,19 @@ function getLogoPath($current_dir, $base_path) {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+    color: #212529 !important; /* Color de texto oscuro para visibilidad */
+    text-decoration: none !important;
 }
 
 .nav-link-sm:hover {
     background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
     transform: translateX(3px);
+    color: var(--primary-color) !important;
 }
 
 .nav-link-sm.active {
     background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
-    color: white;
+    color: white !important;
     box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
 }
 
@@ -560,6 +563,14 @@ div.nav-item div.ms-3 {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+    color: #212529 !important; /* Color de texto oscuro */
+    text-decoration: none !important;
+}
+
+.nav-item .ms-3 a:hover,
+.nav-item .proyectos-submenu a:hover,
+.nav-item .catalogo-submenu a:hover {
+    color: var(--primary-color) !important;
 }
 
 .user-info {
