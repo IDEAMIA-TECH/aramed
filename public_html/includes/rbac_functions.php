@@ -62,6 +62,7 @@ if (!function_exists('hasPermission')) {
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     
     return ($result['tiene_permiso'] > 0);
+    }
 }
 
 /**
