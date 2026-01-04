@@ -14,13 +14,71 @@
 // Definir constante del sitio
 define('ARAMED_SITE', true);
 
+// Iniciar logging de errores
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+$log_file_path = __DIR__ . '/../logs/php-errors.log';
+if (file_exists($log_file_path) && is_writable($log_file_path)) {
+    ini_set('error_log', $log_file_path);
+}
+
+error_log("=== VIEW-LOGS.PHP INICIADO ===");
+
+// Iniciar sesión si no está iniciada
+if (session_status() === PHP_SESSION_NONE) {
+    error_log("Iniciando sesión...");
+    session_start();
+    error_log("Sesión iniciada");
+}
+
 // Cargar configuración y verificar autenticación
-require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/functions.php';
-require_once __DIR__ . '/../includes/connection.php';
-require_once __DIR__ . '/auth_check.php';
+try {
+    error_log("Cargando config.php...");
+    require_once __DIR__ . '/../includes/config.php';
+    error_log("config.php cargado");
+} catch (Exception $e) {
+    error_log("ERROR cargando config.php: " . $e->getMessage());
+    die("Error cargando configuración: " . $e->getMessage());
+}
+
+try {
+    error_log("Cargando functions.php...");
+    require_once __DIR__ . '/../includes/functions.php';
+    error_log("functions.php cargado");
+} catch (Exception $e) {
+    error_log("ERROR cargando functions.php: " . $e->getMessage());
+    die("Error cargando funciones: " . $e->getMessage());
+}
+
+try {
+    error_log("Cargando connection.php...");
+    require_once __DIR__ . '/../includes/connection.php';
+    error_log("connection.php cargado");
+} catch (Exception $e) {
+    error_log("ERROR cargando connection.php: " . $e->getMessage());
+    die("Error cargando conexión: " . $e->getMessage());
+}
+
+try {
+    error_log("Cargando auth_check.php...");
+    require_once __DIR__ . '/auth_check.php';
+    error_log("auth_check.php cargado");
+} catch (Exception $e) {
+    error_log("ERROR cargando auth_check.php: " . $e->getMessage());
+    die("Error cargando auth_check: " . $e->getMessage());
+}
+
+error_log("Verificando autenticación...");
+error_log("admin_logged_in: " . (isset($_SESSION['admin_logged_in']) ? 'SÍ' : 'NO'));
+error_log("admin_rol: " . ($_SESSION['admin_rol'] ?? 'NO DEFINIDO'));
 
 // Verificar permisos (solo admin)
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: login.php');
+    exit;
+}
+
 if (!isset($_SESSION['admin_rol']) || $_SESSION['admin_rol'] !== 'admin') {
     header('Location: sin-permiso.php');
     exit;
@@ -35,22 +93,32 @@ $logs = [];
 $log_exists = file_exists($log_file);
 
 if ($log_exists && is_readable($log_file)) {
-    $file_content = file_get_contents($log_file);
-    $all_lines = explode("\n", $file_content);
-    
-    // Aplicar filtro si existe
-    if (!empty($filter)) {
-        $all_lines = array_filter($all_lines, function($line) use ($filter) {
-            return stripos($line, $filter) !== false;
-        });
+    try {
+        $file_content = @file_get_contents($log_file);
+        if ($file_content === false) {
+            $logs = ["⚠ Error al leer el archivo de logs"];
+        } else {
+            $all_lines = explode("\n", $file_content);
+            
+            // Aplicar filtro si existe
+            if (!empty($filter)) {
+                $all_lines = array_filter($all_lines, function($line) use ($filter) {
+                    return stripos($line, $filter) !== false;
+                });
+            }
+            
+            // Obtener últimas N líneas
+            $all_lines = array_values($all_lines);
+            $total_lines = count($all_lines);
+            $start = max(0, $total_lines - $lines_to_show);
+            $logs = array_slice($all_lines, $start);
+            $logs = array_reverse($logs); // Más recientes primero
+        }
+    } catch (Exception $e) {
+        $logs = ["⚠ Error al procesar logs: " . $e->getMessage()];
     }
-    
-    // Obtener últimas N líneas
-    $all_lines = array_values($all_lines);
-    $logs = array_slice($all_lines, -$lines_to_show);
-    $logs = array_reverse($logs); // Más recientes primero
 } else {
-    $logs = ["⚠ El archivo de logs no existe o no es legible: " . $log_file];
+    $logs = ["⚠ El archivo de logs no existe o no es legible: " . basename($log_file)];
 }
 
 // Limpiar logs (solo admin)
@@ -62,16 +130,22 @@ if (isset($_POST['clear_logs']) && $_POST['clear_logs'] === '1') {
     }
 }
 
-$file_size = $log_exists ? filesize($log_file) : 0;
-$file_size_mb = round($file_size / 1024 / 1024, 2);
-$file_modified = $log_exists ? date('Y-m-d H:i:s', filemtime($log_file)) : 'N/A';
+try {
+    $file_size = $log_exists ? @filesize($log_file) : 0;
+    $file_size_mb = $file_size > 0 ? round($file_size / 1024 / 1024, 2) : 0;
+    $file_modified = $log_exists ? @date('Y-m-d H:i:s', filemtime($log_file)) : 'N/A';
+} catch (Exception $e) {
+    $file_size = 0;
+    $file_size_mb = 0;
+    $file_modified = 'N/A';
+}
 ?>
 <!DOCTYPE html>
 <html lang="es-MX">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ver Logs - Admin <?php echo SITE_NAME; ?></title>
+    <title>Ver Logs - Admin <?php echo defined('SITE_NAME') ? SITE_NAME : 'Aramed'; ?></title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -120,7 +194,22 @@ $file_modified = $log_exists ? date('Y-m-d H:i:s', filemtime($log_file)) : 'N/A'
     </style>
 </head>
 <body>
-    <?php include __DIR__ . '/includes/admin_menu.php'; ?>
+    <?php 
+    try {
+        if (file_exists(__DIR__ . '/includes/admin_menu.php')) {
+            include __DIR__ . '/includes/admin_menu.php';
+        } else {
+            // Menú simple si no existe el archivo
+            echo '<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">';
+            echo '<div class="container-fluid">';
+            echo '<a class="navbar-brand" href="index.php">' . (defined('SITE_NAME') ? SITE_NAME : 'Admin') . '</a>';
+            echo '<a href="index.php" class="btn btn-light btn-sm">Volver al Dashboard</a>';
+            echo '</div></nav>';
+        }
+    } catch (Exception $e) {
+        // Ignorar error del menú
+    }
+    ?>
     
     <div class="container-fluid mt-4">
         <div class="row">
@@ -191,7 +280,7 @@ $file_modified = $log_exists ? date('Y-m-d H:i:s', filemtime($log_file)) : 'N/A'
                             <div class="col-md-6">
                                 <label for="filter" class="form-label">Filtrar por texto:</label>
                                 <input type="text" class="form-control" id="filter" name="filter" 
-                                       value="<?php echo esc($filter); ?>" 
+                                       value="<?php echo function_exists('esc') ? esc($filter) : htmlspecialchars($filter, ENT_QUOTES, 'UTF-8'); ?>" 
                                        placeholder="Buscar en los logs...">
                             </div>
                             <div class="col-md-2">
@@ -254,7 +343,7 @@ $file_modified = $log_exists ? date('Y-m-d H:i:s', filemtime($log_file)) : 'N/A'
                                     }
                                     ?>
                                     <div class="log-line <?php echo $line_class; ?>">
-                                        <pre><?php echo esc($line); ?></pre>
+                                        <pre><?php echo function_exists('esc') ? esc($line) : htmlspecialchars($line, ENT_QUOTES, 'UTF-8'); ?></pre>
                                     </div>
                                 <?php endforeach; ?>
                             <?php endif; ?>
