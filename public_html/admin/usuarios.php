@@ -87,35 +87,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success_message = 'Usuario eliminado exitosamente';
             $action = 'list';
             
-        } elseif ($action === 'update_permissions') {
+        } elseif ($action === 'update_role_permissions') {
             // Verificar permisos para gestionar permisos
             if (function_exists('checkPermission')) {
                 checkPermission('usuarios', 'editar');
             }
             
+            $rol = $_POST['rol'] ?? '';
             $permisos_seleccionados = isset($_POST['permisos']) ? $_POST['permisos'] : [];
             
-            // Eliminar permisos actuales del usuario
-            $stmt = $pdo->prepare("DELETE FROM usuario_permisos WHERE usuario_id = ?");
-            $stmt->execute([$id]);
+            if (empty($rol)) {
+                throw new Exception('El rol es obligatorio');
+            }
             
-            // Insertar nuevos permisos
-            if (!empty($permisos_seleccionados)) {
-                $stmt = $pdo->prepare("INSERT INTO usuario_permisos (usuario_id, permiso_id) VALUES (?, ?)");
-                foreach ($permisos_seleccionados as $permiso_id) {
-                    $stmt->execute([$id, (int)$permiso_id]);
+            // Usar función RBAC si existe
+            if (function_exists('assignPermissionsToRole')) {
+                $result = assignPermissionsToRole($rol, $permisos_seleccionados);
+                if (!$result) {
+                    throw new Exception('Error al actualizar permisos del rol');
+                }
+            } else {
+                // Fallback manual
+                $pdo->beginTransaction();
+                try {
+                    // Eliminar permisos actuales del rol
+                    $stmt = $pdo->prepare("DELETE FROM rol_permisos WHERE rol = ?");
+                    $stmt->execute([$rol]);
+                    
+                    // Insertar nuevos permisos
+                    if (!empty($permisos_seleccionados)) {
+                        $stmt = $pdo->prepare("INSERT INTO rol_permisos (rol, permiso_id) VALUES (?, ?)");
+                        foreach ($permisos_seleccionados as $permiso_id) {
+                            $stmt->execute([$rol, (int)$permiso_id]);
+                        }
+                    }
+                    
+                    $pdo->commit();
+                } catch (Exception $e) {
+                    $pdo->rollBack();
+                    throw $e;
                 }
             }
             
             // Registrar actividad
             if (function_exists('logActivity')) {
-                logActivity($_SESSION['admin_user_id'], 'editar', 'usuarios', $id, 'permisos', [
+                logActivity($_SESSION['admin_user_id'], 'editar', 'usuarios', null, 'permisos_rol', [
+                    'rol' => $rol,
                     'permisos_asignados' => count($permisos_seleccionados)
                 ]);
             }
             
-            $success_message = 'Permisos actualizados exitosamente';
-            $action = 'permisos';
+            $success_message = 'Permisos del rol actualizados exitosamente';
+            $action = 'role_permissions';
         }
         
     } catch (Exception $e) {
@@ -125,8 +148,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Obtener datos para formularios
 $usuario = null;
-$permisos_usuario = [];
+$permisos_rol = [];
 $permisos_disponibles = [];
+$rol_seleccionado = '';
 
 if (($action === 'edit' || $action === 'permisos') && $id) {
     try {
@@ -139,27 +163,81 @@ if (($action === 'edit' || $action === 'permisos') && $id) {
             $error_message = 'Usuario no encontrado';
             $action = 'list';
         } else {
-            // Obtener permisos del usuario
-            $stmt = $pdo->prepare("SELECT permiso_id FROM usuario_permisos WHERE usuario_id = ?");
-            $stmt->execute([$id]);
-            $permisos_usuario = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            // Obtener permisos del rol del usuario usando RBAC
+            if (function_exists('getRolePermissions')) {
+                $permisos_rol = getRolePermissions($usuario['rol']);
+            } else {
+                // Fallback manual
+                $stmt = $pdo->prepare("SELECT permiso_id FROM rol_permisos WHERE rol = ?");
+                $stmt->execute([$usuario['rol']]);
+                $permisos_rol = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            }
             
             // Obtener todos los permisos disponibles
-            $stmt = $pdo->query("
-                SELECT p.*, 
-                       rp.rol_id,
-                       GROUP_CONCAT(DISTINCT r.nombre) as roles_con_permiso
-                FROM permisos p
-                LEFT JOIN rol_permisos rp ON p.id = rp.permiso_id
-                LEFT JOIN roles r ON rp.rol_id = r.id
-                GROUP BY p.id
-                ORDER BY p.modulo, p.nombre
-            ");
-            $permisos_disponibles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (function_exists('getAllPermissions')) {
+                $permisos_disponibles = getAllPermissions();
+                // Convertir a formato esperado
+                $permisos_formato = [];
+                foreach ($permisos_disponibles as $modulo => $acciones) {
+                    foreach ($acciones as $accion_data) {
+                        $permisos_formato[] = [
+                            'id' => $accion_data['id'] ?? null,
+                            'modulo' => $modulo,
+                            'accion' => $accion_data['accion'] ?? '',
+                            'descripcion' => $accion_data['descripcion'] ?? ''
+                        ];
+                    }
+                }
+                $permisos_disponibles = $permisos_formato;
+            } else {
+                // Fallback manual
+                $stmt = $pdo->query("SELECT id, modulo, accion, descripcion FROM permisos ORDER BY modulo, accion");
+                $permisos_disponibles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
         }
     } catch (Exception $e) {
         $error_message = $e->getMessage();
         $action = 'list';
+    }
+}
+
+// Para gestión de permisos por rol
+if ($action === 'role_permissions') {
+    $rol_seleccionado = $_GET['rol'] ?? 'editor';
+    
+    try {
+        $pdo = getDB();
+        
+        // Obtener permisos del rol seleccionado
+        if (function_exists('getRolePermissions')) {
+            $permisos_rol = getRolePermissions($rol_seleccionado);
+        } else {
+            $stmt = $pdo->prepare("SELECT permiso_id FROM rol_permisos WHERE rol = ?");
+            $stmt->execute([$rol_seleccionado]);
+            $permisos_rol = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        }
+        
+        // Obtener todos los permisos disponibles
+        if (function_exists('getAllPermissions')) {
+            $permisos_disponibles = getAllPermissions();
+            $permisos_formato = [];
+            foreach ($permisos_disponibles as $modulo => $acciones) {
+                foreach ($acciones as $accion_data) {
+                    $permisos_formato[] = [
+                        'id' => $accion_data['id'] ?? null,
+                        'modulo' => $modulo,
+                        'accion' => $accion_data['accion'] ?? '',
+                        'descripcion' => $accion_data['descripcion'] ?? ''
+                    ];
+                }
+            }
+            $permisos_disponibles = $permisos_formato;
+        } else {
+            $stmt = $pdo->query("SELECT id, modulo, accion, descripcion FROM permisos ORDER BY modulo, accion");
+            $permisos_disponibles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+    } catch (Exception $e) {
+        $error_message = $e->getMessage();
     }
 }
 
@@ -523,6 +601,9 @@ try {
                         <a href="?action=create" class="btn btn-primary btn-action">
                             <i class="bi bi-plus-circle me-2"></i>Nuevo Usuario
                         </a>
+                        <a href="?action=role_permissions" class="btn btn-info btn-action">
+                            <i class="bi bi-shield-check me-2"></i>Gestionar Permisos por Rol
+                        </a>
                         <a href="?action=list" class="btn btn-secondary btn-action">
                             <i class="bi bi-list me-2"></i>Ver Todos
                         </a>
@@ -531,19 +612,105 @@ try {
 
                 <!-- Content -->
                 <?php if ($action === 'permisos' && $usuario): ?>
-                    
                     <div class="form-card">
                         <h3 class="mb-4">
                             <i class="bi bi-shield-check me-2"></i>
-                            Gestionar Permisos: <?php echo esc($usuario['nombre']); ?>
+                            Permisos del Usuario: <?php echo esc($usuario['nombre']); ?>
                         </h3>
                         
                         <div class="alert alert-info">
                             <i class="bi bi-info-circle me-2"></i>
-                            Los permisos asignados directamente al usuario tienen prioridad sobre los permisos del rol.
+                            <strong>Rol actual:</strong> <?php echo esc(ucfirst($usuario['rol'])); ?><br>
+                            Los permisos se asignan por rol. Para cambiar los permisos de este usuario, gestiona los permisos del rol <strong><?php echo esc($usuario['rol']); ?></strong>.
                         </div>
                         
-                        <form method="POST" action="?action=update_permissions&id=<?php echo $id; ?>">
+                        <div class="mb-3">
+                            <a href="?action=role_permissions&rol=<?php echo urlencode($usuario['rol']); ?>" class="btn btn-primary">
+                                <i class="bi bi-gear me-2"></i>Gestionar Permisos del Rol "<?php echo esc(ucfirst($usuario['rol'])); ?>"
+                            </a>
+                            <a href="?action=list" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Volver al Listado
+                            </a>
+                        </div>
+                        
+                        <h5 class="mt-4 mb-3">Permisos Actuales del Rol "<?php echo esc(ucfirst($usuario['rol'])); ?>"</h5>
+                        
+                        <?php 
+                        // Agrupar permisos por módulo
+                        $permisos_por_modulo = [];
+                        foreach ($permisos_disponibles as $permiso) {
+                            $modulo = $permiso['modulo'] ?? 'general';
+                            if (!isset($permisos_por_modulo[$modulo])) {
+                                $permisos_por_modulo[$modulo] = [];
+                            }
+                            $permisos_por_modulo[$modulo][] = $permiso;
+                        }
+                        
+                        if (empty($permisos_por_modulo)):
+                        ?>
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            No hay permisos configurados. Ejecuta el script <code>05_populate_permissions.sql</code> para crear los permisos iniciales.
+                        </div>
+                        <?php else: ?>
+                        <?php foreach ($permisos_por_modulo as $modulo => $permisos_modulo): ?>
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-folder me-2"></i>
+                                    <?php echo esc(ucfirst(str_replace('_', ' ', $modulo))); ?>
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <?php foreach ($permisos_modulo as $permiso): ?>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   disabled
+                                                   <?php echo in_array($permiso['id'], $permisos_rol) ? 'checked' : ''; ?>>
+                                            <label class="form-check-label">
+                                                <strong><?php echo esc(ucfirst($permiso['accion'])); ?></strong>
+                                                <?php if (!empty($permiso['descripcion'])): ?>
+                                                <br>
+                                                <small class="text-muted"><?php echo esc($permiso['descripcion']); ?></small>
+                                                <?php endif; ?>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                    
+                <?php elseif ($action === 'role_permissions'): ?>
+                    <!-- Gestión de Permisos por Rol -->
+                    <div class="form-card">
+                        <h3 class="mb-4">
+                            <i class="bi bi-shield-check me-2"></i>
+                            Gestionar Permisos del Rol: <?php echo esc(ucfirst($rol_seleccionado)); ?>
+                        </h3>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Los permisos asignados a un rol se aplican a todos los usuarios con ese rol.
+                        </div>
+                        
+                        <form method="POST" action="?action=update_role_permissions">
+                            <input type="hidden" name="rol" value="<?php echo esc($rol_seleccionado); ?>">
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Seleccionar Rol:</label>
+                                <select name="rol" class="form-control" onchange="this.form.submit()" style="max-width: 300px;">
+                                    <option value="admin" <?php echo $rol_seleccionado === 'admin' ? 'selected' : ''; ?>>Administrador</option>
+                                    <option value="editor" <?php echo $rol_seleccionado === 'editor' ? 'selected' : ''; ?>>Editor</option>
+                                </select>
+                            </div>
+                            
                             <?php 
                             // Agrupar permisos por módulo
                             $permisos_por_modulo = [];
@@ -555,13 +722,19 @@ try {
                                 $permisos_por_modulo[$modulo][] = $permiso;
                             }
                             
-                            foreach ($permisos_por_modulo as $modulo => $permisos_modulo): 
+                            if (empty($permisos_por_modulo)):
                             ?>
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                No hay permisos configurados. Ejecuta el script <code>database/fase2/05_populate_permissions.sql</code> para crear los permisos iniciales.
+                            </div>
+                            <?php else: ?>
+                            <?php foreach ($permisos_por_modulo as $modulo => $permisos_modulo): ?>
                             <div class="card mb-3">
-                                <div class="card-header">
+                                <div class="card-header bg-primary text-white">
                                     <h5 class="mb-0">
                                         <i class="bi bi-folder me-2"></i>
-                                        <?php echo ucfirst(str_replace('_', ' ', $modulo)); ?>
+                                        <?php echo esc(ucfirst(str_replace('_', ' ', $modulo))); ?>
                                     </h5>
                                 </div>
                                 <div class="card-body">
@@ -574,19 +747,12 @@ try {
                                                        name="permisos[]" 
                                                        value="<?php echo $permiso['id']; ?>"
                                                        id="permiso_<?php echo $permiso['id']; ?>"
-                                                       <?php echo in_array($permiso['id'], $permisos_usuario) ? 'checked' : ''; ?>>
+                                                       <?php echo in_array($permiso['id'], $permisos_rol) ? 'checked' : ''; ?>>
                                                 <label class="form-check-label" for="permiso_<?php echo $permiso['id']; ?>">
-                                                    <strong><?php echo esc($permiso['nombre']); ?></strong>
-                                                    <?php if ($permiso['descripcion']): ?>
+                                                    <strong><?php echo esc(ucfirst($permiso['accion'])); ?></strong>
+                                                    <?php if (!empty($permiso['descripcion'])): ?>
                                                     <br>
                                                     <small class="text-muted"><?php echo esc($permiso['descripcion']); ?></small>
-                                                    <?php endif; ?>
-                                                    <?php if ($permiso['roles_con_permiso']): ?>
-                                                    <br>
-                                                    <small class="text-info">
-                                                        <i class="bi bi-tag me-1"></i>
-                                                        Roles: <?php echo esc($permiso['roles_con_permiso']); ?>
-                                                    </small>
                                                     <?php endif; ?>
                                                 </label>
                                             </div>
@@ -596,10 +762,11 @@ try {
                                 </div>
                             </div>
                             <?php endforeach; ?>
+                            <?php endif; ?>
                             
                             <div class="d-flex gap-2 mt-4">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-check-circle me-2"></i>Guardar Permisos
+                                    <i class="bi bi-check-circle me-2"></i>Guardar Permisos del Rol
                                 </button>
                                 <a href="?action=list" class="btn btn-secondary">
                                     <i class="bi bi-arrow-left me-2"></i>Volver a Lista

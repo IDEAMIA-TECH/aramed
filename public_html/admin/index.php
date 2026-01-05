@@ -1060,8 +1060,40 @@ try {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Cargar datos para gráficas
-        async function loadChartData(chartId, tipo, label, color) {
+        // Configuración de colores para las gráficas
+        const chartColors = {
+            primary: {
+                border: 'rgb(52, 152, 219)',
+                background: 'rgba(52, 152, 219, 0.1)',
+                gradient: ['rgba(52, 152, 219, 0.3)', 'rgba(52, 152, 219, 0.05)']
+            },
+            success: {
+                border: 'rgb(39, 174, 96)',
+                background: 'rgba(39, 174, 96, 0.1)',
+                gradient: ['rgba(39, 174, 96, 0.3)', 'rgba(39, 174, 96, 0.05)']
+            },
+            info: {
+                border: 'rgb(23, 162, 184)',
+                background: 'rgba(23, 162, 184, 0.1)',
+                gradient: ['rgba(23, 162, 184, 0.3)', 'rgba(23, 162, 184, 0.05)']
+            },
+            warning: {
+                border: 'rgb(243, 156, 18)',
+                background: 'rgba(243, 156, 18, 0.1)',
+                gradient: ['rgba(243, 156, 18, 0.3)', 'rgba(243, 156, 18, 0.05)']
+            }
+        };
+        
+        // Crear gradiente para el fondo
+        function createGradient(ctx, colorStops) {
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, colorStops[0]);
+            gradient.addColorStop(1, colorStops[1]);
+            return gradient;
+        }
+        
+        // Cargar datos para gráficas mejoradas
+        async function loadChartData(chartId, tipo, label, colorScheme) {
             try {
                 const response = await fetch(`includes/dashboard_data.php?tipo=${tipo}`);
                 const data = await response.json();
@@ -1074,34 +1106,114 @@ try {
                 const ctx = document.getElementById(chartId);
                 if (!ctx) return;
                 
-                new Chart(ctx, {
+                const chartContext = ctx.getContext('2d');
+                const gradient = createGradient(chartContext, colorScheme.gradient);
+                
+                new Chart(chartContext, {
                     type: 'line',
                     data: {
                         labels: data.labels,
                         datasets: [{
                             label: label,
                             data: data.data,
-                            borderColor: color,
-                            backgroundColor: color + '20',
+                            borderColor: colorScheme.border,
+                            backgroundColor: gradient,
+                            borderWidth: 3,
                             tension: 0.4,
-                            fill: true
+                            fill: true,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            pointBackgroundColor: colorScheme.border,
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: colorScheme.border,
+                            pointHoverBorderWidth: 3
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        animation: {
+                            duration: 1500,
+                            easing: 'easeInOutQuart'
+                        },
                         plugins: {
                             legend: {
-                                display: false
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 15,
+                                    font: {
+                                        size: 12,
+                                        weight: '600',
+                                        family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                                    },
+                                    color: '#2c3e50'
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(44, 62, 80, 0.9)',
+                                padding: 12,
+                                titleFont: {
+                                    size: 14,
+                                    weight: '600'
+                                },
+                                bodyFont: {
+                                    size: 13
+                                },
+                                borderColor: colorScheme.border,
+                                borderWidth: 2,
+                                cornerRadius: 8,
+                                displayColors: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        return label + ': ' + context.parsed.y;
+                                    }
+                                }
                             }
                         },
                         scales: {
+                            x: {
+                                grid: {
+                                    display: true,
+                                    color: 'rgba(0, 0, 0, 0.05)',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 11,
+                                        family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                                    },
+                                    color: '#6c757d',
+                                    maxRotation: 45,
+                                    minRotation: 0
+                                }
+                            },
                             y: {
                                 beginAtZero: true,
+                                grid: {
+                                    display: true,
+                                    color: 'rgba(0, 0, 0, 0.05)',
+                                    drawBorder: false
+                                },
                                 ticks: {
-                                    stepSize: 1
+                                    stepSize: 1,
+                                    font: {
+                                        size: 11,
+                                        family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                                    },
+                                    color: '#6c757d',
+                                    callback: function(value) {
+                                        return Number.isInteger(value) ? value : '';
+                                    }
                                 }
                             }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
                         }
                     }
                 });
@@ -1112,8 +1224,14 @@ try {
         
         // Cargar gráficas al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
-            loadChartData('chartCotizaciones', 'cotizaciones_mes', 'Cotizaciones', 'rgb(102, 126, 234)');
-            loadChartData('chartContactos', 'contactos_mes', 'Contactos', 'rgb(23, 162, 184)');
+            loadChartData('chartCotizaciones', 'cotizaciones_mes', 'Cotizaciones por Mes', chartColors.primary);
+            loadChartData('chartContactos', 'contactos_mes', 'Contactos por Mes', chartColors.info);
+            
+            // Cargar gráfica de suscriptores si existe el elemento
+            const chartSuscriptores = document.getElementById('chartSuscriptores');
+            if (chartSuscriptores) {
+                loadChartData('chartSuscriptores', 'suscriptores_mes', 'Suscriptores por Mes', chartColors.success);
+            }
         });
     </script>
 </body>
