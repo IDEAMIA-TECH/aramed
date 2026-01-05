@@ -81,6 +81,10 @@ try {
     $home_categorias_destacadas = getHomeCategoriasDestacadas();
     error_log("getHomeCategoriasDestacadas() retornó: " . count($home_categorias_destacadas) . " categorías");
     
+    // Obtener configuración de secciones
+    $home_secciones_config = getHomeSeccionesConfig();
+    error_log("getHomeSeccionesConfig() retornó: " . count($home_secciones_config) . " secciones configuradas");
+    
     error_log("Datos del home cargados correctamente");
 } catch (Exception $e) {
     error_log("ERROR obteniendo datos del home: " . $e->getMessage());
@@ -91,6 +95,7 @@ try {
     $home_productos_destacados = [];
     $home_mision_vision = ['mision' => null, 'vision' => null];
     $home_categorias_destacadas = [];
+    $home_secciones_config = [];
 }
 
 // Variables para meta tags
@@ -413,6 +418,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
     <!-- ========================================
          HERO / SLIDESHOW
          ======================================== -->
+    <?php if (isSeccionActiva('hero')): ?>
     <section id="hero" class="hero-section">
         <div class="swiper hero-swiper">
             <div class="swiper-wrapper">
@@ -1106,10 +1112,12 @@ $pageImage = imageUrl('design/logo-og.jpg');
             
         </div>
     </section>
+    <?php endif; ?>
     
     <!-- ========================================
          OFERTA (SERVICES)
          ======================================== -->
+    <?php if (isSeccionActiva('servicios')): ?>
     <section id="servicios" class="section-services py-5">
         <div class="container">
             <!-- Header -->
@@ -1341,10 +1349,12 @@ $pageImage = imageUrl('design/logo-og.jpg');
             
         </div>
     </section>
+    <?php endif; ?>
     
     <!-- ========================================
          PRODUCTOS DESTACADOS
          ======================================== -->
+    <?php if (isSeccionActiva('productos_destacados')): ?>
     <section id="productos" class="section-productos py-5 bg-light">
         <div class="container">
             <!-- Header -->
@@ -2043,10 +2053,12 @@ $pageImage = imageUrl('design/logo-og.jpg');
             
         </div>
     </section>
+    <?php endif; ?>
     
     <!-- ========================================
          NEWSLETTER
          ======================================== -->
+    <?php if (isSeccionActiva('newsletter')): ?>
     <section id="newsletter" class="section-newsletter py-5 bg-primary text-white">
         <div class="container">
             <!-- Header -->
@@ -2386,6 +2398,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
             
         </div>
     </section>
+    <?php endif; ?>
     
     <!-- ========================================
          CONTACT MODAL

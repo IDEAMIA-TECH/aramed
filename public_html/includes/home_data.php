@@ -261,3 +261,68 @@ function getHomeCategoriasDestacadas() {
     }
 }
 
+/**
+ * Obtiene la configuración de secciones del Home
+ * @return array ['seccion' => ['activa' => bool, 'orden' => int], ...]
+ */
+function getHomeSeccionesConfig() {
+    error_log("getHomeSeccionesConfig() - INICIO");
+    $pdo = getDB();
+    if (!$pdo) {
+        error_log("getHomeSeccionesConfig() - ERROR: No hay conexión PDO");
+        return [];
+    }
+    
+    try {
+        error_log("getHomeSeccionesConfig() - Verificando existencia de tabla...");
+        $stmt = $pdo->query("SHOW TABLES LIKE 'home_secciones'");
+        if ($stmt->rowCount() === 0) {
+            error_log("getHomeSeccionesConfig() - Tabla no existe, retornando array vacío");
+            return [];
+        }
+        
+        error_log("getHomeSeccionesConfig() - Ejecutando query...");
+        $stmt = $pdo->query("SELECT seccion, activa, orden FROM home_secciones ORDER BY orden ASC");
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Convertir a array asociativo por sección
+        $config = [];
+        foreach ($result as $row) {
+            $config[$row['seccion']] = [
+                'activa' => (bool)$row['activa'],
+                'orden' => (int)$row['orden']
+            ];
+        }
+        
+        error_log("getHomeSeccionesConfig() - Query exitosa, retornando " . count($config) . " secciones");
+        return $config;
+    } catch (PDOException $e) {
+        error_log("getHomeSeccionesConfig() - PDOException: " . $e->getMessage());
+        return [];
+    } catch (Exception $e) {
+        error_log("getHomeSeccionesConfig() - Exception: " . $e->getMessage());
+        return [];
+    }
+}
+
+/**
+ * Verifica si una sección está activa
+ * @param string $seccion Nombre de la sección (hero, servicios, productos_destacados, etc.)
+ * @return bool True si está activa, false si no. Si no hay configuración, retorna true por defecto.
+ */
+function isSeccionActiva($seccion) {
+    static $config = null;
+    
+    if ($config === null) {
+        $config = getHomeSeccionesConfig();
+    }
+    
+    // Si no hay configuración, mostrar todas las secciones por defecto (compatibilidad)
+    if (empty($config)) {
+        return true;
+    }
+    
+    // Verificar si la sección existe y está activa
+    return isset($config[$seccion]) && $config[$seccion]['activa'] === true;
+}
+
