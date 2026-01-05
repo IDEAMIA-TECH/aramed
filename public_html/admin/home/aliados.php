@@ -104,6 +104,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception('El nombre es obligatorio');
             }
             
+            // Procesar imagen si se subió
+            if (isset($_FILES['logo_imagen']) && $_FILES['logo_imagen']['error'] === UPLOAD_ERR_OK) {
+                $upload_dir = __DIR__ . '/../../../assets/images/aliados/';
+                
+                // Crear directorio si no existe
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0755, true);
+                }
+                
+                $file = $_FILES['logo_imagen'];
+                $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                $max_size = 5 * 1024 * 1024; // 5MB
+                
+                // Validar tipo
+                if (!in_array($file['type'], $allowed_types)) {
+                    throw new Exception('Tipo de archivo no permitido. Solo se permiten imágenes (JPG, PNG, GIF, WebP)');
+                }
+                
+                // Validar tamaño
+                if ($file['size'] > $max_size) {
+                    throw new Exception('El archivo es demasiado grande. Máximo 5MB');
+                }
+                
+                // Generar nombre único
+                $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                $filename = 'aliado-' . time() . '-' . uniqid() . '.' . $extension;
+                $filepath = $upload_dir . $filename;
+                
+                // Mover archivo
+                if (!move_uploaded_file($file['tmp_name'], $filepath)) {
+                    throw new Exception('Error al subir el archivo');
+                }
+                
+                // Si hay una imagen anterior, eliminarla
+                if ($action === 'edit' && $id) {
+                    $stmt = $pdo->prepare("SELECT logo_url FROM home_aliados WHERE id = ?");
+                    $stmt->execute([$id]);
+                    $aliado_actual = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if ($aliado_actual && $aliado_actual['logo_url']) {
+                        // Solo eliminar si es una imagen subida (no una URL externa)
+                        if (strpos($aliado_actual['logo_url'], 'assets/images/aliados/') !== false) {
+                            $old_image_path = __DIR__ . '/../../../' . $aliado_actual['logo_url'];
+                            if (file_exists($old_image_path)) {
+                                @unlink($old_image_path);
+                            }
+                        }
+                    }
+                }
+                
+                $logo_url = 'aliados/' . $filename;
+            } elseif ($action === 'edit' && $id && empty($logo_url)) {
+                // Mantener la imagen existente si no se subió una nueva y no se especificó URL manual
+                $stmt = $pdo->prepare("SELECT logo_url FROM home_aliados WHERE id = ?");
+                $stmt->execute([$id]);
+                $aliado_actual = $stmt->fetch(PDO::FETCH_ASSOC);
+                $logo_url = $aliado_actual['logo_url'] ?? null;
+            } elseif (empty($logo_url)) {
+                // Si no hay imagen subida ni URL manual, dejar null
+                $logo_url = null;
+            }
+            
             if ($action === 'create') {
                 $stmt = $pdo->prepare("
                     INSERT INTO home_aliados 
@@ -150,10 +211,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 checkPermission('home', 'eliminar');
             }
             
-            // Obtener nombre antes de eliminar
-            $stmt = $pdo->prepare("SELECT nombre FROM home_aliados WHERE id = ?");
+            // Obtener datos antes de eliminar
+            $stmt = $pdo->prepare("SELECT nombre, logo_url FROM home_aliados WHERE id = ?");
             $stmt->execute([$id]);
             $aliado = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Eliminar imagen si existe
+            if ($aliado && $aliado['logo_url']) {
+                // Solo eliminar si es una imagen subida (no una URL externa)
+                if (strpos($aliado['logo_url'], 'aliados/') !== false || strpos($aliado['logo_url'], 'assets/images/aliados/') !== false) {
+                    $image_path = __DIR__ . '/../../../assets/images/' . (strpos($aliado['logo_url'], 'aliados/') === 0 ? $aliado['logo_url'] : str_replace('assets/images/', '', $aliado['logo_url']));
+                    if (file_exists($image_path)) {
+                        @unlink($image_path);
+                    }
+                }
+            }
             
             $stmt = $pdo->prepare("DELETE FROM home_aliados WHERE id = ?");
             $stmt->execute([$id]);
@@ -364,7 +436,7 @@ $current_dir = 'home';
                             </h5>
                         </div>
                         <div class="card-body">
-                            <form method="POST" action="?action=create">
+                            <form method="POST" action="?action=create" enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label class="form-label">Nombre del Aliado *</label>
                                     <input type="text" 
@@ -376,12 +448,31 @@ $current_dir = 'home';
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label class="form-label">Logo (URL)</label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           name="logo_url" 
-                                           placeholder="aliados/1-Gaumard.webp">
-                                    <small class="form-text text-muted">Ruta relativa a assets/images/</small>
+                                    <label class="form-label">Logo</label>
+                                    <div class="mb-2">
+                                        <input type="file" 
+                                               class="form-control" 
+                                               name="logo_imagen" 
+                                               id="logo_imagen"
+                                               accept="image/jpeg,image/png,image/gif,image/webp"
+                                               onchange="previewLogo(this)">
+                                        <small class="form-text text-muted">Sube una imagen del logo (JPG, PNG, GIF, WebP - Máx. 5MB)</small>
+                                    </div>
+                                    <div id="logo_preview_container" class="mt-2" style="display: none;">
+                                        <img id="logo_preview" src="" alt="Preview" style="max-width: 200px; max-height: 120px; object-fit: contain; border: 1px solid #dee2e6; border-radius: 8px; padding: 0.5rem; background: #f8f9fa;">
+                                        <button type="button" class="btn btn-sm btn-danger mt-2" onclick="clearLogoPreview()">
+                                            <i class="bi bi-x-circle me-1"></i>Quitar imagen
+                                        </button>
+                                    </div>
+                                    <div class="mt-2">
+                                        <small class="text-muted">O ingresa una URL manual:</small>
+                                        <input type="text" 
+                                               class="form-control mt-1" 
+                                               name="logo_url" 
+                                               id="logo_url"
+                                               placeholder="aliados/1-Gaumard.webp">
+                                        <small class="form-text text-muted">Ruta relativa a assets/images/ (si no subes imagen)</small>
+                                    </div>
                                 </div>
                                 
                                 <div class="mb-3">
@@ -475,7 +566,7 @@ $current_dir = 'home';
                             </h5>
                         </div>
                         <div class="card-body">
-                            <form method="POST" action="?action=edit&id=<?php echo $id; ?>">
+                            <form method="POST" action="?action=edit&id=<?php echo $id; ?>" enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label class="form-label">Nombre del Aliado *</label>
                                     <input type="text" 
@@ -487,21 +578,43 @@ $current_dir = 'home';
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label class="form-label">Logo (URL)</label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           name="logo_url" 
-                                           value="<?php echo esc($aliado['logo_url'] ?? ''); ?>" 
-                                           placeholder="aliados/1-Gaumard.webp">
-                                    <small class="form-text text-muted">Ruta relativa a assets/images/</small>
+                                    <label class="form-label">Logo</label>
                                     <?php if ($aliado['logo_url']): ?>
-                                    <div class="mt-2">
+                                    <div class="mb-2">
+                                        <small class="text-muted d-block mb-2">Logo actual:</small>
                                         <img src="<?php echo imageUrl($aliado['logo_url']); ?>" 
-                                             alt="Logo preview" 
+                                             alt="Logo actual" 
+                                             id="current_logo_preview"
                                              class="aliado-logo-preview" 
                                              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'60\'%3E%3Crect fill=\'%23f8f9fa\' width=\'100\' height=\'60\'/%3E%3Ctext fill=\'%23999\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\'%3ESin logo%3C/text%3E%3C/svg%3E';">
                                     </div>
                                     <?php endif; ?>
+                                    <div class="mb-2">
+                                        <input type="file" 
+                                               class="form-control" 
+                                               name="logo_imagen" 
+                                               id="logo_imagen"
+                                               accept="image/jpeg,image/png,image/gif,image/webp"
+                                               onchange="previewLogo(this)">
+                                        <small class="form-text text-muted">Sube una nueva imagen para reemplazar el logo actual (JPG, PNG, GIF, WebP - Máx. 5MB)</small>
+                                    </div>
+                                    <div id="logo_preview_container" class="mt-2" style="display: none;">
+                                        <small class="text-muted d-block mb-2">Nueva imagen:</small>
+                                        <img id="logo_preview" src="" alt="Preview" style="max-width: 200px; max-height: 120px; object-fit: contain; border: 1px solid #dee2e6; border-radius: 8px; padding: 0.5rem; background: #f8f9fa;">
+                                        <button type="button" class="btn btn-sm btn-danger mt-2" onclick="clearLogoPreview()">
+                                            <i class="bi bi-x-circle me-1"></i>Quitar nueva imagen
+                                        </button>
+                                    </div>
+                                    <div class="mt-2">
+                                        <small class="text-muted">O ingresa una URL manual:</small>
+                                        <input type="text" 
+                                               class="form-control mt-1" 
+                                               name="logo_url" 
+                                               id="logo_url"
+                                               value="<?php echo esc($aliado['logo_url'] ?? ''); ?>" 
+                                               placeholder="aliados/1-Gaumard.webp">
+                                        <small class="form-text text-muted">Ruta relativa a assets/images/ (si no subes imagen nueva)</small>
+                                    </div>
                                 </div>
                                 
                                 <div class="mb-3">
@@ -754,6 +867,47 @@ $current_dir = 'home';
                     });
                 }
             });
+        }
+        
+        // Preview de logo al seleccionar archivo
+        function previewLogo(input) {
+            const previewContainer = document.getElementById('logo_preview_container');
+            const preview = document.getElementById('logo_preview');
+            const logoUrlInput = document.getElementById('logo_url');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                    // Limpiar el campo de URL manual si se sube una imagen
+                    if (logoUrlInput) {
+                        logoUrlInput.value = '';
+                    }
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+        
+        // Limpiar preview de logo
+        function clearLogoPreview() {
+            const input = document.getElementById('logo_imagen');
+            const previewContainer = document.getElementById('logo_preview_container');
+            const preview = document.getElementById('logo_preview');
+            
+            if (input) {
+                input.value = '';
+            }
+            if (preview) {
+                preview.src = '';
+            }
+            if (previewContainer) {
+                previewContainer.style.display = 'none';
+            }
         }
     </script>
 </body>
