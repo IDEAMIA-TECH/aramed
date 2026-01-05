@@ -197,6 +197,57 @@ function getHomeMisionVision() {
 }
 
 /**
+ * Obtiene los aliados/partners globales
+ * @param bool $carrusel_simple Si true, solo retorna aliados para carrusel simple. Si false, solo para detalle. Si null, retorna todos.
+ * @return array
+ */
+function getHomeAliados($carrusel_simple = null) {
+    error_log("getHomeAliados() - INICIO (carrusel_simple: " . ($carrusel_simple === null ? 'null' : ($carrusel_simple ? 'true' : 'false')) . ")");
+    $pdo = getDB();
+    if (!$pdo) {
+        error_log("getHomeAliados() - ERROR: No hay conexión PDO");
+        return [];
+    }
+    
+    try {
+        error_log("getHomeAliados() - Verificando existencia de tabla...");
+        $stmt = $pdo->query("SHOW TABLES LIKE 'home_aliados'");
+        if ($stmt->rowCount() === 0) {
+            error_log("getHomeAliados() - Tabla no existe, retornando array vacío");
+            return [];
+        }
+        
+        error_log("getHomeAliados() - Ejecutando query...");
+        $sql = "
+            SELECT * FROM home_aliados 
+            WHERE estado = 'activo'
+        ";
+        
+        if ($carrusel_simple === true) {
+            $sql .= " AND mostrar_en_carrusel = 1";
+        } elseif ($carrusel_simple === false) {
+            $sql .= " AND mostrar_en_detalle = 1";
+        }
+        
+        $sql .= " ORDER BY orden ASC, created_at DESC";
+        
+        $stmt = $pdo->query($sql);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        error_log("getHomeAliados() - Query exitosa, retornando " . count($result) . " aliados");
+        return $result;
+    } catch (PDOException $e) {
+        error_log("getHomeAliados() - PDOException: " . $e->getMessage());
+        error_log("getHomeAliados() - Código: " . $e->getCode());
+        error_log("getHomeAliados() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
+        return [];
+    } catch (Exception $e) {
+        error_log("getHomeAliados() - Exception: " . $e->getMessage());
+        error_log("getHomeAliados() - Archivo: " . $e->getFile() . " Línea: " . $e->getLine());
+        return [];
+    }
+}
+
+/**
  * Obtiene las categorías destacadas
  * @return array
  */

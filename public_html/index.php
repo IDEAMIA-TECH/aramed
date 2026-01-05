@@ -61,6 +61,8 @@ try {
     $home_productos_destacados = [];
     $home_mision_vision = ['mision' => null, 'vision' => null];
     $home_categorias_destacadas = [];
+    $home_aliados_carrusel = [];
+    $home_aliados_detalle = [];
 }
 
 // Cargar datos del home desde BD
@@ -81,6 +83,12 @@ try {
     $home_categorias_destacadas = getHomeCategoriasDestacadas();
     error_log("getHomeCategoriasDestacadas() retornó: " . count($home_categorias_destacadas) . " categorías");
     
+    $home_aliados_carrusel = getHomeAliados(true);
+    error_log("getHomeAliados(carrusel) retornó: " . count($home_aliados_carrusel) . " aliados");
+    
+    $home_aliados_detalle = getHomeAliados(false);
+    error_log("getHomeAliados(detalle) retornó: " . count($home_aliados_detalle) . " aliados");
+    
     // Obtener configuración de secciones
     $home_secciones_config = getHomeSeccionesConfig();
     error_log("getHomeSeccionesConfig() retornó: " . count($home_secciones_config) . " secciones configuradas");
@@ -95,6 +103,8 @@ try {
     $home_productos_destacados = [];
     $home_mision_vision = ['mision' => null, 'vision' => null];
     $home_categorias_destacadas = [];
+    $home_aliados_carrusel = [];
+    $home_aliados_detalle = [];
     $home_secciones_config = [];
 }
 
@@ -904,249 +914,268 @@ $pageImage = imageUrl('design/logo-og.jpg');
             <div class="aliados-carousel-wrapper mb-5" data-aos="fade-up" data-aos-delay="100">
                 <div class="swiper aliados-swiper">
                     <div class="swiper-wrapper align-items-center">
-                        
-                        <!-- Logo 1: Gaumard Scientific -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/1-Gaumard.webp'); ?>" 
-                                         alt="Gaumard Scientific" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                        <?php if (!empty($home_aliados_carrusel)): ?>
+                            <!-- Aliados desde la base de datos -->
+                            <?php foreach ($home_aliados_carrusel as $aliado): ?>
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <?php if ($aliado['logo_url']): ?>
+                                        <img src="<?php echo imageUrl($aliado['logo_url']); ?>" 
+                                             alt="<?php echo esc($aliado['nombre']); ?>" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                        <?php else: ?>
+                                        <div class="aliado-logo-placeholder">
+                                            <i class="bi bi-building" style="font-size: 3rem; color: #ccc;"></i>
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 2: Kyoto Kagaku -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/2-Kyoto-Kagaku.webp'); ?>" 
-                                         alt="Kyoto Kagaku" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <!-- Fallback: Aliados hardcodeados (solo si no hay aliados en BD) -->
+                            <!-- Logo 1: Gaumard Scientific -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/1-Gaumard.webp'); ?>" 
+                                             alt="Gaumard Scientific" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 3: Anatomage -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/3-Anatomage.webp'); ?>" 
-                                         alt="Anatomage" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 2: Kyoto Kagaku -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/2-Kyoto-Kagaku.webp'); ?>" 
+                                             alt="Kyoto Kagaku" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 4: Rudiger Anatomie -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/4-Rudiger.webp'); ?>" 
-                                         alt="Rudiger Anatomie" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 3: Anatomage -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/3-Anatomage.webp'); ?>" 
+                                             alt="Anatomage" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 5: Simulab -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/5-Simulab.webp'); ?>" 
-                                         alt="Simulab" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 4: Rudiger Anatomie -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/4-Rudiger.webp'); ?>" 
+                                             alt="Rudiger Anatomie" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 6: 3D Med -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/6-3D-Med.webp'); ?>" 
-                                         alt="3D Med" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 5: Simulab -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/5-Simulab.webp'); ?>" 
+                                             alt="Simulab" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 7: 3B Scientific -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/7-3B Scientific.webp'); ?>" 
-                                         alt="3B Scientific" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 6: 3D Med -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/6-3D-Med.webp'); ?>" 
+                                             alt="3D Med" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 8: Adam Rouilly -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/8-Adam Rouilly.webp'); ?>" 
-                                         alt="Adam Rouilly" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 7: 3B Scientific -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/7-3B Scientific.webp'); ?>" 
+                                             alt="3B Scientific" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 9: Erler Zimmer -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/9-Erler-Zimmer.webp'); ?>" 
-                                         alt="Erler Zimmer" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 8: Adam Rouilly -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/8-Adam Rouilly.webp'); ?>" 
+                                             alt="Adam Rouilly" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 10: TruCorp -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/10-TrueCorp.webp'); ?>" 
-                                         alt="TruCorp" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 9: Erler Zimmer -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/9-Erler-Zimmer.webp'); ?>" 
+                                             alt="Erler Zimmer" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 11: SimX -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/11-SimX.webp'); ?>" 
-                                         alt="SimX" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 10: TruCorp -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/10-TrueCorp.webp'); ?>" 
+                                             alt="TruCorp" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 12: VATA -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/12-VATA.webp'); ?>" 
-                                         alt="VATA Inc" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 11: SimX -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/11-SimX.webp'); ?>" 
+                                             alt="SimX" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 13: Medical X -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/13-Medical X.webp'); ?>" 
-                                         alt="Medical-X" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 12: VATA -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/12-VATA.webp'); ?>" 
+                                             alt="VATA Inc" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 14: Immersive -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/14-immersive.webp'); ?>" 
-                                         alt="Immersive Healthcare" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 13: Medical X -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/13-Medical X.webp'); ?>" 
+                                             alt="Medical-X" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 15: Saratoga -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/15-Saratoga.webp'); ?>" 
-                                         alt="Saratoga Dental" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 14: Immersive -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/14-immersive.webp'); ?>" 
+                                             alt="Immersive Healthcare" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 16: Nasco Healthcare -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/16-Nasco Healthcare.webp'); ?>" 
-                                         alt="Nasco Healthcare" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 15: Saratoga -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/15-Saratoga.webp'); ?>" 
+                                             alt="Saratoga Dental" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 17: Safeguard Medical -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/17-Safeguard Medical (Simbodies).webp'); ?>" 
-                                         alt="Safeguard Medical - SimBodies" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 16: Nasco Healthcare -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/16-Nasco Healthcare.webp'); ?>" 
+                                             alt="Nasco Healthcare" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 18: Lifecast -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/18-Lifecast.webp'); ?>" 
-                                         alt="Lifecast" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 17: Safeguard Medical -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/17-Safeguard Medical (Simbodies).webp'); ?>" 
+                                             alt="Safeguard Medical - SimBodies" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                    
-                        
-                        <!-- Logo 19: Keklikoğlu -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/19-KEKLIGOKLU.webp'); ?>" 
-                                         alt="Keklikoğlu" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 18: Lifecast -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/18-Lifecast.webp'); ?>" 
+                                             alt="Lifecast" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Logo 20: iSimulate -->
-                        <div class="swiper-slide">
-                            <div class="aliado-card">
-                                <div class="aliado-logo-wrapper">
-                                    <img src="<?php echo imageUrl('aliados/18-iSimulate-1.webp'); ?>" 
-                                         alt="iSimulate" 
-                                         class="aliado-logo"
-                                         loading="lazy">
+                            
+                            <!-- Logo 19: Keklikoğlu -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/19-KEKLIGOKLU.webp'); ?>" 
+                                             alt="Keklikoğlu" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
+                            
+                            <!-- Logo 20: iSimulate -->
+                            <div class="swiper-slide">
+                                <div class="aliado-card">
+                                    <div class="aliado-logo-wrapper">
+                                        <img src="<?php echo imageUrl('aliados/18-iSimulate-1.webp'); ?>" 
+                                             alt="iSimulate" 
+                                             class="aliado-logo"
+                                             loading="lazy">
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -1962,418 +1991,447 @@ $pageImage = imageUrl('design/logo-og.jpg');
             <!-- Carrusel de Aliados -->
             <div class="aliados-detalle-swiper swiper">
                 <div class="swiper-wrapper">
+                    <?php if (!empty($home_aliados_detalle)): ?>
+                        <!-- Aliados desde la base de datos -->
+                        <?php foreach ($home_aliados_detalle as $aliado): ?>
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <?php if ($aliado['logo_url']): ?>
+                                    <img src="<?php echo imageUrl($aliado['logo_url']); ?>" 
+                                         alt="<?php echo esc($aliado['nombre']); ?>" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                    <?php else: ?>
+                                    <div class="aliado-logo-placeholder">
+                                        <i class="bi bi-building" style="font-size: 3rem; color: #ccc;"></i>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name"><?php echo esc($aliado['nombre']); ?></h4>
+                                    <?php if ($aliado['descripcion']): ?>
+                                    <p class="aliado-description">
+                                        <?php echo esc($aliado['descripcion']); ?>
+                                    </p>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <!-- Fallback: Aliados hardcodeados (solo si no hay aliados en BD) -->
+                        <!-- Aliado 1: GAUMARD -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/1-Gaumard.webp'); ?>" 
+                                         alt="Gaumard Scientific" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">GAUMARD</h4>
+                                    <p class="aliado-description">
+                                        Gaumard Scientific desarrolla simuladores médicos de alta fidelidad que transforman 
+                                        la enseñanza clínica. Su innovación tecnológica complementa nuestra misión de ofrecer 
+                                        experiencias de aprendizaje realistas y seguras en salud.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     
-                    <!-- Aliado 1: GAUMARD -->
-                    <div class="swiper-slide">
-                        <div class="aliado-detalle-card h-100">
-                            <div class="aliado-logo-wrapper">
-                                <img src="<?php echo imageUrl('aliados/1-Gaumard.webp'); ?>" 
-                                     alt="Gaumard Scientific" 
-                                     class="aliado-logo"
-                                     loading="lazy">
-                            </div>
-                            <div class="aliado-info">
-                                <h4 class="aliado-name">GAUMARD</h4>
-                                <p class="aliado-description">
-                                    Gaumard Scientific desarrolla simuladores médicos de alta fidelidad que transforman 
-                                    la enseñanza clínica. Su innovación tecnológica complementa nuestra misión de ofrecer 
-                                    experiencias de aprendizaje realistas y seguras en salud.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                
-                    <!-- Aliado 2: MEDICAL X -->
-                    <div class="swiper-slide">
-                        <div class="aliado-detalle-card h-100">
-                            <div class="aliado-logo-wrapper">
-                                <img src="<?php echo imageUrl('aliados/13-Medical X.webp'); ?>" 
-                                     alt="Medical-X" 
-                                     class="aliado-logo"
-                                     loading="lazy">
-                            </div>
-                            <div class="aliado-info">
-                                <h4 class="aliado-name">MEDICAL X</h4>
-                                <p class="aliado-description">
-                                    Medical-X desarrolla simuladores médicos de alta fidelidad para entrenamiento clínico. 
-                                    Su tecnología avanzada potencia a Aramed en formación realista y segura.
-                                </p>
+                        <!-- Aliado 2: MEDICAL X -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/13-Medical X.webp'); ?>" 
+                                         alt="Medical-X" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">MEDICAL X</h4>
+                                    <p class="aliado-description">
+                                        Medical-X desarrolla simuladores médicos de alta fidelidad para entrenamiento clínico. 
+                                        Su tecnología avanzada potencia a Aramed en formación realista y segura.
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                
-                    <!-- Aliado 3: ANATOMAGE -->
-                    <div class="swiper-slide">
-                        <div class="aliado-detalle-card h-100">
-                            <div class="aliado-logo-wrapper">
-                                <img src="<?php echo imageUrl('aliados/3-Anatomage.webp'); ?>" 
-                                     alt="Anatomage" 
-                                     class="aliado-logo"
-                                     loading="lazy">
+                    
+                        <!-- Aliado 3: ANATOMAGE -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/3-Anatomage.webp'); ?>" 
+                                         alt="Anatomage" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">ANATOMAGE</h4>
+                                    <p class="aliado-description">
+                                        Anatomage crea plataformas 3D interactivas que revolucionan la enseñanza anatómica 
+                                        mediante visualizaciones precisas del cuerpo humano. Su innovación eleva nuestros 
+                                        estándares en simulación médica educativa.
+                                    </p>
+                                </div>
                             </div>
-                            <div class="aliado-info">
-                                <h4 class="aliado-name">ANATOMAGE</h4>
-                                <p class="aliado-description">
-                                    Anatomage crea plataformas 3D interactivas que revolucionan la enseñanza anatómica 
-                                    mediante visualizaciones precisas del cuerpo humano. Su innovación eleva nuestros 
-                                    estándares en simulación médica educativa.
-                                </p>
+                        </div>
+                    
+                        <!-- Aliado 4: SARATOGA -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/15-Saratoga.webp'); ?>" 
+                                         alt="Saratoga Dental" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">SARATOGA</h4>
+                                    <p class="aliado-description">
+                                        Saratoga Dental diseña y fabrica equipos dentales, laboratorios técnicos y 
+                                        simuladores formativos. Su enfoque "a medida" refuerza nuestra oferta educativa 
+                                        con soluciones profesionales y personalizadas.
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                
-                <!-- Aliado 4: SARATOGA -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/15-Saratoga.webp'); ?>" 
-                                 alt="Saratoga Dental" 
-                                 class="aliado-logo"
-                                 loading="lazy">
+                    
+                        <!-- Aliado 5: 3B SCIENTIFIC -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/7-3B Scientific.webp'); ?>" 
+                                         alt="3B Scientific" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">3B SCIENTIFIC</h4>
+                                    <p class="aliado-description">
+                                        3B Scientific fabrica modelos anatómicos y simuladores médicos para educación en salud. 
+                                        Su calidad global refuerza nuestra oferta educativa y credibilidad como aliado estratégico.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">SARATOGA</h4>
-                            <p class="aliado-description">
-                                Saratoga Dental diseña y fabrica equipos dentales, laboratorios técnicos y 
-                                simuladores formativos. Su enfoque "a medida" refuerza nuestra oferta educativa 
-                                con soluciones profesionales y personalizadas.
-                            </p>
+                    
+                        <!-- Aliado 6: 3D Med -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/6-3D-Med.webp'); ?>" 
+                                         alt="3-Dmed" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">3D MED</h4>
+                                    <p class="aliado-description">
+                                        3-Dmed diseña simuladores quirúrgicos y entrenadores médicos de alta precisión. 
+                                        Su enfoque en realismo y desempeño mejora nuestras soluciones para la práctica 
+                                        clínica y educativa.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 5: 3B SCIENTIFIC -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/7-3B Scientific.webp'); ?>" 
-                                 alt="3B Scientific" 
-                                 class="aliado-logo"
-                                 loading="lazy">
+                    
+                        <!-- Aliado 7: SIMBODIES (SafeGuard) -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/17-Safeguard Medical (Simbodies).webp'); ?>" 
+                                         alt="Safeguard Medical - SimBodies" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">SAFEGUARD / SIMBODIES</h4>
+                                    <p class="aliado-description">
+                                        Safeguard Medical provee tecnología, equipamiento y entrenamiento en medicina de emergencia. 
+                                        Su enfoque en salvamento y realismo fortalece nuestro respaldo en formación crítica.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">3B SCIENTIFIC</h4>
-                            <p class="aliado-description">
-                                3B Scientific fabrica modelos anatómicos y simuladores médicos para educación en salud. 
-                                Su calidad global refuerza nuestra oferta educativa y credibilidad como aliado estratégico.
-                            </p>
+                    
+                        <!-- Aliado 8: STRATEGIC OPERATIONS -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/21-strategic-operations.webp'); ?>" 
+                                         alt="Strategic Operations" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">STRATEGIC OPERATIONS</h4>
+                                    <p class="aliado-description">
+                                        Strategic Operations desarrolla simuladores quirúrgicos de alta fidelidad que replican 
+                                        con exactitud la anatomía humana y las condiciones del quirófano. Gracias a esta alianza, 
+                                        potenciamos nuestra capacidad para brindar capacitación avanzada en entornos controlados.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 6: 3D Med -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/6-3D-Med.webp'); ?>" 
-                                 alt="3-Dmed" 
-                                 class="aliado-logo"
-                                 loading="lazy">
+                    
+                        <!-- Aliado 9: KYOTO KAGAKU -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/2-Kyoto-Kagaku.webp'); ?>" 
+                                         alt="Kyoto Kagaku" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">KYOTO KAGAKU</h4>
+                                    <p class="aliado-description">
+                                        Kyoto Kagaku fabrica modelos anatómicos, simuladores y "phantoms" para imagen médica. 
+                                        Su precisión e innovación fortalecen nuestra excelencia educativa y liderazgo en simulación.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">3D MED</h4>
-                            <p class="aliado-description">
-                                3-Dmed diseña simuladores quirúrgicos y entrenadores médicos de alta precisión. 
-                                Su enfoque en realismo y desempeño mejora nuestras soluciones para la práctica 
-                                clínica y educativa.
-                            </p>
+                    
+                        <!-- Aliado 10: SIMX -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/11-SimX.webp'); ?>" 
+                                         alt="SimX" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">SIMX</h4>
+                                    <p class="aliado-description">
+                                        SimX desarrolla simulaciones médicas en realidad virtual inmersiva que entrenan juicio 
+                                        clínico realista. Su innovación potencia nuestra oferta formativa de alto impacto.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 7: SIMBODIES (SafeGuard) -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/17-Safeguard Medical (Simbodies).webp'); ?>" 
-                                 alt="Safeguard Medical - SimBodies" 
-                                 class="aliado-logo"
-                                 loading="lazy">
+                    
+                        <!-- Aliado 11: NASCO -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/16-Nasco Healthcare.webp'); ?>" 
+                                         alt="Nasco Healthcare" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">NASCO</h4>
+                                    <p class="aliado-description">
+                                        Nasco Healthcare provee simuladores clínicos, maniquíes y herramientas de entrenamiento 
+                                        para emergencias y cuidados avanzados. Su oferta robustece nuestra formación con 
+                                        tecnología confiable.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">SAFEGUARD / SIMBODIES</h4>
-                            <p class="aliado-description">
-                                Safeguard Medical provee tecnología, equipamiento y entrenamiento en medicina de emergencia. 
-                                Su enfoque en salvamento y realismo fortalece nuestro respaldo en formación crítica.
-                            </p>
+                    
+                        <!-- Aliado 12: TRUCORP -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/10-TrueCorp.webp'); ?>" 
+                                         alt="TruCorp" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">TRUCORP</h4>
+                                    <p class="aliado-description">
+                                        TruCorp fabrica maniquíes y simuladores médicos con retroalimentación en tiempo real 
+                                        para entrenamiento clínico. Su realismo y precisión elevan nuestra formación práctica 
+                                        y eficacia educativa.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 8: STRATEGIC OPERATIONS -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/21-strategic-operations.webp'); ?>" 
-                                 alt="Strategic Operations" 
-                                 class="aliado-logo"
-                                 loading="lazy">
+                    
+                        <!-- Aliado 13: ERLER ZIMMER -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/9-Erler-Zimmer.webp'); ?>" 
+                                         alt="Erler-Zimmer" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">ERLER ZIMMER</h4>
+                                    <p class="aliado-description">
+                                        Erler-Zimmer diseña modelos anatómicos y simuladores médicos con altísima calidad histórica. 
+                                        Su innovación y rigor elevan nuestra formación práctica con precisión educativa.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">STRATEGIC OPERATIONS</h4>
-                            <p class="aliado-description">
-                                Strategic Operations desarrolla simuladores quirúrgicos de alta fidelidad que replican 
-                                con exactitud la anatomía humana y las condiciones del quirófano. Gracias a esta alianza, 
-                                potenciamos nuestra capacidad para brindar capacitación avanzada en entornos controlados.
-                            </p>
+                    
+                        <!-- Aliado 14: VATA -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/12-VATA.webp'); ?>" 
+                                         alt="VATA Inc." 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">VATA</h4>
+                                    <p class="aliado-description">
+                                        VATA Inc. desarrolla herramientas de simulación médica realistas (acceso vascular, heridas, 
+                                        modelos de ultrasonido). Su precisión eleva nuestras prácticas clínicas y fortalece 
+                                        nuestra formación.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 9: KYOTO KAGAKU -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/2-Kyoto-Kagaku.webp'); ?>" 
-                                 alt="Kyoto Kagaku" 
-                                 class="aliado-logo"
-                                 loading="lazy">
+                    
+                        <!-- Aliado 15: ADAM ROUILLY -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/8-Adam Rouilly.webp'); ?>" 
+                                         alt="Adam Rouilly" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">ADAM ROUILLY</h4>
+                                    <p class="aliado-description">
+                                        AdamRouilly diseña desde 1918 modelos anatómicos, simuladores clínicos y herramientas 
+                                        formativas. Su legado, innovación y versatilidad enriquecen nuestro portafolio educativo.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">KYOTO KAGAKU</h4>
-                            <p class="aliado-description">
-                                Kyoto Kagaku fabrica modelos anatómicos, simuladores y "phantoms" para imagen médica. 
-                                Su precisión e innovación fortalecen nuestra excelencia educativa y liderazgo en simulación.
-                            </p>
+                    
+                        <!-- Aliado 16: RUDIGER -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/4-Rudiger.webp'); ?>" 
+                                         alt="Rüdiger Anatomie" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">RUDIGER</h4>
+                                    <p class="aliado-description">
+                                        Rüdiger Anatomie produce modelos anatómicos y pósters educativos "Made in Germany" con 
+                                        manufactura artesanal. Su precisión y autenticidad enriquecen nuestra enseñanza de 
+                                        ciencias de la salud.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 10: SIMX -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/11-SimX.webp'); ?>" 
-                                 alt="SimX" 
-                                 class="aliado-logo"
-                                 loading="lazy">
+                    
+                        <!-- Aliado 17: ECHO HEALTHCARE -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/7-Echo Healthcare.webp'); ?>" 
+                                         alt="Echo Healthcare" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">ECHO HEALTHCARE</h4>
+                                    <p class="aliado-description">
+                                        Echo Healthcare desarrolla soluciones inmersivas y realistas para simulación médica 
+                                        (maniquíes, máscaras, entornos interactivos). Su innovación eleva nuestra oferta 
+                                        formativa con un enfoque de alto impacto.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">SIMX</h4>
-                            <p class="aliado-description">
-                                SimX desarrolla simulaciones médicas en realidad virtual inmersiva que entrenan juicio 
-                                clínico realista. Su innovación potencia nuestra oferta formativa de alto impacto.
-                            </p>
+                    
+                        <!-- Aliado 18: LIFECAST -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/18-Lifecast.webp'); ?>" 
+                                         alt="Lifecast" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">LIFECAST</h4>
+                                    <p class="aliado-description">
+                                        Lifecast desarrolla modelos anatómicos y simuladores médicos de alta fidelidad para 
+                                        educación en salud. Su compromiso con la calidad y realismo fortalece nuestra oferta 
+                                        educativa con soluciones innovadoras.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 11: NASCO -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/16-Nasco Healthcare.webp'); ?>" 
-                                 alt="Nasco Healthcare" 
-                                 class="aliado-logo"
-                                 loading="lazy">
+                    
+                        <!-- Aliado 19: IMMERSIVE -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/20-immersive.webp'); ?>" 
+                                         alt="Immersive Healthcare" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">IMMERSIVE</h4>
+                                    <p class="aliado-description">
+                                        Immersive Healthcare desarrolla soluciones de simulación médica inmersiva que 
+                                        transforman la educación clínica mediante tecnología de realidad virtual y aumentada. 
+                                        Su innovación potencia nuestra formación con experiencias de aprendizaje únicas.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">NASCO</h4>
-                            <p class="aliado-description">
-                                Nasco Healthcare provee simuladores clínicos, maniquíes y herramientas de entrenamiento 
-                                para emergencias y cuidados avanzados. Su oferta robustece nuestra formación con 
-                                tecnología confiable.
-                            </p>
+                    
+                        <!-- Aliado 20: KEKLIKOĞLU -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/19-KEKLIGOKLU.webp'); ?>" 
+                                         alt="Keklikoğlu" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">KEKLIKOĞLU</h4>
+                                    <p class="aliado-description">
+                                        Keklikoğlu desarrolla modelos anatómicos de alta fidelidad que elevan la enseñanza 
+                                        clínica y veterinaria. Su compromiso con calidad e innovación fortalece nuestra 
+                                        misión de aprendizaje seguro y realista.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 12: TRUCORP -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/10-TrueCorp.webp'); ?>" 
-                                 alt="TruCorp" 
-                                 class="aliado-logo"
-                                 loading="lazy">
+                    
+                        <!-- Aliado 21: iSimulate -->
+                        <div class="swiper-slide">
+                            <div class="aliado-detalle-card h-100">
+                                <div class="aliado-logo-wrapper">
+                                    <img src="<?php echo imageUrl('aliados/18-iSimulate-1.webp'); ?>" 
+                                         alt="iSimulate" 
+                                         class="aliado-logo"
+                                         loading="lazy">
+                                </div>
+                                <div class="aliado-info">
+                                    <h4 class="aliado-name">iSimulate</h4>
+                                    <p class="aliado-description">
+                                        iSimulate desarrolla soluciones de simulación médica móviles e inteligentes que elevan la formación clínica. Su tecnología complementa nuestra misión de brindar capacitación realista, eficiente y accesible en salud.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">TRUCORP</h4>
-                            <p class="aliado-description">
-                                TruCorp fabrica maniquíes y simuladores médicos con retroalimentación en tiempo real 
-                                para entrenamiento clínico. Su realismo y precisión elevan nuestra formación práctica 
-                                y eficacia educativa.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 13: ERLER ZIMMER -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/9-Erler-Zimmer.webp'); ?>" 
-                                 alt="Erler-Zimmer" 
-                                 class="aliado-logo"
-                                 loading="lazy">
-                        </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">ERLER ZIMMER</h4>
-                            <p class="aliado-description">
-                                Erler-Zimmer diseña modelos anatómicos y simuladores médicos con altísima calidad histórica. 
-                                Su innovación y rigor elevan nuestra formación práctica con precisión educativa.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 14: VATA -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/12-VATA.webp'); ?>" 
-                                 alt="VATA Inc." 
-                                 class="aliado-logo"
-                                 loading="lazy">
-                        </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">VATA</h4>
-                            <p class="aliado-description">
-                                VATA Inc. desarrolla herramientas de simulación médica realistas (acceso vascular, heridas, 
-                                modelos de ultrasonido). Su precisión eleva nuestras prácticas clínicas y fortalece 
-                                nuestra formación.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 15: ADAM ROUILLY -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/8-Adam Rouilly.webp'); ?>" 
-                                 alt="Adam Rouilly" 
-                                 class="aliado-logo"
-                                 loading="lazy">
-                        </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">ADAM ROUILLY</h4>
-                            <p class="aliado-description">
-                                AdamRouilly diseña desde 1918 modelos anatómicos, simuladores clínicos y herramientas 
-                                formativas. Su legado, innovación y versatilidad enriquecen nuestro portafolio educativo.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 16: RUDIGER -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/4-Rudiger.webp'); ?>" 
-                                 alt="Rüdiger Anatomie" 
-                                 class="aliado-logo"
-                                 loading="lazy">
-                        </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">RUDIGER</h4>
-                            <p class="aliado-description">
-                                Rüdiger Anatomie produce modelos anatómicos y pósters educativos "Made in Germany" con 
-                                manufactura artesanal. Su precisión y autenticidad enriquecen nuestra enseñanza de 
-                                ciencias de la salud.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 17: ECHO HEALTHCARE -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/7-Echo Healthcare.webp'); ?>" 
-                                 alt="Echo Healthcare" 
-                                 class="aliado-logo"
-                                 loading="lazy">
-                        </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">ECHO HEALTHCARE</h4>
-                            <p class="aliado-description">
-                                Echo Healthcare desarrolla soluciones inmersivas y realistas para simulación médica 
-                                (maniquíes, máscaras, entornos interactivos). Su innovación eleva nuestra oferta 
-                                formativa con un enfoque de alto impacto.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 18: LIFECAST -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/18-Lifecast.webp'); ?>" 
-                                 alt="Lifecast" 
-                                 class="aliado-logo"
-                                 loading="lazy">
-                        </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">LIFECAST</h4>
-                            <p class="aliado-description">
-                                Lifecast desarrolla modelos anatómicos y simuladores médicos de alta fidelidad para 
-                                educación en salud. Su compromiso con la calidad y realismo fortalece nuestra oferta 
-                                educativa con soluciones innovadoras.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 19: IMMERSIVE -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/20-immersive.webp'); ?>" 
-                                 alt="Immersive Healthcare" 
-                                 class="aliado-logo"
-                                 loading="lazy">
-                        </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">IMMERSIVE</h4>
-                            <p class="aliado-description">
-                                Immersive Healthcare desarrolla soluciones de simulación médica inmersiva que 
-                                transforman la educación clínica mediante tecnología de realidad virtual y aumentada. 
-                                Su innovación potencia nuestra formación con experiencias de aprendizaje únicas.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 20: KEKLIKOĞLU -->
-                    <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/19-KEKLIGOKLU.webp'); ?>" 
-                                 alt="Keklikoğlu" 
-                                 class="aliado-logo"
-                                 loading="lazy">
-                        </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">KEKLIKOĞLU</h4>
-                            <p class="aliado-description">
-                                Keklikoğlu desarrolla modelos anatómicos de alta fidelidad que elevan la enseñanza 
-                                clínica y veterinaria. Su compromiso con calidad e innovación fortalece nuestra 
-                                misión de aprendizaje seguro y realista.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Aliado 21: iSimulate -->
-                <div class="swiper-slide">
-                    <div class="aliado-detalle-card h-100">
-                        <div class="aliado-logo-wrapper">
-                            <img src="<?php echo imageUrl('aliados/18-iSimulate-1.webp'); ?>" 
-                                 alt="iSimulate" 
-                                 class="aliado-logo"
-                                 loading="lazy">
-                        </div>
-                        <div class="aliado-info">
-                            <h4 class="aliado-name">iSimulate</h4>
-                            <p class="aliado-description">
-                                iSimulate desarrolla soluciones de simulación médica móviles e inteligentes que elevan la formación clínica. Su tecnología complementa nuestra misión de brindar capacitación realista, eficiente y accesible en salud.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
+                    <?php endif; ?>
                 </div>
                 
                 <!-- Navegación del carrusel -->

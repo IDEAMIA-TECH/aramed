@@ -242,6 +242,9 @@ function getLogoPath($current_dir, $base_path) {
                     <a class="<?php echo getNavLinkClass('servicios.php', $current_page, $current_dir); ?> nav-link-sm" href="servicios.php" style="color: #212529 !important;">
                         <i class="bi bi-gear me-2"></i>Servicios
                     </a>
+                    <a class="<?php echo getNavLinkClass('aliados.php', $current_page, $current_dir); ?> nav-link-sm" href="aliados.php" style="color: #212529 !important;">
+                        <i class="bi bi-building-fill-check me-2"></i>Partners Globales
+                    </a>
                     <a class="<?php echo getNavLinkClass('mision-vision.php', $current_page, $current_dir); ?> nav-link-sm" href="mision-vision.php" style="color: #212529 !important;">
                         <i class="bi bi-bullseye me-2"></i>Misión/Visión
                     </a>
