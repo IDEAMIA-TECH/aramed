@@ -41,6 +41,47 @@ $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $success_message = '';
 $error_message = '';
 
+// Procesar acciones GET (toggle_status)
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'toggle_status' && $id) {
+    try {
+        // Verificar permisos
+        if (function_exists('checkPermission')) {
+            checkPermission('home', 'editar');
+        }
+        
+        // Obtener el producto actual
+        $stmt = $pdo->prepare("SELECT estado FROM home_productos_destacados WHERE id = ?");
+        $stmt->execute([$id]);
+        $current = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$current) {
+            throw new Exception('Producto destacado no encontrado');
+        }
+        
+        // Cambiar estado
+        $new_status = $current['estado'] === 'activo' ? 'inactivo' : 'activo';
+        
+        $stmt = $pdo->prepare("UPDATE home_productos_destacados SET estado = ?, updated_at = NOW() WHERE id = ?");
+        $stmt->execute([$new_status, $id]);
+        
+        // Registrar actividad
+        if (function_exists('logActivity')) {
+            logActivity($current_user['id'], 'editar', 'home', $id, 'producto_destacado', [
+                'accion' => 'cambiar_estado',
+                'estado_anterior' => $current['estado'],
+                'estado_nuevo' => $new_status
+            ]);
+        }
+        
+        $success_message = 'Estado del producto actualizado exitosamente';
+        $action = 'list';
+        
+    } catch (Exception $e) {
+        $error_message = $e->getMessage();
+        $action = 'list';
+    }
+}
+
 // Procesar formularios
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -172,6 +213,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success_message = 'Producto eliminado de destacados exitosamente';
             $action = 'list';
             
+        } elseif ($action === 'toggle_status' && $id) {
+            // Verificar permisos
+            if (function_exists('checkPermission')) {
+                checkPermission('home', 'editar');
+            }
+            
+            // Obtener el producto actual
+            $stmt = $pdo->prepare("SELECT estado FROM home_productos_destacados WHERE id = ?");
+            $stmt->execute([$id]);
+            $current = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$current) {
+                throw new Exception('Producto destacado no encontrado');
+            }
+            
+            // Cambiar estado
+            $new_status = $current['estado'] === 'activo' ? 'inactivo' : 'activo';
+            
+            $stmt = $pdo->prepare("UPDATE home_productos_destacados SET estado = ?, updated_at = NOW() WHERE id = ?");
+            $stmt->execute([$new_status, $id]);
+            
+            // Registrar actividad
+            if (function_exists('logActivity')) {
+                logActivity($current_user['id'], 'editar', 'home', $id, 'producto_destacado', [
+                    'accion' => 'cambiar_estado',
+                    'estado_anterior' => $current['estado'],
+                    'estado_nuevo' => $new_status
+                ]);
+            }
+            
+            $success_message = 'Estado del producto actualizado exitosamente';
+            $action = 'list';
+            
         } elseif ($action === 'update_order') {
             // Verificar permisos
             if (function_exists('checkPermission')) {
@@ -236,9 +310,9 @@ if ($action === 'list') {
     }
 }
 
-// Obtener producto para editar
+// Obtener producto para editar, eliminar o cambiar estado
 $producto_destacado = null;
-if (($action === 'edit' || $action === 'delete') && $id) {
+if (($action === 'edit' || $action === 'delete' || $action === 'toggle_status') && $id) {
     try {
         $stmt = $pdo->prepare("
             SELECT hpd.*
@@ -757,6 +831,16 @@ $current_dir = 'home';
                                                 <i class="bi bi-pencil me-2"></i>Editar
                                             </a>
                                         </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item <?php echo $pd['estado'] === 'activo' ? 'text-warning' : 'text-success'; ?>" 
+                                               href="?action=toggle_status&id=<?php echo $pd['id']; ?>"
+                                               onclick="return confirm('¿Estás seguro de <?php echo $pd['estado'] === 'activo' ? 'inactivar' : 'activar'; ?> este producto destacado?');">
+                                                <i class="bi <?php echo $pd['estado'] === 'activo' ? 'bi-eye-slash' : 'bi-eye'; ?> me-2"></i>
+                                                <?php echo $pd['estado'] === 'activo' ? 'Inactivar' : 'Activar'; ?>
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
                                         <li>
                                             <a class="dropdown-item text-danger" href="?action=delete&id=<?php echo $pd['id']; ?>">
                                                 <i class="bi bi-trash me-2"></i>Eliminar
