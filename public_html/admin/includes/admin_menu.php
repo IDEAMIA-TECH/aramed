@@ -100,7 +100,28 @@ function adminUrl($path, $base_path = '') {
         return $path;
     }
     
-    // Rutas relativas
+    // Si la ruta contiene un subdirectorio (ej: 'apariencia/index.php')
+    // y estamos en un subdirectorio (base_path = '../'), necesitamos ajustar
+    if ($base_path === '../' && strpos($path, '/') !== false) {
+        // Si estamos en admin/apariencia/ y queremos ir a admin/apariencia/index.php
+        // desde admin/, necesitamos '../apariencia/index.php'
+        // Pero si estamos en admin/apariencia/ y queremos ir a admin/apariencia/index.php
+        // desde admin/apariencia/, necesitamos 'index.php'
+        // El problema es que cuando estamos en admin/apariencia/, base_path es '../'
+        // pero queremos rutas relativas al directorio actual
+        
+        // Si la ruta ya tiene el directorio actual, usar ruta relativa simple
+        $path_parts = explode('/', $path);
+        if (count($path_parts) > 1 && $path_parts[0] === $GLOBALS['current_dir']) {
+            // Estamos en el mismo directorio, usar solo el archivo
+            return $path_parts[1] ?? $path;
+        }
+        
+        // Si no, usar base_path + path
+        return $base_path . $path;
+    }
+    
+    // Rutas relativas normales
     return $base_path . $path;
 }
 
@@ -427,7 +448,7 @@ function getLogoPath($current_dir, $base_path) {
             <!-- Apariencia & Módulos -->
             <?php if (canSeeModule('configuracion', $user_permissions)): ?>
             <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('apariencia/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('apariencia/index.php', $base_path); ?>">
+                <a class="<?php echo getNavLinkClass('apariencia/index.php', $current_page, $current_dir); ?>" href="/admin/apariencia/index.php">
                     <i class="bi bi-palette me-2"></i>Apariencia & Módulos
                 </a>
                 <?php if ($current_dir === 'apariencia'): ?>

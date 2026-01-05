@@ -64,10 +64,10 @@ try {
     // Tablas pueden no existir aún
 }
 
+// El menú calculará automáticamente $current_dir y $current_page desde $_SERVER['PHP_SELF']
+// No es necesario definirlos aquí, pero podemos hacerlo si queremos forzar valores
 $current_page = 'index.php';
-$current_dir = 'apariencia';
-
-include __DIR__ . '/../includes/admin_menu.php';
+// $current_dir se calculará automáticamente en admin_menu.php
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -161,16 +161,22 @@ include __DIR__ . '/../includes/admin_menu.php';
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
+        .admin-content {
+            background: transparent;
+            padding: 2rem;
+            min-height: 100vh;
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
+            <!-- Sidebar (se incluye automáticamente desde admin_menu.php) -->
             <?php include __DIR__ . '/../includes/admin_menu.php'; ?>
             
             <!-- Main Content -->
-            <div class="col-md-9 col-lg-9">
+            <div class="col-md-9 col-lg-9 admin-content">
                 <!-- Header -->
                 <div class="admin-header">
                     <div class="container-fluid">

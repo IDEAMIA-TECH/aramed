@@ -15,14 +15,56 @@ $current_page = 'usuarios.php';
 $current_dir = 'admin';
 
 // Procesar acciones
-$action = $_GET['action'] ?? 'list';
-$id = $_GET['id'] ?? null;
+$action = $_GET['action'] ?? $_POST['action'] ?? 'list';
+$id = $_GET['id'] ?? $_POST['id'] ?? null;
 
 $success_message = '';
 $error_message = '';
 
-// Acciones CRUD
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Procesar borrado (puede venir por GET o POST)
+if ($action === 'delete' && $id) {
+    try {
+        $pdo = getDB();
+        
+        // No permitir eliminar el usuario actual
+        if ($id == $_SESSION['admin_user_id']) {
+            throw new Exception('No puedes eliminar tu propio usuario');
+        }
+        
+        // Verificar permisos
+        if (function_exists('checkPermission')) {
+            checkPermission('usuarios', 'eliminar');
+        }
+        
+        $stmt = $pdo->prepare("DELETE FROM admin_usuarios WHERE id = ?");
+        $stmt->execute([$id]);
+        
+        // Registrar actividad
+        if (function_exists('logActivity')) {
+            logActivity($_SESSION['admin_user_id'] ?? 0, 'eliminar', 'usuarios', $id, 'usuario', [
+                'usuario_eliminado' => $id
+            ]);
+        }
+        
+        $success_message = 'Usuario eliminado exitosamente';
+        $action = 'list';
+        
+        // Redirigir para evitar reenvío del formulario
+        header('Location: usuarios.php?action=list&deleted=1');
+        exit;
+    } catch (Exception $e) {
+        $error_message = 'Error: ' . $e->getMessage();
+        $action = 'list';
+    }
+}
+
+// Mostrar mensaje de éxito si viene de redirección
+if (isset($_GET['deleted'])) {
+    $success_message = 'Usuario eliminado exitosamente';
+}
+
+// Acciones CRUD (POST)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== 'delete') {
     try {
         $pdo = getDB();
         
@@ -73,18 +115,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$nombre, $email, $rol, $estado, $id]);
             
             $success_message = 'Usuario actualizado exitosamente';
-            $action = 'list';
-            
-        } elseif ($action === 'delete') {
-            // No permitir eliminar el usuario actual
-            if ($id == $_SESSION['admin_user_id']) {
-                throw new Exception('No puedes eliminar tu propio usuario');
-            }
-            
-            $stmt = $pdo->prepare("DELETE FROM admin_usuarios WHERE id = ?");
-            $stmt->execute([$id]);
-            
-            $success_message = 'Usuario eliminado exitosamente';
             $action = 'list';
             
         } elseif ($action === 'update_role_permissions') {
