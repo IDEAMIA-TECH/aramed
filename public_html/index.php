@@ -1938,6 +1938,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
             
         </div>
     </section>
+    <?php endif; ?>
     
     <!-- ========================================
          ALIADOS ESTRATÉGICOS - DETALLE
@@ -2394,7 +2395,6 @@ $pageImage = imageUrl('design/logo-og.jpg');
             
         </div>
     </section>
-    <?php endif; ?>
     
     <!-- ========================================
          NEWSLETTER
