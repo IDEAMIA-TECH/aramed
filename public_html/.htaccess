@@ -185,6 +185,16 @@ Options -Indexes
     # Bloquear acceso a archivos ocultos
     RewriteRule "(^|/)\." - [F]
     
+    # Routing para páginas estáticas
+    # Si la URL no es un archivo ni un directorio existente, intentar buscar como página estática
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !^/admin
+    RewriteCond %{REQUEST_URI} !^/assets
+    RewriteCond %{REQUEST_URI} !^/includes
+    RewriteCond %{REQUEST_URI} !^/cron
+    RewriteRule ^([a-z0-9-]+)/?$ pagina.php?slug=$1 [L,QSA]
+    
     # Páginas de error personalizadas
     ErrorDocument 403 /pages/403.php
     ErrorDocument 404 /pages/404.php
