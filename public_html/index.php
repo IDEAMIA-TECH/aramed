@@ -423,8 +423,114 @@ $pageImage = imageUrl('design/logo-og.jpg');
         <div class="swiper hero-swiper">
             <div class="swiper-wrapper">
                 
-                <!-- Slide 1: Principal -->
-                <div class="swiper-slide hero-slide">
+                <?php if (!empty($home_banners)): ?>
+                    <!-- Banners desde la base de datos -->
+                    <?php foreach ($home_banners as $index => $banner): ?>
+                    <div class="swiper-slide hero-slide">
+                        <picture class="hero-slide-image">
+                            <?php 
+                            // Intentar usar WebP si existe
+                            $webp_path = str_replace(['.jpg', '.jpeg', '.png'], '.webp', $banner['imagen_url']);
+                            $webp_full_path = __DIR__ . '/assets/images/' . $webp_path;
+                            if (file_exists($webp_full_path)): 
+                            ?>
+                            <source srcset="<?php echo imageUrl($webp_path); ?>" type="image/webp">
+                            <?php endif; ?>
+                            <img src="<?php echo imageUrl($banner['imagen_url']); ?>" 
+                                 alt="<?php echo esc($banner['titulo']); ?>" 
+                                 <?php echo $index === 0 ? 'id="hero-main-image"' : ''; ?>
+                                 loading="<?php echo $index === 0 ? 'eager' : 'lazy'; ?>">
+                        </picture>
+                        <div class="hero-slide-bg" style="background: transparent;">
+                            <div class="container h-100">
+                                <div class="row h-100 align-items-center <?php echo $index === 0 ? 'justify-content-center' : ''; ?>">
+                                    <div class="<?php echo $index === 0 ? 'col-lg-8 col-xl-6' : 'col-lg-7'; ?>">
+                                        <div class="hero-content <?php echo $index === 0 ? 'text-center' : ''; ?>" data-aos="fade-up">
+                                            <?php if ($index === 0): ?>
+                                            <!-- Logo arriba solo para el primer banner -->
+                                            <div class="hero-logo mb-4" data-aos="fade-down" data-aos-delay="200">
+                                                <img src="<?php echo imageUrl('design/logo.png'); ?>" alt="Aramed y Laboratorios" height="120" class="img-fluid">
+                                            </div>
+                                            <?php endif; ?>
+                                            
+                                            <!-- Contenido de texto -->
+                                            <div class="hero-text-wrapper p-4 rounded-3" style="background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(0px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                                                <?php if ($banner['badge_texto'] && $index > 0): ?>
+                                                <span class="hero-badge badge bg-white text-dark mb-3 px-3 py-2">
+                                                    <i class="bi bi-star-fill me-2"></i>
+                                                    <?php echo esc($banner['badge_texto']); ?>
+                                                </span>
+                                                <?php endif; ?>
+                                                
+                                                <h2 class="hero-<?php echo $index === 0 ? 'subtitle h2' : 'title display-3'; ?> mb-3 fw-bold text-white" <?php echo $index === 0 ? 'id="hero-subtitle"' : ''; ?>>
+                                                    <?php echo esc($banner['titulo']); ?>
+                                                </h2>
+                                                
+                                                <?php if ($banner['subtitulo']): ?>
+                                                <h3 class="hero-subtitle h4 text-white mb-4">
+                                                    <?php echo esc($banner['subtitulo']); ?>
+                                                </h3>
+                                                <?php endif; ?>
+                                                
+                                                <?php if ($banner['descripcion']): ?>
+                                                <p class="hero-description lead text-white mb-4">
+                                                    <?php echo esc($banner['descripcion']); ?>
+                                                </p>
+                                                <?php endif; ?>
+                                                
+                                                <?php if ($banner['caracteristicas']): ?>
+                                                <ul class="hero-features list-unstyled text-white mb-4">
+                                                    <?php 
+                                                    // Separar características por saltos de línea
+                                                    $features = explode("\n", $banner['caracteristicas']);
+                                                    $color_classes = ['text-success', 'text-warning', 'text-info', 'text-light', 'text-danger'];
+                                                    foreach ($features as $idx => $feature): 
+                                                        $feature = trim($feature);
+                                                        if (empty($feature)) continue;
+                                                        $color_class = $color_classes[$idx % count($color_classes)];
+                                                    ?>
+                                                    <li class="mb-2">
+                                                        <i class="bi bi-check-circle-fill <?php echo $color_class; ?> me-2"></i>
+                                                        <?php echo esc($feature); ?>
+                                                    </li>
+                                                    <?php endforeach; ?>
+                                                </ul>
+                                                <?php endif; ?>
+                                                
+                                                <!-- Botones CTA -->
+                                                <?php if ($banner['cta_texto'] || $banner['cta2_texto']): ?>
+                                                <div class="hero-actions <?php echo $index === 0 ? 'mb-3' : 'd-flex flex-wrap gap-3'; ?>">
+                                                    <?php if ($banner['cta_texto']): ?>
+                                                    <a href="<?php echo esc($banner['cta_url'] ?? '#newsletter'); ?>" 
+                                                       class="btn <?php echo $index === 0 ? 'btn-lg px-5' : 'btn-light btn-lg px-5'; ?>" 
+                                                       <?php echo $index === 0 ? 'id="hero-btn-primary"' : ''; ?>>
+                                                        <?php if ($index === 0): ?>
+                                                        <i class="bi bi-envelope me-2"></i>
+                                                        <?php endif; ?>
+                                                        <?php echo esc($banner['cta_texto']); ?>
+                                                    </a>
+                                                    <?php endif; ?>
+                                                    
+                                                    <?php if ($banner['cta2_texto'] && $index > 0): ?>
+                                                    <a href="<?php echo esc($banner['cta2_url'] ?? '#productos'); ?>" 
+                                                       class="btn btn-outline-light btn-lg px-5">
+                                                        <?php echo esc($banner['cta2_texto']); ?>
+                                                    </a>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <!-- Fallback: Banners hardcodeados (solo si no hay banners en BD) -->
+                    <!-- Slide 1: Principal -->
+                    <div class="swiper-slide hero-slide">
                     <picture class="hero-slide-image">
                         <source srcset="<?php echo imageUrl('hero/aramedylaboratorio.webp'); ?>" type="image/webp">
                         <img id="hero-main-image" src="<?php echo imageUrl('hero/aramedylaboratorio.jpg'); ?>" alt="Aramed y Laboratorios - Simuladores médicos" loading="lazy">
@@ -694,6 +800,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         </div>
                     </div>
                 </div>
+                <?php endif; ?>
                 
             </div>
             

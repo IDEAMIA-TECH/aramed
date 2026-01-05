@@ -52,9 +52,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $titulo = trim($_POST['titulo'] ?? '');
             $subtitulo = trim($_POST['subtitulo'] ?? '');
+            $badge_texto = trim($_POST['badge_texto'] ?? '');
+            $descripcion = trim($_POST['descripcion'] ?? '');
+            $caracteristicas = trim($_POST['caracteristicas'] ?? '');
             $video_url = trim($_POST['video_url'] ?? '');
             $cta_texto = trim($_POST['cta_texto'] ?? '');
             $cta_url = trim($_POST['cta_url'] ?? '');
+            $cta2_texto = trim($_POST['cta2_texto'] ?? '');
+            $cta2_url = trim($_POST['cta2_url'] ?? '');
             $estado = $_POST['estado'] ?? 'borrador';
             $orden = (int)($_POST['orden'] ?? 0);
             $fecha_inicio = !empty($_POST['fecha_inicio']) ? $_POST['fecha_inicio'] : null;
@@ -123,10 +128,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($action === 'create') {
                 $stmt = $pdo->prepare("
                     INSERT INTO home_banners 
-                    (titulo, subtitulo, imagen_url, video_url, cta_texto, cta_url, orden, estado, fecha_inicio, fecha_fin, created_at, updated_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+                    (titulo, subtitulo, badge_texto, descripcion, caracteristicas, imagen_url, video_url, cta_texto, cta_url, cta2_texto, cta2_url, orden, estado, fecha_inicio, fecha_fin, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
                 ");
-                $stmt->execute([$titulo, $subtitulo, $imagen_url, $video_url, $cta_texto, $cta_url, $orden, $estado, $fecha_inicio, $fecha_fin]);
+                $stmt->execute([$titulo, $subtitulo, $badge_texto ?: null, $descripcion ?: null, $caracteristicas ?: null, $imagen_url, $video_url, $cta_texto, $cta_url, $cta2_texto ?: null, $cta2_url ?: null, $orden, $estado, $fecha_inicio, $fecha_fin]);
                 
                 $banner_id = $pdo->lastInsertId();
                 
@@ -144,17 +149,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($imagen_url) {
                     $stmt = $pdo->prepare("
                         UPDATE home_banners 
-                        SET titulo = ?, subtitulo = ?, imagen_url = ?, video_url = ?, cta_texto = ?, cta_url = ?, orden = ?, estado = ?, fecha_inicio = ?, fecha_fin = ?, updated_at = NOW()
+                        SET titulo = ?, subtitulo = ?, badge_texto = ?, descripcion = ?, caracteristicas = ?, imagen_url = ?, video_url = ?, cta_texto = ?, cta_url = ?, cta2_texto = ?, cta2_url = ?, orden = ?, estado = ?, fecha_inicio = ?, fecha_fin = ?, updated_at = NOW()
                         WHERE id = ?
                     ");
-                    $stmt->execute([$titulo, $subtitulo, $imagen_url, $video_url, $cta_texto, $cta_url, $orden, $estado, $fecha_inicio, $fecha_fin, $id]);
+                    $stmt->execute([$titulo, $subtitulo, $badge_texto ?: null, $descripcion ?: null, $caracteristicas ?: null, $imagen_url, $video_url, $cta_texto, $cta_url, $cta2_texto ?: null, $cta2_url ?: null, $orden, $estado, $fecha_inicio, $fecha_fin, $id]);
                 } else {
                     $stmt = $pdo->prepare("
                         UPDATE home_banners 
-                        SET titulo = ?, subtitulo = ?, video_url = ?, cta_texto = ?, cta_url = ?, orden = ?, estado = ?, fecha_inicio = ?, fecha_fin = ?, updated_at = NOW()
+                        SET titulo = ?, subtitulo = ?, badge_texto = ?, descripcion = ?, caracteristicas = ?, video_url = ?, cta_texto = ?, cta_url = ?, cta2_texto = ?, cta2_url = ?, orden = ?, estado = ?, fecha_inicio = ?, fecha_fin = ?, updated_at = NOW()
                         WHERE id = ?
                     ");
-                    $stmt->execute([$titulo, $subtitulo, $video_url, $cta_texto, $cta_url, $orden, $estado, $fecha_inicio, $fecha_fin, $id]);
+                    $stmt->execute([$titulo, $subtitulo, $badge_texto ?: null, $descripcion ?: null, $caracteristicas ?: null, $video_url, $cta_texto, $cta_url, $cta2_texto ?: null, $cta2_url ?: null, $orden, $estado, $fecha_inicio, $fecha_fin, $id]);
                 }
                 
                 // Registrar actividad
@@ -386,25 +391,81 @@ $current_dir = 'home';
                                               rows="2"><?php echo $banner ? esc($banner['subtitulo']) : ''; ?></textarea>
                                 </div>
                                 
+                                <div class="mb-3">
+                                    <label class="form-label">Badge/Etiqueta</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           name="badge_texto" 
+                                           value="<?php echo $banner ? esc($banner['badge_texto'] ?? '') : ''; ?>" 
+                                           placeholder="Ej: Simulador Obstétrico, Simulación Avanzada">
+                                    <small class="form-text text-muted">Texto que aparece en el badge/etiqueta del banner (opcional).</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Descripción</label>
+                                    <textarea class="form-control" 
+                                              name="descripcion" 
+                                              rows="2"><?php echo $banner ? esc($banner['descripcion'] ?? '') : ''; ?></textarea>
+                                    <small class="form-text text-muted">Descripción detallada que aparece debajo del subtítulo (opcional).</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Características (Lista de Bullets)</label>
+                                    <textarea class="form-control" 
+                                              name="caracteristicas" 
+                                              rows="6"
+                                              placeholder="Una característica por línea. Ejemplo:&#10;Ojos interactivos&#10;4 abdómenes: vientre para procedimientos de cesárea&#10;Compatible con monitores y equipos clínicos reales"><?php echo $banner ? esc($banner['caracteristicas'] ?? '') : ''; ?></textarea>
+                                    <small class="form-text text-muted">
+                                        <strong>Instrucciones:</strong> Escribe una característica por línea. Cada línea se convertirá en un bullet point con un ícono de checkmark. 
+                                        <br>Ejemplo:
+                                        <br>• Ojos interactivos
+                                        <br>• 4 abdómenes: vientre para procedimientos de cesárea
+                                        <br>• Compatible con monitores y equipos clínicos reales
+                                    </small>
+                                </div>
+                                
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label">CTA Texto</label>
+                                            <label class="form-label">CTA Texto (Botón Principal)</label>
                                             <input type="text" 
                                                    class="form-control" 
                                                    name="cta_texto" 
                                                    value="<?php echo $banner ? esc($banner['cta_texto']) : ''; ?>" 
-                                                   placeholder="Ej: Ver más">
+                                                   placeholder="Ej: Solicitar Información">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label">CTA URL</label>
+                                            <label class="form-label">CTA URL (Botón Principal)</label>
                                             <input type="url" 
                                                    class="form-control" 
                                                    name="cta_url" 
                                                    value="<?php echo $banner ? esc($banner['cta_url']) : ''; ?>" 
-                                                   placeholder="https://ejemplo.com">
+                                                   placeholder="#newsletter o https://ejemplo.com">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">CTA 2 Texto (Segundo Botón - Opcional)</label>
+                                            <input type="text" 
+                                                   class="form-control" 
+                                                   name="cta2_texto" 
+                                                   value="<?php echo $banner ? esc($banner['cta2_texto'] ?? '') : ''; ?>" 
+                                                   placeholder="Ej: Ver Detalles">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">CTA 2 URL (Segundo Botón - Opcional)</label>
+                                            <input type="url" 
+                                                   class="form-control" 
+                                                   name="cta2_url" 
+                                                   value="<?php echo $banner ? esc($banner['cta2_url'] ?? '') : ''; ?>" 
+                                                   placeholder="#productos o https://ejemplo.com">
                                         </div>
                                     </div>
                                 </div>
@@ -426,24 +487,12 @@ $current_dir = 'home';
                                         <div class="mb-3">
                                             <label class="form-label">Imagen Actual</label>
                                             <div>
-                                                <?php 
-                                                // Construir URL correcta de la imagen
-                                                // imagen_url contiene: assets/images/home/banners/banner-123.jpg
-                                                // Necesitamos: https://aramedylaboratorio.com/assets/images/home/banners/banner-123.jpg
-                                                $image_path = ltrim($banner['imagen_url'], '/');
-                                                $image_url = rtrim(SITE_URL, '/') . '/' . $image_path;
-                                                ?>
-                                                <img src="<?php echo esc($image_url); ?>" 
+                                                <img src="<?php echo imageUrl(esc($banner['imagen_url'])); ?>" 
                                                      alt="Banner actual" 
                                                      class="banner-image-preview"
                                                      id="current-image"
-                                                     onerror="console.error('Error cargando imagen: <?php echo esc($image_url); ?>'); this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EImagen no encontrada%3C/text%3E%3C/svg%3E';">
+                                                     onerror="this.onerror=null; this.src='<?php echo SITE_URL . '/' . esc($banner['imagen_url']); ?>';">
                                             </div>
-                                            <small class="text-muted d-block mt-2">
-                                                <code><?php echo esc($banner['imagen_url']); ?></code>
-                                                <br>
-                                                <small>URL: <code><?php echo esc($image_url); ?></code></small>
-                                            </small>
                                         </div>
                                         <?php endif; ?>
                                         <div id="image-preview-container" style="display: none;">
@@ -550,25 +599,11 @@ $current_dir = 'home';
                             <div class="banner-card">
                                 <div class="d-flex align-items-start">
                                     <?php if ($b['imagen_url']): ?>
-                                    <?php 
-                                    // Construir URL correcta de la imagen
-                                    // imagen_url contiene: assets/images/home/banners/banner-123.jpg
-                                    // Necesitamos: https://aramedylaboratorio.com/assets/images/home/banners/banner-123.jpg
-                                    $image_path = ltrim($b['imagen_url'], '/');
-                                    $image_url = rtrim(SITE_URL, '/') . '/' . $image_path;
-                                    ?>
-                                    <img src="<?php echo esc($image_url); ?>" 
+                                    <img src="<?php echo imageUrl(esc($b['imagen_url'])); ?>" 
                                          alt="<?php echo esc($b['titulo']); ?>" 
                                          class="banner-preview me-3"
                                          style="width: 150px; height: 100px; object-fit: cover;"
-                                         onerror="console.error('Error cargando imagen: <?php echo esc($image_url); ?>'); this.onerror=null; this.style.display='none'; this.nextElementSibling && (this.nextElementSibling.style.display='block');">
-                                    <div style="display: none; width: 150px; height: 100px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #999;" class="me-3">
-                                        Sin imagen
-                                    </div>
-                                    <?php else: ?>
-                                    <div style="width: 150px; height: 100px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #999;" class="me-3">
-                                        Sin imagen
-                                    </div>
+                                         onerror="this.onerror=null; this.src='<?php echo SITE_URL . '/' . esc($b['imagen_url']); ?>';">
                                     <?php endif; ?>
                                     <div class="flex-grow-1">
                                         <h5 class="mb-2"><?php echo esc($b['titulo']); ?></h5>
