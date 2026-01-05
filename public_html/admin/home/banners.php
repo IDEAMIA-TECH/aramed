@@ -426,11 +426,24 @@ $current_dir = 'home';
                                         <div class="mb-3">
                                             <label class="form-label">Imagen Actual</label>
                                             <div>
-                                                <img src="<?php echo SITE_URL . '/' . esc($banner['imagen_url']); ?>" 
+                                                <?php 
+                                                // Construir URL correcta de la imagen
+                                                // imagen_url contiene: assets/images/home/banners/banner-123.jpg
+                                                // Necesitamos: https://aramedylaboratorio.com/assets/images/home/banners/banner-123.jpg
+                                                $image_path = ltrim($banner['imagen_url'], '/');
+                                                $image_url = rtrim(SITE_URL, '/') . '/' . $image_path;
+                                                ?>
+                                                <img src="<?php echo esc($image_url); ?>" 
                                                      alt="Banner actual" 
                                                      class="banner-image-preview"
-                                                     id="current-image">
+                                                     id="current-image"
+                                                     onerror="console.error('Error cargando imagen: <?php echo esc($image_url); ?>'); this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22%3EImagen no encontrada%3C/text%3E%3C/svg%3E';">
                                             </div>
+                                            <small class="text-muted d-block mt-2">
+                                                <code><?php echo esc($banner['imagen_url']); ?></code>
+                                                <br>
+                                                <small>URL: <code><?php echo esc($image_url); ?></code></small>
+                                            </small>
                                         </div>
                                         <?php endif; ?>
                                         <div id="image-preview-container" style="display: none;">
@@ -537,11 +550,25 @@ $current_dir = 'home';
                             <div class="banner-card">
                                 <div class="d-flex align-items-start">
                                     <?php if ($b['imagen_url']): ?>
-                                    <img src="<?php echo SITE_URL . '/' . esc($b['imagen_url']); ?>" 
+                                    <?php 
+                                    // Construir URL correcta de la imagen
+                                    // imagen_url contiene: assets/images/home/banners/banner-123.jpg
+                                    // Necesitamos: https://aramedylaboratorio.com/assets/images/home/banners/banner-123.jpg
+                                    $image_path = ltrim($b['imagen_url'], '/');
+                                    $image_url = rtrim(SITE_URL, '/') . '/' . $image_path;
+                                    ?>
+                                    <img src="<?php echo esc($image_url); ?>" 
                                          alt="<?php echo esc($b['titulo']); ?>" 
                                          class="banner-preview me-3"
                                          style="width: 150px; height: 100px; object-fit: cover;"
-                                         onerror="this.style.display='none';">
+                                         onerror="console.error('Error cargando imagen: <?php echo esc($image_url); ?>'); this.onerror=null; this.style.display='none'; this.nextElementSibling && (this.nextElementSibling.style.display='block');">
+                                    <div style="display: none; width: 150px; height: 100px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #999;" class="me-3">
+                                        Sin imagen
+                                    </div>
+                                    <?php else: ?>
+                                    <div style="width: 150px; height: 100px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #999;" class="me-3">
+                                        Sin imagen
+                                    </div>
                                     <?php endif; ?>
                                     <div class="flex-grow-1">
                                         <h5 class="mb-2"><?php echo esc($b['titulo']); ?></h5>
