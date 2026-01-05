@@ -45,6 +45,12 @@ function assetUrl($path) {
  * Generar URL de imagen
  */
 function imageUrl($path) {
+    // Si la ruta ya incluye 'assets/images/', removerlo para evitar duplicación
+    $path = preg_replace('#^assets/images/#', '', $path);
+    // Si la ruta ya es una URL completa, devolverla tal cual
+    if (strpos($path, 'http://') === 0 || strpos($path, 'https://') === 0) {
+        return $path;
+    }
     return IMAGES_URL . '/' . ltrim($path, '/');
 }
 
