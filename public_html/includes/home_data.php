@@ -87,22 +87,10 @@ function getHomeProductosDestacados() {
         
         error_log("getHomeProductosDestacados() - Ejecutando query...");
         $stmt = $pdo->query("
-            SELECT hpd.*, 
-                   p.id as producto_id,
-                   p.nombre as producto_nombre,
-                   p.codigo as producto_codigo,
-                   p.descripcion_corta,
-                   p.descripcion_larga,
-                   p.imagen_principal,
-                   p.slug,
-                   m.nombre as marca_nombre,
-                   m.logo as marca_logo
+            SELECT hpd.*
             FROM home_productos_destacados hpd
-            LEFT JOIN catalogo_productos p ON hpd.producto_id = p.id
-            LEFT JOIN catalogo_marcas m ON p.marca_id = m.id
             WHERE hpd.modo = 'manual' 
             AND hpd.estado = 'activo'
-            AND p.estado = 'activo'
             ORDER BY hpd.orden ASC, hpd.created_at DESC
             LIMIT 6
         ");

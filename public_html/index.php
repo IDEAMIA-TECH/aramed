@@ -1605,8 +1605,114 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </p>
             </div>
             
-            <!-- Product 1: ANATOMAGE TABLE (Imagen Izquierda) -->
-            <div class="product-showcase mb-5" data-aos="fade-up" data-aos-delay="100">
+            <?php if (!empty($home_productos_destacados)): ?>
+                <!-- Productos destacados desde la base de datos -->
+                <?php foreach ($home_productos_destacados as $index => $producto): ?>
+                <?php 
+                // Determinar si la imagen va a la izquierda o derecha (alternar)
+                $imagen_izquierda = ($index % 2 === 0);
+                $delay = ($index + 1) * 100;
+                // Determinar color del badge según el índice
+                $badge_colors = ['', 'bg-info', 'bg-warning', 'bg-danger'];
+                $badge_color = $badge_colors[$index % count($badge_colors)];
+                // Determinar color de los bullets según el índice
+                $bullet_colors = ['text-primary', 'text-info', 'text-warning', 'text-danger'];
+                $bullet_color = $bullet_colors[$index % count($bullet_colors)];
+                // Determinar color del botón según el índice
+                $btn_colors = ['btn-primary', 'btn-info text-white', 'btn-warning text-white', 'btn-danger'];
+                $btn_color = $btn_colors[$index % count($btn_colors)];
+                ?>
+                <div class="product-showcase mb-5 <?php echo !$imagen_izquierda ? 'product-reverse' : ''; ?>" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
+                    <div class="row align-items-center g-4">
+                        <div class="col-lg-6 order-lg-<?php echo $imagen_izquierda ? '1' : '2'; ?>">
+                            <div class="product-image-wrapper">
+                                <?php if ($producto['badge_texto']): ?>
+                                <div class="product-badge <?php echo $badge_color; ?>">
+                                    <i class="bi bi-star-fill me-1"></i>
+                                    <?php echo esc($producto['badge_texto']); ?>
+                                </div>
+                                <?php endif; ?>
+                                <picture>
+                                    <?php 
+                                    // Intentar usar WebP si existe
+                                    $imagen_path = $producto['imagen_url'] ?? null;
+                                    if ($imagen_path):
+                                        $webp_path = str_replace(['.jpg', '.jpeg', '.png'], '.webp', $imagen_path);
+                                        $webp_full_path = __DIR__ . '/assets/images/' . $webp_path;
+                                        if (file_exists($webp_full_path)): 
+                                    ?>
+                                    <source srcset="<?php echo imageUrl($webp_path); ?>" type="image/webp">
+                                    <?php endif; ?>
+                                    <img src="<?php echo imageUrl($imagen_path); ?>" 
+                                         alt="<?php echo esc($producto['titulo'] ?? 'Producto'); ?>" 
+                                         class="product-image"
+                                         loading="lazy">
+                                    <?php endif; ?>
+                                </picture>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 order-lg-<?php echo $imagen_izquierda ? '2' : '1'; ?>">
+                            <div class="product-content">
+                                <div class="d-flex align-items-center mb-3">
+                                    <?php if ($producto['categoria_nombre']): ?>
+                                    <span class="product-category me-3"><?php echo esc($producto['categoria_nombre']); ?></span>
+                                    <?php endif; ?>
+                                    <?php if ($producto['marca_logo_url']): ?>
+                                    <img src="<?php echo imageUrl($producto['marca_logo_url']); ?>" 
+                                         alt="<?php echo esc($producto['marca_nombre'] ?? 'Proveedor'); ?>" 
+                                         class="company-logo"
+                                         style="height: 30px; width: auto;">
+                                    <?php elseif ($producto['marca_nombre']): ?>
+                                    <span class="text-muted small"><?php echo esc($producto['marca_nombre']); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <h3 class="product-title"><?php echo esc($producto['titulo'] ?? $producto['producto_nombre'] ?? 'Producto'); ?></h3>
+                                <?php if ($producto['subtitulo']): ?>
+                                <p class="product-subtitle"><?php echo esc($producto['subtitulo']); ?></p>
+                                <?php endif; ?>
+                                <?php if ($producto['descripcion']): ?>
+                                <p class="product-description">
+                                    <?php echo esc($producto['descripcion']); ?>
+                                </p>
+                                <?php endif; ?>
+                                <?php if ($producto['caracteristicas']): ?>
+                                <ul class="product-features-list">
+                                    <?php 
+                                    // Separar características por saltos de línea
+                                    $features = explode("\n", $producto['caracteristicas']);
+                                    foreach ($features as $feature): 
+                                        $feature = trim($feature);
+                                        if (empty($feature)) continue;
+                                    ?>
+                                    <li>
+                                        <i class="bi bi-check-circle-fill <?php echo $bullet_color; ?>"></i>
+                                        <?php echo esc($feature); ?>
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <?php endif; ?>
+                                <div class="product-actions">
+                                    <?php if ($producto['cta_texto']): ?>
+                                    <a href="<?php echo esc($producto['cta_url'] ?: '#newsletter'); ?>" class="btn <?php echo $btn_color; ?> btn-lg">
+                                        <i class="bi bi-cart-plus me-2"></i>
+                                        <?php echo esc($producto['cta_texto']); ?>
+                                    </a>
+                                    <?php else: ?>
+                                    <a href="#newsletter" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-cart-plus me-2"></i>
+                                        Solicitar Cotización
+                                    </a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <!-- Fallback: Productos hardcodeados (solo si no hay productos en BD) -->
+                <!-- Product 1: ANATOMAGE TABLE (Imagen Izquierda) -->
+                <div class="product-showcase mb-5" data-aos="fade-up" data-aos-delay="100">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-6 order-lg-1">
                         <div class="product-image-wrapper">

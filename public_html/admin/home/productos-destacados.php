@@ -50,27 +50,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 checkPermission('home', 'crear');
             }
             
-            $producto_id = (int)($_POST['producto_id'] ?? 0);
+            $titulo = trim($_POST['titulo'] ?? '');
             $orden = (int)($_POST['orden'] ?? 0);
             
-            if ($producto_id <= 0) {
-                throw new Exception('Debes seleccionar un producto');
+            if (empty($titulo)) {
+                throw new Exception('El título es obligatorio');
             }
             
-            // Verificar si el producto ya está en modo manual
-            $stmt = $pdo->prepare("SELECT id FROM home_productos_destacados WHERE producto_id = ? AND modo = 'manual'");
-            $stmt->execute([$producto_id]);
-            if ($stmt->fetch()) {
-                throw new Exception('Este producto ya está en la lista de destacados');
-            }
+            // Insertar con todos los campos (producto destacado independiente)
+            $producto_id = null; // No relacionado con catálogo
+            $marca_nombre = trim($_POST['marca_nombre'] ?? '');
+            $marca_logo_url = trim($_POST['marca_logo_url'] ?? '');
+            $categoria_nombre = trim($_POST['categoria_nombre'] ?? '');
+            $badge_texto = trim($_POST['badge_texto'] ?? '');
+            $subtitulo = trim($_POST['subtitulo'] ?? '');
+            $descripcion = trim($_POST['descripcion'] ?? '');
+            $caracteristicas = trim($_POST['caracteristicas'] ?? '');
+            $imagen_url = trim($_POST['imagen_url'] ?? '');
+            $cta_texto = trim($_POST['cta_texto'] ?? '');
+            $cta_url = trim($_POST['cta_url'] ?? '');
             
-            // Insertar
             $stmt = $pdo->prepare("
                 INSERT INTO home_productos_destacados 
-                (producto_id, modo, orden, estado, created_at, updated_at)
-                VALUES (?, 'manual', ?, 'activo', NOW(), NOW())
+                (producto_id, titulo, marca_nombre, marca_logo_url, categoria_nombre, badge_texto, subtitulo, descripcion, caracteristicas, imagen_url, cta_texto, cta_url, modo, orden, estado, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'manual', ?, 'activo', NOW(), NOW())
             ");
-            $stmt->execute([$producto_id, $orden]);
+            $stmt->execute([
+                $producto_id, 
+                $titulo,
+                $marca_nombre ?: null,
+                $marca_logo_url ?: null,
+                $categoria_nombre ?: null,
+                $badge_texto ?: null, 
+                $subtitulo ?: null, 
+                $descripcion ?: null, 
+                $caracteristicas ?: null, 
+                $imagen_url ?: null, 
+                $cta_texto ?: null, 
+                $cta_url ?: null, 
+                $orden
+            ]);
             
             // Registrar actividad
             if (function_exists('logActivity')) {
@@ -88,15 +107,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 checkPermission('home', 'editar');
             }
             
+            $titulo = trim($_POST['titulo'] ?? '');
             $orden = (int)($_POST['orden'] ?? 0);
             $estado = $_POST['estado'] ?? 'activo';
+            $marca_nombre = trim($_POST['marca_nombre'] ?? '');
+            $marca_logo_url = trim($_POST['marca_logo_url'] ?? '');
+            $categoria_nombre = trim($_POST['categoria_nombre'] ?? '');
+            $badge_texto = trim($_POST['badge_texto'] ?? '');
+            $subtitulo = trim($_POST['subtitulo'] ?? '');
+            $descripcion = trim($_POST['descripcion'] ?? '');
+            $caracteristicas = trim($_POST['caracteristicas'] ?? '');
+            $imagen_url = trim($_POST['imagen_url'] ?? '');
+            $cta_texto = trim($_POST['cta_texto'] ?? '');
+            $cta_url = trim($_POST['cta_url'] ?? '');
+            
+            if (empty($titulo)) {
+                throw new Exception('El título es obligatorio');
+            }
             
             $stmt = $pdo->prepare("
                 UPDATE home_productos_destacados 
-                SET orden = ?, estado = ?, updated_at = NOW()
+                SET titulo = ?, orden = ?, estado = ?, 
+                    marca_nombre = ?, marca_logo_url = ?, categoria_nombre = ?,
+                    badge_texto = ?, subtitulo = ?, descripcion = ?, 
+                    caracteristicas = ?, imagen_url = ?, cta_texto = ?, cta_url = ?,
+                    updated_at = NOW()
                 WHERE id = ?
             ");
-            $stmt->execute([$orden, $estado, $id]);
+            $stmt->execute([
+                $titulo,
+                $orden, $estado, 
+                $marca_nombre ?: null, $marca_logo_url ?: null, $categoria_nombre ?: null,
+                $badge_texto ?: null, $subtitulo ?: null, $descripcion ?: null, 
+                $caracteristicas ?: null, $imagen_url ?: null, 
+                $cta_texto ?: null, $cta_url ?: null, 
+                $id
+            ]);
             
             // Registrar actividad
             if (function_exists('logActivity')) {
@@ -179,14 +225,8 @@ $productos_destacados = [];
 if ($action === 'list') {
     try {
         $stmt = $pdo->query("
-            SELECT hpd.*, 
-                   p.nombre as producto_nombre,
-                   p.codigo as producto_codigo,
-                   p.imagen_principal,
-                   m.nombre as marca_nombre
+            SELECT hpd.*
             FROM home_productos_destacados hpd
-            LEFT JOIN catalogo_productos p ON hpd.producto_id = p.id
-            LEFT JOIN catalogo_marcas m ON p.marca_id = m.id
             WHERE hpd.modo = 'manual'
             ORDER BY hpd.orden ASC, hpd.created_at DESC
         ");
@@ -201,11 +241,8 @@ $producto_destacado = null;
 if (($action === 'edit' || $action === 'delete') && $id) {
     try {
         $stmt = $pdo->prepare("
-            SELECT hpd.*, 
-                   p.nombre as producto_nombre,
-                   p.codigo as producto_codigo
+            SELECT hpd.*
             FROM home_productos_destacados hpd
-            LEFT JOIN catalogo_productos p ON hpd.producto_id = p.id
             WHERE hpd.id = ?
         ");
         $stmt->execute([$id]);
@@ -221,41 +258,8 @@ if (($action === 'edit' || $action === 'delete') && $id) {
     }
 }
 
-// Obtener productos disponibles para agregar
-$productos_disponibles = [];
-if ($action === 'add' || $action === 'list') {
-    try {
-        // Obtener IDs de productos ya destacados
-        $stmt = $pdo->query("SELECT producto_id FROM home_productos_destacados WHERE modo = 'manual' AND estado = 'activo'");
-        $productos_destacados_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        
-        $where_clause = '';
-        $params = [];
-        
-        if (!empty($productos_destacados_ids)) {
-            $placeholders = implode(',', array_fill(0, count($productos_destacados_ids), '?'));
-            $where_clause = "WHERE p.id NOT IN ($placeholders) AND p.estado = 'activo'";
-            $params = $productos_destacados_ids;
-        } else {
-            $where_clause = "WHERE p.estado = 'activo'";
-        }
-        
-        $sql = "
-            SELECT p.id, p.nombre, p.codigo, m.nombre as marca_nombre
-            FROM catalogo_productos p
-            LEFT JOIN catalogo_marcas m ON p.marca_id = m.id
-            {$where_clause}
-            ORDER BY p.nombre ASC
-            LIMIT 100
-        ";
-        
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        $productos_disponibles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (Exception $e) {
-        // Ignorar error si la tabla no existe
-    }
-}
+// Los productos destacados son independientes del catálogo
+// No necesitamos obtener productos del catálogo
 
 $current_page = 'productos-destacados.php';
 $current_dir = 'home';
@@ -374,36 +378,116 @@ $current_dir = 'home';
                         <div class="card-body">
                             <form method="POST" action="?action=add">
                                 <div class="mb-3">
-                                    <label class="form-label">Producto *</label>
-                                    <select class="form-select" name="producto_id" required>
-                                        <option value="">Selecciona un producto</option>
-                                        <?php foreach ($productos_disponibles as $prod): ?>
-                                        <option value="<?php echo $prod['id']; ?>">
-                                            <?php echo esc($prod['nombre']); ?> 
-                                            (<?php echo esc($prod['codigo']); ?>)
-                                            <?php if ($prod['marca_nombre']): ?>
-                                            - <?php echo esc($prod['marca_nombre']); ?>
-                                            <?php endif; ?>
-                                        </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <?php if (empty($productos_disponibles)): ?>
-                                    <small class="form-text text-muted">No hay productos disponibles para agregar</small>
-                                    <?php endif; ?>
+                                    <label class="form-label">Título *</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           name="titulo" 
+                                           placeholder="Ej: ANATOMAGE TABLE"
+                                           required>
+                                    <small class="form-text text-muted">Título principal del producto destacado</small>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Orden</label>
+                                        <input type="number" 
+                                               class="form-control" 
+                                               name="orden" 
+                                               value="0" 
+                                               min="0">
+                                        <small class="form-text text-muted">El orden se puede ajustar después arrastrando los productos</small>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Badge/Etiqueta</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               name="badge_texto" 
+                                               placeholder="Ej: Más Vendido, Inmersivo">
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Marca/Proveedor</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               name="marca_nombre" 
+                                               placeholder="Ej: Anatomage">
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Logo del Proveedor (URL)</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               name="marca_logo_url" 
+                                               placeholder="aliados/3-Anatomage.webp">
+                                        <small class="form-text text-muted">Ruta relativa a assets/images/</small>
+                                    </div>
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label class="form-label">Orden</label>
-                                    <input type="number" 
+                                    <label class="form-label">Categoría</label>
+                                    <input type="text" 
                                            class="form-control" 
-                                           name="orden" 
-                                           value="0" 
-                                           min="0">
-                                    <small class="form-text text-muted">El orden se puede ajustar después arrastrando los productos</small>
+                                           name="categoria_nombre" 
+                                           placeholder="Ej: Plataforma Educativa, Realidad Inmersiva">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Subtítulo</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           name="subtitulo" 
+                                           placeholder="Ej: Revoluciona la enseñanza médica">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Descripción</label>
+                                    <textarea class="form-control" 
+                                              name="descripcion" 
+                                              rows="4" 
+                                              placeholder="Descripción personalizada para el home"></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Características (Bullets)</label>
+                                    <textarea class="form-control" 
+                                              name="caracteristicas" 
+                                              rows="6" 
+                                              placeholder="Una característica por línea&#10;Ej:&#10;Visualización 3D de cuerpos humanos reales&#10;Herramientas interactivas de disección virtual"></textarea>
+                                    <small class="form-text text-muted">Lista de características, una por línea</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Imagen URL</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           name="imagen_url" 
+                                           placeholder="productos/anatomage-table.jpg">
+                                    <small class="form-text text-muted">Ruta relativa a assets/images/</small>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Texto del Botón CTA</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               name="cta_texto" 
+                                               placeholder="Ej: Solicitar Cotización">
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">URL del Botón CTA</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               name="cta_url" 
+                                               placeholder="Ej: #newsletter">
+                                    </div>
                                 </div>
                                 
                                 <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary" <?php echo empty($productos_disponibles) ? 'disabled' : ''; ?>>
+                                    <button type="submit" class="btn btn-primary">
                                         <i class="bi bi-check-circle me-2"></i>Agregar Producto
                                     </button>
                                     <a href="?action=list" class="btn btn-secondary">
@@ -423,27 +507,149 @@ $current_dir = 'home';
                             </h5>
                         </div>
                         <div class="card-body">
-                            <div class="alert alert-info">
-                                <strong>Producto:</strong> <?php echo esc($producto_destacado['producto_nombre']); ?> 
-                                (<?php echo esc($producto_destacado['producto_codigo']); ?>)
-                            </div>
-                            
                             <form method="POST" action="?action=update&id=<?php echo $id; ?>">
                                 <div class="mb-3">
-                                    <label class="form-label">Orden</label>
-                                    <input type="number" 
+                                    <label class="form-label">Título *</label>
+                                    <input type="text" 
                                            class="form-control" 
-                                           name="orden" 
-                                           value="<?php echo $producto_destacado['orden']; ?>" 
-                                           min="0">
+                                           name="titulo" 
+                                           value="<?php echo esc($producto_destacado['titulo'] ?? ''); ?>" 
+                                           placeholder="Ej: ANATOMAGE TABLE"
+                                           required>
+                                    <small class="form-text text-muted">Título principal del producto destacado</small>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Orden</label>
+                                        <input type="number" 
+                                               class="form-control" 
+                                               name="orden" 
+                                               value="<?php echo $producto_destacado['orden']; ?>" 
+                                               min="0">
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Estado</label>
+                                        <select class="form-select" name="estado" required>
+                                            <option value="activo" <?php echo $producto_destacado['estado'] === 'activo' ? 'selected' : ''; ?>>Activo</option>
+                                            <option value="inactivo" <?php echo $producto_destacado['estado'] === 'inactivo' ? 'selected' : ''; ?>>Inactivo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Marca/Proveedor</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               name="marca_nombre" 
+                                               value="<?php echo esc($producto_destacado['marca_nombre'] ?? ''); ?>" 
+                                               placeholder="Ej: Anatomage">
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Logo del Proveedor (URL)</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               name="marca_logo_url" 
+                                               value="<?php echo esc($producto_destacado['marca_logo_url'] ?? ''); ?>" 
+                                               placeholder="aliados/3-Anatomage.webp">
+                                        <small class="form-text text-muted">Ruta relativa a assets/images/</small>
+                                        <?php if ($producto_destacado['marca_logo_url']): ?>
+                                        <div class="mt-2">
+                                            <img src="<?php echo imageUrl($producto_destacado['marca_logo_url']); ?>" 
+                                                 alt="Logo preview" 
+                                                 class="img-thumbnail" 
+                                                 style="max-width: 100px; max-height: 50px; object-fit: contain;">
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label class="form-label">Estado</label>
-                                    <select class="form-select" name="estado" required>
-                                        <option value="activo" <?php echo $producto_destacado['estado'] === 'activo' ? 'selected' : ''; ?>>Activo</option>
-                                        <option value="inactivo" <?php echo $producto_destacado['estado'] === 'inactivo' ? 'selected' : ''; ?>>Inactivo</option>
-                                    </select>
+                                    <label class="form-label">Categoría</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           name="categoria_nombre" 
+                                           value="<?php echo esc($producto_destacado['categoria_nombre'] ?? ''); ?>" 
+                                           placeholder="Ej: Plataforma Educativa, Realidad Inmersiva">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Badge/Etiqueta</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           name="badge_texto" 
+                                           value="<?php echo esc($producto_destacado['badge_texto'] ?? ''); ?>" 
+                                           placeholder="Ej: Más Vendido, Inmersivo, Pediátrico, Adulto">
+                                    <small class="form-text text-muted">Texto que aparece en el badge del producto</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Subtítulo</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           name="subtitulo" 
+                                           value="<?php echo esc($producto_destacado['subtitulo'] ?? ''); ?>" 
+                                           placeholder="Ej: Revoluciona la enseñanza médica con Anatomage Table">
+                                    <small class="form-text text-muted">Subtítulo que aparece debajo del título del producto</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Descripción</label>
+                                    <textarea class="form-control" 
+                                              name="descripcion" 
+                                              rows="4" 
+                                              placeholder="Descripción personalizada para el home"><?php echo esc($producto_destacado['descripcion'] ?? ''); ?></textarea>
+                                    <small class="form-text text-muted">Descripción que se mostrará en el home</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Características (Bullets)</label>
+                                    <textarea class="form-control" 
+                                              name="caracteristicas" 
+                                              rows="6" 
+                                              placeholder="Una característica por línea&#10;Ej:&#10;Visualización 3D de cuerpos humanos reales&#10;Herramientas interactivas de disección virtual"><?php echo esc($producto_destacado['caracteristicas'] ?? ''); ?></textarea>
+                                    <small class="form-text text-muted">Lista de características, una por línea. Se mostrarán como bullets con checkmarks.</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Imagen URL</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           name="imagen_url" 
+                                           value="<?php echo esc($producto_destacado['imagen_url'] ?? ''); ?>" 
+                                           placeholder="productos/anatomage-table.jpg">
+                                    <small class="form-text text-muted">Ruta relativa a assets/images/</small>
+                                    <?php if ($producto_destacado['imagen_url']): ?>
+                                    <div class="mt-2">
+                                        <img src="<?php echo imageUrl($producto_destacado['imagen_url']); ?>" 
+                                             alt="Preview" 
+                                             class="img-thumbnail" 
+                                             style="max-width: 200px; max-height: 150px; object-fit: cover;">
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Texto del Botón CTA</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               name="cta_texto" 
+                                               value="<?php echo esc($producto_destacado['cta_texto'] ?? ''); ?>" 
+                                               placeholder="Ej: Solicitar Cotización">
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">URL del Botón CTA</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               name="cta_url" 
+                                               value="<?php echo esc($producto_destacado['cta_url'] ?? ''); ?>" 
+                                               placeholder="Ej: #newsletter o /catalogo/producto-slug">
+                                    </div>
                                 </div>
                                 
                                 <div class="d-flex gap-2">
@@ -467,7 +673,7 @@ $current_dir = 'home';
                             </h5>
                         </div>
                         <div class="card-body">
-                            <p>¿Estás seguro de que deseas eliminar el producto <strong><?php echo esc($producto_destacado['producto_nombre']); ?></strong> de los destacados?</p>
+                            <p>¿Estás seguro de que deseas eliminar el producto destacado <strong><?php echo esc($producto_destacado['titulo'] ?? $producto_destacado['producto_nombre'] ?? 'sin título'); ?></strong>?</p>
                             
                             <form method="POST" action="?action=delete&id=<?php echo $id; ?>">
                                 <button type="submit" class="btn btn-danger">
@@ -507,25 +713,29 @@ $current_dir = 'home';
                                     <i class="bi bi-grip-vertical text-muted" style="font-size: 1.5rem; cursor: grab;"></i>
                                 </div>
                                 
-                                <?php if ($pd['imagen_principal']): ?>
-                                <img src="<?php echo SITE_URL . '/' . esc($pd['imagen_principal']); ?>" 
-                                     alt="<?php echo esc($pd['producto_nombre']); ?>" 
+                                <?php if ($pd['imagen_url']): ?>
+                                <img src="<?php echo imageUrl($pd['imagen_url']); ?>" 
+                                     alt="<?php echo esc($pd['titulo'] ?? 'Producto'); ?>" 
                                      class="product-image me-3"
+                                     style="width: 80px; height: 80px; object-fit: cover;"
                                      onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'80\'%3E%3Crect fill=\'%23f8f9fa\' width=\'80\' height=\'80\'/%3E%3Ctext fill=\'%23999\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\'%3ESin imagen%3C/text%3E%3C/svg%3E'">
                                 <?php else: ?>
-                                <div class="product-image me-3 d-flex align-items-center justify-content-center text-muted">
+                                <div class="product-image me-3 d-flex align-items-center justify-content-center text-muted" style="width: 80px; height: 80px;">
                                     <i class="bi bi-image" style="font-size: 2rem;"></i>
                                 </div>
                                 <?php endif; ?>
                                 
                                 <div class="flex-grow-1">
-                                    <h5 class="mb-1"><?php echo esc($pd['producto_nombre']); ?></h5>
+                                    <h5 class="mb-1"><?php echo esc($pd['titulo'] ?? 'Sin título'); ?></h5>
                                     <div class="d-flex align-items-center gap-3 flex-wrap">
-                                        <small class="text-muted">
-                                            <strong>Código:</strong> <?php echo esc($pd['producto_codigo']); ?>
-                                        </small>
+                                        <?php if ($pd['categoria_nombre']): ?>
+                                        <span class="badge bg-secondary"><?php echo esc($pd['categoria_nombre']); ?></span>
+                                        <?php endif; ?>
                                         <?php if ($pd['marca_nombre']): ?>
                                         <span class="badge bg-info"><?php echo esc($pd['marca_nombre']); ?></span>
+                                        <?php endif; ?>
+                                        <?php if ($pd['badge_texto']): ?>
+                                        <span class="badge bg-primary"><?php echo esc($pd['badge_texto']); ?></span>
                                         <?php endif; ?>
                                         <span class="badge <?php echo $pd['estado'] === 'activo' ? 'bg-success' : 'bg-secondary'; ?>">
                                             <?php echo ucfirst($pd['estado']); ?>
