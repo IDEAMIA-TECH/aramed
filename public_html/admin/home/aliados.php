@@ -106,11 +106,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Procesar imagen si se subió
             if (isset($_FILES['logo_imagen']) && $_FILES['logo_imagen']['error'] === UPLOAD_ERR_OK) {
-                $upload_dir = __DIR__ . '/../../../assets/images/aliados/';
+                // Ruta del directorio de upload usando constante ASSETS_PATH o fallback
+                if (defined('ASSETS_PATH')) {
+                    $upload_dir = ASSETS_PATH . '/images/aliados/';
+                } else {
+                    // Fallback: calcular desde __DIR__
+                    $upload_dir = __DIR__ . '/../../assets/images/aliados/';
+                }
                 
                 // Crear directorio si no existe
                 if (!is_dir($upload_dir)) {
-                    mkdir($upload_dir, 0755, true);
+                    if (!mkdir($upload_dir, 0755, true)) {
+                        throw new Exception('No se pudo crear el directorio de imágenes. Verifica los permisos.');
+                    }
+                }
+                
+                // Verificar que el directorio sea escribible
+                if (!is_writable($upload_dir)) {
+                    throw new Exception('El directorio de imágenes no tiene permisos de escritura. Contacta al administrador.');
                 }
                 
                 $file = $_FILES['logo_imagen'];
@@ -128,14 +141,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 
                 // Generar nombre único
-                $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
                 $filename = 'aliado-' . time() . '-' . uniqid() . '.' . $extension;
                 $filepath = $upload_dir . $filename;
                 
                 // Mover archivo
                 if (!move_uploaded_file($file['tmp_name'], $filepath)) {
-                    throw new Exception('Error al subir el archivo');
+                    $upload_error = $_FILES['logo_imagen']['error'];
+                    $error_messages = [
+                        UPLOAD_ERR_INI_SIZE => 'El archivo excede el tamaño máximo permitido por PHP (upload_max_filesize)',
+                        UPLOAD_ERR_FORM_SIZE => 'El archivo excede el tamaño máximo permitido por el formulario',
+                        UPLOAD_ERR_PARTIAL => 'El archivo se subió parcialmente',
+                        UPLOAD_ERR_NO_FILE => 'No se seleccionó ningún archivo',
+                        UPLOAD_ERR_NO_TMP_DIR => 'Falta el directorio temporal',
+                        UPLOAD_ERR_CANT_WRITE => 'Error al escribir el archivo en disco',
+                        UPLOAD_ERR_EXTENSION => 'Una extensión de PHP detuvo la subida del archivo'
+                    ];
+                    
+                    $error_msg = 'Error al subir el archivo';
+                    if (isset($error_messages[$upload_error])) {
+                        $error_msg .= ': ' . $error_messages[$upload_error];
+                    } else {
+                        $error_msg .= ' (Error código: ' . $upload_error . ')';
+                    }
+                    
+                    // Log adicional para debugging
+                    error_log("Error al subir logo de aliado: " . $error_msg);
+                    error_log("Upload dir: " . $upload_dir);
+                    error_log("Filepath: " . $filepath);
+                    error_log("Is writable: " . (is_writable($upload_dir) ? 'YES' : 'NO'));
+                    
+                    throw new Exception($error_msg);
                 }
+                
+                // Verificar que el archivo se haya guardado correctamente
+                if (!file_exists($filepath)) {
+                    error_log("Archivo no existe después de move_uploaded_file: " . $filepath);
+                    throw new Exception('El archivo no se guardó correctamente en el servidor. Verifica los permisos del directorio.');
+                }
+                
+                // Log de éxito
+                error_log("Logo de aliado subido exitosamente: " . $filepath);
                 
                 // Si hay una imagen anterior, eliminarla
                 if ($action === 'edit' && $id) {
@@ -144,8 +190,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $aliado_actual = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($aliado_actual && $aliado_actual['logo_url']) {
                         // Solo eliminar si es una imagen subida (no una URL externa)
-                        if (strpos($aliado_actual['logo_url'], 'assets/images/aliados/') !== false) {
-                            $old_image_path = __DIR__ . '/../../../' . $aliado_actual['logo_url'];
+                        $old_logo = $aliado_actual['logo_url'];
+                        // Puede ser 'aliados/filename.ext' o 'assets/images/aliados/filename.ext'
+                        if (strpos($old_logo, 'aliados/') !== false || strpos($old_logo, 'assets/images/aliados/') !== false) {
+                        // Normalizar la ruta usando ASSETS_PATH o fallback
+                        $assets_path = defined('ASSETS_PATH') ? ASSETS_PATH : (__DIR__ . '/../../assets');
+                        if (strpos($old_logo, 'assets/images/') === 0) {
+                            $old_image_path = $assets_path . '/' . str_replace('assets/images/', 'images/', $old_logo);
+                        } else {
+                            $old_image_path = $assets_path . '/images/' . $old_logo;
+                        }
                             if (file_exists($old_image_path)) {
                                 @unlink($old_image_path);
                             }
@@ -153,6 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
                 
+                // Guardar ruta relativa a assets/images/ (sin el prefijo assets/images/)
                 $logo_url = 'aliados/' . $filename;
             } elseif ($action === 'edit' && $id && empty($logo_url)) {
                 // Mantener la imagen existente si no se subió una nueva y no se especificó URL manual
@@ -166,6 +221,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             if ($action === 'create') {
+                // Calcular orden automáticamente si es 0 o no se especificó
+                if ($orden <= 0) {
+                    $stmt = $pdo->query("SELECT COALESCE(MAX(orden), 0) as max_orden FROM home_aliados");
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $orden = ($result['max_orden'] ?? 0) + 1;
+                }
+                
                 $stmt = $pdo->prepare("
                     INSERT INTO home_aliados 
                     (nombre, logo_url, descripcion, url_website, mostrar_en_carrusel, mostrar_en_detalle, orden, estado, created_at, updated_at)
@@ -219,8 +281,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Eliminar imagen si existe
             if ($aliado && $aliado['logo_url']) {
                 // Solo eliminar si es una imagen subida (no una URL externa)
-                if (strpos($aliado['logo_url'], 'aliados/') !== false || strpos($aliado['logo_url'], 'assets/images/aliados/') !== false) {
-                    $image_path = __DIR__ . '/../../../assets/images/' . (strpos($aliado['logo_url'], 'aliados/') === 0 ? $aliado['logo_url'] : str_replace('assets/images/', '', $aliado['logo_url']));
+                $old_logo = $aliado['logo_url'];
+                if (strpos($old_logo, 'aliados/') !== false || strpos($old_logo, 'assets/images/aliados/') !== false) {
+                    // Normalizar la ruta usando ASSETS_PATH o fallback
+                    $assets_path = defined('ASSETS_PATH') ? ASSETS_PATH : (__DIR__ . '/../../assets');
+                    if (strpos($old_logo, 'assets/images/') === 0) {
+                        $image_path = $assets_path . '/' . str_replace('assets/images/', 'images/', $old_logo);
+                    } else {
+                        $image_path = $assets_path . '/images/' . $old_logo;
+                    }
                     if (file_exists($image_path)) {
                         @unlink($image_path);
                     }
@@ -500,8 +569,9 @@ $current_dir = 'home';
                                                class="form-control" 
                                                name="orden" 
                                                value="0" 
-                                               min="0">
-                                        <small class="form-text text-muted">El orden se puede ajustar después arrastrando los aliados</small>
+                                               min="0"
+                                               placeholder="0 (automático)">
+                                        <small class="form-text text-muted">Se calculará automáticamente al final de la lista. Puedes ajustarlo después arrastrando los aliados.</small>
                                     </div>
                                     
                                     <div class="col-md-6 mb-3">
