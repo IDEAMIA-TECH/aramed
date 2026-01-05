@@ -82,10 +82,7 @@ try {
     $error_message = 'Error: La tabla home_secciones no existe. Ejecuta el script database/fase2/09_create_apariencia_tables.sql';
 }
 
-$current_page = 'secciones.php';
-$current_dir = 'apariencia';
-
-include __DIR__ . '/../includes/admin_menu.php';
+// El menú calculará automáticamente $current_dir y $current_page
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -163,6 +160,12 @@ include __DIR__ . '/../includes/admin_menu.php';
             border-radius: var(--border-radius);
             border: none;
         }
+
+        .admin-content {
+            background: transparent;
+            padding: 2rem;
+            min-height: 100vh;
+        }
     </style>
 </head>
 <body>
@@ -172,7 +175,7 @@ include __DIR__ . '/../includes/admin_menu.php';
             <?php include __DIR__ . '/../includes/admin_menu.php'; ?>
             
             <!-- Main Content -->
-            <div class="col-md-9 col-lg-9">
+            <div class="col-md-9 col-lg-9 admin-content">
                 <!-- Header -->
                 <div class="admin-header">
                     <div class="container-fluid">

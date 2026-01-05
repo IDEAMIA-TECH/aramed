@@ -140,10 +140,7 @@ if ($action === 'list') {
     $paginas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$current_page = 'paginas.php';
-$current_dir = 'apariencia';
-
-include __DIR__ . '/../includes/admin_menu.php';
+// El menú calculará automáticamente $current_dir y $current_page
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -191,6 +188,12 @@ include __DIR__ . '/../includes/admin_menu.php';
             padding: 2rem;
             box-shadow: var(--shadow);
         }
+
+        .admin-content {
+            background: transparent;
+            padding: 2rem;
+            min-height: 100vh;
+        }
     </style>
 </head>
 <body>
@@ -200,7 +203,7 @@ include __DIR__ . '/../includes/admin_menu.php';
             <?php include __DIR__ . '/../includes/admin_menu.php'; ?>
             
             <!-- Main Content -->
-            <div class="col-md-9 col-lg-9">
+            <div class="col-md-9 col-lg-9 admin-content">
                 <!-- Header -->
                 <div class="admin-header">
                     <div class="container-fluid">
