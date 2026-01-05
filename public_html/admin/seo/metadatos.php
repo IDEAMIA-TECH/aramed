@@ -41,6 +41,15 @@ $error_message = '';
 $filtro_tipo = $_GET['tipo'] ?? '';
 $filtro_entidad_id = $_GET['entidad_id'] ?? '';
 
+// Verificar si la tabla existe
+$tabla_existe = false;
+try {
+    $stmt = $pdo->query("SHOW TABLES LIKE 'seo_metadatos'");
+    $tabla_existe = $stmt->rowCount() > 0;
+} catch (Exception $e) {
+    $error_message = 'Error verificando la tabla: ' . $e->getMessage();
+}
+
 // Obtener metadatos
 $where_conditions = [];
 $params = [];
@@ -57,25 +66,34 @@ if ($filtro_entidad_id) {
 
 $where_clause = !empty($where_conditions) ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
 
-try {
-    $sql = "SELECT * FROM seo_metadatos $where_clause ORDER BY updated_at DESC LIMIT 100";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $metadatos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (Exception $e) {
-    $metadatos = [];
+$metadatos = [];
+if ($tabla_existe) {
+    try {
+        $sql = "SELECT * FROM seo_metadatos $where_clause ORDER BY updated_at DESC LIMIT 100";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $metadatos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        $error_message = 'Error consultando metadatos: ' . $e->getMessage();
+        error_log("Error en metadatos.php: " . $e->getMessage());
+    }
+} else {
+    $error_message = 'La tabla seo_metadatos no existe. Por favor ejecuta el script database/fase2/08_create_seo_tables.sql o database/fase2/00_create_all_tables.sql';
 }
 
 // Obtener estadísticas
-$stats = [];
-try {
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM seo_metadatos");
-    $stats['total'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-    
-    $stmt = $pdo->query("SELECT tipo_entidad, COUNT(*) as count FROM seo_metadatos GROUP BY tipo_entidad");
-    $stats['por_tipo'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (Exception $e) {
-    $stats = ['total' => 0, 'por_tipo' => []];
+$stats = ['total' => 0, 'por_tipo' => []];
+if ($tabla_existe) {
+    try {
+        $stmt = $pdo->query("SELECT COUNT(*) as total FROM seo_metadatos");
+        $stats['total'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+        
+        $stmt = $pdo->query("SELECT tipo_entidad, COUNT(*) as count FROM seo_metadatos GROUP BY tipo_entidad");
+        $stats['por_tipo'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        $error_message = 'Error obteniendo estadísticas: ' . $e->getMessage();
+        error_log("Error obteniendo estadísticas en metadatos.php: " . $e->getMessage());
+    }
 }
 
 $current_page = 'metadatos.php';
@@ -223,11 +241,22 @@ $current_dir = 'seo';
                         </h5>
                     </div>
                     <div class="card-body">
-                        <?php if (empty($metadatos)): ?>
+                        <?php if (!$tabla_existe): ?>
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Tabla no encontrada:</strong> La tabla <code>seo_metadatos</code> no existe en la base de datos.
+                            <br><br>
+                            <strong>Para solucionarlo:</strong>
+                            <ol>
+                                <li>Ejecuta el script SQL: <code>database/fase2/08_create_seo_tables.sql</code></li>
+                                <li>O ejecuta el script consolidado: <code>database/fase2/00_create_all_tables.sql</code></li>
+                            </ol>
+                        </div>
+                        <?php elseif (empty($metadatos)): ?>
                         <div class="text-center py-5">
                             <i class="bi bi-inbox display-4 text-muted mb-3"></i>
                             <p class="text-muted">No hay metadatos personalizados configurados</p>
-                            <small class="text-muted">Los metadatos se pueden configurar desde las páginas de edición de cada entidad</small>
+                            <small class="text-muted">Los metadatos se pueden configurar desde las páginas de edición de cada entidad (productos, artículos, proyectos, etc.)</small>
                         </div>
                         <?php else: ?>
                         <div class="table-responsive">
