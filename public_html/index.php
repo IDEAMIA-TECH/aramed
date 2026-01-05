@@ -1935,6 +1935,7 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
             
         </div>
     </section>
