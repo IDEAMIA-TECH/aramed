@@ -210,6 +210,67 @@ $pageImage = imageUrl('design/logo-og.jpg');
         section {
     padding: 0rem 0;
 }
+        
+        /* Misión y Visión Styles */
+        .section-mision-vision {
+            background: #f8f9fa;
+        }
+        
+        .mision-vision-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+        
+        .mision-vision-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .mision-vision-card .card-icon {
+            font-size: 3rem;
+            text-align: center;
+        }
+        
+        .mision-vision-card .card-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #212529;
+            text-align: center;
+        }
+        
+        .mision-vision-card .card-image {
+            text-align: center;
+        }
+        
+        .mision-vision-card .card-image img {
+            max-height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+        
+        .mision-vision-card .card-content {
+            color: #6c757d;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+        
+        .mision-vision-card .card-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .mision-vision-card .card-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        @media (max-width: 991px) {
+            .mision-vision-card {
+                margin-bottom: 2rem;
+            }
+        }
         </style>
 
     <!-- ========================================
@@ -1454,6 +1515,73 @@ $pageImage = imageUrl('design/logo-og.jpg');
                 </div>
             </div>
             
+        </div>
+    </section>
+    <?php endif; ?>
+    
+    <!-- ========================================
+         MISIÓN Y VISIÓN
+         ======================================== -->
+    <?php if (isSeccionActiva('mision_vision') && ($home_mision_vision['mision'] || $home_mision_vision['vision'])): ?>
+    <section id="mision-vision" class="section-mision-vision py-5">
+        <div class="container">
+            <div class="row g-4">
+                <?php if ($home_mision_vision['mision']): ?>
+                <!-- Misión -->
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="mision-vision-card h-100">
+                        <div class="card-icon mb-4">
+                            <i class="bi bi-bullseye text-primary"></i>
+                        </div>
+                        <?php if ($home_mision_vision['mision']['titulo']): ?>
+                        <h3 class="card-title mb-4">
+                            <?php echo esc($home_mision_vision['mision']['titulo']); ?>
+                        </h3>
+                        <?php else: ?>
+                        <h3 class="card-title mb-4">Nuestra Misión</h3>
+                        <?php endif; ?>
+                        <?php if ($home_mision_vision['mision']['imagen_url']): ?>
+                        <div class="card-image mb-4">
+                            <img src="<?php echo imageUrl($home_mision_vision['mision']['imagen_url']); ?>" 
+                                 alt="Misión" 
+                                 class="img-fluid rounded">
+                        </div>
+                        <?php endif; ?>
+                        <div class="card-content">
+                            <?php echo $home_mision_vision['mision']['contenido']; ?>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+                
+                <?php if ($home_mision_vision['vision']): ?>
+                <!-- Visión -->
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="mision-vision-card h-100">
+                        <div class="card-icon mb-4">
+                            <i class="bi bi-eye text-primary"></i>
+                        </div>
+                        <?php if ($home_mision_vision['vision']['titulo']): ?>
+                        <h3 class="card-title mb-4">
+                            <?php echo esc($home_mision_vision['vision']['titulo']); ?>
+                        </h3>
+                        <?php else: ?>
+                        <h3 class="card-title mb-4">Nuestra Visión</h3>
+                        <?php endif; ?>
+                        <?php if ($home_mision_vision['vision']['imagen_url']): ?>
+                        <div class="card-image mb-4">
+                            <img src="<?php echo imageUrl($home_mision_vision['vision']['imagen_url']); ?>" 
+                                 alt="Visión" 
+                                 class="img-fluid rounded">
+                        </div>
+                        <?php endif; ?>
+                        <div class="card-content">
+                            <?php echo $home_mision_vision['vision']['contenido']; ?>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
         </div>
     </section>
     <?php endif; ?>
