@@ -48,6 +48,7 @@ $current_page = basename($php_self);
 
 // Extraer el path relativo desde /admin/
 // Ejemplo: /admin/catalogo/index.php -> catalogo
+// Ejemplo: /admin/catalogo/productos/edit.php -> catalogo (primer nivel)
 $admin_path = '/admin/';
 $pos = strpos($php_self, $admin_path);
 
@@ -55,15 +56,40 @@ if ($pos !== false) {
     $relative_path = substr($php_self, $pos + strlen($admin_path));
     $path_parts = explode('/', $relative_path);
     
-    // Si hay al menos una parte (el directorio), usarla
-    // path_parts será ['catalogo', 'index.php'] para /admin/catalogo/index.php
-    if (count($path_parts) > 1 && !empty($path_parts[0])) {
-        $current_dir = $path_parts[0];
-        $base_path = '../';
-    } elseif (count($path_parts) === 1 && !empty($path_parts[0]) && $path_parts[0] !== 'index.php') {
-        // Caso especial: /admin/catalogo (sin index.php)
-        $current_dir = $path_parts[0];
-        $base_path = '../';
+    // Filtrar partes vacías
+    $path_parts = array_filter($path_parts, function($part) {
+        return !empty($part);
+    });
+    $path_parts = array_values($path_parts);
+    
+    // Separar directorios del archivo
+    $directorios = [];
+    $archivo = null;
+    
+    foreach ($path_parts as $part) {
+        // Si tiene extensión, es un archivo
+        if (strpos($part, '.') !== false && strpos($part, '.') !== 0) {
+            $archivo = $part;
+        } else {
+            $directorios[] = $part;
+        }
+    }
+    
+    // Calcular profundidad (número de subdirectorios, sin contar el archivo)
+    // Si estamos en admin/catalogo/productos/edit.php:
+    // - directorios = ['catalogo', 'productos']
+    // - profundidad = 2 (necesitamos ../../ para volver a admin/)
+    $profundidad = count($directorios);
+    
+    // Si hay al menos un directorio, usarlo como current_dir
+    // path_parts será ['catalogo', 'index.php'] para /admin/catalogo/index.php -> current_dir = 'catalogo'
+    // path_parts será ['catalogo', 'productos', 'edit.php'] para /admin/catalogo/productos/edit.php -> current_dir = 'catalogo'
+    if (count($directorios) > 0 && !empty($directorios[0])) {
+        $current_dir = $directorios[0]; // Primer nivel siempre
+        // Calcular base_path basado en la profundidad
+        // Si estamos en admin/catalogo/productos/edit.php, profundidad = 2
+        // Necesitamos ../../ para volver a admin/
+        $base_path = str_repeat('../', $profundidad);
     } else {
         // Estamos en admin/ directamente
         $current_dir = '';
@@ -79,7 +105,9 @@ if ($pos !== false) {
         $current_dir = '';
         $base_path = '';
     } else {
-        $base_path = '../';
+        // Calcular profundidad basado en el número de / en el path
+        $profundidad = substr_count($script_dir, '/') - substr_count('/admin/', '/');
+        $base_path = str_repeat('../', max(1, $profundidad));
     }
 }
 
@@ -89,6 +117,7 @@ if (isset($_GET['debug_menu'])) {
 }
 
 // Función helper para generar rutas correctas
+// SIEMPRE genera rutas absolutas desde /admin/ para evitar problemas con subdirectorios anidados
 function adminUrl($path, $base_path = '') {
     // Si la ruta ya comienza con http:// o https://, devolverla tal cual
     if (strpos($path, 'http://') === 0 || strpos($path, 'https://') === 0) {
@@ -101,7 +130,7 @@ function adminUrl($path, $base_path = '') {
     }
     
     // Si la ruta comienza con / pero no es /admin/, convertirla a /admin/
-    if (strpos($path, '/') === 0 && strpos($path, '/admin/') !== 0) {
+    if (strpos($path, '/') === 0) {
         // Si es solo /, devolver /admin/
         if ($path === '/') {
             return '/admin/';
@@ -110,20 +139,17 @@ function adminUrl($path, $base_path = '') {
         return '/admin' . $path;
     }
     
-    // Si la ruta contiene un subdirectorio (ej: 'seo/index.php' o 'apariencia/index.php')
-    // Siempre generar ruta absoluta desde /admin/
+    // REGLA PRINCIPAL: Si la ruta contiene un subdirectorio (ej: 'seo/index.php' o 'catalogo/index.php')
+    // SIEMPRE generar ruta absoluta desde /admin/
+    // Esto evita problemas cuando estamos en subdirectorios anidados
+    // Ejemplo: desde admin/catalogo/productos/edit.php, 'catalogo/index.php' -> '/admin/catalogo/index.php'
     if (strpos($path, '/') !== false) {
-        // Es una ruta a un subdirectorio, siempre usar ruta absoluta
         return '/admin/' . $path;
     }
     
-    // Si es solo un archivo (ej: 'index.php') y estamos en un subdirectorio
-    // Usar ruta relativa
-    if ($base_path === '../') {
-        return $path; // Ya estamos en el subdirectorio correcto
-    }
-    
-    // Si estamos en la raíz del admin y es solo un archivo
+    // Si es solo un archivo (ej: 'index.php', 'edit.php', 'create.php')
+    // Usar ruta relativa si estamos en el mismo directorio
+    // Esto funciona para archivos en el mismo directorio (ej: edit.php -> create.php)
     return $path;
 }
 
