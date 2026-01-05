@@ -95,34 +95,36 @@ function adminUrl($path, $base_path = '') {
         return $path;
     }
     
-    // Si la ruta comienza con /, es absoluta desde la raíz del sitio
-    if (strpos($path, '/') === 0) {
+    // Si la ruta comienza con /admin/, devolverla tal cual (ya es correcta)
+    if (strpos($path, '/admin/') === 0) {
         return $path;
     }
     
-    // Si la ruta contiene un subdirectorio (ej: 'apariencia/index.php')
-    // y estamos en un subdirectorio (base_path = '../'), necesitamos ajustar
-    if ($base_path === '../' && strpos($path, '/') !== false) {
-        // Si estamos en admin/apariencia/ y queremos ir a admin/apariencia/index.php
-        // desde admin/, necesitamos '../apariencia/index.php'
-        // Pero si estamos en admin/apariencia/ y queremos ir a admin/apariencia/index.php
-        // desde admin/apariencia/, necesitamos 'index.php'
-        // El problema es que cuando estamos en admin/apariencia/, base_path es '../'
-        // pero queremos rutas relativas al directorio actual
-        
-        // Si la ruta ya tiene el directorio actual, usar ruta relativa simple
-        $path_parts = explode('/', $path);
-        if (count($path_parts) > 1 && $path_parts[0] === $GLOBALS['current_dir']) {
-            // Estamos en el mismo directorio, usar solo el archivo
-            return $path_parts[1] ?? $path;
+    // Si la ruta comienza con / pero no es /admin/, convertirla a /admin/
+    if (strpos($path, '/') === 0 && strpos($path, '/admin/') !== 0) {
+        // Si es solo /, devolver /admin/
+        if ($path === '/') {
+            return '/admin/';
         }
-        
-        // Si no, usar base_path + path
-        return $base_path . $path;
+        // Si es /seo/index.php, convertir a /admin/seo/index.php
+        return '/admin' . $path;
     }
     
-    // Rutas relativas normales
-    return $base_path . $path;
+    // Si la ruta contiene un subdirectorio (ej: 'seo/index.php' o 'apariencia/index.php')
+    // Siempre generar ruta absoluta desde /admin/
+    if (strpos($path, '/') !== false) {
+        // Es una ruta a un subdirectorio, siempre usar ruta absoluta
+        return '/admin/' . $path;
+    }
+    
+    // Si es solo un archivo (ej: 'index.php') y estamos en un subdirectorio
+    // Usar ruta relativa
+    if ($base_path === '../') {
+        return $path; // Ya estamos en el subdirectorio correcto
+    }
+    
+    // Si estamos en la raíz del admin y es solo un archivo
+    return $path;
 }
 
 // Función para determinar si un enlace está activo
