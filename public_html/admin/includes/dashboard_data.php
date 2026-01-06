@@ -45,19 +45,34 @@ try {
             $data = [];
             $labels = [];
             
+            // Verificar si existe la tabla cotizaciones
+            $table_check = $pdo->query("SHOW TABLES LIKE 'cotizaciones'")->fetch();
+            $use_cotizaciones_table = !empty($table_check);
+            
             for ($i = 11; $i >= 0; $i--) {
                 $fecha = date('Y-m', strtotime("-$i months"));
                 $labels[] = date('M Y', strtotime("-$i months"));
                 
-                // Contar cotizaciones (desde newsletter_subscriptions o cotizaciones si existe)
-                $sql = "SELECT COUNT(*) as total 
-                        FROM newsletter_subscriptions 
-                        WHERE DATE_FORMAT(created_at, '%Y-%m') = ? 
-                        AND status = 'active'";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([$fecha]);
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                $data[] = (int)$result['total'];
+                if ($use_cotizaciones_table) {
+                    // Usar tabla cotizaciones si existe
+                    $sql = "SELECT COUNT(*) as total 
+                            FROM cotizaciones 
+                            WHERE DATE_FORMAT(created_at, '%Y-%m') = ?";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([$fecha]);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $data[] = (int)$result['total'];
+                } else {
+                    // Fallback a newsletter_subscriptions
+                    $sql = "SELECT COUNT(*) as total 
+                            FROM newsletter_subscriptions 
+                            WHERE DATE_FORMAT(created_at, '%Y-%m') = ? 
+                            AND status = 'active'";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([$fecha]);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $data[] = (int)$result['total'];
+                }
             }
             
             echo json_encode([

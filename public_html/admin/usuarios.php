@@ -21,6 +21,45 @@ $id = $_GET['id'] ?? $_POST['id'] ?? null;
 $success_message = '';
 $error_message = '';
 
+// Procesar desbloqueo de usuario
+if ($action === 'desbloquear' && $id) {
+    try {
+        $pdo = getDB();
+        
+        // Verificar permisos
+        if (function_exists('checkPermission')) {
+            checkPermission('usuarios', 'editar');
+        }
+        
+        // Verificar si los campos existen
+        $columns_check = $pdo->query("SHOW COLUMNS FROM admin_usuarios LIKE 'intentos_fallidos'")->fetch();
+        if ($columns_check) {
+            $stmt = $pdo->prepare("UPDATE admin_usuarios SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE id = ?");
+            $stmt->execute([$id]);
+            
+            // Registrar actividad
+            if (function_exists('logActivity')) {
+                logActivity($_SESSION['admin_user_id'] ?? 0, 'editar', 'usuarios', $id, 'usuario', [
+                    'accion' => 'desbloquear_usuario'
+                ]);
+            }
+            
+            $success_message = 'Usuario desbloqueado exitosamente';
+        } else {
+            $error_message = 'Los campos de bloqueo no existen en la base de datos';
+        }
+        
+        $action = 'list';
+        
+        // Redirigir para evitar reenvío del formulario
+        header('Location: usuarios.php?action=list&unlocked=1');
+        exit;
+    } catch (Exception $e) {
+        $error_message = 'Error: ' . $e->getMessage();
+        $action = 'list';
+    }
+}
+
 // Procesar borrado (puede venir por GET o POST)
 if ($action === 'delete' && $id) {
     try {
@@ -61,6 +100,9 @@ if ($action === 'delete' && $id) {
 // Mostrar mensaje de éxito si viene de redirección
 if (isset($_GET['deleted'])) {
     $success_message = 'Usuario eliminado exitosamente';
+}
+if (isset($_GET['unlocked'])) {
+    $success_message = 'Usuario desbloqueado exitosamente';
 }
 
 // Acciones CRUD (POST)
@@ -927,6 +969,32 @@ try {
                                                 <span class="badge <?php echo $user['estado'] === 'activo' ? 'bg-success' : 'bg-danger'; ?>">
                                                     <?php echo ucfirst($user['estado']); ?>
                                                 </span>
+                                                <?php 
+                                                // Verificar si el usuario está bloqueado
+                                                $bloqueado = false;
+                                                $bloqueado_hasta = null;
+                                                if (isset($user['bloqueado_hasta']) && $user['bloqueado_hasta']) {
+                                                    $bloqueado_hasta = strtotime($user['bloqueado_hasta']);
+                                                    if ($bloqueado_hasta > time()) {
+                                                        $bloqueado = true;
+                                                    }
+                                                }
+                                                
+                                                if ($bloqueado): 
+                                                    $minutos_restantes = ceil(($bloqueado_hasta - time()) / 60);
+                                                ?>
+                                                    <br>
+                                                    <span class="badge bg-warning mt-1">
+                                                        <i class="bi bi-lock me-1"></i>
+                                                        Bloqueado (<?php echo $minutos_restantes; ?> min)
+                                                    </span>
+                                                <?php elseif (isset($user['intentos_fallidos']) && $user['intentos_fallidos'] > 0): ?>
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                                        <?php echo $user['intentos_fallidos']; ?> intento(s) fallido(s)
+                                                    </small>
+                                                <?php endif; ?>
                                             </td>
                                             <td>
                                                 <?php echo $user['ultimo_login'] ? date('d/m/Y H:i', strtotime($user['ultimo_login'])) : 'Nunca'; ?>
@@ -941,6 +1009,24 @@ try {
                                                     <a href="?action=permisos&id=<?php echo $user['id']; ?>" 
                                                        class="btn btn-sm btn-outline-info" title="Gestionar Permisos">
                                                         <i class="bi bi-shield-check"></i>
+                                                    </a>
+                                                    <?php endif; ?>
+                                                    <?php 
+                                                    // Botón de desbloquear si el usuario está bloqueado
+                                                    $usuario_bloqueado = false;
+                                                    if (isset($user['bloqueado_hasta']) && $user['bloqueado_hasta']) {
+                                                        $bloqueado_hasta_ts = strtotime($user['bloqueado_hasta']);
+                                                        if ($bloqueado_hasta_ts > time()) {
+                                                            $usuario_bloqueado = true;
+                                                        }
+                                                    }
+                                                    
+                                                    if ($usuario_bloqueado && function_exists('checkPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'usuarios', 'editar')): 
+                                                    ?>
+                                                    <a href="?action=desbloquear&id=<?php echo $user['id']; ?>" 
+                                                       class="btn btn-sm btn-outline-warning" title="Desbloquear Usuario"
+                                                       onclick="return confirm('¿Estás seguro de desbloquear este usuario?')">
+                                                        <i class="bi bi-unlock"></i>
                                                     </a>
                                                     <?php endif; ?>
                                                     <?php if ($user['id'] != ($_SESSION['admin_user_id'] ?? 0)): ?>

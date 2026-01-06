@@ -200,7 +200,7 @@ include INCLUDES_PATH . '/header.php';
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card h-100 shadow-sm project-card">
                     <?php if ($proyecto['imagen_principal']): ?>
-                    <img src="<?php echo SITE_URL . '/' . esc($proyecto['imagen_principal']); ?>" 
+                    <img src="<?php echo imageUrl($proyecto['imagen_principal']); ?>" 
                          class="card-img-top" 
                          alt="<?php echo esc($proyecto['titulo']); ?>"
                          style="height: 250px; object-fit: cover;">

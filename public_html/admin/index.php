@@ -277,15 +277,30 @@ try {
 
 // Cotizaciones: hoy/semana/mes/acumulado
 try {
-    $sql = "SELECT 
-        COUNT(*) as total,
-        SUM(CASE WHEN DATE(created_at) = CURDATE() THEN 1 ELSE 0 END) as hoy,
-        SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 ELSE 0 END) as semana,
-        SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) as mes
-    FROM newsletter_subscriptions 
-    WHERE status = 'active'";
-    $stmt = $pdo->query($sql);
-    $cotiz_stats = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Verificar si existe la tabla cotizaciones
+    $table_check = $pdo->query("SHOW TABLES LIKE 'cotizaciones'")->fetch();
+    if (!empty($table_check)) {
+        // Usar tabla cotizaciones si existe
+        $sql = "SELECT 
+            COUNT(*) as total,
+            SUM(CASE WHEN DATE(created_at) = CURDATE() THEN 1 ELSE 0 END) as hoy,
+            SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 ELSE 0 END) as semana,
+            SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) as mes
+        FROM cotizaciones";
+        $stmt = $pdo->query($sql);
+        $cotiz_stats = $stmt->fetch(PDO::FETCH_ASSOC);
+    } else {
+        // Fallback a newsletter_subscriptions
+        $sql = "SELECT 
+            COUNT(*) as total,
+            SUM(CASE WHEN DATE(created_at) = CURDATE() THEN 1 ELSE 0 END) as hoy,
+            SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 ELSE 0 END) as semana,
+            SUM(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) as mes
+        FROM newsletter_subscriptions 
+        WHERE status = 'active'";
+        $stmt = $pdo->query($sql);
+        $cotiz_stats = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     $stats['cotizaciones_hoy'] = $cotiz_stats['hoy'] ?? 0;
     $stats['cotizaciones_semana'] = $cotiz_stats['semana'] ?? 0;
     $stats['cotizaciones_mes'] = $cotiz_stats['mes'] ?? 0;
@@ -708,14 +723,70 @@ try {
                             <i class="bi bi-eye me-1"></i>Total Vistas
                         </div>
                     </div>
-                    <div class="stat-card info">
-                        <div class="stat-number"><?php echo number_format($stats['newsletter_activos']); ?></div>
+                    <?php if (isset($stats['productos_activos'])): ?>
+                    <div class="stat-card success">
+                        <div class="stat-number"><?php echo number_format($stats['productos_activos']); ?></div>
                         <div class="stat-label">
-                            <i class="bi bi-envelope me-1"></i>Cotizaciones
+                            <i class="bi bi-box-seam me-1"></i>Productos Activos
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <?php if (isset($stats['contactos_total'])): ?>
+                    <div class="stat-card info">
+                        <div class="stat-number"><?php echo number_format($stats['contactos_total']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-envelope-paper me-1"></i>Mensajes Contacto
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <?php if (isset($stats['contactos_nuevos']) && $stats['contactos_nuevos'] > 0): ?>
+                    <div class="stat-card warning">
+                        <div class="stat-number"><?php echo number_format($stats['contactos_nuevos']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-envelope-exclamation me-1"></i>Contactos Nuevos
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <?php if (isset($stats['cotizaciones_total'])): ?>
+                    <div class="stat-card">
+                        <div class="stat-number"><?php echo number_format($stats['cotizaciones_total']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-file-earmark-text me-1"></i>Total Cotizaciones
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <?php if (isset($stats['cotizaciones_hoy'])): ?>
+                    <div class="stat-card success">
+                        <div class="stat-number"><?php echo number_format($stats['cotizaciones_hoy']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-calendar-day me-1"></i>Cotizaciones Hoy
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <?php if (isset($stats['cotizaciones_semana'])): ?>
+                    <div class="stat-card info">
+                        <div class="stat-number"><?php echo number_format($stats['cotizaciones_semana']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-calendar-week me-1"></i>Esta Semana
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <?php if (isset($stats['cotizaciones_mes'])): ?>
+                    <div class="stat-card">
+                        <div class="stat-number"><?php echo number_format($stats['cotizaciones_mes']); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-calendar-month me-1"></i>Este Mes
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <div class="stat-card info">
+                        <div class="stat-number"><?php echo number_format($stats['newsletter_activos'] ?? 0); ?></div>
+                        <div class="stat-label">
+                            <i class="bi bi-envelope me-1"></i>Newsletter Activos
                         </div>
                     </div>
                     <div class="stat-card success">
-                        <div class="stat-number"><?php echo number_format($stats['newsletter_simple_activos']); ?></div>
+                        <div class="stat-number"><?php echo number_format($stats['newsletter_simple_activos'] ?? 0); ?></div>
                         <div class="stat-label">
                             <i class="bi bi-newspaper me-1"></i>Newsletter
                         </div>

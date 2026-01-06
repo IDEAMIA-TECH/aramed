@@ -182,7 +182,7 @@ include INCLUDES_PATH . '/header.php';
                 <!-- Imagen Principal -->
                 <?php if ($proyecto['imagen_principal']): ?>
                 <div class="mb-4">
-                    <img src="<?php echo SITE_URL . '/' . esc($proyecto['imagen_principal']); ?>" 
+                    <img src="<?php echo imageUrl($proyecto['imagen_principal']); ?>" 
                          alt="<?php echo esc($proyecto['titulo']); ?>" 
                          class="img-fluid rounded shadow">
                 </div>
@@ -202,10 +202,10 @@ include INCLUDES_PATH . '/header.php';
                     <div class="row g-3">
                         <?php foreach ($images as $img): ?>
                         <div class="col-md-6">
-                            <a href="<?php echo SITE_URL . '/' . esc($img['imagen_url']); ?>" 
+                            <a href="<?php echo imageUrl($img['imagen_url']); ?>" 
                                data-lightbox="gallery" 
                                data-title="<?php echo esc($img['titulo'] ?? $proyecto['titulo']); ?>">
-                                <img src="<?php echo SITE_URL . '/' . esc($img['imagen_url']); ?>" 
+                                <img src="<?php echo imageUrl($img['imagen_url']); ?>" 
                                      alt="<?php echo esc($img['titulo'] ?? ''); ?>" 
                                      class="img-fluid rounded shadow-sm">
                             </a>
@@ -261,7 +261,7 @@ include INCLUDES_PATH . '/header.php';
                     <h3 class="mb-4">Documentos</h3>
                     <div class="list-group">
                         <?php foreach ($documents as $doc): ?>
-                        <a href="<?php echo SITE_URL . '/' . esc($doc['archivo_url']); ?>" 
+                        <a href="<?php echo SITE_URL . '/' . ltrim(esc($doc['archivo_url']), '/'); ?>" 
                            target="_blank" 
                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div>
@@ -349,7 +349,7 @@ include INCLUDES_PATH . '/header.php';
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 shadow-sm">
                             <?php if ($rel['imagen_principal']): ?>
-                            <img src="<?php echo SITE_URL . '/' . esc($rel['imagen_principal']); ?>" 
+                            <img src="<?php echo imageUrl($rel['imagen_principal']); ?>" 
                                  class="card-img-top" 
                                  alt="<?php echo esc($rel['titulo']); ?>"
                                  style="height: 200px; object-fit: cover;">
