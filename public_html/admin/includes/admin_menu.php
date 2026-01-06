@@ -129,6 +129,14 @@ function adminUrl($path, $base_path = '') {
         return $path;
     }
     
+    // Si la ruta comienza con ../, es un enlace fuera del admin (ej: ../blog.php, ../index.php)
+    // Convertir a ruta absoluta desde la raíz del sitio
+    if (strpos($path, '../') === 0) {
+        // Remover ../ y agregar / al inicio
+        $clean_path = ltrim(str_replace('../', '', $path), '/');
+        return '/' . $clean_path;
+    }
+    
     // Si la ruta comienza con / pero no es /admin/, convertirla a /admin/
     if (strpos($path, '/') === 0) {
         // Si es solo /, devolver /admin/
@@ -147,8 +155,29 @@ function adminUrl($path, $base_path = '') {
         return '/admin/' . $path;
     }
     
-    // Si es solo un archivo (ej: 'index.php', 'edit.php', 'create.php')
-    // Usar ruta relativa si estamos en el mismo directorio
+    // Archivos que están en la raíz del admin (no en subdirectorios)
+    // Estos SIEMPRE deben usar ruta absoluta desde /admin/ para evitar problemas
+    // cuando estamos navegando desde subdirectorios
+    $root_admin_files = [
+        'index.php',
+        'newsletter-simple.php',
+        'usuarios.php',
+        'perfil.php',
+        'logout.php',
+        'topbar-messages.php',
+        'newsletter-subscriptions.php',
+        'analyze-tables.php',
+        'view-logs.php',
+        'view-logs-simple.php'
+    ];
+    
+    // Si es un archivo de la raíz del admin, usar ruta absoluta
+    if (in_array($path, $root_admin_files)) {
+        return '/admin/' . $path;
+    }
+    
+    // Si es solo un archivo (ej: 'edit.php', 'create.php', 'view.php')
+    // y NO está en la lista de archivos de la raíz, usar ruta relativa
     // Esto funciona para archivos en el mismo directorio (ej: edit.php -> create.php)
     return $path;
 }
