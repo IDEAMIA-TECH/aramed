@@ -99,8 +99,11 @@ foreach ($tables as $table) {
     
     try {
         // Verificar que la tabla existe
-        $stmt = $pdo->query("SHOW TABLES LIKE '$table'");
-        if ($stmt->rowCount() === 0) {
+        $stmt_check = $pdo->query("SHOW TABLES LIKE '$table'");
+        $check_result = $stmt_check->fetchAll(PDO::FETCH_ASSOC);
+        $stmt_check->closeCursor(); // Cerrar cursor antes de continuar
+        
+        if (empty($check_result)) {
             $results[] = [
                 'table' => $table,
                 'status' => 'skipped',
@@ -111,8 +114,12 @@ foreach ($tables as $table) {
         }
         
         // Ejecutar ANALYZE TABLE
+        // IMPORTANTE: ANALYZE TABLE devuelve un resultado que DEBE leerse
+        // Si no se lee, la consulta queda activa y causa el error
         $start_time = microtime(true);
-        $pdo->exec("ANALYZE TABLE `$table`");
+        $stmt_analyze = $pdo->query("ANALYZE TABLE `$table`");
+        $analyze_result = $stmt_analyze->fetchAll(PDO::FETCH_ASSOC); // Leer el resultado para cerrar la consulta
+        $stmt_analyze->closeCursor(); // Cerrar cursor explícitamente
         $end_time = microtime(true);
         $duration = round(($end_time - $start_time) * 1000, 2); // en milisegundos
         
