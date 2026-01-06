@@ -32,6 +32,17 @@ if (function_exists('checkPermission')) {
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
 $message_id = $_GET['id'] ?? $_POST['id'] ?? '';
 
+// Verificar permisos para acciones específicas (GET)
+if ($action === 'edit') {
+    if (function_exists('checkPermission')) {
+        checkPermission('home', 'editar');
+    }
+} elseif ($action === 'delete') {
+    if (function_exists('checkPermission')) {
+        checkPermission('home', 'eliminar');
+    }
+}
+
 // Acción de limpieza automática
 if ($action === 'cleanup') {
     try {
@@ -52,6 +63,11 @@ if ($action === 'cleanup') {
 
 // Acción de eliminación (puede ser GET o POST)
 if ($action === 'delete' && $message_id) {
+    // Verificar permisos para eliminar
+    if (function_exists('checkPermission')) {
+        checkPermission('home', 'eliminar');
+    }
+    
     try {
         $pdo = getDB();
         $sql = "DELETE FROM topbar_messages WHERE id=?";
@@ -73,6 +89,11 @@ if (isset($_GET['deleted'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'create') {
+        // Verificar permisos para crear
+        if (function_exists('checkPermission')) {
+            checkPermission('home', 'crear');
+        }
+        
         $icon = sanitizeInput($_POST['icon'] ?? '');
         $text = sanitizeInput($_POST['text'] ?? '');
         $link = sanitizeInput($_POST['link'] ?? '');
@@ -92,6 +113,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error_message = "Error al crear mensaje: " . $e->getMessage();
         }
     } elseif ($action === 'update') {
+        // Verificar permisos para editar
+        if (function_exists('checkPermission')) {
+            checkPermission('home', 'editar');
+        }
+        
         $icon = sanitizeInput($_POST['icon'] ?? '');
         $text = sanitizeInput($_POST['text'] ?? '');
         $link = sanitizeInput($_POST['link'] ?? '');
@@ -305,15 +331,19 @@ try {
                                 <p class="mb-0 opacity-75">Administra los mensajes que aparecen en la barra superior del sitio</p>
                             </div>
                             <div class="col-auto">
+                                <?php if (function_exists('can') && can('home', 'editar')): ?>
                                 <a href="?action=cleanup" class="btn btn-warning me-2" 
                                    onclick="return confirm('¿Desactivar todos los mensajes expirados?')">
                                     <i class="bi bi-broom me-2"></i>
                                     Limpiar Expirados
                                 </a>
+                                <?php endif; ?>
+                                <?php if (function_exists('can') && can('home', 'crear')): ?>
                                 <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#messageModal">
                                     <i class="bi bi-plus-circle me-2"></i>
                                     Nuevo Mensaje
                                 </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -370,10 +400,12 @@ try {
                                         <i class="bi bi-megaphone display-1 text-muted"></i>
                                         <h4 class="mt-3">No hay mensajes</h4>
                                         <p class="text-muted">Crea tu primer mensaje para el topbar</p>
+                                        <?php if (function_exists('can') && can('home', 'crear')): ?>
                                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#messageModal">
                                             <i class="bi bi-plus-circle me-2"></i>
                                             Crear Mensaje
                                         </button>
+                                        <?php endif; ?>
                                     </div>
                                     <?php else: ?>
                                     <?php foreach ($messages as $message): ?>
@@ -388,14 +420,18 @@ try {
                                                 </span>
                                             </div>
                                             <div class="btn-group">
+                                                <?php if (function_exists('can') && can('home', 'editar')): ?>
                                                 <a href="?action=edit&id=<?php echo $message['id']; ?>" class="btn btn-sm btn-outline-primary btn-action">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
+                                                <?php endif; ?>
+                                                <?php if (function_exists('can') && can('home', 'eliminar')): ?>
                                                 <a href="?action=delete&id=<?php echo $message['id']; ?>" 
                                                    class="btn btn-sm btn-outline-danger btn-action"
                                                    onclick="return confirm('¿Estás seguro de eliminar este mensaje?')">
                                                     <i class="bi bi-trash"></i>
                                                 </a>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                         <div class="message-content">
