@@ -609,37 +609,55 @@ function getConfig($clave, $default = null) {
     static $config_cache = [];
     static $cache_loaded = false;
     
+    // Verificar que getDB() esté disponible
+    if (!function_exists('getDB')) {
+        return $default;
+    }
+    
     // Cargar todo el cache de una vez si no se ha cargado
     if (!$cache_loaded) {
-        $pdo = getDB();
-        if ($pdo) {
-            try {
-                $stmt = $pdo->query("SELECT clave, valor, tipo FROM configuracion");
-                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                
-                foreach ($results as $row) {
-                    $valor = $row['valor'];
+        try {
+            // Intentar obtener conexión - puede fallar si connection.php no se ha cargado
+            $pdo = getDB();
+            if ($pdo) {
+                try {
+                    $stmt = $pdo->query("SELECT clave, valor, tipo FROM configuracion");
+                    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $stmt->closeCursor();
                     
-                    // Convertir según tipo
-                    switch ($row['tipo']) {
-                        case 'boolean':
-                            $valor = (bool)$valor;
-                            break;
-                        case 'number':
-                            $valor = is_numeric($valor) ? (float)$valor : 0;
-                            break;
-                        case 'json':
-                            $valor = json_decode($valor, true);
-                            break;
+                    foreach ($results as $row) {
+                        $valor = $row['valor'];
+                        
+                        // Convertir según tipo
+                        switch ($row['tipo']) {
+                            case 'boolean':
+                                $valor = (bool)$valor;
+                                break;
+                            case 'number':
+                                $valor = is_numeric($valor) ? (float)$valor : 0;
+                                break;
+                            case 'json':
+                                $valor = json_decode($valor, true);
+                                break;
+                        }
+                        
+                        $config_cache[$row['clave']] = $valor;
                     }
                     
-                    $config_cache[$row['clave']] = $valor;
+                    $cache_loaded = true;
+                } catch (Exception $e) {
+                    // Si la tabla no existe o hay error, continuar sin cache
+                    error_log("Error en getConfig al cargar cache: " . $e->getMessage());
                 }
-                
-                $cache_loaded = true;
-            } catch (Exception $e) {
-                // Si la tabla no existe, continuar sin cache
             }
+        } catch (Error $e) {
+            // Si getDB() no está disponible o falla
+            error_log("Error en getConfig: getDB() no disponible - " . $e->getMessage());
+            return $default;
+        } catch (Exception $e) {
+            // Error al obtener conexión
+            error_log("Error en getConfig al obtener conexión: " . $e->getMessage());
+            return $default;
         }
     }
     
@@ -650,21 +668,28 @@ function getConfig($clave, $default = null) {
     
     // Si no está en cache y no se ha cargado, intentar cargar individualmente
     if (!$cache_loaded) {
-        $pdo = getDB();
-        if (!$pdo) {
+        // Verificar que getDB() esté disponible
+        if (!function_exists('getDB')) {
             return $default;
         }
         
         try {
+            $pdo = getDB();
+            if (!$pdo) {
+                return $default;
+            }
+            
             $stmt = $pdo->prepare("SELECT valor, tipo FROM configuracion WHERE clave = ?");
             $stmt->execute([$clave]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            $stmt->closeCursor();
             
-            if ($result) {
-                $valor = $result['valor'];
+            if (!empty($result)) {
+                $valor = $result[0]['valor'];
                 
                 // Convertir según tipo
-                switch ($result['tipo']) {
+                switch ($result[0]['tipo']) {
                     case 'boolean':
                         $valor = (bool)$valor;
                         break;
@@ -679,8 +704,14 @@ function getConfig($clave, $default = null) {
                 $config_cache[$clave] = $valor;
                 return $valor;
             }
+        } catch (Error $e) {
+            // Si getDB() no está disponible o falla
+            error_log("Error en getConfig (individual): " . $e->getMessage());
+            return $default;
         } catch (Exception $e) {
-            // Si la tabla no existe, retornar default
+            // Si la tabla no existe o hay otro error
+            error_log("Error en getConfig (individual): " . $e->getMessage());
+            return $default;
         }
     }
     
@@ -705,6 +736,11 @@ function clearConfigCache() {
  * @return bool True si se guardó correctamente
  */
 function setConfig($clave, $valor, $tipo = 'text', $categoria = 'general') {
+    // Verificar que getDB() esté disponible
+    if (!function_exists('getDB')) {
+        return false;
+    }
+    
     $pdo = getDB();
     if (!$pdo) {
         return false;
@@ -759,12 +795,16 @@ function setConfig($clave, $valor, $tipo = 'text', $categoria = 'general') {
  * @return array Array asociativo clave => valor
  */
 function getConfigByCategory($categoria) {
-    $pdo = getDB();
-    if (!$pdo) {
+    // Verificar que getDB() esté disponible
+    if (!function_exists('getDB')) {
         return [];
     }
     
     try {
+        $pdo = getDB();
+        if (!$pdo) {
+            return [];
+        }
         $stmt = $pdo->prepare("SELECT clave, valor, tipo FROM configuracion WHERE categoria = ?");
         $stmt->execute([$categoria]);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -789,7 +829,12 @@ function getConfigByCategory($categoria) {
         }
         
         return $config;
+    } catch (Error $e) {
+        // Si getDB() no está disponible o falla
+        error_log("Error en getConfigByCategory: getDB() no disponible - " . $e->getMessage());
+        return [];
     } catch (Exception $e) {
+        error_log("Error en getConfigByCategory: " . $e->getMessage());
         return [];
     }
 }
@@ -799,12 +844,16 @@ function getConfigByCategory($categoria) {
  * @return int Número de artículos publicados
  */
 function publicarArticulosProgramados() {
-    $pdo = getDB();
-    if (!$pdo) {
+    // Verificar que getDB() esté disponible
+    if (!function_exists('getDB')) {
         return 0;
     }
     
     try {
+        $pdo = getDB();
+        if (!$pdo) {
+            return 0;
+        }
         // Buscar artículos programados cuya fecha ya llegó
         $sql = "
             UPDATE blog_articulos 
@@ -822,6 +871,10 @@ function publicarArticulosProgramados() {
         return $stmt->rowCount();
     } catch (Exception $e) {
         error_log("Error en publicarArticulosProgramados: " . $e->getMessage());
+        return 0;
+    } catch (Error $e) {
+        // Si getDB() no está disponible o falla
+        error_log("Error en publicarArticulosProgramados: getDB() no disponible - " . $e->getMessage());
         return 0;
     }
 }

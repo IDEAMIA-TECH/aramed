@@ -8,9 +8,15 @@
 $measurement_id = 'G-3BPRR93ZCY'; // Valor por defecto
 $activar_tracking = true;
 
-if (function_exists('getConfig')) {
-    $measurement_id = getConfig('analytics_measurement_id', 'G-3BPRR93ZCY');
-    $activar_tracking = getConfig('analytics_activar_tracking', '1') === '1';
+// Verificar que getDB() esté disponible antes de usar getConfig()
+if (function_exists('getConfig') && function_exists('getDB')) {
+    try {
+        $measurement_id = getConfig('analytics_measurement_id', 'G-3BPRR93ZCY');
+        $activar_tracking = getConfig('analytics_activar_tracking', '1') === '1';
+    } catch (Exception $e) {
+        // Si hay error, usar valores por defecto
+        error_log("Error en analytics.php al obtener configuración: " . $e->getMessage());
+    }
 }
 
 // Solo mostrar si el tracking está activado
