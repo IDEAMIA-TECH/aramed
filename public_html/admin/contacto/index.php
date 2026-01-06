@@ -156,17 +156,32 @@ $stmt->execute($params);
 $mensajes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Estadísticas
-$stats = [];
-$stats_sql = "SELECT 
-    COUNT(*) as total,
-    SUM(CASE WHEN status = 'nuevo' THEN 1 ELSE 0 END) as nuevos,
-    SUM(CASE WHEN status = 'en_proceso' THEN 1 ELSE 0 END) as en_proceso,
-    SUM(CASE WHEN status = 'respondido' THEN 1 ELSE 0 END) as respondidos,
-    SUM(CASE WHEN status = 'cerrado' THEN 1 ELSE 0 END) as cerrados,
-    SUM(CASE WHEN DATE(created_at) = CURDATE() THEN 1 ELSE 0 END) as hoy
-FROM contact_messages";
-$stats_stmt = $pdo->query($stats_sql);
-$stats = $stats_stmt->fetch(PDO::FETCH_ASSOC);
+$stats = [
+    'total' => 0,
+    'nuevos' => 0,
+    'en_proceso' => 0,
+    'respondidos' => 0,
+    'cerrados' => 0,
+    'hoy' => 0
+];
+try {
+    $stats_sql = "SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN status = 'nuevo' THEN 1 ELSE 0 END) as nuevos,
+        SUM(CASE WHEN status = 'en_proceso' THEN 1 ELSE 0 END) as en_proceso,
+        SUM(CASE WHEN status = 'respondido' THEN 1 ELSE 0 END) as respondidos,
+        SUM(CASE WHEN status = 'cerrado' THEN 1 ELSE 0 END) as cerrados,
+        SUM(CASE WHEN DATE(created_at) = CURDATE() THEN 1 ELSE 0 END) as hoy
+    FROM contact_messages";
+    $stats_stmt = $pdo->query($stats_sql);
+    $stats_result = $stats_stmt->fetch(PDO::FETCH_ASSOC);
+    $stats_stmt->closeCursor();
+    if ($stats_result) {
+        $stats = array_merge($stats, $stats_result);
+    }
+} catch (Exception $e) {
+    error_log("Error al obtener estadísticas de contacto: " . $e->getMessage());
+}
 
 $current_page = 'index.php';
 $current_dir = 'contacto';
@@ -288,37 +303,37 @@ $current_dir = 'contacto';
                 <div class="row mb-4">
                     <div class="col-md-2 col-6 mb-3">
                         <div class="stat-card text-center">
-                            <h3 class="mb-1 text-primary"><?php echo number_format($stats['total']); ?></h3>
+                            <h3 class="mb-1 text-primary"><?php echo number_format((int)($stats['total'] ?? 0)); ?></h3>
                             <small class="text-muted">Total</small>
                         </div>
                     </div>
                     <div class="col-md-2 col-6 mb-3">
                         <div class="stat-card text-center">
-                            <h3 class="mb-1 text-danger"><?php echo number_format($stats['nuevos']); ?></h3>
+                            <h3 class="mb-1 text-danger"><?php echo number_format((int)($stats['nuevos'] ?? 0)); ?></h3>
                             <small class="text-muted">Nuevos</small>
                         </div>
                     </div>
                     <div class="col-md-2 col-6 mb-3">
                         <div class="stat-card text-center">
-                            <h3 class="mb-1 text-warning"><?php echo number_format($stats['en_proceso']); ?></h3>
+                            <h3 class="mb-1 text-warning"><?php echo number_format((int)($stats['en_proceso'] ?? 0)); ?></h3>
                             <small class="text-muted">En Proceso</small>
                         </div>
                     </div>
                     <div class="col-md-2 col-6 mb-3">
                         <div class="stat-card text-center">
-                            <h3 class="mb-1 text-info"><?php echo number_format($stats['respondidos']); ?></h3>
+                            <h3 class="mb-1 text-info"><?php echo number_format((int)($stats['respondidos'] ?? 0)); ?></h3>
                             <small class="text-muted">Respondidos</small>
                         </div>
                     </div>
                     <div class="col-md-2 col-6 mb-3">
                         <div class="stat-card text-center">
-                            <h3 class="mb-1 text-success"><?php echo number_format($stats['cerrados']); ?></h3>
+                            <h3 class="mb-1 text-success"><?php echo number_format((int)($stats['cerrados'] ?? 0)); ?></h3>
                             <small class="text-muted">Cerrados</small>
                         </div>
                     </div>
                     <div class="col-md-2 col-6 mb-3">
                         <div class="stat-card text-center">
-                            <h3 class="mb-1 text-primary"><?php echo number_format($stats['hoy']); ?></h3>
+                            <h3 class="mb-1 text-primary"><?php echo number_format((int)($stats['hoy'] ?? 0)); ?></h3>
                             <small class="text-muted">Hoy</small>
                         </div>
                     </div>
@@ -370,7 +385,7 @@ $current_dir = 'contacto';
                 <div class="card">
                     <div class="card-header bg-white">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Mensajes (<?php echo number_format($total_messages); ?>)</h5>
+                            <h5 class="mb-0">Mensajes (<?php echo number_format((int)$total_messages); ?>)</h5>
                             <?php if (function_exists('hasPermission') && hasPermission($current_user['id'] ?? 0, 'contacto', 'editar')): ?>
                             <div class="d-flex gap-2">
                                 <select class="form-select form-select-sm" id="bulk-action" style="width: auto;">
