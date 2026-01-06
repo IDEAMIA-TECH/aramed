@@ -487,23 +487,8 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
             opacity: 0.8;
         }
 
-        .nav-link {
-            border-radius: 8px;
-            margin-bottom: 0.25rem;
-            transition: var(--transition);
-            font-weight: 500;
-        }
-
-        .nav-link:hover {
-            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
-            transform: translateX(5px);
-        }
-
-        .nav-link.active {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
-        }
+        /* Estilos de .nav-link movidos a admin_menu.php para consistencia */
+        /* Los estilos del menú están centralizados en admin_menu.php */
 
         .alert {
             border-radius: var(--border-radius);

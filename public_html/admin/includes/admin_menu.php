@@ -723,29 +723,35 @@ div.nav-item div.ms-3 {
 }
 
 /* Enlaces del menú - Estilos consistentes para todas las páginas */
+/* Estilo elegante: sin color de fondo por defecto, solo el activo tiene color */
 .admin-sidebar .nav-link,
+.admin-sidebar nav .nav-link,
 .nav-link {
     padding: 0.75rem 1rem;
     margin-bottom: 0.25rem;
     border-radius: var(--border-radius, 12px);
     transition: all 0.3s ease;
+    background: transparent !important; /* Sin fondo por defecto - elegante */
     color: #212529 !important; /* Color oscuro explícito */
     text-decoration: none !important;
     display: flex !important;
     align-items: center;
     font-weight: 500;
+    border: none !important;
 }
 
 .admin-sidebar .nav-link:hover,
+.admin-sidebar nav .nav-link:hover,
 .nav-link:hover {
-    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%) !important; /* Fondo gris claro al hover */
     transform: translateX(3px);
     color: var(--primary-color) !important;
 }
 
 .admin-sidebar .nav-link.active,
+.admin-sidebar nav .nav-link.active,
 .nav-link.active {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important; /* Solo el activo tiene color */
     color: white !important;
     box-shadow: 0 2px 8px rgba(44, 62, 80, 0.2);
 }
