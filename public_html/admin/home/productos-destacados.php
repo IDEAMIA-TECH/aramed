@@ -38,6 +38,21 @@ $current_user = getCurrentUser();
 $action = $_GET['action'] ?? 'list';
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
+// Verificar permisos para acciones específicas (GET)
+if ($action === 'add' || $action === 'create') {
+    if (function_exists('checkPermission')) {
+        checkPermission('home', 'crear');
+    }
+} elseif ($action === 'edit') {
+    if (function_exists('checkPermission')) {
+        checkPermission('home', 'editar');
+    }
+} elseif ($action === 'delete') {
+    if (function_exists('checkPermission')) {
+        checkPermission('home', 'eliminar');
+    }
+}
+
 $success_message = '';
 $error_message = '';
 

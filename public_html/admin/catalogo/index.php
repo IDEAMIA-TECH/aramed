@@ -300,6 +300,7 @@ $current_dir = 'catalogo';
                             <i class="bi bi-lightning-charge me-2"></i>Accesos Rápidos
                         </h4>
                     </div>
+                    <?php if (function_exists('can') && can('catalogo', 'crear')): ?>
                     <div class="col-md-4 mb-3">
                         <a href="productos/create.php" class="quick-action-card">
                             <div class="quick-action-icon">
@@ -309,6 +310,8 @@ $current_dir = 'catalogo';
                             <p class="text-muted mb-0">Agregar un nuevo producto al catálogo</p>
                         </a>
                     </div>
+                    <?php endif; ?>
+                    <?php if (function_exists('can') && can('catalogo', 'crear')): ?>
                     <div class="col-md-4 mb-3">
                         <a href="categorias.php?action=create" class="quick-action-card">
                             <div class="quick-action-icon">
@@ -318,6 +321,8 @@ $current_dir = 'catalogo';
                             <p class="text-muted mb-0">Agregar una nueva categoría</p>
                         </a>
                     </div>
+                    <?php endif; ?>
+                    <?php if (function_exists('can') && can('catalogo', 'crear')): ?>
                     <div class="col-md-4 mb-3">
                         <a href="marcas.php?action=create" class="quick-action-card">
                             <div class="quick-action-icon">
@@ -327,6 +332,7 @@ $current_dir = 'catalogo';
                             <p class="text-muted mb-0">Agregar una nueva marca</p>
                         </a>
                     </div>
+                    <?php endif; ?>
                 </div>
                 
                 <!-- Enlaces de Navegación -->
@@ -398,9 +404,11 @@ $current_dir = 'catalogo';
                                             </div>
                                             <div>
                                                 <span class="badge bg-info"><?php echo number_format($producto['visitas']); ?> visitas</span>
+                                                <?php if (function_exists('can') && can('catalogo', 'editar')): ?>
                                                 <a href="productos/edit.php?id=<?php echo $producto['id']; ?>" class="btn btn-sm btn-outline-primary ms-2">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </div>
@@ -436,9 +444,11 @@ $current_dir = 'catalogo';
                                             </div>
                                             <div>
                                                 <small class="text-muted"><?php echo date('d/m/Y', strtotime($producto['created_at'])); ?></small>
+                                                <?php if (function_exists('can') && can('catalogo', 'editar')): ?>
                                                 <a href="productos/edit.php?id=<?php echo $producto['id']; ?>" class="btn btn-sm btn-outline-primary ms-2">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </div>

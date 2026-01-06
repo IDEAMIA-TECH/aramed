@@ -819,6 +819,7 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
                                                        title="Ver artículo">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
+                                                    <?php if (function_exists('can') && can('blog', 'editar')): ?>
                                                     <a href="edit.php?id=<?php echo $articulo['id']; ?>" 
                                                        class="btn btn-outline-warning" 
                                                        title="Editar">
@@ -829,12 +830,15 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
                                                        title="<?php echo $articulo['estado'] === 'publicado' ? 'Despublicar' : 'Publicar'; ?>">
                                                         <i class="bi bi-<?php echo $articulo['estado'] === 'publicado' ? 'eye-slash' : 'eye'; ?>"></i>
                                                     </a>
+                                                    <?php endif; ?>
+                                                    <?php if (function_exists('can') && can('blog', 'eliminar')): ?>
                                                     <a href="?action=delete&id=<?php echo $articulo['id']; ?>" 
                                                        class="btn btn-outline-danger" 
                                                        title="Eliminar"
                                                        onclick="return confirm('¿Estás seguro de eliminar este artículo?')">
                                                         <i class="bi bi-trash"></i>
                                                     </a>
+                                                    <?php endif; ?>
                                                 </div>
                                             </td>
                                         </tr>

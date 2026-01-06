@@ -38,6 +38,21 @@ $current_user = getCurrentUser();
 $action = $_GET['action'] ?? 'list';
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
+// Verificar permisos para acciones específicas (GET)
+if ($action === 'create') {
+    if (function_exists('checkPermission')) {
+        checkPermission('catalogo', 'crear');
+    }
+} elseif ($action === 'edit') {
+    if (function_exists('checkPermission')) {
+        checkPermission('catalogo', 'editar');
+    }
+} elseif ($action === 'delete') {
+    if (function_exists('checkPermission')) {
+        checkPermission('catalogo', 'eliminar');
+    }
+}
+
 $success_message = '';
 $error_message = '';
 
@@ -340,9 +355,11 @@ $current_dir = 'catalogo';
                             <p class="mb-0 opacity-75">Administra las marcas del catálogo de productos</p>
                         </div>
                         <?php if ($action === 'list'): ?>
+                        <?php if (function_exists('can') && can('catalogo', 'crear')): ?>
                         <a href="?action=create" class="btn btn-light">
                             <i class="bi bi-plus-circle me-2"></i>Nueva Marca
                         </a>
+                        <?php endif; ?>
                         <?php else: ?>
                         <a href="?action=list" class="btn btn-light">
                             <i class="bi bi-arrow-left me-2"></i>Volver a Lista
@@ -524,9 +541,11 @@ $current_dir = 'catalogo';
                             <i class="bi bi-tags text-muted" style="font-size: 4rem;"></i>
                             <h4 class="text-muted mt-3">No hay marcas registradas</h4>
                             <p class="text-muted">Comienza creando la primera marca del catálogo</p>
+                            <?php if (function_exists('can') && can('catalogo', 'crear')): ?>
                             <a href="?action=create" class="btn btn-primary">
                                 <i class="bi bi-plus-circle me-2"></i>Crear Primera Marca
                             </a>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <?php else: ?>

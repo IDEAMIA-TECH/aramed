@@ -280,9 +280,11 @@ $current_dir = 'productos';
                             </h2>
                             <p class="mb-0 opacity-75">Gestiona el catálogo de productos</p>
                         </div>
+                        <?php if (function_exists('can') && can('catalogo', 'crear')): ?>
                         <a href="create.php" class="btn btn-light">
                             <i class="bi bi-plus-circle me-2"></i>Nuevo Producto
                         </a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 
@@ -412,9 +414,11 @@ $current_dir = 'productos';
                         <h4 class="text-muted mt-3">No se encontraron productos</h4>
                         <p class="text-muted"><?php echo !empty($busqueda) || $filtro_marca || $filtro_categoria || $filtro_estado ? 'Intenta ajustar los filtros' : 'Comienza creando el primer producto'; ?></p>
                         <?php if (empty($busqueda) && !$filtro_marca && !$filtro_categoria && !$filtro_estado): ?>
+                        <?php if (function_exists('can') && can('catalogo', 'crear')): ?>
                         <a href="create.php" class="btn btn-primary">
                             <i class="bi bi-plus-circle me-2"></i>Crear Primer Producto
                         </a>
+                        <?php endif; ?>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -492,9 +496,11 @@ $current_dir = 'productos';
                                 </div>
                                 
                                 <div class="mt-3 d-flex gap-2">
+                                    <?php if (function_exists('can') && can('catalogo', 'editar')): ?>
                                     <a href="edit.php?id=<?php echo $producto['id']; ?>" class="btn btn-sm btn-outline-primary flex-fill">
                                         <i class="bi bi-pencil me-1"></i>Editar
                                     </a>
+                                    <?php endif; ?>
                                     <a href="view.php?id=<?php echo $producto['id']; ?>" class="btn btn-sm btn-outline-info">
                                         <i class="bi bi-eye"></i>
                                     </a>

@@ -157,8 +157,10 @@ function checkPermission($modulo, $accion, $redirect = true) {
                 ]);
             }
             
-            header('HTTP/1.0 403 Forbidden');
-            die('No tienes permisos para acceder a esta página. Contacta al administrador.');
+            // Redirigir a página elegante de sin permiso
+            $sin_permiso_url = '/admin/sin-permiso.php?modulo=' . urlencode($modulo) . '&accion=' . urlencode($accion);
+            header('Location: ' . $sin_permiso_url);
+            exit;
         }
         return false;
     }

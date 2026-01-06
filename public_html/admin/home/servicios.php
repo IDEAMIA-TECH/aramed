@@ -38,6 +38,21 @@ $current_user = getCurrentUser();
 $action = $_GET['action'] ?? 'list';
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
+// Verificar permisos para acciones específicas (GET)
+if ($action === 'create') {
+    if (function_exists('checkPermission')) {
+        checkPermission('home', 'crear');
+    }
+} elseif ($action === 'edit') {
+    if (function_exists('checkPermission')) {
+        checkPermission('home', 'editar');
+    }
+} elseif ($action === 'delete') {
+    if (function_exists('checkPermission')) {
+        checkPermission('home', 'eliminar');
+    }
+}
+
 $success_message = '';
 $error_message = '';
 
@@ -478,9 +493,11 @@ $current_dir = 'home';
                             <i class="bi bi-gear text-muted" style="font-size: 4rem;"></i>
                             <h4 class="text-muted mt-3">No hay servicios registrados</h4>
                             <p class="text-muted">Comienza creando el primer servicio</p>
+                            <?php if (function_exists('can') && can('home', 'crear')): ?>
                             <a href="?action=create" class="btn btn-primary">
                                 <i class="bi bi-plus-circle me-2"></i>Crear Primer Servicio
                             </a>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <?php else: ?>

@@ -26,9 +26,29 @@ if (!$pdo) {
     die('Error de conexión a la base de datos');
 }
 
+// Verificar permisos RBAC
+if (function_exists('checkPermission')) {
+    checkPermission('blog', 'ver');
+}
+
 // Obtener parámetros
 $action = isset($_GET['action']) ? $_GET['action'] : 'list';
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+// Verificar permisos para acciones específicas (GET)
+if ($action === 'create' || $action === 'add') {
+    if (function_exists('checkPermission')) {
+        checkPermission('blog', 'crear');
+    }
+} elseif ($action === 'edit') {
+    if (function_exists('checkPermission')) {
+        checkPermission('blog', 'editar');
+    }
+} elseif ($action === 'delete') {
+    if (function_exists('checkPermission')) {
+        checkPermission('blog', 'eliminar');
+    }
+}
 
 // Manejar acciones
 $mensaje = '';

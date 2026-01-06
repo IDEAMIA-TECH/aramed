@@ -38,6 +38,21 @@ $current_user = getCurrentUser();
 $action = $_GET['action'] ?? 'list';
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
+// Verificar permisos para acciones específicas (GET)
+if ($action === 'create') {
+    if (function_exists('checkPermission')) {
+        checkPermission('home', 'crear');
+    }
+} elseif ($action === 'edit') {
+    if (function_exists('checkPermission')) {
+        checkPermission('home', 'editar');
+    }
+} elseif ($action === 'delete') {
+    if (function_exists('checkPermission')) {
+        checkPermission('home', 'eliminar');
+    }
+}
+
 $success_message = '';
 $error_message = '';
 
@@ -331,9 +346,11 @@ $current_dir = 'home';
                             <p class="mb-0 opacity-75">Administra los banners del inicio (carrusel hero)</p>
                         </div>
                         <?php if ($action === 'list'): ?>
+                        <?php if (function_exists('can') && can('home', 'crear')): ?>
                         <a href="?action=create" class="btn btn-light">
                             <i class="bi bi-plus-circle me-2"></i>Nuevo Banner
                         </a>
+                        <?php endif; ?>
                         <?php else: ?>
                         <a href="?action=list" class="btn btn-light">
                             <i class="bi bi-arrow-left me-2"></i>Volver a Lista
@@ -595,9 +612,11 @@ $current_dir = 'home';
                             <i class="bi bi-image text-muted" style="font-size: 4rem;"></i>
                             <h4 class="text-muted mt-3">No hay banners registrados</h4>
                             <p class="text-muted">Comienza creando el primer banner del inicio</p>
+                            <?php if (function_exists('can') && can('home', 'crear')): ?>
                             <a href="?action=create" class="btn btn-primary">
                                 <i class="bi bi-plus-circle me-2"></i>Crear Primer Banner
                             </a>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <?php else: ?>
