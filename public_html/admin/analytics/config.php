@@ -20,34 +20,16 @@ require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/connection.php';
 require_once __DIR__ . '/../auth_check.php';
 
+// Verificar que el usuario sea admin (Analytics es solo para admin)
+$user_role = $_SESSION['admin_rol'] ?? 'editor';
+if ($user_role !== 'admin') {
+    header('Location: ../sin-permiso.php?modulo=analytics&accion=editar');
+    exit;
+}
+
 // Verificar permisos RBAC
-// Si el módulo analytics no existe en RBAC, permitir acceso a usuarios admin
 if (function_exists('checkPermission')) {
-    try {
-        checkPermission('analytics', 'editar');
-    } catch (Exception $e) {
-        // Si el módulo no existe en RBAC, verificar si el usuario es admin
-        $current_user = getCurrentUser();
-        if (!isset($current_user['rol']) || $current_user['rol'] !== 'admin') {
-            // Si no es admin, verificar permisos de manera más flexible
-            if (function_exists('hasPermission')) {
-                $user_id = $current_user['id'] ?? $_SESSION['admin_user_id'] ?? 0;
-                if ($user_id && !hasPermission($user_id, 'analytics', 'editar')) {
-                    // Si el módulo analytics no está en RBAC, permitir acceso a todos los usuarios autenticados
-                    error_log("Módulo analytics no encontrado en RBAC, permitiendo acceso");
-                }
-            } else {
-                // Si no hay sistema RBAC, permitir acceso
-                error_log("RBAC no disponible, permitiendo acceso a analytics/config.php");
-            }
-        } else {
-            // Usuario admin siempre tiene acceso
-            error_log("Usuario admin, permitiendo acceso a analytics/config.php");
-        }
-    }
-} else {
-    // Si checkPermission no existe, permitir acceso (compatibilidad)
-    error_log("checkPermission no disponible, permitiendo acceso a analytics/config.php");
+    checkPermission('analytics', 'editar');
 }
 
 // Obtener información del usuario actual

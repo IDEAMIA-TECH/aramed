@@ -20,49 +20,16 @@ require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/connection.php';
 require_once __DIR__ . '/../auth_check.php';
 
-// Verificar permisos RBAC
-// Verificar autenticación primero (auth_check.php ya lo hace, pero lo verificamos aquí también)
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-$usuario_id = $_SESSION['admin_user_id'] ?? null;
-$user_role = $_SESSION['admin_rol'] ?? null;
-
-// Si no está autenticado, redirigir a login
-if (!$usuario_id) {
-    header('Location: ../login.php');
+// Verificar que el usuario sea admin (SEO es solo para admin)
+$user_role = $_SESSION['admin_rol'] ?? 'editor';
+if ($user_role !== 'admin') {
+    header('Location: ../sin-permiso.php?modulo=seo&accion=editar');
     exit;
 }
 
-// Verificar permisos solo si el módulo SEO está configurado en RBAC
-if (function_exists('checkPermission') && function_exists('hasPermission')) {
-    try {
-        $pdo_temp = getDB();
-        if ($pdo_temp) {
-            // Verificar si el módulo 'seo' existe en RBAC
-            $stmt = $pdo_temp->prepare("SELECT COUNT(*) as existe FROM permisos WHERE modulo = 'seo' LIMIT 1");
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            
-            // Solo verificar permisos si el módulo existe en RBAC
-            if (!empty($result) && $result[0]['existe'] > 0) {
-                // Si no es admin, verificar permisos
-                if ($user_role !== 'admin') {
-                    if (!hasPermission($usuario_id, 'seo', 'editar')) {
-                        // Redirigir a sin permiso
-                        header('Location: ../sin-permiso.php?modulo=seo&accion=editar');
-                        exit;
-                    }
-                }
-            }
-            // Si el módulo no existe en RBAC, permitir acceso (módulo nuevo sin configurar)
-        }
-    } catch (Exception $e) {
-        // Si hay error al verificar, permitir acceso por seguridad
-        error_log("Error verificando módulo SEO en RBAC: " . $e->getMessage());
-    }
+// Verificar permisos RBAC
+if (function_exists('checkPermission')) {
+    checkPermission('seo', 'editar');
 }
 
 // Obtener conexión PDO

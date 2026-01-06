@@ -24,6 +24,9 @@ $current_user = [
     'rol' => $_SESSION['admin_rol'] ?? 'editor'
 ];
 
+// Determinar si el usuario es admin
+$is_admin = ($current_user['rol'] === 'admin');
+
 // Obtener permisos del usuario actual (si RBAC está disponible)
 $user_permissions = [];
 if (function_exists('getUserPermissions') && isset($current_user['id'])) {
@@ -429,8 +432,8 @@ function getLogoPath($current_dir, $base_path) {
             </div>
             <?php endif; ?>
             
-            <!-- Analytics -->
-            <?php if (function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'analytics', 'ver')): ?>
+            <!-- Analytics (Solo Admin) -->
+            <?php if ($is_admin && function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'analytics', 'ver')): ?>
             <div class="nav-item">
                 <a class="<?php echo getNavLinkClass('analytics/dashboard.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('analytics/dashboard.php', $base_path); ?>">
                     <i class="bi bi-graph-up me-2"></i>Analytics
@@ -455,8 +458,8 @@ function getLogoPath($current_dir, $base_path) {
             </a>
             <?php endif; ?>
             
-            <!-- Usuarios -->
-            <?php if (canSeeModule('usuarios', $user_permissions)): ?>
+            <!-- Usuarios (Solo Admin) -->
+            <?php if ($is_admin && canSeeModule('usuarios', $user_permissions)): ?>
             <div class="nav-item">
                 <a class="<?php echo getNavLinkClass('usuarios.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('usuarios.php', $base_path); ?>">
                     <i class="bi bi-people-fill me-2"></i>Usuarios
@@ -471,8 +474,8 @@ function getLogoPath($current_dir, $base_path) {
             </div>
             <?php endif; ?>
             
-            <!-- SEO -->
-            <?php if (function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'seo', 'ver')): ?>
+            <!-- SEO (Solo Admin) -->
+            <?php if ($is_admin && function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'seo', 'ver')): ?>
             <div class="nav-item">
                 <a class="<?php echo getNavLinkClass('seo/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('seo/index.php', $base_path); ?>">
                     <i class="bi bi-search me-2"></i>SEO & Metadatos
@@ -505,8 +508,8 @@ function getLogoPath($current_dir, $base_path) {
             </div>
             <?php endif; ?>
             
-            <!-- Apariencia & Módulos -->
-            <?php if (canSeeModule('configuracion', $user_permissions)): ?>
+            <!-- Apariencia & Módulos (Solo Admin) -->
+            <?php if ($is_admin && canSeeModule('configuracion', $user_permissions)): ?>
             <div class="nav-item">
                 <a class="<?php echo getNavLinkClass('apariencia/index.php', $current_page, $current_dir); ?>" href="/admin/apariencia/index.php">
                     <i class="bi bi-palette me-2"></i>Apariencia & Módulos
@@ -530,8 +533,8 @@ function getLogoPath($current_dir, $base_path) {
             </div>
             <?php endif; ?>
             
-            <!-- Configuración -->
-            <?php if (canSeeModule('configuracion', $user_permissions)): ?>
+            <!-- Configuración (Solo Admin) -->
+            <?php if ($is_admin && canSeeModule('configuracion', $user_permissions)): ?>
             <a class="<?php echo getNavLinkClass('configuracion/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('configuracion/index.php', $base_path); ?>">
                 <i class="bi bi-gear me-2"></i>Configuración
             </a>

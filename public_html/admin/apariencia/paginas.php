@@ -20,6 +20,13 @@ require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/connection.php';
 require_once __DIR__ . '/../auth_check.php';
 
+// Verificar que el usuario sea admin (Apariencia es solo para admin)
+$user_role = $_SESSION['admin_rol'] ?? 'editor';
+if ($user_role !== 'admin') {
+    header('Location: ../sin-permiso.php?modulo=configuracion&accion=editar');
+    exit;
+}
+
 // Verificar permisos RBAC
 if (function_exists('checkPermission')) {
     checkPermission('configuracion', 'editar');
