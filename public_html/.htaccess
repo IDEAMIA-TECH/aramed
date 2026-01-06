@@ -185,6 +185,9 @@ Options -Indexes
     # Bloquear acceso a archivos ocultos
     RewriteRule "(^|/)\." - [F]
     
+    # Sitemap XML - Generar dinámicamente
+    RewriteRule ^sitemap\.xml$ sitemap.php [L]
+    
     # Routing para páginas estáticas
     # Si la URL no es un archivo ni un directorio existente, intentar buscar como página estática
     RewriteCond %{REQUEST_FILENAME} !-f
