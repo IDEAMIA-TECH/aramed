@@ -111,6 +111,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== 'delete') {
         $pdo = getDB();
         
         if ($action === 'create') {
+            // Verificar permisos para crear
+            if (function_exists('checkPermission')) {
+                checkPermission('usuarios', 'crear');
+            }
+            
             $nombre = trim($_POST['nombre']);
             $email = trim($_POST['email']);
             $password = trim($_POST['password']);
@@ -137,6 +142,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== 'delete') {
             $action = 'list';
             
         } elseif ($action === 'update') {
+            // Verificar permisos para editar
+            if (function_exists('checkPermission')) {
+                checkPermission('usuarios', 'editar');
+            }
+            
             $nombre = trim($_POST['nombre']);
             $email = trim($_POST['email']);
             $rol = $_POST['rol'];
@@ -226,6 +236,25 @@ $usuario = null;
 $permisos_rol = [];
 $permisos_disponibles = [];
 $rol_seleccionado = '';
+
+// Verificar permisos para acciones específicas (GET)
+if ($action === 'edit') {
+    if (function_exists('checkPermission')) {
+        checkPermission('usuarios', 'editar');
+    }
+} elseif ($action === 'create') {
+    if (function_exists('checkPermission')) {
+        checkPermission('usuarios', 'crear');
+    }
+} elseif ($action === 'permisos') {
+    if (function_exists('checkPermission')) {
+        checkPermission('usuarios', 'editar');
+    }
+} elseif ($action === 'role_permissions') {
+    if (function_exists('checkPermission')) {
+        checkPermission('usuarios', 'editar');
+    }
+}
 
 if (($action === 'edit' || $action === 'permisos') && $id) {
     try {
@@ -683,12 +712,16 @@ try {
                 <!-- Action Buttons -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div class="action-buttons">
+                        <?php if (function_exists('can') && can('usuarios', 'crear')): ?>
                         <a href="?action=create" class="btn btn-primary btn-action">
                             <i class="bi bi-plus-circle me-2"></i>Nuevo Usuario
                         </a>
+                        <?php endif; ?>
+                        <?php if (function_exists('can') && can('usuarios', 'editar')): ?>
                         <a href="?action=role_permissions" class="btn btn-info btn-action">
                             <i class="bi bi-shield-check me-2"></i>Gestionar Permisos por Rol
                         </a>
+                        <?php endif; ?>
                         <a href="?action=list" class="btn btn-secondary btn-action">
                             <i class="bi bi-list me-2"></i>Ver Todos
                         </a>
@@ -954,9 +987,11 @@ try {
                                 <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
                                 <h4 class="text-muted mt-3">No hay usuarios registrados</h4>
                                 <p class="text-muted">Comienza creando el primer usuario del sistema</p>
+                                <?php if (function_exists('can') && can('usuarios', 'crear')): ?>
                                 <a href="?action=create" class="btn btn-primary">
                                     <i class="bi bi-plus-circle me-2"></i>Crear Primer Usuario
                                 </a>
+                                <?php endif; ?>
                             </div>
                         <?php else: ?>
                             <div class="table-responsive">
@@ -1028,11 +1063,11 @@ try {
                                             </td>
                                             <td>
                                                 <div class="d-flex gap-1">
+                                                    <?php if (function_exists('can') && can('usuarios', 'editar')): ?>
                                                     <a href="?action=edit&id=<?php echo $user['id']; ?>" 
                                                        class="btn btn-sm btn-outline-primary" title="Editar">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
-                                                    <?php if (function_exists('checkPermission') && can('usuarios', 'editar')): ?>
                                                     <a href="?action=permisos&id=<?php echo $user['id']; ?>" 
                                                        class="btn btn-sm btn-outline-info" title="Gestionar Permisos">
                                                         <i class="bi bi-shield-check"></i>
@@ -1056,7 +1091,7 @@ try {
                                                         <i class="bi bi-unlock"></i>
                                                     </a>
                                                     <?php endif; ?>
-                                                    <?php if ($user['id'] != ($_SESSION['admin_user_id'] ?? 0)): ?>
+                                                    <?php if ($user['id'] != ($_SESSION['admin_user_id'] ?? 0) && function_exists('can') && can('usuarios', 'eliminar')): ?>
                                                     <a href="?action=delete&id=<?php echo $user['id']; ?>" 
                                                        class="btn btn-sm btn-outline-danger" title="Eliminar"
                                                        onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
