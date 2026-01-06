@@ -97,14 +97,16 @@ $current_dir = 'home';
     
     <style>
         :root {
-            --primary-color: #0066cc;
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
             --dark-color: #212529;
-            --border-radius: 12px;
-            --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
         }
         
@@ -114,16 +116,17 @@ $current_dir = 'home';
         }
         
         .page-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: var(--border-radius);
             padding: 2rem;
             margin-bottom: 2rem;
             color: white;
+            box-shadow: var(--shadow);
         }
         
         .stats-card {
             background: white;
-            border-radius: 12px;
+            border-radius: var(--border-radius);
             padding: 1.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -151,7 +154,7 @@ $current_dir = 'home';
         
         .section-card {
             background: white;
-            border-radius: 12px;
+            border-radius: var(--border-radius);
             padding: 2rem;
             margin-bottom: 1.5rem;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);

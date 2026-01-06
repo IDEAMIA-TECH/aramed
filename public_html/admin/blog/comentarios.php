@@ -120,8 +120,8 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
     
     <style>
         :root {
-            --primary-color: #0066cc;
-            --secondary-color: #6c757d;
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
             --success-color: #28a745;
             --warning-color: #ffc107;
             --danger-color: #dc3545;
@@ -131,7 +131,7 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
             --border-color: #dee2e6;
             --shadow: 0 2px 10px rgba(0,0,0,0.1);
             --shadow-hover: 0 4px 20px rgba(0,0,0,0.15);
-            --border-radius: 12px;
+            --border-radius: 8px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -156,7 +156,7 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
         }
 
         .page-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             border-radius: var(--border-radius);
             padding: 2rem;
             margin-bottom: 2rem;
@@ -274,7 +274,7 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
         }
 
@@ -486,7 +486,7 @@ $estadisticas = $stmt_stats->fetch(PDO::FETCH_ASSOC);
         }
 
         .nav-link.active {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
             box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
         }

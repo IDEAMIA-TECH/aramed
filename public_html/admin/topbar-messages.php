@@ -171,8 +171,8 @@ try {
     
     <style>
     :root {
-        --primary-color: #0066cc;
-        --secondary-color: #6c757d;
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
         --success-color: #28a745;
         --danger-color: #dc3545;
         --warning-color: #ffc107;
@@ -184,7 +184,7 @@ try {
     }
 
     .page-header {
-        background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
         color: white;
         padding: 2rem 0;
         margin-bottom: 2rem;

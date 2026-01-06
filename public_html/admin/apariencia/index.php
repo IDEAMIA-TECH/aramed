@@ -79,14 +79,12 @@ $current_page = 'index.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #0066cc;
-            --dark-color: #212529;
-            --secondary-color: #6c757d;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --border-radius: 12px;
-            --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --border-radius: 8px;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         body {
@@ -129,6 +127,7 @@ $current_page = 'index.php';
             color: white;
             font-size: 2rem;
             margin: 0 auto 1.5rem;
+            opacity: 0.9;
         }
 
         .module-card h4 {
@@ -235,7 +234,7 @@ $current_page = 'index.php';
                     <div class="col-md-6 mb-4">
                         <a href="paginas.php" class="text-decoration-none">
                             <div class="module-card">
-                                <div class="module-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <div class="module-icon" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);">
                                     <i class="bi bi-file-earmark-text"></i>
                                 </div>
                                 <h4>Páginas Estáticas</h4>
@@ -251,7 +250,7 @@ $current_page = 'index.php';
                     <div class="col-md-6 mb-4">
                         <a href="vista-previa.php" class="text-decoration-none">
                             <div class="module-card">
-                                <div class="module-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                <div class="module-icon" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);">
                                     <i class="bi bi-eye"></i>
                                 </div>
                                 <h4>Vista Previa</h4>

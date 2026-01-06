@@ -91,9 +91,9 @@ $current_dir = 'seo';
     
     <style>
         :root {
-            --primary-color: #0066cc;
+            --primary-color: #2c3e50;
             --dark-color: #212529;
-            --border-radius: 12px;
+            --border-radius: 8px;
             --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         
@@ -108,7 +108,7 @@ $current_dir = 'seo';
         }
         
         .page-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             border-radius: 12px;
             padding: 2rem;
             margin-bottom: 2rem;
@@ -143,7 +143,7 @@ $current_dir = 'seo';
             justify-content: center;
             font-size: 2rem;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
         }
         

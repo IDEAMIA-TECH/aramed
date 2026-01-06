@@ -531,6 +531,16 @@ function getLogoPath($current_dir, $base_path) {
 </div>
 
 <style>
+/* Variables CSS elegantes por defecto para todas las páginas del admin */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --success-color: #27ae60;
+    --danger-color: #e74c3c;
+    --border-radius: 8px;
+    --shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
 /* Estilos adicionales para el menú */
 
 /* Ancho del sidebar */
@@ -601,9 +611,9 @@ function getLogoPath($current_dir, $base_path) {
 }
 
 .nav-link-sm.active {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white !important;
-    box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.2);
 }
 
 /* Asegurar que los submenús se muestren */
@@ -651,7 +661,7 @@ div.nav-item div.ms-3 {
 }
 
 .user-info {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white !important;
     padding: 1rem;
     border-radius: var(--border-radius);
@@ -698,14 +708,14 @@ div.nav-item div.ms-3 {
 .nav-link:hover {
     background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
     transform: translateX(3px);
-    color: var(--primary-color, #0066cc) !important;
+    color: var(--primary-color) !important;
 }
 
 .admin-sidebar .nav-link.active,
 .nav-link.active {
-    background: linear-gradient(135deg, var(--primary-color, #0066cc) 0%, #0056b3 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white !important;
-    box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.2);
 }
 
 .admin-sidebar .nav-link i,
