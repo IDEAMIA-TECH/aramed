@@ -135,16 +135,30 @@ $pageImage = imageUrl('design/logo-og.jpg');
             <div class="row">
                 <div class="col-lg-8 mx-auto">
                     <div class="legal-text">
+                        <?php
+                        // Cargar conexión si no está cargada
+                        if (!function_exists('getDB')) {
+                            require_once __DIR__ . '/includes/connection.php';
+                        }
                         
-                        <p class="lead mb-4">
-                            En <strong><?php echo SITE_NAME; ?></strong> (en adelante "nosotros", "nuestro" o "la Empresa"), 
-                            utilizamos cookies y tecnologías similares para mejorar su experiencia de navegación en el sitio web 
-                            <strong><?php echo SITE_URL; ?></strong> (en adelante, el "Sitio").
-                        </p>
+                        // Obtener contenido desde la base de datos
+                        $legal_content = function_exists('getConfig') ? getConfig('legal_cookies', '') : '';
                         
-                        <p class="mb-4">
-                            Esta Política explica qué son las cookies, qué tipos utilizamos, con qué finalidad, y cómo puede gestionarlas o desactivarlas.
-                        </p>
+                        if (!empty($legal_content)) {
+                            // Mostrar contenido desde la BD (HTML)
+                            echo $legal_content;
+                        } else {
+                            // Fallback al contenido hardcodeado
+                            ?>
+                            <p class="lead mb-4">
+                                En <strong><?php echo SITE_NAME; ?></strong> (en adelante "nosotros", "nuestro" o "la Empresa"), 
+                                utilizamos cookies y tecnologías similares para mejorar su experiencia de navegación en el sitio web 
+                                <strong><?php echo SITE_URL; ?></strong> (en adelante, el "Sitio").
+                            </p>
+                            
+                            <p class="mb-4">
+                                Esta Política explica qué son las cookies, qué tipos utilizamos, con qué finalidad, y cómo puede gestionarlas o desactivarlas.
+                            </p>
                         
                         <h2 class="h3 text-primary mb-3">1. ¿Qué son las cookies?</h2>
                         <p class="mb-4">
@@ -237,17 +251,23 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         <p class="mb-4">
                             Si tiene dudas o comentarios sobre esta Política de Cookies, puede contactarnos en:
                         </p>
-                        <div class="contact-info bg-light p-4 rounded">
-                            <p class="mb-2">
-                                <strong><i class="bi bi-envelope-fill text-primary me-2"></i>Correo electrónico:</strong> 
-                                <a href="mailto:<?php echo CONTACT_EMAIL; ?>"><?php echo CONTACT_EMAIL; ?></a>
-                            </p>
-                            <p class="mb-2">
-                                <strong><i class="bi bi-telephone-fill text-primary me-2"></i>Teléfono:</strong> 
-                                <a href="tel:<?php echo PHONE_MAIN; ?>"><?php echo PHONE_FORMATTED; ?></a>
-                            </p>
-                        </div>
-                        
+                            <div class="contact-info bg-light p-4 rounded">
+                                <?php
+                                $empresa_email = function_exists('getConfig') ? getConfig('empresa_email', CONTACT_EMAIL) : CONTACT_EMAIL;
+                                $empresa_telefono = function_exists('getConfig') ? getConfig('empresa_telefono', PHONE_MAIN) : PHONE_MAIN;
+                                ?>
+                                <p class="mb-2">
+                                    <strong><i class="bi bi-envelope-fill text-primary me-2"></i>Correo electrónico:</strong> 
+                                    <a href="mailto:<?php echo esc($empresa_email); ?>"><?php echo esc($empresa_email); ?></a>
+                                </p>
+                                <p class="mb-2">
+                                    <strong><i class="bi bi-telephone-fill text-primary me-2"></i>Teléfono:</strong> 
+                                    <a href="tel:<?php echo esc(preg_replace('/[^0-9+]/', '', $empresa_telefono)); ?>"><?php echo esc($empresa_telefono); ?></a>
+                                </p>
+                            </div>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>

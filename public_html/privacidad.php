@@ -135,92 +135,112 @@ $pageImage = imageUrl('design/logo-og.jpg');
             <div class="row">
                 <div class="col-lg-8 mx-auto">
                     <div class="legal-text">
+                        <?php
+                        // Cargar conexión si no está cargada
+                        if (!function_exists('getDB')) {
+                            require_once __DIR__ . '/includes/connection.php';
+                        }
                         
-                        <p class="lead mb-4">
-                            En <strong><?php echo SITE_NAME; ?></strong> (en adelante "nosotros", "nuestro/a", "la Empresa"), 
-                            somos responsables de recoger, utilizar, almacenar y proteger los datos personales que usted nos proporciona 
-                            a través de nuestro sitio web <strong><?php echo SITE_URL; ?></strong> (el "Sitio"). 
-                            Esta Política de Privacidad explica qué datos recogemos, con qué finalidad, cómo los protegemos y los derechos que usted tiene.
-                        </p>
+                        // Obtener contenido desde la base de datos
+                        $legal_content = function_exists('getConfig') ? getConfig('legal_privacidad', '') : '';
                         
-                        <h2 class="h3 text-primary mb-3">1. Datos que recogemos</h2>
-                        <p class="mb-3">Podemos recoger los siguientes datos personales:</p>
-                        <ul class="mb-4">
-                            <li>Nombre completo</li>
-                            <li>Correo electrónico</li>
-                            <li>Teléfono</li>
-                            <li>Dirección</li>
-                            <li>Datos de facturación (si aplica)</li>
-                            <li>Información sobre su dispositivo, navegación y cookies (por ejemplo: Dirección IP, tipo de navegador, páginas visitadas, tiempo en el sitio)</li>
-                            <li>Cualquier otro dato que usted nos proporcione voluntariamente (por ejemplo al registrarse, suscribirse, hacer un pedido, enviar un formulario de contacto)</li>
-                        </ul>
-                        
-                        <h2 class="h3 text-primary mb-3">2. Finalidad del tratamiento</h2>
-                        <p class="mb-3">Usaremos sus datos personales para las siguientes finalidades:</p>
-                        <ul class="mb-4">
-                            <li>Proveerle los productos o servicios solicitados</li>
-                            <li>Gestionar y responder a sus consultas o solicitudes</li>
-                            <li>Enviarle comunicaciones comerciales, promociones o novedades (cuando usted haya dado su consentimiento)</li>
-                            <li>Mejorar nuestro Sitio web, optimizar su experiencia de usuario y administrar cookies y rastreadores</li>
-                            <li>Cumplir con obligaciones legales, contables o fiscales</li>
-                        </ul>
-                        
-                        <h2 class="h3 text-primary mb-3">3. Bases legales</h2>
-                        <p class="mb-4">
-                            De conformidad con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares de México (LFPDPPP), 
-                            el tratamiento de datos personales se basa en su consentimiento o en otros supuestos previstos por la ley.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">4. Compartir, transferir o revelar datos</h2>
-                        <p class="mb-3">No venderemos, alquilaremos ni compartiremos sus datos personales con terceros, salvo en los siguientes casos:</p>
-                        <ul class="mb-4">
-                            <li>Cuando sea necesario para entregar un producto o servicio, con prestadores de servicios a nuestro cargo (por ejemplo, envío, pasarela de pagos)</li>
-                            <li>Cuando expresamente usted lo autorice</li>
-                            <li>Cuando exista obligación legal o requerimiento de autoridad competente</li>
-                        </ul>
-                        
-                        <h2 class="h3 text-primary mb-3">5. Uso de cookies y rastreadores</h2>
-                        <p class="mb-4">
-                            Utilizamos cookies y otros mecanismos de rastreo para mejorar la experiencia del usuario, analizar el comportamiento en el Sitio, 
-                            personalizar contenido y publicidad. Usted puede desactivar las cookies desde su navegador; sin embargo, esto puede afectar el correcto funcionamiento del Sitio.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">6. Medidas de seguridad</h2>
-                        <p class="mb-4">
-                            Hemos implementado medidas técnicas, físicas y organizativas para proteger los datos personales contra acceso no autorizado, 
-                            divulgación, alteración o destrucción. No obstante, ningún método de transmisión por Internet o de almacenamiento electrónico es 100% seguro.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">7. Conservación de los datos</h2>
-                        <p class="mb-4">
-                            Conservaremos sus datos personales durante el tiempo necesario para cumplir con las finalidades antes mencionadas, 
-                            mientras su cuenta esté activa, o hasta que solicite su eliminación, salvo que prevalezca una obligación legal para su conservación.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">8. Derechos ARCO y revocación</h2>
-                        <p class="mb-3">
-                            Usted tiene los derechos de Acceso, Rectificación, Cancelación y Oposición (ARCO) al tratamiento de sus datos, 
-                            así como a revocar el consentimiento otorgado. Para ejercitarlos, envíe su solicitud al correo electrónico 
-                            <a href="mailto:<?php echo CONTACT_EMAIL; ?>"><?php echo CONTACT_EMAIL; ?></a> o al domicilio antes señalado. 
-                            Deberá incluir: nombre completo, domicilio u otro medio para comunicar la respuesta, documento que acredite su identidad, 
-                            descripción de los datos respecto de los que busca ejercer el derecho y la modalidad de respuesta deseada.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">9. Modificaciones del aviso de privacidad</h2>
-                        <p class="mb-4">
-                            Nos reservamos el derecho de modificar esta Política de Privacidad en cualquier momento. 
-                            La nueva versión estará disponible en esta página con la fecha de actualización correspondiente.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">10. Contacto</h2>
-                        <p class="mb-4">
-                            Si tiene preguntas o comentarios sobre esta Política de Privacidad o el tratamiento de sus datos, puede contactarnos en:
-                        </p>
-                        <div class="contact-info bg-light p-4 rounded">
-                            <p class="mb-2"><strong>Correo electrónico:</strong> <a href="mailto:<?php echo CONTACT_EMAIL; ?>"><?php echo CONTACT_EMAIL; ?></a></p>
-                            <p class="mb-2"><strong>Teléfono:</strong> <a href="tel:<?php echo PHONE_MAIN; ?>"><?php echo PHONE_FORMATTED; ?></a></p>
-                        </div>
-                        
+                        if (!empty($legal_content)) {
+                            // Mostrar contenido desde la BD (HTML)
+                            echo $legal_content;
+                        } else {
+                            // Fallback al contenido hardcodeado
+                            ?>
+                            <p class="lead mb-4">
+                                En <strong><?php echo SITE_NAME; ?></strong> (en adelante "nosotros", "nuestro/a", "la Empresa"), 
+                                somos responsables de recoger, utilizar, almacenar y proteger los datos personales que usted nos proporciona 
+                                a través de nuestro sitio web <strong><?php echo SITE_URL; ?></strong> (el "Sitio"). 
+                                Esta Política de Privacidad explica qué datos recogemos, con qué finalidad, cómo los protegemos y los derechos que usted tiene.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">1. Datos que recogemos</h2>
+                            <p class="mb-3">Podemos recoger los siguientes datos personales:</p>
+                            <ul class="mb-4">
+                                <li>Nombre completo</li>
+                                <li>Correo electrónico</li>
+                                <li>Teléfono</li>
+                                <li>Dirección</li>
+                                <li>Datos de facturación (si aplica)</li>
+                                <li>Información sobre su dispositivo, navegación y cookies (por ejemplo: Dirección IP, tipo de navegador, páginas visitadas, tiempo en el sitio)</li>
+                                <li>Cualquier otro dato que usted nos proporcione voluntariamente (por ejemplo al registrarse, suscribirse, hacer un pedido, enviar un formulario de contacto)</li>
+                            </ul>
+                            
+                            <h2 class="h3 text-primary mb-3">2. Finalidad del tratamiento</h2>
+                            <p class="mb-3">Usaremos sus datos personales para las siguientes finalidades:</p>
+                            <ul class="mb-4">
+                                <li>Proveerle los productos o servicios solicitados</li>
+                                <li>Gestionar y responder a sus consultas o solicitudes</li>
+                                <li>Enviarle comunicaciones comerciales, promociones o novedades (cuando usted haya dado su consentimiento)</li>
+                                <li>Mejorar nuestro Sitio web, optimizar su experiencia de usuario y administrar cookies y rastreadores</li>
+                                <li>Cumplir con obligaciones legales, contables o fiscales</li>
+                            </ul>
+                            
+                            <h2 class="h3 text-primary mb-3">3. Bases legales</h2>
+                            <p class="mb-4">
+                                De conformidad con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares de México (LFPDPPP), 
+                                el tratamiento de datos personales se basa en su consentimiento o en otros supuestos previstos por la ley.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">4. Compartir, transferir o revelar datos</h2>
+                            <p class="mb-3">No venderemos, alquilaremos ni compartiremos sus datos personales con terceros, salvo en los siguientes casos:</p>
+                            <ul class="mb-4">
+                                <li>Cuando sea necesario para entregar un producto o servicio, con prestadores de servicios a nuestro cargo (por ejemplo, envío, pasarela de pagos)</li>
+                                <li>Cuando expresamente usted lo autorice</li>
+                                <li>Cuando exista obligación legal o requerimiento de autoridad competente</li>
+                            </ul>
+                            
+                            <h2 class="h3 text-primary mb-3">5. Uso de cookies y rastreadores</h2>
+                            <p class="mb-4">
+                                Utilizamos cookies y otros mecanismos de rastreo para mejorar la experiencia del usuario, analizar el comportamiento en el Sitio, 
+                                personalizar contenido y publicidad. Usted puede desactivar las cookies desde su navegador; sin embargo, esto puede afectar el correcto funcionamiento del Sitio.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">6. Medidas de seguridad</h2>
+                            <p class="mb-4">
+                                Hemos implementado medidas técnicas, físicas y organizativas para proteger los datos personales contra acceso no autorizado, 
+                                divulgación, alteración o destrucción. No obstante, ningún método de transmisión por Internet o de almacenamiento electrónico es 100% seguro.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">7. Conservación de los datos</h2>
+                            <p class="mb-4">
+                                Conservaremos sus datos personales durante el tiempo necesario para cumplir con las finalidades antes mencionadas, 
+                                mientras su cuenta esté activa, o hasta que solicite su eliminación, salvo que prevalezca una obligación legal para su conservación.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">8. Derechos ARCO y revocación</h2>
+                            <p class="mb-3">
+                                Usted tiene los derechos de Acceso, Rectificación, Cancelación y Oposición (ARCO) al tratamiento de sus datos, 
+                                así como a revocar el consentimiento otorgado. Para ejercitarlos, envíe su solicitud al correo electrónico 
+                                <a href="mailto:<?php echo CONTACT_EMAIL; ?>"><?php echo CONTACT_EMAIL; ?></a> o al domicilio antes señalado. 
+                                Deberá incluir: nombre completo, domicilio u otro medio para comunicar la respuesta, documento que acredite su identidad, 
+                                descripción de los datos respecto de los que busca ejercer el derecho y la modalidad de respuesta deseada.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">9. Modificaciones del aviso de privacidad</h2>
+                            <p class="mb-4">
+                                Nos reservamos el derecho de modificar esta Política de Privacidad en cualquier momento. 
+                                La nueva versión estará disponible en esta página con la fecha de actualización correspondiente.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">10. Contacto</h2>
+                            <p class="mb-4">
+                                Si tiene preguntas o comentarios sobre esta Política de Privacidad o el tratamiento de sus datos, puede contactarnos en:
+                            </p>
+                            <div class="contact-info bg-light p-4 rounded">
+                                <?php
+                                $empresa_email = function_exists('getConfig') ? getConfig('empresa_email', CONTACT_EMAIL) : CONTACT_EMAIL;
+                                $empresa_telefono = function_exists('getConfig') ? getConfig('empresa_telefono', PHONE_MAIN) : PHONE_MAIN;
+                                ?>
+                                <p class="mb-2"><strong>Correo electrónico:</strong> <a href="mailto:<?php echo esc($empresa_email); ?>"><?php echo esc($empresa_email); ?></a></p>
+                                <p class="mb-2"><strong>Teléfono:</strong> <a href="tel:<?php echo esc(preg_replace('/[^0-9+]/', '', $empresa_telefono)); ?>"><?php echo esc($empresa_telefono); ?></a></p>
+                            </div>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>

@@ -135,77 +135,97 @@ $pageImage = imageUrl('design/logo-og.jpg');
             <div class="row">
                 <div class="col-lg-8 mx-auto">
                     <div class="legal-text">
+                        <?php
+                        // Cargar conexión si no está cargada
+                        if (!function_exists('getDB')) {
+                            require_once __DIR__ . '/includes/connection.php';
+                        }
                         
-                        <p class="lead mb-4">
-                            Estos Términos y Condiciones regulan el acceso y uso del sitio web <strong><?php echo SITE_URL; ?></strong> (el "Sitio"), 
-                            propiedad de <strong><?php echo SITE_NAME; ?></strong> 
-                            y correo electrónico <strong><?php echo CONTACT_EMAIL; ?></strong>.
-                        </p>
+                        // Obtener contenido desde la base de datos
+                        $legal_content = function_exists('getConfig') ? getConfig('legal_terminos', '') : '';
                         
-                        <p class="mb-4">
-                            Al acceder o usar el Sitio, usted acepta quedar vinculado por estos Términos. Si no está de acuerdo, debe abstenerse de utilizarlo.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">1. Servicios y productos</h2>
-                        <p class="mb-4">
-                            Descritos en el Sitio, nuestros servicios y/o productos están sujetos a disponibilidad, condiciones específicas y precios vigentes en el momento de la compra o contratación.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">2. Registro y cuenta de usuario</h2>
-                        <p class="mb-4">
-                            Para acceder a ciertos servicios, podrá registrarse con un usuario y contraseña. Usted es responsable de mantener la confidencialidad de su cuenta, así como de toda actividad que se realice bajo ella. Debe notificarnos inmediatamente si detecta acceso no autorizado.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">3. Pagos y facturación</h2>
-                        <p class="mb-4">
-                            El pago de los servicios/productos se efectuará mediante los métodos disponibles en el Sitio. Usted garantiza que dispone de los derechos necesarios de los medios de pago utilizados. Nos reservamos el derecho de suspender, cancelar o rechazar pedidos ante posibles irregularidades.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">4. Envíos, devoluciones y cancelaciones</h2>
-                        <p class="mb-4">
-                            Los envíos, plazos, costos, cambios y devoluciones estarán sujetos a las condiciones específicas que se publiquen o acuerden al momento de la compra. Cada caso será evaluado individualmente según las políticas vigentes.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">5. Propiedad intelectual</h2>
-                        <p class="mb-4">
-                            Todo el contenido del Sitio (textos, imágenes, logotipos, marcas, programas, etc.) es propiedad de <?php echo SITE_NAME; ?> o de terceros que han autorizado su uso. Queda prohibida su reproducción, distribución, transformación o comercialización sin autorización expresa.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">6. Uso permitido</h2>
-                        <p class="mb-4">
-                            El Usuario se compromete a utilizar el Sitio de conformidad con la ley, la moral, el orden público y estos Términos. Queda prohibido:
-                        </p>
-                        <ul class="mb-4">
-                            <li>Realizar actividades fraudulentas, ilegales o maliciosas</li>
-                            <li>Difamar, acosar o fomentar violencia</li>
-                            <li>Introducir virus, malware, o alterar el funcionamiento del Sitio</li>
-                            <li>Suplantar identidad o usar datos de terceros sin consentimiento</li>
-                        </ul>
-                        
-                        <h2 class="h3 text-primary mb-3">7. Limitación de responsabilidad</h2>
-                        <p class="mb-4">
-                            En la medida permitida por la ley, <?php echo SITE_NAME; ?> no será responsable por daños indirectos, incidentales, lucro cesante, pérdida de datos o interrupción del servicio, derivados del uso o imposibilidad de uso del Sitio, salvo en casos de dolo o culpa grave.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">8. Modificaciones del Sitio y de los Términos</h2>
-                        <p class="mb-4">
-                            <?php echo SITE_NAME; ?> se reserva el derecho de modificar, suspender o interrumpir el Sitio, total o parcialmente, así como de actualizar estos Términos en cualquier momento. Las modificaciones se publicarán en esta página y entrarán en vigor desde su publicación.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">9. Legislación aplicable y jurisdicción</h2>
-                        <p class="mb-4">
-                            Estos Términos se regirán e interpretarán conforme a las leyes de los Estados Unidos Mexicanos. Para la resolución de controversias, las partes se someten a la jurisdicción de los tribunales competentes de Ciudad de México.
-                        </p>
-                        
-                        <h2 class="h3 text-primary mb-3">10. Contacto</h2>
-                        <p class="mb-4">
-                            Para dudas o aclaraciones sobre estos Términos y sobre el Sitio, puede contactarnos en:
-                        </p>
-                        <div class="contact-info bg-light p-4 rounded">
-                            <p class="mb-2"><strong>Correo electrónico:</strong> <a href="mailto:<?php echo CONTACT_EMAIL; ?>"><?php echo CONTACT_EMAIL; ?></a></p>
-                            <p class="mb-2"><strong>Teléfono:</strong> <a href="tel:<?php echo PHONE_MAIN; ?>"><?php echo PHONE_FORMATTED; ?></a></p>
-                        </div>
-                        
+                        if (!empty($legal_content)) {
+                            // Mostrar contenido desde la BD (HTML)
+                            echo $legal_content;
+                        } else {
+                            // Fallback al contenido hardcodeado
+                            ?>
+                            <p class="lead mb-4">
+                                Estos Términos y Condiciones regulan el acceso y uso del sitio web <strong><?php echo SITE_URL; ?></strong> (el "Sitio"), 
+                                propiedad de <strong><?php echo SITE_NAME; ?></strong> 
+                                y correo electrónico <strong><?php echo CONTACT_EMAIL; ?></strong>.
+                            </p>
+                            
+                            <p class="mb-4">
+                                Al acceder o usar el Sitio, usted acepta quedar vinculado por estos Términos. Si no está de acuerdo, debe abstenerse de utilizarlo.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">1. Servicios y productos</h2>
+                            <p class="mb-4">
+                                Descritos en el Sitio, nuestros servicios y/o productos están sujetos a disponibilidad, condiciones específicas y precios vigentes en el momento de la compra o contratación.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">2. Registro y cuenta de usuario</h2>
+                            <p class="mb-4">
+                                Para acceder a ciertos servicios, podrá registrarse con un usuario y contraseña. Usted es responsable de mantener la confidencialidad de su cuenta, así como de toda actividad que se realice bajo ella. Debe notificarnos inmediatamente si detecta acceso no autorizado.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">3. Pagos y facturación</h2>
+                            <p class="mb-4">
+                                El pago de los servicios/productos se efectuará mediante los métodos disponibles en el Sitio. Usted garantiza que dispone de los derechos necesarios de los medios de pago utilizados. Nos reservamos el derecho de suspender, cancelar o rechazar pedidos ante posibles irregularidades.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">4. Envíos, devoluciones y cancelaciones</h2>
+                            <p class="mb-4">
+                                Los envíos, plazos, costos, cambios y devoluciones estarán sujetos a las condiciones específicas que se publiquen o acuerden al momento de la compra. Cada caso será evaluado individualmente según las políticas vigentes.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">5. Propiedad intelectual</h2>
+                            <p class="mb-4">
+                                Todo el contenido del Sitio (textos, imágenes, logotipos, marcas, programas, etc.) es propiedad de <?php echo SITE_NAME; ?> o de terceros que han autorizado su uso. Queda prohibida su reproducción, distribución, transformación o comercialización sin autorización expresa.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">6. Uso permitido</h2>
+                            <p class="mb-4">
+                                El Usuario se compromete a utilizar el Sitio de conformidad con la ley, la moral, el orden público y estos Términos. Queda prohibido:
+                            </p>
+                            <ul class="mb-4">
+                                <li>Realizar actividades fraudulentas, ilegales o maliciosas</li>
+                                <li>Difamar, acosar o fomentar violencia</li>
+                                <li>Introducir virus, malware, o alterar el funcionamiento del Sitio</li>
+                                <li>Suplantar identidad o usar datos de terceros sin consentimiento</li>
+                            </ul>
+                            
+                            <h2 class="h3 text-primary mb-3">7. Limitación de responsabilidad</h2>
+                            <p class="mb-4">
+                                En la medida permitida por la ley, <?php echo SITE_NAME; ?> no será responsable por daños indirectos, incidentales, lucro cesante, pérdida de datos o interrupción del servicio, derivados del uso o imposibilidad de uso del Sitio, salvo en casos de dolo o culpa grave.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">8. Modificaciones del Sitio y de los Términos</h2>
+                            <p class="mb-4">
+                                <?php echo SITE_NAME; ?> se reserva el derecho de modificar, suspender o interrumpir el Sitio, total o parcialmente, así como de actualizar estos Términos en cualquier momento. Las modificaciones se publicarán en esta página y entrarán en vigor desde su publicación.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">9. Legislación aplicable y jurisdicción</h2>
+                            <p class="mb-4">
+                                Estos Términos se regirán e interpretarán conforme a las leyes de los Estados Unidos Mexicanos. Para la resolución de controversias, las partes se someten a la jurisdicción de los tribunales competentes de Ciudad de México.
+                            </p>
+                            
+                            <h2 class="h3 text-primary mb-3">10. Contacto</h2>
+                            <p class="mb-4">
+                                Para dudas o aclaraciones sobre estos Términos y sobre el Sitio, puede contactarnos en:
+                            </p>
+                            <div class="contact-info bg-light p-4 rounded">
+                                <?php
+                                $empresa_email = function_exists('getConfig') ? getConfig('empresa_email', CONTACT_EMAIL) : CONTACT_EMAIL;
+                                $empresa_telefono = function_exists('getConfig') ? getConfig('empresa_telefono', PHONE_MAIN) : PHONE_MAIN;
+                                ?>
+                                <p class="mb-2"><strong>Correo electrónico:</strong> <a href="mailto:<?php echo esc($empresa_email); ?>"><?php echo esc($empresa_email); ?></a></p>
+                                <p class="mb-2"><strong>Teléfono:</strong> <a href="tel:<?php echo esc(preg_replace('/[^0-9+]/', '', $empresa_telefono)); ?>"><?php echo esc($empresa_telefono); ?></a></p>
+                            </div>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>

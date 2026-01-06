@@ -111,38 +111,57 @@ if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
                     <h6 class="footer-title mb-3">Contacto</h6>
                     
                     <div class="footer-contact mb-3">
-                        
+                        <?php
+                        // Obtener configuración de contacto desde BD, con fallback a constantes
+                        $empresa_telefono = function_exists('getConfig') ? getConfig('empresa_telefono', PHONE_MAIN) : PHONE_MAIN;
+                        $empresa_email = function_exists('getConfig') ? getConfig('empresa_email', CONTACT_EMAIL) : CONTACT_EMAIL;
+                        ?>
                         <div class="d-flex align-items-center mb-2">
                             <i class="bi bi-telephone-fill text-primary me-2"></i>
-                            <a href="tel:<?php echo esc(PHONE_FORMATTED); ?>" class="text-white-75 text-decoration-none small">
-                                <?php echo esc(PHONE_MAIN); ?>
+                            <a href="tel:<?php echo esc(preg_replace('/[^0-9+]/', '', $empresa_telefono)); ?>" class="text-white-75 text-decoration-none small">
+                                <?php echo esc($empresa_telefono); ?>
                             </a>
                         </div>
                         
                         <div class="d-flex align-items-center mb-3">
                             <i class="bi bi-envelope-fill text-primary me-2"></i>
-                            <a href="mailto:<?php echo esc(CONTACT_EMAIL); ?>" class="text-white-75 text-decoration-none small">
-                                <?php echo esc(CONTACT_EMAIL); ?>
+                            <a href="mailto:<?php echo esc($empresa_email); ?>" class="text-white-75 text-decoration-none small">
+                                <?php echo esc($empresa_email); ?>
                             </a>
                         </div>
                     </div>
                     
                     <!-- Redes Sociales -->
                     <div class="footer-social text-center">
+                        <?php
+                        // Obtener configuración de redes sociales desde BD, con fallback a constantes
+                        $empresa_linkedin = function_exists('getConfig') ? getConfig('empresa_linkedin', SOCIAL_LINKEDIN) : SOCIAL_LINKEDIN;
+                        $empresa_facebook = function_exists('getConfig') ? getConfig('empresa_facebook', SOCIAL_FACEBOOK) : SOCIAL_FACEBOOK;
+                        $empresa_instagram = function_exists('getConfig') ? getConfig('empresa_instagram', SOCIAL_INSTAGRAM) : SOCIAL_INSTAGRAM;
+                        $empresa_twitter = function_exists('getConfig') ? getConfig('empresa_twitter', SOCIAL_TWITTER) : SOCIAL_TWITTER;
+                        ?>
                         <p class="small text-white-50 mb-2">Síguenos:</p>
                         <div class="social-links d-flex justify-content-center gap-2">
-                            <a href="<?php echo esc(SOCIAL_LINKEDIN); ?>" target="_blank" rel="noopener noreferrer" class="social-link" title="LinkedIn" aria-label="LinkedIn">
+                            <?php if (!empty($empresa_linkedin)): ?>
+                            <a href="<?php echo esc($empresa_linkedin); ?>" target="_blank" rel="noopener noreferrer" class="social-link" title="LinkedIn" aria-label="LinkedIn">
                                 <i class="bi bi-linkedin"></i>
                             </a>
-                            <a href="<?php echo esc(SOCIAL_FACEBOOK); ?>" target="_blank" rel="noopener noreferrer" class="social-link" title="Facebook" aria-label="Facebook">
+                            <?php endif; ?>
+                            <?php if (!empty($empresa_facebook)): ?>
+                            <a href="<?php echo esc($empresa_facebook); ?>" target="_blank" rel="noopener noreferrer" class="social-link" title="Facebook" aria-label="Facebook">
                                 <i class="bi bi-facebook"></i>
                             </a>
-                            <a href="<?php echo esc(SOCIAL_INSTAGRAM); ?>" target="_blank" rel="noopener noreferrer" class="social-link" title="Instagram" aria-label="Instagram">
+                            <?php endif; ?>
+                            <?php if (!empty($empresa_instagram)): ?>
+                            <a href="<?php echo esc($empresa_instagram); ?>" target="_blank" rel="noopener noreferrer" class="social-link" title="Instagram" aria-label="Instagram">
                                 <i class="bi bi-instagram"></i>
                             </a>
-                            <a href="<?php echo esc(SOCIAL_TWITTER); ?>" target="_blank" rel="noopener noreferrer" class="social-link" title="Twitter/X" aria-label="Twitter/X">
+                            <?php endif; ?>
+                            <?php if (!empty($empresa_twitter)): ?>
+                            <a href="<?php echo esc($empresa_twitter); ?>" target="_blank" rel="noopener noreferrer" class="social-link" title="Twitter/X" aria-label="Twitter/X">
                                 <i class="bi bi-twitter-x"></i>
                             </a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

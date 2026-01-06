@@ -101,20 +101,35 @@ function getPageLink($href, $current_page) {
             
             <!-- Redes sociales en móvil -->
             <div class="navbar-social d-lg-none mt-4 pt-3 border-top text-center">
+                <?php
+                // Obtener configuración de redes sociales desde BD, con fallback a constantes
+                $empresa_linkedin = function_exists('getConfig') ? getConfig('empresa_linkedin', SOCIAL_LINKEDIN) : SOCIAL_LINKEDIN;
+                $empresa_facebook = function_exists('getConfig') ? getConfig('empresa_facebook', SOCIAL_FACEBOOK) : SOCIAL_FACEBOOK;
+                $empresa_instagram = function_exists('getConfig') ? getConfig('empresa_instagram', SOCIAL_INSTAGRAM) : SOCIAL_INSTAGRAM;
+                $empresa_twitter = function_exists('getConfig') ? getConfig('empresa_twitter', SOCIAL_TWITTER) : SOCIAL_TWITTER;
+                ?>
                 <p class="small text-muted mb-2">Síguenos en:</p>
                 <div class="social-links d-flex justify-content-center gap-3">
-                    <a href="<?php echo esc(SOCIAL_LINKEDIN); ?>" target="_blank" rel="noopener noreferrer" class="text-primary" title="LinkedIn">
+                    <?php if (!empty($empresa_linkedin)): ?>
+                    <a href="<?php echo esc($empresa_linkedin); ?>" target="_blank" rel="noopener noreferrer" class="text-primary" title="LinkedIn">
                         <i class="bi bi-linkedin fs-5"></i>
                     </a>
-                    <a href="<?php echo esc(SOCIAL_FACEBOOK); ?>" target="_blank" rel="noopener noreferrer" class="text-primary" title="Facebook">
+                    <?php endif; ?>
+                    <?php if (!empty($empresa_facebook)): ?>
+                    <a href="<?php echo esc($empresa_facebook); ?>" target="_blank" rel="noopener noreferrer" class="text-primary" title="Facebook">
                         <i class="bi bi-facebook fs-5"></i>
                     </a>
-                    <a href="<?php echo esc(SOCIAL_INSTAGRAM); ?>" target="_blank" rel="noopener noreferrer" class="text-primary" title="Instagram">
+                    <?php endif; ?>
+                    <?php if (!empty($empresa_instagram)): ?>
+                    <a href="<?php echo esc($empresa_instagram); ?>" target="_blank" rel="noopener noreferrer" class="text-primary" title="Instagram">
                         <i class="bi bi-instagram fs-5"></i>
                     </a>
-                    <a href="<?php echo esc(SOCIAL_TWITTER); ?>" target="_blank" rel="noopener noreferrer" class="text-primary" title="Twitter">
+                    <?php endif; ?>
+                    <?php if (!empty($empresa_twitter)): ?>
+                    <a href="<?php echo esc($empresa_twitter); ?>" target="_blank" rel="noopener noreferrer" class="text-primary" title="Twitter">
                         <i class="bi bi-twitter fs-5"></i>
                     </a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

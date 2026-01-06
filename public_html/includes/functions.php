@@ -879,3 +879,76 @@ function publicarArticulosProgramados() {
     }
 }
 
+/**
+ * Generar meta tags SEO usando configuraciones por defecto
+ * @param string $title Título de la página (sin prefijo/sufijo)
+ * @param string $description Descripción de la página (opcional, usa default si no se proporciona)
+ * @param string $keywords Palabras clave (opcional, usa default si no se proporciona)
+ * @param string $image URL de imagen Open Graph (opcional, usa default si no se proporciona)
+ * @param string $url URL canónica (opcional, usa SITE_URL si no se proporciona)
+ * @return array Array con todos los meta tags formateados
+ */
+function getSEOMetaTags($title = '', $description = '', $keywords = '', $image = '', $url = '') {
+    // Obtener configuraciones SEO desde BD, con fallback a constantes
+    $title_prefix = function_exists('getConfig') ? getConfig('seo_title_prefix', 'Aramed y Laboratorios - ') : 'Aramed y Laboratorios - ';
+    $title_suffix = function_exists('getConfig') ? getConfig('seo_title_suffix', '') : '';
+    $default_description = function_exists('getConfig') ? getConfig('seo_default_description', SITE_DESCRIPTION) : SITE_DESCRIPTION;
+    $default_keywords = function_exists('getConfig') ? getConfig('seo_default_keywords', SITE_KEYWORDS) : SITE_KEYWORDS;
+    $default_og_image = function_exists('getConfig') ? getConfig('seo_og_image', 'assets/images/design/logo-og.jpg') : 'assets/images/design/logo-og.jpg';
+    
+    // Construir título completo
+    $full_title = $title_prefix . $title . $title_suffix;
+    
+    // Usar valores proporcionados o defaults
+    $final_description = !empty($description) ? $description : $default_description;
+    $final_keywords = !empty($keywords) ? $keywords : $default_keywords;
+    $final_image = !empty($image) ? $image : imageUrl($default_og_image);
+    $final_url = !empty($url) ? $url : SITE_URL;
+    
+    // Asegurar que la URL de la imagen sea absoluta
+    if (strpos($final_image, 'http') !== 0) {
+        $final_image = SITE_URL . '/' . ltrim($final_image, '/');
+    }
+    
+    return [
+        'title' => $full_title,
+        'description' => $final_description,
+        'keywords' => $final_keywords,
+        'og_image' => $final_image,
+        'url' => $final_url
+    ];
+}
+
+/**
+ * Renderizar meta tags SEO en HTML
+ * @param string $title Título de la página
+ * @param string $description Descripción de la página
+ * @param string $keywords Palabras clave
+ * @param string $image URL de imagen Open Graph
+ * @param string $url URL canónica
+ * @return string HTML con todos los meta tags
+ */
+function renderSEOMetaTags($title = '', $description = '', $keywords = '', $image = '', $url = '') {
+    $meta = getSEOMetaTags($title, $description, $keywords, $image, $url);
+    
+    $html = '';
+    $html .= '<title>' . esc($meta['title']) . '</title>' . "\n";
+    $html .= '<meta name="description" content="' . esc($meta['description']) . '">' . "\n";
+    $html .= '<meta name="keywords" content="' . esc($meta['keywords']) . '">' . "\n";
+    $html .= '<link rel="canonical" href="' . esc($meta['url']) . '">' . "\n";
+    $html .= '<!-- Open Graph / Facebook -->' . "\n";
+    $html .= '<meta property="og:type" content="website">' . "\n";
+    $html .= '<meta property="og:url" content="' . esc($meta['url']) . '">' . "\n";
+    $html .= '<meta property="og:title" content="' . esc($meta['title']) . '">' . "\n";
+    $html .= '<meta property="og:description" content="' . esc($meta['description']) . '">' . "\n";
+    $html .= '<meta property="og:image" content="' . esc($meta['og_image']) . '">' . "\n";
+    $html .= '<!-- Twitter -->' . "\n";
+    $html .= '<meta property="twitter:card" content="summary_large_image">' . "\n";
+    $html .= '<meta property="twitter:url" content="' . esc($meta['url']) . '">' . "\n";
+    $html .= '<meta property="twitter:title" content="' . esc($meta['title']) . '">' . "\n";
+    $html .= '<meta property="twitter:description" content="' . esc($meta['description']) . '">' . "\n";
+    $html .= '<meta property="twitter:image" content="' . esc($meta['og_image']) . '">' . "\n";
+    
+    return $html;
+}
+
