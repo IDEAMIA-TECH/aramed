@@ -27,43 +27,65 @@ if (!defined('ARAMED_SITE')) {
 // Verificar si la función ya existe (puede estar en auth_check.php)
 if (!function_exists('hasPermission')) {
     function hasPermission($usuario_id, $modulo, $accion) {
+        static $permission_cache = [];
+        $cache_key = "{$usuario_id}_{$modulo}_{$accion}";
+        
+        // Verificar cache primero
+        if (isset($permission_cache[$cache_key])) {
+            return $permission_cache[$cache_key];
+        }
+        
         $pdo = getDB();
         if (!$pdo) {
+            $permission_cache[$cache_key] = false;
             return false;
         }
         
-        // Obtener rol del usuario
-        $sql_usuario = "SELECT rol FROM admin_usuarios WHERE id = ? AND estado = 'activo'";
-        $stmt_usuario = $pdo->prepare($sql_usuario);
-        $stmt_usuario->execute([$usuario_id]);
-        $usuario = $stmt_usuario->fetch(PDO::FETCH_ASSOC);
-        $stmt_usuario->closeCursor(); // Cerrar cursor antes de la siguiente consulta
-        
-        if (!$usuario) {
+        try {
+            // Obtener rol del usuario - usar fetchAll para asegurar cierre
+            $sql_usuario = "SELECT rol FROM admin_usuarios WHERE id = ? AND estado = 'activo' LIMIT 1";
+            $stmt_usuario = $pdo->prepare($sql_usuario);
+            $stmt_usuario->execute([$usuario_id]);
+            $result_usuario = $stmt_usuario->fetchAll(PDO::FETCH_ASSOC);
+            $stmt_usuario->closeCursor();
+            
+            if (empty($result_usuario)) {
+                $permission_cache[$cache_key] = false;
+                return false;
+            }
+            
+            $usuario = $result_usuario[0];
+            $rol = $usuario['rol'];
+            
+            // Si es admin, tiene todos los permisos
+            if ($rol === 'admin') {
+                $permission_cache[$cache_key] = true;
+                return true;
+            }
+            
+            // Verificar permiso específico - usar fetchAll
+            $sql = "
+                SELECT COUNT(*) as tiene_permiso
+                FROM rol_permisos rp
+                INNER JOIN permisos p ON rp.permiso_id = p.id
+                WHERE rp.rol = ? AND p.modulo = ? AND p.accion = ?
+                LIMIT 1
+            ";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$rol, $modulo, $accion]);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            
+            $tiene_permiso = !empty($result) && ($result[0]['tiene_permiso'] > 0);
+            $permission_cache[$cache_key] = $tiene_permiso;
+            return $tiene_permiso;
+            
+        } catch (PDOException $e) {
+            error_log("Error en hasPermission: " . $e->getMessage());
+            $permission_cache[$cache_key] = false;
             return false;
         }
-        
-        $rol = $usuario['rol'];
-        
-        // Si es admin, tiene todos los permisos
-        if ($rol === 'admin') {
-            return true;
-        }
-        
-        // Verificar permiso específico
-        $sql = "
-            SELECT COUNT(*) as tiene_permiso
-            FROM rol_permisos rp
-            INNER JOIN permisos p ON rp.permiso_id = p.id
-            WHERE rp.rol = ? AND p.modulo = ? AND p.accion = ?
-        ";
-        
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$rol, $modulo, $accion]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor(); // Cerrar cursor
-        
-        return ($result['tiene_permiso'] > 0);
     }
 }
 
@@ -118,25 +140,32 @@ function checkPermission($modulo, $accion, $redirect = true) {
  * @return array Array de permisos ['modulo' => ['accion1', 'accion2', ...]]
  */
 function getUserPermissions($usuario_id) {
+    static $permissions_cache = [];
+    
+    // Verificar cache primero
+    if (isset($permissions_cache[$usuario_id])) {
+        return $permissions_cache[$usuario_id];
+    }
+    
     $pdo = getDB();
     if (!$pdo) {
         return [];
     }
     
     try {
-        // Obtener rol del usuario
-        $sql_usuario = "SELECT rol FROM admin_usuarios WHERE id = ? AND estado = 'activo'";
+        // Obtener rol del usuario - usar fetchAll para asegurar que se cierre
+        $sql_usuario = "SELECT rol FROM admin_usuarios WHERE id = ? AND estado = 'activo' LIMIT 1";
         $stmt_usuario = $pdo->prepare($sql_usuario);
         $stmt_usuario->execute([$usuario_id]);
-        $usuario = $stmt_usuario->fetch(PDO::FETCH_ASSOC);
-        
-        // Cerrar la consulta anterior antes de continuar
+        $result = $stmt_usuario->fetchAll(PDO::FETCH_ASSOC);
         $stmt_usuario->closeCursor();
         
-        if (!$usuario) {
+        if (empty($result)) {
+            $permissions_cache[$usuario_id] = [];
             return [];
         }
         
+        $usuario = $result[0];
         $rol = $usuario['rol'];
         
         // Si es admin, retornar todos los permisos
@@ -159,25 +188,29 @@ function getUserPermissions($usuario_id) {
             $permisos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
         }
-    } catch (PDOException $e) {
-        error_log("Error en getUserPermissions: " . $e->getMessage());
-        return [];
-    }
-    
-    // Organizar por módulo
-    $resultado = [];
-    foreach ($permisos as $permiso) {
-        $modulo = $permiso['modulo'];
-        $accion = $permiso['accion'];
         
-        if (!isset($resultado[$modulo])) {
-            $resultado[$modulo] = [];
+        // Organizar por módulo
+        $resultado = [];
+        foreach ($permisos as $permiso) {
+            $modulo = $permiso['modulo'];
+            $accion = $permiso['accion'];
+            
+            if (!isset($resultado[$modulo])) {
+                $resultado[$modulo] = [];
+            }
+            
+            $resultado[$modulo][] = $accion;
         }
         
-        $resultado[$modulo][] = $accion;
+        // Guardar en cache
+        $permissions_cache[$usuario_id] = $resultado;
+        return $resultado;
+        
+    } catch (PDOException $e) {
+        error_log("Error en getUserPermissions: " . $e->getMessage());
+        $permissions_cache[$usuario_id] = [];
+        return [];
     }
-    
-    return $resultado;
 }
 
 /**
