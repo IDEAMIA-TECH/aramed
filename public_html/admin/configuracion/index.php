@@ -133,12 +133,17 @@ $current_dir = 'configuracion';
             <div class="col-md-9 admin-content">
                 <!-- Header -->
                 <div class="page-header">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
                         <div>
                             <h2 class="mb-0">
                                 <i class="bi bi-gear me-2"></i>Configuración General
                             </h2>
                             <p class="mb-0 opacity-75">Gestiona la configuración del sitio</p>
+                        </div>
+                        <div class="mt-2 mt-md-0">
+                            <a href="analyze-tables.php" class="btn btn-light">
+                                <i class="bi bi-speedometer2 me-2"></i>Analizar Tablas
+                            </a>
                         </div>
                     </div>
                 </div>

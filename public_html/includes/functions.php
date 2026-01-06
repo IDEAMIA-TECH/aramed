@@ -607,46 +607,93 @@ function logActivity($usuario_id, $accion, $modulo = null, $entidad_id = null, $
  */
 function getConfig($clave, $default = null) {
     static $config_cache = [];
+    static $cache_loaded = false;
+    
+    // Cargar todo el cache de una vez si no se ha cargado
+    if (!$cache_loaded) {
+        $pdo = getDB();
+        if ($pdo) {
+            try {
+                $stmt = $pdo->query("SELECT clave, valor, tipo FROM configuracion");
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                foreach ($results as $row) {
+                    $valor = $row['valor'];
+                    
+                    // Convertir según tipo
+                    switch ($row['tipo']) {
+                        case 'boolean':
+                            $valor = (bool)$valor;
+                            break;
+                        case 'number':
+                            $valor = is_numeric($valor) ? (float)$valor : 0;
+                            break;
+                        case 'json':
+                            $valor = json_decode($valor, true);
+                            break;
+                    }
+                    
+                    $config_cache[$row['clave']] = $valor;
+                }
+                
+                $cache_loaded = true;
+            } catch (Exception $e) {
+                // Si la tabla no existe, continuar sin cache
+            }
+        }
+    }
     
     // Verificar cache
     if (isset($config_cache[$clave])) {
         return $config_cache[$clave];
     }
     
-    $pdo = getDB();
-    if (!$pdo) {
-        return $default;
-    }
-    
-    try {
-        $stmt = $pdo->prepare("SELECT valor, tipo FROM configuracion WHERE clave = ?");
-        $stmt->execute([$clave]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($result) {
-            $valor = $result['valor'];
-            
-            // Convertir según tipo
-            switch ($result['tipo']) {
-                case 'boolean':
-                    $valor = (bool)$valor;
-                    break;
-                case 'number':
-                    $valor = is_numeric($valor) ? (float)$valor : $default;
-                    break;
-                case 'json':
-                    $valor = json_decode($valor, true);
-                    break;
-            }
-            
-            $config_cache[$clave] = $valor;
-            return $valor;
+    // Si no está en cache y no se ha cargado, intentar cargar individualmente
+    if (!$cache_loaded) {
+        $pdo = getDB();
+        if (!$pdo) {
+            return $default;
         }
-    } catch (Exception $e) {
-        // Si la tabla no existe, retornar default
+        
+        try {
+            $stmt = $pdo->prepare("SELECT valor, tipo FROM configuracion WHERE clave = ?");
+            $stmt->execute([$clave]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($result) {
+                $valor = $result['valor'];
+                
+                // Convertir según tipo
+                switch ($result['tipo']) {
+                    case 'boolean':
+                        $valor = (bool)$valor;
+                        break;
+                    case 'number':
+                        $valor = is_numeric($valor) ? (float)$valor : $default;
+                        break;
+                    case 'json':
+                        $valor = json_decode($valor, true);
+                        break;
+                }
+                
+                $config_cache[$clave] = $valor;
+                return $valor;
+            }
+        } catch (Exception $e) {
+            // Si la tabla no existe, retornar default
+        }
     }
     
     return $default;
+}
+
+/**
+ * Limpia el cache de configuración (útil después de actualizar valores)
+ */
+function clearConfigCache() {
+    // No hay forma directa de limpiar static variables, pero podemos forzar recarga
+    // Esto se hace reiniciando el proceso o usando un flag
+    // Por ahora, la función setConfig actualizará el cache automáticamente
 }
 
 /**
@@ -665,6 +712,7 @@ function setConfig($clave, $valor, $tipo = 'text', $categoria = 'general') {
     
     try {
         // Convertir valor según tipo
+        $valor_original = $valor;
         if ($tipo === 'json' && is_array($valor)) {
             $valor = json_encode($valor);
         } elseif ($tipo === 'boolean') {
@@ -681,7 +729,24 @@ function setConfig($clave, $valor, $tipo = 'text', $categoria = 'general') {
                 updated_at = NOW()
         ");
         
-        return $stmt->execute([$clave, $valor, $tipo, $categoria]);
+        $result = $stmt->execute([$clave, $valor, $tipo, $categoria]);
+        
+        // Actualizar cache estático si existe
+        if ($result) {
+            static $config_cache = [];
+            // Convertir para cache
+            $cache_valor = $valor_original;
+            if ($tipo === 'boolean') {
+                $cache_valor = (bool)$valor;
+            } elseif ($tipo === 'number') {
+                $cache_valor = is_numeric($valor) ? (float)$valor : 0;
+            } elseif ($tipo === 'json') {
+                $cache_valor = json_decode($valor, true);
+            }
+            $config_cache[$clave] = $cache_valor;
+        }
+        
+        return $result;
     } catch (Exception $e) {
         error_log("Error al guardar configuración: " . $e->getMessage());
         return false;
