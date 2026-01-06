@@ -173,6 +173,13 @@ $current_dir = 'proyectos';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     
     <style>
+        :root {
+            --primary-color: #0066cc;
+            --dark-color: #212529;
+            --border-radius: 12px;
+            --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;

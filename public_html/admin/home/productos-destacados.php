@@ -353,6 +353,13 @@ $current_dir = 'home';
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     
     <style>
+        :root {
+            --primary-color: #0066cc;
+            --dark-color: #212529;
+            --border-radius: 12px;
+            --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;

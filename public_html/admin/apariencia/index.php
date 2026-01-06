@@ -79,13 +79,14 @@ $current_page = 'index.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --danger-color: #e74c3c;
-            --border-radius: 8px;
-            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --primary-color: #0066cc;
+            --dark-color: #212529;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --border-radius: 12px;
+            --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         body {
