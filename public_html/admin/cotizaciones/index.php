@@ -146,11 +146,19 @@ $where_clause = !empty($where_conditions) ? 'WHERE ' . implode(' AND ', $where_c
 $join_clause = !empty($joins) ? implode(' ', $joins) : '';
 
 // Obtener total de registros
-$count_sql = "SELECT COUNT(DISTINCT c.id) FROM cotizaciones c $join_clause $where_clause";
-$count_stmt = $pdo->prepare($count_sql);
-$count_stmt->execute($params);
-$total_cotizaciones = $count_stmt->fetchColumn();
-$total_pages = ceil($total_cotizaciones / $per_page);
+$total_cotizaciones = 0;
+$total_pages = 0;
+try {
+    $count_sql = "SELECT COUNT(DISTINCT c.id) FROM cotizaciones c $join_clause $where_clause";
+    $count_stmt = $pdo->prepare($count_sql);
+    $count_stmt->execute($params);
+    $total_cotizaciones = (int)$count_stmt->fetchColumn();
+    $count_stmt->closeCursor();
+    $total_pages = ceil($total_cotizaciones / $per_page);
+} catch (Exception $e) {
+    error_log("Error al contar cotizaciones: " . $e->getMessage());
+    $error_message = 'Error al contar cotizaciones: ' . $e->getMessage();
+}
 
 // Obtener cotizaciones
 $sql = "SELECT DISTINCT c.*, 
@@ -168,35 +176,95 @@ $sql = "SELECT DISTINCT c.*,
 $params[] = $per_page;
 $params[] = $offset;
 
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
-$cotizaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    // Verificar que la tabla existe
+    $table_check = $pdo->query("SHOW TABLES LIKE 'cotizaciones'")->fetchAll();
+    if (empty($table_check)) {
+        $error_message = 'La tabla cotizaciones no existe. Ejecuta el script de creación de tablas.';
+        $cotizaciones = [];
+    } else {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $cotizaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        
+        // Debug: Log si no hay resultados pero hay total
+        if (empty($cotizaciones) && $total_cotizaciones > 0) {
+            error_log("DEBUG: total_cotizaciones=$total_cotizaciones pero cotizaciones está vacío. SQL: $sql");
+        }
+    }
+} catch (PDOException $e) {
+    error_log("Error PDO al obtener cotizaciones: " . $e->getMessage());
+    error_log("SQL: " . $sql);
+    error_log("Params: " . print_r($params, true));
+    $error_message = 'Error al cargar cotizaciones: ' . $e->getMessage();
+    $cotizaciones = [];
+} catch (Exception $e) {
+    error_log("Error al obtener cotizaciones: " . $e->getMessage());
+    $error_message = 'Error al cargar cotizaciones: ' . $e->getMessage();
+    $cotizaciones = [];
+}
 
 // Estadísticas
-$stats = [];
-$stats_sql = "SELECT 
-    COUNT(*) as total,
-    SUM(CASE WHEN estado_cotizacion = 'nueva' THEN 1 ELSE 0 END) as nuevas,
-    SUM(CASE WHEN estado_cotizacion = 'en_seguimiento' THEN 1 ELSE 0 END) as en_seguimiento,
-    SUM(CASE WHEN estado_cotizacion = 'cotizada' THEN 1 ELSE 0 END) as cotizadas,
-    SUM(CASE WHEN estado_cotizacion = 'enviada' THEN 1 ELSE 0 END) as enviadas,
-    SUM(CASE WHEN estado_cotizacion = 'cerrada_ganada' THEN 1 ELSE 0 END) as ganadas,
-    SUM(CASE WHEN estado_cotizacion = 'cerrada_perdida' THEN 1 ELSE 0 END) as perdidas,
-    SUM(CASE WHEN DATE(created_at) = CURDATE() THEN 1 ELSE 0 END) as hoy
-FROM cotizaciones";
-$stats_stmt = $pdo->query($stats_sql);
-$stats = $stats_stmt->fetch(PDO::FETCH_ASSOC);
+$stats = [
+    'total' => 0,
+    'nuevas' => 0,
+    'en_seguimiento' => 0,
+    'cotizadas' => 0,
+    'enviadas' => 0,
+    'ganadas' => 0,
+    'perdidas' => 0,
+    'hoy' => 0
+];
+try {
+    $stats_sql = "SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN estado_cotizacion = 'nueva' THEN 1 ELSE 0 END) as nuevas,
+        SUM(CASE WHEN estado_cotizacion = 'en_seguimiento' THEN 1 ELSE 0 END) as en_seguimiento,
+        SUM(CASE WHEN estado_cotizacion = 'cotizada' THEN 1 ELSE 0 END) as cotizadas,
+        SUM(CASE WHEN estado_cotizacion = 'enviada' THEN 1 ELSE 0 END) as enviadas,
+        SUM(CASE WHEN estado_cotizacion = 'cerrada_ganada' THEN 1 ELSE 0 END) as ganadas,
+        SUM(CASE WHEN estado_cotizacion = 'cerrada_perdida' THEN 1 ELSE 0 END) as perdidas,
+        SUM(CASE WHEN DATE(created_at) = CURDATE() THEN 1 ELSE 0 END) as hoy
+    FROM cotizaciones";
+    $stats_stmt = $pdo->query($stats_sql);
+    $stats_result = $stats_stmt->fetch(PDO::FETCH_ASSOC);
+    $stats_stmt->closeCursor();
+    if ($stats_result) {
+        $stats = $stats_result;
+    }
+} catch (Exception $e) {
+    error_log("Error al obtener estadísticas de cotizaciones: " . $e->getMessage());
+}
 
 // Obtener ejecutivos para filtro
-$stmt = $pdo->query("SELECT id, nombre FROM admin_usuarios WHERE estado = 'activo' ORDER BY nombre");
-$ejecutivos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$ejecutivos = [];
+try {
+    $stmt = $pdo->query("SELECT id, nombre FROM admin_usuarios WHERE estado = 'activo' ORDER BY nombre");
+    $ejecutivos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+} catch (Exception $e) {
+    error_log("Error al obtener ejecutivos: " . $e->getMessage());
+}
 
 // Obtener marcas y categorías para filtros
-$stmt = $pdo->query("SELECT id, nombre FROM catalogo_marcas WHERE estado = 'activo' ORDER BY nombre");
-$marcas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$marcas = [];
+$categorias = [];
+try {
+    $stmt = $pdo->query("SELECT id, nombre FROM catalogo_marcas WHERE estado = 'activo' ORDER BY nombre");
+    $marcas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+} catch (Exception $e) {
+    error_log("Error al obtener marcas: " . $e->getMessage());
+}
 
-$stmt = $pdo->query("SELECT id, nombre FROM catalogo_categorias WHERE estado = 'activo' ORDER BY nombre");
-$categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $stmt = $pdo->query("SELECT id, nombre FROM catalogo_categorias WHERE estado = 'activo' ORDER BY nombre");
+    $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+} catch (Exception $e) {
+    error_log("Error al obtener categorías: " . $e->getMessage());
+}
 
 $current_page = 'index.php';
 $current_dir = 'cotizaciones';
@@ -464,11 +532,33 @@ $current_dir = 'cotizaciones';
                         </div>
                     </div>
                     <div class="card-body p-0">
+                        <?php if (!empty($error_message)): ?>
+                        <div class="alert alert-danger m-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Error:</strong> <?php echo esc($error_message); ?>
+                        </div>
+                        <?php endif; ?>
+                        
                         <?php if (empty($cotizaciones)): ?>
                         <div class="text-center py-5">
                             <i class="bi bi-file-earmark-text text-muted" style="font-size: 4rem;"></i>
                             <h4 class="text-muted mt-3">No hay cotizaciones</h4>
-                            <p class="text-muted">No se encontraron cotizaciones con los filtros aplicados</p>
+                            <p class="text-muted">
+                                <?php if ($total_cotizaciones > 0): ?>
+                                    No se encontraron cotizaciones con los filtros aplicados. 
+                                    <a href="index.php">Limpiar filtros</a>
+                                <?php else: ?>
+                                    No hay cotizaciones registradas en el sistema.
+                                <?php endif; ?>
+                            </p>
+                            <?php if ($total_cotizaciones == 0): ?>
+                            <div class="mt-3">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Las cotizaciones se crean desde el formulario de contacto del sitio web.
+                                </small>
+                            </div>
+                            <?php endif; ?>
                         </div>
                         <?php else: ?>
                         <form id="bulk-form" method="POST" action="">

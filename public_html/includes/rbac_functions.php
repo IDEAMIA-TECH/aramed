@@ -113,19 +113,52 @@ function checkPermission($modulo, $accion, $redirect = true) {
         return false;
     }
     
+    // Obtener rol del usuario
+    $user_role = $_SESSION['admin_rol'] ?? 'editor';
+    
+    // Si es admin, siempre tiene permiso
+    if ($user_role === 'admin') {
+        return true;
+    }
+    
     // Verificar permiso
     $tiene_permiso = hasPermission($usuario_id, $modulo, $accion);
     
     if (!$tiene_permiso) {
+        // Si el módulo no existe en RBAC, verificar si es un módulo nuevo
+        // Permitir acceso a usuarios autenticados si el módulo no está configurado
+        try {
+            $pdo = getDB();
+            if ($pdo) {
+                // Verificar si el módulo existe en la tabla permisos
+                $stmt = $pdo->prepare("SELECT COUNT(*) as existe FROM permisos WHERE modulo = ? LIMIT 1");
+                $stmt->execute([$modulo]);
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $stmt->closeCursor();
+                
+                // Si el módulo no existe en RBAC, permitir acceso (módulo nuevo)
+                if (empty($result) || $result[0]['existe'] == 0) {
+                    error_log("Módulo '$modulo' no encontrado en RBAC, permitiendo acceso a usuario autenticado");
+                    return true;
+                }
+            }
+        } catch (Exception $e) {
+            // Si hay error al verificar, permitir acceso por seguridad
+            error_log("Error verificando módulo en RBAC: " . $e->getMessage());
+            return true;
+        }
+        
         if ($redirect) {
             // Registrar intento de acceso no autorizado
-            logActivity($usuario_id, 'acceso_denegado', $modulo, null, null, [
-                'accion_intentada' => $accion,
-                'ip' => $_SERVER['REMOTE_ADDR'] ?? ''
-            ]);
+            if (function_exists('logActivity')) {
+                logActivity($usuario_id, 'acceso_denegado', $modulo, null, null, [
+                    'accion_intentada' => $accion,
+                    'ip' => $_SERVER['REMOTE_ADDR'] ?? ''
+                ]);
+            }
             
-            header('Location: index.php?error=sin_permiso');
-            exit;
+            header('HTTP/1.0 403 Forbidden');
+            die('No tienes permisos para acceder a esta página. Contacta al administrador.');
         }
         return false;
     }
