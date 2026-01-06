@@ -37,6 +37,7 @@ if (!function_exists('hasPermission')) {
         $stmt_usuario = $pdo->prepare($sql_usuario);
         $stmt_usuario->execute([$usuario_id]);
         $usuario = $stmt_usuario->fetch(PDO::FETCH_ASSOC);
+        $stmt_usuario->closeCursor(); // Cerrar cursor antes de la siguiente consulta
         
         if (!$usuario) {
             return false;
@@ -60,6 +61,7 @@ if (!function_exists('hasPermission')) {
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$rol, $modulo, $accion]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor(); // Cerrar cursor
         
         return ($result['tiene_permiso'] > 0);
     }
@@ -121,35 +123,45 @@ function getUserPermissions($usuario_id) {
         return [];
     }
     
-    // Obtener rol del usuario
-    $sql_usuario = "SELECT rol FROM admin_usuarios WHERE id = ? AND estado = 'activo'";
-    $stmt_usuario = $pdo->prepare($sql_usuario);
-    $stmt_usuario->execute([$usuario_id]);
-    $usuario = $stmt_usuario->fetch(PDO::FETCH_ASSOC);
-    
-    if (!$usuario) {
+    try {
+        // Obtener rol del usuario
+        $sql_usuario = "SELECT rol FROM admin_usuarios WHERE id = ? AND estado = 'activo'";
+        $stmt_usuario = $pdo->prepare($sql_usuario);
+        $stmt_usuario->execute([$usuario_id]);
+        $usuario = $stmt_usuario->fetch(PDO::FETCH_ASSOC);
+        
+        // Cerrar la consulta anterior antes de continuar
+        $stmt_usuario->closeCursor();
+        
+        if (!$usuario) {
+            return [];
+        }
+        
+        $rol = $usuario['rol'];
+        
+        // Si es admin, retornar todos los permisos
+        if ($rol === 'admin') {
+            $sql = "SELECT modulo, accion FROM permisos ORDER BY modulo, accion";
+            $stmt = $pdo->query($sql);
+            $permisos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+        } else {
+            // Obtener permisos del rol
+            $sql = "
+                SELECT p.modulo, p.accion
+                FROM rol_permisos rp
+                INNER JOIN permisos p ON rp.permiso_id = p.id
+                WHERE rp.rol = ?
+                ORDER BY p.modulo, p.accion
+            ";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$rol]);
+            $permisos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+        }
+    } catch (PDOException $e) {
+        error_log("Error en getUserPermissions: " . $e->getMessage());
         return [];
-    }
-    
-    $rol = $usuario['rol'];
-    
-    // Si es admin, retornar todos los permisos
-    if ($rol === 'admin') {
-        $sql = "SELECT modulo, accion FROM permisos ORDER BY modulo, accion";
-        $stmt = $pdo->query($sql);
-        $permisos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } else {
-        // Obtener permisos del rol
-        $sql = "
-            SELECT p.modulo, p.accion
-            FROM rol_permisos rp
-            INNER JOIN permisos p ON rp.permiso_id = p.id
-            WHERE rp.rol = ?
-            ORDER BY p.modulo, p.accion
-        ";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$rol]);
-        $permisos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     // Organizar por módulo
