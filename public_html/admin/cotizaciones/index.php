@@ -399,37 +399,37 @@ $current_dir = 'cotizaciones';
                 <div class="row mb-4">
                     <div class="col-md-2 col-6 mb-3">
                         <div class="stat-card text-center">
-                            <h3 class="mb-1 text-primary"><?php echo number_format($stats['total']); ?></h3>
+                            <h3 class="mb-1 text-primary"><?php echo number_format((int)($stats['total'] ?? 0)); ?></h3>
                             <small class="text-muted">Total</small>
                         </div>
                     </div>
                     <div class="col-md-2 col-6 mb-3">
                         <div class="stat-card text-center">
-                            <h3 class="mb-1 text-danger"><?php echo number_format($stats['nuevas']); ?></h3>
+                            <h3 class="mb-1 text-danger"><?php echo number_format((int)($stats['nuevas'] ?? 0)); ?></h3>
                             <small class="text-muted">Nuevas</small>
                         </div>
                     </div>
                     <div class="col-md-2 col-6 mb-3">
                         <div class="stat-card text-center">
-                            <h3 class="mb-1 text-warning"><?php echo number_format($stats['en_seguimiento']); ?></h3>
+                            <h3 class="mb-1 text-warning"><?php echo number_format((int)($stats['en_seguimiento'] ?? 0)); ?></h3>
                             <small class="text-muted">En Seguimiento</small>
                         </div>
                     </div>
                     <div class="col-md-2 col-6 mb-3">
                         <div class="stat-card text-center">
-                            <h3 class="mb-1 text-info"><?php echo number_format($stats['cotizadas']); ?></h3>
+                            <h3 class="mb-1 text-info"><?php echo number_format((int)($stats['cotizadas'] ?? 0)); ?></h3>
                             <small class="text-muted">Cotizadas</small>
                         </div>
                     </div>
                     <div class="col-md-2 col-6 mb-3">
                         <div class="stat-card text-center">
-                            <h3 class="mb-1 text-success"><?php echo number_format($stats['ganadas']); ?></h3>
+                            <h3 class="mb-1 text-success"><?php echo number_format((int)($stats['ganadas'] ?? 0)); ?></h3>
                             <small class="text-muted">Ganadas</small>
                         </div>
                     </div>
                     <div class="col-md-2 col-6 mb-3">
                         <div class="stat-card text-center">
-                            <h3 class="mb-1 text-primary"><?php echo number_format($stats['hoy']); ?></h3>
+                            <h3 class="mb-1 text-primary"><?php echo number_format((int)($stats['hoy'] ?? 0)); ?></h3>
                             <small class="text-muted">Hoy</small>
                         </div>
                     </div>
@@ -516,8 +516,8 @@ $current_dir = 'cotizaciones';
                 <div class="card">
                     <div class="card-header bg-white">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Cotizaciones (<?php echo number_format($total_cotizaciones); ?>)</h5>
-                            <?php if (function_exists('hasPermission') && hasPermission('cotizaciones', 'editar')): ?>
+                            <h5 class="mb-0">Cotizaciones (<?php echo number_format((int)$total_cotizaciones); ?>)</h5>
+                            <?php if (function_exists('hasPermission') && hasPermission($current_user['id'] ?? 0, 'cotizaciones', 'editar')): ?>
                             <div class="d-flex gap-2">
                                 <select class="form-select form-select-sm" id="bulk-action" style="width: auto;">
                                     <option value="">Acción masiva</option>

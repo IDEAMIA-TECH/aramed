@@ -254,7 +254,7 @@ $current_dir = 'proyectos';
                             </h2>
                             <p class="mb-0 opacity-75">Gestiona los proyectos realizados</p>
                         </div>
-                        <?php if (function_exists('hasPermission') && hasPermission('proyectos', 'crear')): ?>
+                        <?php if (function_exists('hasPermission') && hasPermission($current_user['id'] ?? 0, 'proyectos', 'crear')): ?>
                         <a href="create.php" class="btn btn-light">
                             <i class="bi bi-plus-circle me-2"></i>Nuevo Proyecto
                         </a>
@@ -365,7 +365,7 @@ $current_dir = 'proyectos';
                     <div class="card-header bg-white">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Proyectos (<?php echo number_format($total_proyectos); ?>)</h5>
-                            <?php if (function_exists('hasPermission') && hasPermission('proyectos', 'editar')): ?>
+                            <?php if (function_exists('hasPermission') && hasPermission($current_user['id'] ?? 0, 'proyectos', 'editar')): ?>
                             <div class="d-flex gap-2">
                                 <select class="form-select form-select-sm" id="bulk-action" style="width: auto;">
                                     <option value="">Acción masiva</option>
@@ -386,7 +386,7 @@ $current_dir = 'proyectos';
                             <i class="bi bi-folder text-muted" style="font-size: 4rem;"></i>
                             <h4 class="text-muted mt-3">No hay proyectos</h4>
                             <p class="text-muted">No se encontraron proyectos con los filtros aplicados</p>
-                            <?php if (function_exists('hasPermission') && hasPermission('proyectos', 'crear')): ?>
+                            <?php if (function_exists('hasPermission') && hasPermission($current_user['id'] ?? 0, 'proyectos', 'crear')): ?>
                             <a href="create.php" class="btn btn-primary mt-3">
                                 <i class="bi bi-plus-circle me-2"></i>Crear Primer Proyecto
                             </a>
@@ -448,7 +448,7 @@ $current_dir = 'proyectos';
                                                 <a href="view.php?id=<?php echo $proyecto['id']; ?>" class="btn btn-sm btn-outline-primary flex-grow-1">
                                                     <i class="bi bi-eye"></i> Ver
                                                 </a>
-                                                <?php if (function_exists('hasPermission') && hasPermission('proyectos', 'editar')): ?>
+                                                <?php if (function_exists('hasPermission') && hasPermission($current_user['id'] ?? 0, 'proyectos', 'editar')): ?>
                                                 <a href="edit.php?id=<?php echo $proyecto['id']; ?>" class="btn btn-sm btn-outline-secondary">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>

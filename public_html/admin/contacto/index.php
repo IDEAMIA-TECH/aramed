@@ -371,13 +371,13 @@ $current_dir = 'contacto';
                     <div class="card-header bg-white">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Mensajes (<?php echo number_format($total_messages); ?>)</h5>
-                            <?php if (function_exists('hasPermission') && hasPermission('contacto', 'editar')): ?>
+                            <?php if (function_exists('hasPermission') && hasPermission($current_user['id'] ?? 0, 'contacto', 'editar')): ?>
                             <div class="d-flex gap-2">
                                 <select class="form-select form-select-sm" id="bulk-action" style="width: auto;">
                                     <option value="">Acción masiva</option>
                                     <option value="marcar_leido">Marcar como leído</option>
                                     <option value="marcar_cerrado">Cerrar</option>
-                                    <?php if (function_exists('hasPermission') && hasPermission('contacto', 'eliminar')): ?>
+                                    <?php if (function_exists('hasPermission') && hasPermission($current_user['id'] ?? 0, 'contacto', 'eliminar')): ?>
                                     <option value="eliminar">Eliminar</option>
                                     <?php endif; ?>
                                 </select>

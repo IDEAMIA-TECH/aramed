@@ -139,7 +139,7 @@ $current_dir = 'proyectos';
                             </p>
                         </div>
                         <div class="d-flex gap-2">
-                            <?php if (function_exists('hasPermission') && hasPermission('proyectos', 'editar')): ?>
+                            <?php if (function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'proyectos', 'editar')): ?>
                             <a href="edit.php?id=<?php echo $id; ?>" class="btn btn-light">
                                 <i class="bi bi-pencil me-2"></i>Editar
                             </a>

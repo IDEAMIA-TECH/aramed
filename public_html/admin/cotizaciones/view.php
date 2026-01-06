@@ -545,7 +545,7 @@ $current_dir = 'cotizaciones';
                                 <a href="tel:<?php echo esc($cotizacion['telefono_oficina']); ?>" class="btn btn-outline-success btn-sm">
                                     <i class="bi bi-telephone me-1"></i>Llamar
                                 </a>
-                                <?php if (function_exists('hasPermission') && hasPermission('cotizaciones', 'exportar')): ?>
+                                <?php if (function_exists('hasPermission') && hasPermission($current_user['id'] ?? 0, 'cotizaciones', 'exportar')): ?>
                                 <a href="export.php?id=<?php echo $id; ?>" class="btn btn-outline-info btn-sm">
                                     <i class="bi bi-download me-1"></i>Exportar
                                 </a>
