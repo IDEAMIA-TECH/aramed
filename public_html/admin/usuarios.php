@@ -203,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== 'delete') {
             
             // Registrar actividad
             if (function_exists('logActivity')) {
-                logActivity($_SESSION['admin_user_id'], 'editar', 'usuarios', null, 'permisos_rol', [
+                logActivity($_SESSION['admin_user_id'] ?? 0, 'editar', 'usuarios', null, 'permisos_rol', [
                     'rol' => $rol,
                     'permisos_asignados' => count($permisos_seleccionados)
                 ]);
@@ -211,6 +211,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== 'delete') {
             
             $success_message = 'Permisos del rol actualizados exitosamente';
             $action = 'role_permissions';
+            // Mantener el rol seleccionado después de guardar
+            $rol_seleccionado = $rol;
+            $rol_seleccionado = $rol; // Mantener el rol seleccionado después de guardar
         }
         
     } catch (Exception $e) {
@@ -280,36 +283,46 @@ if ($action === 'role_permissions') {
     try {
         $pdo = getDB();
         
-        // Obtener permisos del rol seleccionado
-        if (function_exists('getRolePermissions')) {
-            $permisos_rol = getRolePermissions($rol_seleccionado);
+        // Verificar si las tablas existen
+        $tables_check = $pdo->query("SHOW TABLES LIKE 'permisos'")->fetch();
+        if (empty($tables_check)) {
+            $error_message = 'Las tablas de permisos no existen. Ejecuta el script: database/fase2/05_create_rbac_tables.sql';
+            $permisos_disponibles = [];
+            $permisos_rol = [];
         } else {
-            $stmt = $pdo->prepare("SELECT permiso_id FROM rol_permisos WHERE rol = ?");
-            $stmt->execute([$rol_seleccionado]);
-            $permisos_rol = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        }
-        
-        // Obtener todos los permisos disponibles
-        if (function_exists('getAllPermissions')) {
-            $permisos_disponibles = getAllPermissions();
-            $permisos_formato = [];
-            foreach ($permisos_disponibles as $modulo => $acciones) {
-                foreach ($acciones as $accion_data) {
-                    $permisos_formato[] = [
-                        'id' => $accion_data['id'] ?? null,
-                        'modulo' => $modulo,
-                        'accion' => $accion_data['accion'] ?? '',
-                        'descripcion' => $accion_data['descripcion'] ?? ''
-                    ];
-                }
+            // Obtener permisos del rol seleccionado
+            if (function_exists('getRolePermissions')) {
+                $permisos_rol = getRolePermissions($rol_seleccionado);
+            } else {
+                $stmt = $pdo->prepare("SELECT permiso_id FROM rol_permisos WHERE rol = ?");
+                $stmt->execute([$rol_seleccionado]);
+                $permisos_rol = $stmt->fetchAll(PDO::FETCH_COLUMN);
             }
-            $permisos_disponibles = $permisos_formato;
-        } else {
-            $stmt = $pdo->query("SELECT id, modulo, accion, descripcion FROM permisos ORDER BY modulo, accion");
-            $permisos_disponibles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Obtener todos los permisos disponibles
+            if (function_exists('getAllPermissions')) {
+                $permisos_disponibles = getAllPermissions();
+                $permisos_formato = [];
+                foreach ($permisos_disponibles as $modulo => $acciones) {
+                    foreach ($acciones as $accion_data) {
+                        $permisos_formato[] = [
+                            'id' => $accion_data['id'] ?? null,
+                            'modulo' => $modulo,
+                            'accion' => $accion_data['accion'] ?? '',
+                            'descripcion' => $accion_data['descripcion'] ?? ''
+                        ];
+                    }
+                }
+                $permisos_disponibles = $permisos_formato;
+            } else {
+                $stmt = $pdo->query("SELECT id, modulo, accion, descripcion FROM permisos ORDER BY modulo, accion");
+                $permisos_disponibles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
         }
     } catch (Exception $e) {
         $error_message = $e->getMessage();
+        $permisos_disponibles = [];
+        $permisos_rol = [];
     }
 }
 
@@ -772,16 +785,21 @@ try {
                             Los permisos asignados a un rol se aplican a todos los usuarios con ese rol.
                         </div>
                         
-                        <form method="POST" action="?action=update_role_permissions">
-                            <input type="hidden" name="rol" value="<?php echo esc($rol_seleccionado); ?>">
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Seleccionar Rol:</label>
-                                <select name="rol" class="form-control" onchange="this.form.submit()" style="max-width: 300px;">
+                        <!-- Selector de Rol (GET para cambiar vista) -->
+                        <div class="mb-4">
+                            <label class="form-label">Seleccionar Rol:</label>
+                            <form method="GET" action="" class="d-inline">
+                                <input type="hidden" name="action" value="role_permissions">
+                                <select name="rol" class="form-control d-inline-block" onchange="this.form.submit()" style="max-width: 300px;">
                                     <option value="admin" <?php echo $rol_seleccionado === 'admin' ? 'selected' : ''; ?>>Administrador</option>
                                     <option value="editor" <?php echo $rol_seleccionado === 'editor' ? 'selected' : ''; ?>>Editor</option>
                                 </select>
-                            </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Formulario para guardar permisos -->
+                        <form method="POST" action="?action=update_role_permissions">
+                            <input type="hidden" name="rol" value="<?php echo esc($rol_seleccionado); ?>">
                             
                             <?php 
                             // Agrupar permisos por módulo
@@ -802,12 +820,15 @@ try {
                             </div>
                             <?php else: ?>
                             <?php foreach ($permisos_por_modulo as $modulo => $permisos_modulo): ?>
-                            <div class="card mb-3">
-                                <div class="card-header bg-primary text-white">
+                            <div class="card mb-3" id="module_<?php echo esc($modulo); ?>">
+                                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">
                                         <i class="bi bi-folder me-2"></i>
                                         <?php echo esc(ucfirst(str_replace('_', ' ', $modulo))); ?>
                                     </h5>
+                                    <button type="button" class="btn btn-sm btn-light" onclick="toggleModulePermissions(document.getElementById('module_<?php echo esc($modulo); ?>'))" title="Seleccionar/Deseleccionar todos">
+                                        <i class="bi bi-check2-square"></i>
+                                    </button>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
@@ -836,9 +857,15 @@ try {
                             <?php endforeach; ?>
                             <?php endif; ?>
                             
-                            <div class="d-flex gap-2 mt-4">
+                            <div class="d-flex gap-2 mt-4 flex-wrap">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-check-circle me-2"></i>Guardar Permisos del Rol
+                                </button>
+                                <button type="button" class="btn btn-info" onclick="selectAllPermissions(); return false;">
+                                    <i class="bi bi-check-all me-2"></i>Seleccionar Todos
+                                </button>
+                                <button type="button" class="btn btn-warning" onclick="deselectAllPermissions(); return false;">
+                                    <i class="bi bi-x-circle me-2"></i>Deseleccionar Todos
                                 </button>
                                 <a href="?action=list" class="btn btn-secondary">
                                     <i class="bi bi-arrow-left me-2"></i>Volver a Lista
@@ -1051,5 +1078,34 @@ try {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <?php if ($action === 'role_permissions'): ?>
+    <script>
+        // Función para seleccionar todos los permisos
+        function selectAllPermissions() {
+            const checkboxes = document.querySelectorAll('input[name="permisos[]"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+        }
+        
+        // Función para deseleccionar todos los permisos
+        function deselectAllPermissions() {
+            const checkboxes = document.querySelectorAll('input[name="permisos[]"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        }
+        
+        // Función para seleccionar/deseleccionar todos los permisos de un módulo
+        function toggleModulePermissions(moduleCard) {
+            const checkboxes = moduleCard.querySelectorAll('input[name="permisos[]"]');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !allChecked;
+            });
+        }
+    </script>
+    <?php endif; ?>
 </body>
 </html>
