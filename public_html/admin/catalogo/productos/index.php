@@ -438,11 +438,23 @@ $current_dir = 'productos';
                             </h2>
                             <p class="mb-0 opacity-75">Gestiona el catálogo de productos</p>
                         </div>
-                        <?php if (function_exists('can') && can('catalogo', 'crear')): ?>
-                        <a href="create.php" class="btn btn-light">
-                            <i class="bi bi-plus-circle me-2"></i>Nuevo Producto
-                        </a>
-                        <?php endif; ?>
+                        <div class="d-flex gap-2">
+                            <?php if (function_exists('can') && can('catalogo', 'crear')): ?>
+                            <a href="create.php" class="btn btn-light">
+                                <i class="bi bi-plus-circle me-2"></i>Nuevo Producto
+                            </a>
+                            <?php endif; ?>
+                            <?php if (function_exists('can') && can('catalogo', 'ver')): ?>
+                            <a href="export.php" class="btn btn-outline-light">
+                                <i class="bi bi-download me-2"></i>Exportar
+                            </a>
+                            <?php endif; ?>
+                            <?php if (function_exists('can') && can('catalogo', 'crear')): ?>
+                            <a href="import.php" class="btn btn-outline-light">
+                                <i class="bi bi-upload me-2"></i>Importar
+                            </a>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
                 
