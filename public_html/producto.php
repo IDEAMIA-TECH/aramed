@@ -276,6 +276,38 @@ $breadcrumb = [
     <link rel="stylesheet" href="<?php echo assetUrl('css/producto.css'); ?>?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="<?php echo assetUrl('css/responsive.css'); ?>?v=<?php echo time(); ?>">
     
+    <style>
+        /* Asegurar que el botón de agregar al carrito sea visible */
+        .add-to-cart-btn.btn-primary {
+            background-color: #0d6efd !important;
+            border-color: #0d6efd !important;
+            color: white !important;
+            opacity: 1 !important;
+        }
+        
+        .add-to-cart-btn.btn-primary:hover {
+            background-color: #0b5ed7 !important;
+            border-color: #0a58ca !important;
+            color: white !important;
+            opacity: 1 !important;
+        }
+        
+        .add-to-cart-btn.btn-primary:focus,
+        .add-to-cart-btn.btn-primary:active {
+            background-color: #0a58ca !important;
+            border-color: #0a53be !important;
+            color: white !important;
+            opacity: 1 !important;
+        }
+        
+        .add-to-cart-btn.btn-success {
+            background-color: #198754 !important;
+            border-color: #198754 !important;
+            color: white !important;
+            opacity: 1 !important;
+        }
+    </style>
+    
     <!-- ========================================
          STRUCTURED DATA
          ======================================== -->
