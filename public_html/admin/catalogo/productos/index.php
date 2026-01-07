@@ -219,9 +219,18 @@ $current_dir = 'productos';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     
     <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --border-radius: 8px;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-hover: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
         
         .admin-content {
@@ -231,37 +240,186 @@ $current_dir = 'productos';
         
         .page-header {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            border-radius: var(--border-radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
             color: white;
+            box-shadow: var(--shadow);
         }
         
-        .product-card {
+        .page-header h2 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.75rem;
+        }
+        
+        .filters-card {
             background: white;
-            border-radius: 12px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            border: none;
+        }
+        
+        .filters-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #dee2e6;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .filters-header:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            height: 100%;
+            margin-bottom: 1.5rem;
         }
         
-        .product-card:hover {
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
+        .table-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1rem 1.5rem;
+            border-bottom: 2px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
         
-        .product-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table thead th {
             background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            color: #495057;
+            padding: 1rem;
+            white-space: nowrap;
         }
         
-        .product-badges {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+            transform: scale(1.001);
+        }
+        
+        .product-image-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .product-name {
+            font-weight: 600;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+        
+        .product-name:hover {
+            color: var(--secondary-color);
+        }
+        
+        .badge-sm {
+            font-size: 0.7rem;
+            padding: 0.35em 0.65em;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-buttons .btn {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .stats-bar {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .bulk-actions {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .pagination-wrapper {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .pagination {
+            margin: 0;
+        }
+        
+        .empty-state {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 4rem 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #dee2e6;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .admin-content {
+                padding: 1rem;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            .table {
+                min-width: 800px;
+            }
         }
     </style>
 </head>
@@ -304,242 +462,323 @@ $current_dir = 'productos';
                 <?php endif; ?>
                 
                 <!-- Filtros -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <form method="GET" action="" class="row g-3">
-                            <div class="col-md-3">
-                                <label class="form-label">Búsqueda</label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       name="busqueda" 
-                                       value="<?php echo esc($busqueda); ?>" 
-                                       placeholder="Nombre, código, descripción...">
+                <div class="filters-card">
+                    <div class="filters-header" data-bs-toggle="collapse" data-bs-target="#filtersCollapse" aria-expanded="false">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-funnel me-2"></i>
+                                <strong>Filtros de Búsqueda</strong>
+                                <?php if ($busqueda || $filtro_marca || $filtro_categoria || $filtro_estado || $filtro_destacado): ?>
+                                <span class="badge bg-primary ms-2">Activos</span>
+                                <?php endif; ?>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="collapse" id="filtersCollapse">
+                        <div class="card-body">
+                            <form method="GET" action="" class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label small text-muted">Búsqueda</label>
+                                    <input type="text" 
+                                           class="form-control form-control-sm" 
+                                           name="busqueda" 
+                                           value="<?php echo esc($busqueda); ?>" 
+                                           placeholder="Nombre, código, descripción...">
+                                </div>
+                                
+                                <div class="col-md-2">
+                                    <label class="form-label small text-muted">Marca</label>
+                                    <select name="marca" class="form-select form-select-sm">
+                                        <option value="0">Todas</option>
+                                        <?php foreach ($marcas as $marca): ?>
+                                        <option value="<?php echo $marca['id']; ?>" <?php echo $filtro_marca == $marca['id'] ? 'selected' : ''; ?>>
+                                            <?php echo esc($marca['nombre']); ?>
+                                        </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-2">
+                                    <label class="form-label small text-muted">Categoría</label>
+                                    <select name="categoria" class="form-select form-select-sm">
+                                        <option value="0">Todas</option>
+                                        <?php foreach ($categorias as $cat): ?>
+                                        <option value="<?php echo $cat['id']; ?>" <?php echo $filtro_categoria == $cat['id'] ? 'selected' : ''; ?>>
+                                            <?php echo esc($cat['nombre']); ?>
+                                        </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-2">
+                                    <label class="form-label small text-muted">Estado</label>
+                                    <select name="estado" class="form-select form-select-sm">
+                                        <option value="">Todos</option>
+                                        <option value="activo" <?php echo $filtro_estado === 'activo' ? 'selected' : ''; ?>>Activo</option>
+                                        <option value="inactivo" <?php echo $filtro_estado === 'inactivo' ? 'selected' : ''; ?>>Inactivo</option>
+                                        <option value="borrador" <?php echo $filtro_estado === 'borrador' ? 'selected' : ''; ?>>Borrador</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-2">
+                                    <label class="form-label small text-muted">Destacado</label>
+                                    <select name="destacado" class="form-select form-select-sm">
+                                        <option value="0">Todos</option>
+                                        <option value="1" <?php echo $filtro_destacado == 1 ? 'selected' : ''; ?>>Solo Destacados</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-12 d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-search me-1"></i>Buscar
+                                    </button>
+                                    <a href="index.php" class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-x-circle me-1"></i>Limpiar
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Estadísticas y Acciones -->
+                <?php if (!empty($productos)): ?>
+                <div class="stats-bar">
+                    <div>
+                        <span class="text-muted small">Mostrando</span>
+                        <strong><?php echo count($productos); ?></strong>
+                        <span class="text-muted small">de</span>
+                        <strong><?php echo number_format($total_productos); ?></strong>
+                        <span class="text-muted small">producto(s)</span>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <form method="POST" action="" id="bulk-form" class="d-flex gap-2 align-items-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="select-all">
+                                <label class="form-check-label small" for="select-all">
+                                    Seleccionar todos
+                                </label>
                             </div>
                             
-                            <div class="col-md-2">
-                                <label class="form-label">Marca</label>
-                                <select name="marca" class="form-select">
-                                    <option value="0">Todas</option>
-                                    <?php foreach ($marcas as $marca): ?>
-                                    <option value="<?php echo $marca['id']; ?>" <?php echo $filtro_marca == $marca['id'] ? 'selected' : ''; ?>>
-                                        <?php echo esc($marca['nombre']); ?>
-                                    </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            
-                            <div class="col-md-2">
-                                <label class="form-label">Categoría</label>
-                                <select name="categoria" class="form-select">
-                                    <option value="0">Todas</option>
-                                    <?php foreach ($categorias as $cat): ?>
-                                    <option value="<?php echo $cat['id']; ?>" <?php echo $filtro_categoria == $cat['id'] ? 'selected' : ''; ?>>
-                                        <?php echo esc($cat['nombre']); ?>
-                                    </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            
-                            <div class="col-md-2">
-                                <label class="form-label">Estado</label>
-                                <select name="estado" class="form-select">
-                                    <option value="">Todos</option>
-                                    <option value="activo" <?php echo $filtro_estado === 'activo' ? 'selected' : ''; ?>>Activo</option>
-                                    <option value="inactivo" <?php echo $filtro_estado === 'inactivo' ? 'selected' : ''; ?>>Inactivo</option>
-                                    <option value="borrador" <?php echo $filtro_estado === 'borrador' ? 'selected' : ''; ?>>Borrador</option>
-                                </select>
-                            </div>
-                            
-                            <div class="col-md-2">
-                                <label class="form-label">Destacado</label>
-                                <select name="destacado" class="form-select">
-                                    <option value="0">Todos</option>
-                                    <option value="1" <?php echo $filtro_destacado == 1 ? 'selected' : ''; ?>>Solo Destacados</option>
-                                </select>
-                            </div>
-                            
-                            <div class="col-md-1 d-flex align-items-end">
-                                <button type="submit" class="btn btn-primary w-100">
-                                    <i class="bi bi-search"></i>
-                                </button>
-                            </div>
+                            <select name="bulk_action" class="form-select form-select-sm" style="width: auto; min-width: 150px;" required>
+                                <option value="">Acción masiva...</option>
+                                <option value="activate">Activar</option>
+                                <option value="deactivate">Desactivar</option>
+                                <option value="draft">Mover a Borrador</option>
+                                <option value="feature">Marcar como Destacado</option>
+                                <option value="unfeature">Quitar Destacado</option>
+                                <option value="delete">Eliminar</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="bi bi-check-circle me-1"></i>Aplicar
+                            </button>
                         </form>
                     </div>
                 </div>
-                
-                <!-- Acciones masivas -->
-                <?php if (!empty($productos)): ?>
-                <form method="POST" action="" id="bulk-form" class="mb-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="select-all">
-                                    <label class="form-check-label" for="select-all">
-                                        Seleccionar todos
-                                    </label>
-                                </div>
-                                
-                                <div class="d-flex gap-2 flex-wrap">
-                                    <select name="bulk_action" class="form-select form-select-sm" style="width: auto;" required>
-                                        <option value="">Acción...</option>
-                                        <option value="activate">Activar</option>
-                                        <option value="deactivate">Desactivar</option>
-                                        <option value="draft">Mover a Borrador</option>
-                                        <option value="feature">Marcar como Destacado</option>
-                                        <option value="unfeature">Quitar Destacado</option>
-                                        <option value="delete">Eliminar</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-sm btn-primary">
-                                        <i class="bi bi-check-circle me-1"></i>Aplicar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
                 <?php endif; ?>
-                
-                <!-- Estadísticas -->
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle me-2"></i>
-                    Mostrando <strong><?php echo count($productos); ?></strong> de <strong><?php echo number_format($total_productos); ?></strong> producto(s)
-                </div>
                 
                 <!-- Lista de productos -->
                 <?php if (empty($productos)): ?>
-                <div class="card">
-                    <div class="card-body text-center py-5">
-                        <i class="bi bi-box text-muted" style="font-size: 4rem;"></i>
-                        <h4 class="text-muted mt-3">No se encontraron productos</h4>
-                        <p class="text-muted"><?php echo !empty($busqueda) || $filtro_marca || $filtro_categoria || $filtro_estado ? 'Intenta ajustar los filtros' : 'Comienza creando el primer producto'; ?></p>
-                        <?php if (empty($busqueda) && !$filtro_marca && !$filtro_categoria && !$filtro_estado): ?>
-                        <?php if (function_exists('can') && can('catalogo', 'crear')): ?>
-                        <a href="create.php" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-2"></i>Crear Primer Producto
-                        </a>
-                        <?php endif; ?>
-                        <?php endif; ?>
-                    </div>
+                <div class="empty-state">
+                    <i class="bi bi-box"></i>
+                    <h4 class="text-muted mt-3">No se encontraron productos</h4>
+                    <p class="text-muted"><?php echo !empty($busqueda) || $filtro_marca || $filtro_categoria || $filtro_estado ? 'Intenta ajustar los filtros' : 'Comienza creando el primer producto'; ?></p>
+                    <?php if (empty($busqueda) && !$filtro_marca && !$filtro_categoria && !$filtro_estado): ?>
+                    <?php if (function_exists('can') && can('catalogo', 'crear')): ?>
+                    <a href="create.php" class="btn btn-primary mt-3">
+                        <i class="bi bi-plus-circle me-2"></i>Crear Primer Producto
+                    </a>
+                    <?php endif; ?>
+                    <?php endif; ?>
                 </div>
                 <?php else: ?>
-                <div class="row">
-                    <?php foreach ($productos as $producto): ?>
-                    <div class="col-md-4 mb-4">
-                        <div class="product-card">
-                            <div class="position-relative">
-                                <?php if ($producto['imagen_principal']): ?>
-                                <img src="<?php echo SITE_URL . '/' . esc($producto['imagen_principal']); ?>" 
-                                     alt="<?php echo esc($producto['nombre']); ?>" 
-                                     class="product-image"
-                                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'200\'%3E%3Crect fill=\'%23f8f9fa\' width=\'300\' height=\'200\'/%3E%3Ctext fill=\'%23999\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\'%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                                <?php else: ?>
-                                <div class="product-image d-flex align-items-center justify-content-center text-muted">
-                                    <i class="bi bi-image" style="font-size: 3rem;"></i>
-                                </div>
-                                <?php endif; ?>
-                                
-                                <div class="product-badges">
-                                    <?php if ($producto['destacado']): ?>
-                                    <span class="badge bg-danger">
-                                        <i class="bi bi-star-fill"></i>
-                                    </span>
-                                    <?php endif; ?>
-                                    <?php if ($producto['nuevo']): ?>
-                                    <span class="badge bg-success">
-                                        <i class="bi bi-newspaper"></i>
-                                    </span>
-                                    <?php endif; ?>
-                                    <?php if ($producto['promocion']): ?>
-                                    <span class="badge bg-warning">
-                                        <i class="bi bi-tag-fill"></i>
-                                    </span>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                            
-                            <div class="card-body">
-                                <h5 class="card-title mb-2">
-                                    <a href="edit.php?id=<?php echo $producto['id']; ?>" class="text-decoration-none">
-                                        <?php echo esc($producto['nombre']); ?>
-                                    </a>
-                                </h5>
-                                
-                                <p class="text-muted small mb-2">
-                                    <strong>Código:</strong> <?php echo esc($producto['codigo']); ?>
-                                </p>
-                                
-                                <div class="d-flex align-items-center gap-2 mb-2">
-                                    <?php if ($producto['marca_nombre']): ?>
-                                    <span class="badge bg-info"><?php echo esc($producto['marca_nombre']); ?></span>
-                                    <?php endif; ?>
-                                    <?php if ($producto['categoria_nombre']): ?>
-                                    <span class="badge bg-secondary"><?php echo esc($producto['categoria_nombre']); ?></span>
-                                    <?php endif; ?>
-                                </div>
-                                
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <span class="badge <?php 
-                                        echo $producto['estado'] === 'activo' ? 'bg-success' : 
-                                            ($producto['estado'] === 'inactivo' ? 'bg-secondary' : 'bg-warning'); 
-                                    ?>">
-                                        <?php echo ucfirst($producto['estado']); ?>
-                                    </span>
-                                    
-                                    <div class="form-check">
+                <div class="table-container">
+                    <div class="table-header">
+                        <div>
+                            <strong>Lista de Productos</strong>
+                            <span class="text-muted small ms-2">(<?php echo number_format($total_productos); ?> total)</span>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;">
+                                        <input type="checkbox" class="form-check-input" id="select-all-table">
+                                    </th>
+                                    <th style="width: 80px;">Imagen</th>
+                                    <th>Producto</th>
+                                    <th style="width: 120px;">Código</th>
+                                    <th style="width: 150px;">Marca</th>
+                                    <th style="width: 150px;">Categoría</th>
+                                    <th style="width: 100px;">Estado</th>
+                                    <th style="width: 120px;" class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($productos as $producto): ?>
+                                <tr>
+                                    <td>
                                         <input class="form-check-input product-checkbox" 
                                                type="checkbox" 
                                                name="selected_products[]" 
                                                value="<?php echo $producto['id']; ?>"
                                                form="bulk-form">
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-3 d-flex gap-2">
-                                    <?php if (function_exists('can') && can('catalogo', 'editar')): ?>
-                                    <a href="edit.php?id=<?php echo $producto['id']; ?>" class="btn btn-sm btn-outline-primary flex-fill">
-                                        <i class="bi bi-pencil me-1"></i>Editar
-                                    </a>
-                                    <?php endif; ?>
-                                    <a href="view.php?id=<?php echo $producto['id']; ?>" class="btn btn-sm btn-outline-info">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                                    </td>
+                                    <td>
+                                        <?php if ($producto['imagen_principal']): ?>
+                                        <img src="<?php echo SITE_URL . '/' . esc($producto['imagen_principal']); ?>" 
+                                             alt="<?php echo esc($producto['nombre']); ?>" 
+                                             class="product-image-thumb"
+                                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'%3E%3Crect fill=\'%23f8f9fa\' width=\'60\' height=\'60\'/%3E%3Ctext fill=\'%23999\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' font-size=\'10\'%3EN/A%3C/text%3E%3C/svg%3E'">
+                                        <?php else: ?>
+                                        <div class="product-image-thumb d-flex align-items-center justify-content-center bg-light text-muted">
+                                            <i class="bi bi-image"></i>
+                                        </div>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <a href="edit.php?id=<?php echo $producto['id']; ?>" class="product-name">
+                                                <?php echo esc($producto['nombre']); ?>
+                                            </a>
+                                        </div>
+                                        <div class="mt-1">
+                                            <?php if ($producto['destacado']): ?>
+                                            <span class="badge bg-danger badge-sm me-1">
+                                                <i class="bi bi-star-fill"></i> Destacado
+                                            </span>
+                                            <?php endif; ?>
+                                            <?php if ($producto['nuevo']): ?>
+                                            <span class="badge bg-success badge-sm me-1">
+                                                <i class="bi bi-sparkles"></i> Nuevo
+                                            </span>
+                                            <?php endif; ?>
+                                            <?php if ($producto['promocion']): ?>
+                                            <span class="badge bg-warning badge-sm">
+                                                <i class="bi bi-tag-fill"></i> Promoción
+                                            </span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <code class="small"><?php echo esc($producto['codigo']); ?></code>
+                                    </td>
+                                    <td>
+                                        <?php if ($producto['marca_nombre']): ?>
+                                        <span class="badge bg-info"><?php echo esc($producto['marca_nombre']); ?></span>
+                                        <?php else: ?>
+                                        <span class="text-muted small">N/A</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($producto['categoria_nombre']): ?>
+                                        <span class="badge bg-secondary"><?php echo esc($producto['categoria_nombre']); ?></span>
+                                        <?php else: ?>
+                                        <span class="text-muted small">N/A</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <span class="badge <?php 
+                                            echo $producto['estado'] === 'activo' ? 'bg-success' : 
+                                                ($producto['estado'] === 'inactivo' ? 'bg-secondary' : 'bg-warning'); 
+                                        ?>">
+                                            <?php echo ucfirst($producto['estado']); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <?php if (function_exists('can') && can('catalogo', 'editar')): ?>
+                                            <a href="edit.php?id=<?php echo $producto['id']; ?>" 
+                                               class="btn btn-sm btn-outline-primary" 
+                                               title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <?php endif; ?>
+                                            <a href="view.php?id=<?php echo $producto['id']; ?>" 
+                                               class="btn btn-sm btn-outline-info" 
+                                               title="Ver">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
-                    <?php endforeach; ?>
                 </div>
                 
                 <!-- Paginación -->
                 <?php if ($total_pages > 1): ?>
-                <nav aria-label="Paginación" class="mt-4">
-                    <ul class="pagination justify-content-center">
-                        <?php if ($page > 1): ?>
-                        <li class="page-item">
-                            <a class="page-link" href="?page=<?php echo $page - 1; ?>&marca=<?php echo $filtro_marca; ?>&categoria=<?php echo $filtro_categoria; ?>&estado=<?php echo urlencode($filtro_estado); ?>&destacado=<?php echo $filtro_destacado; ?>&busqueda=<?php echo urlencode($busqueda); ?>">
-                                Anterior
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                        
-                        <?php for ($i = max(1, $page - 2); $i <= min($total_pages, $page + 2); $i++): ?>
-                        <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
-                            <a class="page-link" href="?page=<?php echo $i; ?>&marca=<?php echo $filtro_marca; ?>&categoria=<?php echo $filtro_categoria; ?>&estado=<?php echo urlencode($filtro_estado); ?>&destacado=<?php echo $filtro_destacado; ?>&busqueda=<?php echo urlencode($busqueda); ?>">
-                                <?php echo $i; ?>
-                            </a>
-                        </li>
-                        <?php endfor; ?>
-                        
-                        <?php if ($page < $total_pages): ?>
-                        <li class="page-item">
-                            <a class="page-link" href="?page=<?php echo $page + 1; ?>&marca=<?php echo $filtro_marca; ?>&categoria=<?php echo $filtro_categoria; ?>&estado=<?php echo urlencode($filtro_estado); ?>&destacado=<?php echo $filtro_destacado; ?>&busqueda=<?php echo urlencode($busqueda); ?>">
-                                Siguiente
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                    </ul>
-                </nav>
+                <?php
+                // Construir URL base con filtros
+                $url_params = [];
+                if ($filtro_marca) $url_params['marca'] = $filtro_marca;
+                if ($filtro_categoria) $url_params['categoria'] = $filtro_categoria;
+                if ($filtro_estado) $url_params['estado'] = $filtro_estado;
+                if ($filtro_destacado) $url_params['destacado'] = $filtro_destacado;
+                if ($busqueda) $url_params['busqueda'] = $busqueda;
+                $url_base = '?' . http_build_query($url_params);
+                ?>
+                <div class="pagination-wrapper">
+                    <nav aria-label="Paginación">
+                        <ul class="pagination justify-content-center mb-0">
+                            <?php if ($page > 1): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="<?php echo $url_base . '&page=' . ($page - 1); ?>">
+                                    <i class="bi bi-chevron-left"></i> Anterior
+                                </a>
+                            </li>
+                            <?php endif; ?>
+                            
+                            <?php
+                            $start_page = max(1, $page - 2);
+                            $end_page = min($total_pages, $page + 2);
+                            
+                            if ($start_page > 1): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="<?php echo $url_base . '&page=1'; ?>">1</a>
+                            </li>
+                            <?php if ($start_page > 2): ?>
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            <?php endif; ?>
+                            <?php endif; ?>
+                            
+                            <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+                            <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
+                                <a class="page-link" href="<?php echo $url_base . '&page=' . $i; ?>">
+                                    <?php echo $i; ?>
+                                </a>
+                            </li>
+                            <?php endfor; ?>
+                            
+                            <?php if ($end_page < $total_pages): ?>
+                            <?php if ($end_page < $total_pages - 1): ?>
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            <?php endif; ?>
+                            <li class="page-item">
+                                <a class="page-link" href="<?php echo $url_base . '&page=' . $total_pages; ?>">
+                                    <?php echo $total_pages; ?>
+                                </a>
+                            </li>
+                            <?php endif; ?>
+                            
+                            <?php if ($page < $total_pages): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="<?php echo $url_base . '&page=' . ($page + 1); ?>">
+                                    Siguiente <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </nav>
+                </div>
                 <?php endif; ?>
                 <?php endif; ?>
             </div>
@@ -548,10 +787,29 @@ $current_dir = 'productos';
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Seleccionar todos
-        document.getElementById('select-all')?.addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.product-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
+        // Seleccionar todos (ambos checkboxes)
+        const selectAllCheckboxes = document.querySelectorAll('#select-all, #select-all-table');
+        selectAllCheckboxes.forEach(function(checkbox) {
+            checkbox?.addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('.product-checkbox');
+                checkboxes.forEach(cb => cb.checked = this.checked);
+                // Sincronizar ambos checkboxes
+                selectAllCheckboxes.forEach(cb => {
+                    if (cb !== this) cb.checked = this.checked;
+                });
+            });
+        });
+        
+        // Sincronizar checkboxes individuales
+        document.querySelectorAll('.product-checkbox').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const allChecked = document.querySelectorAll('.product-checkbox:checked').length;
+                const total = document.querySelectorAll('.product-checkbox').length;
+                selectAllCheckboxes.forEach(cb => {
+                    cb.checked = allChecked === total;
+                    cb.indeterminate = allChecked > 0 && allChecked < total;
+                });
+            });
         });
         
         // Validar acción masiva
@@ -576,6 +834,18 @@ $current_dir = 'productos';
                 return false;
             }
         });
+        
+        // Auto-expandir filtros si hay filtros activos
+        <?php if ($busqueda || $filtro_marca || $filtro_categoria || $filtro_estado || $filtro_destacado): ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filtersCollapse = document.getElementById('filtersCollapse');
+            if (filtersCollapse) {
+                const bsCollapse = new bootstrap.Collapse(filtersCollapse, {
+                    toggle: true
+                });
+            }
+        });
+        <?php endif; ?>
     </script>
 </body>
 </html>
