@@ -78,13 +78,7 @@ if (!in_array($format, ['xlsx', 'csv'])) {
 
 if ($phpspreadsheet_available && $format === 'xlsx') {
     // Exportar a Excel usando PhpSpreadsheet
-    use PhpOffice\PhpSpreadsheet\Spreadsheet;
-    use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-    use PhpOffice\PhpSpreadsheet\Style\Fill;
-    use PhpOffice\PhpSpreadsheet\Style\Alignment;
-    use PhpOffice\PhpSpreadsheet\Style\Border;
-    
-    $spreadsheet = new Spreadsheet();
+    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->setTitle('Productos');
     
@@ -119,16 +113,16 @@ if ($phpspreadsheet_available && $format === 'xlsx') {
             'color' => ['rgb' => 'FFFFFF'],
         ],
         'fill' => [
-            'fillType' => Fill::FILL_SOLID,
+            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
             'startColor' => ['rgb' => '2c3e50'],
         ],
         'alignment' => [
-            'horizontal' => Alignment::HORIZONTAL_CENTER,
-            'vertical' => Alignment::VERTICAL_CENTER,
+            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
         ],
         'borders' => [
             'allBorders' => [
-                'borderStyle' => Border::BORDER_THIN,
+                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
             ],
         ],
     ];
@@ -179,7 +173,7 @@ if ($phpspreadsheet_available && $format === 'xlsx') {
     header('Content-Disposition: attachment;filename="' . $filename . '"');
     header('Cache-Control: max-age=0');
     
-    $writer = new Xlsx($spreadsheet);
+    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
     $writer->save('php://output');
     exit;
     
