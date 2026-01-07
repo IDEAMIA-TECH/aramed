@@ -14,26 +14,73 @@
 // Definir constante del sitio
 define('ARAMED_SITE', true);
 
+// Iniciar sesión si no está iniciada (antes de cualquier redirección)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Cargar configuración y verificar autenticación
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/functions.php';
-require_once __DIR__ . '/../../includes/connection.php';
-require_once __DIR__ . '/../auth_check.php';
+try {
+    require_once __DIR__ . '/../../includes/config.php';
+} catch (Exception $e) {
+    error_log("Error cargando config.php: " . $e->getMessage());
+    die('Error de configuración');
+}
+
+try {
+    require_once __DIR__ . '/../../includes/functions.php';
+} catch (Exception $e) {
+    error_log("Error cargando functions.php: " . $e->getMessage());
+    die('Error cargando funciones');
+}
+
+try {
+    require_once __DIR__ . '/../../includes/connection.php';
+} catch (Exception $e) {
+    error_log("Error cargando connection.php: " . $e->getMessage());
+    die('Error de conexión');
+}
+
+try {
+    require_once __DIR__ . '/../auth_check.php';
+} catch (Exception $e) {
+    error_log("Error cargando auth_check.php: " . $e->getMessage());
+    // Si auth_check falla, verificar manualmente
+    if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+        header('Location: /admin/login.php');
+        exit;
+    }
+}
 
 // Verificar que el usuario sea admin (SEO es solo para admin)
 $user_role = $_SESSION['admin_rol'] ?? 'editor';
 if ($user_role !== 'admin') {
-    header('Location: ../sin-permiso.php?modulo=seo&accion=editar');
+    // Construir URL absoluta para evitar problemas con subdirectorios
+    $sin_permiso_url = '/admin/sin-permiso.php?modulo=' . urlencode('seo') . '&accion=' . urlencode('editar');
+    header('Location: ' . $sin_permiso_url);
     exit;
 }
 
 // Verificar permisos RBAC
+// IMPORTANTE: No usar checkPermission con redirect=true aquí porque puede causar 403
+// Ya verificamos que es admin arriba, así que solo verificamos permisos sin redirigir
 if (function_exists('checkPermission')) {
     try {
-        checkPermission('seo', 'editar');
+        // Verificar permiso sin redirigir (redirect=false)
+        // Si no tiene permiso, solo retorna false, no redirige
+        $tiene_permiso = checkPermission('seo', 'editar', false);
+        
+        // Si no tiene permiso Y no es admin (aunque ya verificamos arriba), mostrar error
+        if (!$tiene_permiso && $user_role !== 'admin') {
+            // Solo en este caso redirigir manualmente
+            $sin_permiso_url = '/admin/sin-permiso.php?modulo=' . urlencode('seo') . '&accion=' . urlencode('editar');
+            header('Location: ' . $sin_permiso_url);
+            exit;
+        }
     } catch (Exception $e) {
         error_log("Error en checkPermission: " . $e->getMessage());
-        // Continuar si hay error en permisos (módulo nuevo)
+        // Continuar si hay error en permisos (módulo nuevo o no configurado)
+        // Si el usuario es admin, siempre permitir acceso
     }
 }
 
