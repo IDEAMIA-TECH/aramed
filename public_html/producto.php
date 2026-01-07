@@ -518,17 +518,24 @@ $breadcrumb = [
                         <div class="producto-actions mb-4">
                             <div class="d-flex gap-3 flex-wrap">
                                 <button type="button" 
-                                        class="btn btn-primary btn-lg flex-fill add-to-cart-btn" 
+                                        class="btn btn-primary btn-lg flex-fill add-to-cart-btn shadow-sm" 
                                         data-product-id="<?php echo $product['id']; ?>"
                                         data-product-nombre="<?php echo esc($product['nombre']); ?>"
-                                        data-product-codigo="<?php echo esc($product['codigo'] ?? ''); ?>">
+                                        data-product-codigo="<?php echo esc($product['codigo'] ?? ''); ?>"
+                                        style="font-weight: 600;">
                                     <i class="bi bi-cart-plus me-2"></i>
                                     Agregar a Cotización
                                 </button>
-                                <a href="<?php echo siteUrl('index.php#newsletter'); ?>" class="btn btn-outline-primary btn-lg">
-                                    <i class="bi bi-chat-left-text me-2"></i>
-                                    Consultar
+                                <a href="<?php echo siteUrl('cotizacion.php'); ?>" class="btn btn-outline-primary btn-lg">
+                                    <i class="bi bi-cart-check me-2"></i>
+                                    Ver Carrito
                                 </a>
+                            </div>
+                            <div class="mt-2 text-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Agrega productos al carrito para solicitar una cotización personalizada
+                                </small>
                             </div>
                         </div>
                         
@@ -839,10 +846,23 @@ $breadcrumb = [
                             this.disabled = false;
                         }, 2000);
                         
-                        // Opcional: mostrar notificación
-                        if (typeof showToast !== 'undefined') {
-                            showToast('Producto agregado al carrito', 'success');
-                        }
+                        // Mostrar notificación visible
+                        const notification = document.createElement('div');
+                        notification.className = 'alert alert-success alert-dismissible fade show position-fixed';
+                        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);';
+                        notification.innerHTML = `
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            <strong>¡Producto agregado!</strong> Se agregó al carrito de cotización.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        `;
+                        document.body.appendChild(notification);
+                        
+                        // Remover después de 5 segundos
+                        setTimeout(() => {
+                            if (notification.parentNode) {
+                                notification.remove();
+                            }
+                        }, 5000);
                     } else {
                         alert('Error: ' + data.message);
                         this.innerHTML = originalHTML;
