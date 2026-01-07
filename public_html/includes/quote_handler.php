@@ -201,25 +201,221 @@ try {
         // Limpiar carrito
         clearCart();
         
-        // Enviar email de notificación (opcional)
-        if (function_exists('sendEmail') && defined('CONTACT_EMAIL')) {
-            $subject = "Nueva Solicitud de Cotización - {$folio}";
-            $message = "
-                Nueva solicitud de cotización recibida:
-                
-                Folio: {$folio}
-                Institución: {$data['institucion']}
-                Contacto: {$data['nombre']} ({$data['email_oficial']})
-                Productos: " . count($cart_products) . " producto(s)
-                
-                Ver detalles: " . SITE_URL . "/admin/cotizaciones/view.php?id={$cotizacion_id}
+        // Cargar funciones de email
+        if (!defined('INCLUDES_PATH')) {
+            define('INCLUDES_PATH', __DIR__);
+        }
+        if (file_exists(__DIR__ . '/email_functions.php')) {
+            require_once __DIR__ . '/email_functions.php';
+        }
+        
+        // ========================================
+        // ENVIAR EMAIL 1: CONFIRMACIÓN AL CLIENTE
+        // ========================================
+        try {
+            $clientSubject = "Confirmación de Solicitud de Cotización - {$folio}";
+            $clientMessage = "
+                <!DOCTYPE html>
+                <html lang='es-MX'>
+                <head>
+                    <meta charset='UTF-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                </head>
+                <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;'>
+                    <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;'>
+                        <h1 style='color: white; margin: 0;'>¡Solicitud Recibida!</h1>
+                    </div>
+                    
+                    <div style='background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;'>
+                        <p style='font-size: 16px;'>Estimado/a <strong>{$data['nombre']}</strong>,</p>
+                        
+                        <p>Gracias por contactarnos. Hemos recibido tu solicitud de cotización con el siguiente folio:</p>
+                        
+                        <div style='background: white; padding: 20px; border-left: 4px solid #667eea; margin: 20px 0;'>
+                            <p style='margin: 0; font-size: 18px; font-weight: bold; color: #667eea;'>{$folio}</p>
+                        </div>
+                        
+                        <p>Nuestro equipo de ventas está revisando tu solicitud y se pondrá en contacto contigo a la brevedad posible para proporcionarte la información y cotización que necesitas.</p>
+                        
+                        <div style='background: white; padding: 20px; margin: 20px 0; border-radius: 5px;'>
+                            <h3 style='margin-top: 0; color: #667eea;'>Resumen de tu solicitud:</h3>
+                            <ul style='list-style: none; padding: 0;'>
+                                <li style='padding: 5px 0;'><strong>Institución:</strong> {$data['institucion']}</li>
+                                <li style='padding: 5px 0;'><strong>Productos solicitados:</strong> " . count($cart_products) . " producto(s)</li>
+                                <li style='padding: 5px 0;'><strong>Fecha de solicitud:</strong> " . date('d/m/Y H:i') . "</li>
+                            </ul>
+                        </div>
+                        
+                        <p>Si tienes alguna pregunta o necesitas información adicional, no dudes en contactarnos.</p>
+                        
+                        <p style='margin-top: 30px;'>Saludos cordiales,<br>
+                        <strong>Equipo de Aramed y Laboratorios</strong></p>
+                        
+                        <hr style='border: none; border-top: 1px solid #ddd; margin: 30px 0;'>
+                        
+                        <p style='font-size: 12px; color: #666; text-align: center;'>
+                            Este es un correo automático, por favor no respondas a este mensaje.<br>
+                            Si necesitas contactarnos, escribe a: " . CONTACT_EMAIL . "
+                        </p>
+                    </div>
+                </body>
+                </html>
             ";
             
-            try {
-                sendEmail(CONTACT_EMAIL, $subject, $message);
-            } catch (Exception $e) {
-                error_log("Error enviando email de cotización: " . $e->getMessage());
+            $emailResult = sendEmail($data['email_oficial'], $clientSubject, $clientMessage, $data['nombre']);
+            if (!$emailResult['success']) {
+                error_log("Error enviando email de confirmación al cliente: " . $emailResult['message']);
             }
+        } catch (Exception $e) {
+            error_log("Error enviando email de confirmación al cliente: " . $e->getMessage());
+        }
+        
+        // ========================================
+        // ENVIAR EMAIL 2: NOTIFICACIÓN AL ADMIN
+        // ========================================
+        try {
+            // Obtener detalles completos de la cotización
+            $cotizacion_sql = "
+                SELECT c.*, 
+                       GROUP_CONCAT(CONCAT(ci.producto_nombre, ' (x', ci.cantidad, ')') SEPARATOR ', ') as productos_lista
+                FROM cotizaciones c
+                LEFT JOIN cotizacion_items ci ON c.id = ci.cotizacion_id
+                WHERE c.id = ?
+                GROUP BY c.id
+            ";
+            $cotizacion_stmt = $pdo->prepare($cotizacion_sql);
+            $cotizacion_stmt->execute([$cotizacion_id]);
+            $cotizacion_detalle = $cotizacion_stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Construir lista de productos
+            $productos_html = '<ul style="list-style: none; padding: 0;">';
+            foreach ($cart_products as $product) {
+                $productos_html .= "<li style='padding: 8px 0; border-bottom: 1px solid #eee;'>";
+                $productos_html .= "<strong>{$product['nombre']}</strong> (Cantidad: {$product['cantidad']})";
+                if (!empty($product['codigo'])) {
+                    $productos_html .= "<br><small style='color: #666;'>Código: {$product['codigo']}</small>";
+                }
+                $productos_html .= "</li>";
+            }
+            $productos_html .= '</ul>';
+            
+            $adminSubject = "Nueva Solicitud de Cotización - {$folio}";
+            $adminMessage = "
+                <!DOCTYPE html>
+                <html lang='es-MX'>
+                <head>
+                    <meta charset='UTF-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                </head>
+                <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;'>
+                    <div style='background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;'>
+                        <h1 style='color: white; margin: 0;'>Nueva Solicitud de Cotización</h1>
+                        <p style='color: white; margin: 10px 0 0 0; font-size: 18px;'>Folio: <strong>{$folio}</strong></p>
+                    </div>
+                    
+                    <div style='background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;'>
+                        <div style='background: white; padding: 20px; margin-bottom: 20px; border-radius: 5px; border-left: 4px solid #e74c3c;'>
+                            <h2 style='margin-top: 0; color: #e74c3c;'>Información de la Institución</h2>
+                            <table style='width: 100%; border-collapse: collapse;'>
+                                <tr>
+                                    <td style='padding: 8px 0; width: 40%;'><strong>Institución:</strong></td>
+                                    <td style='padding: 8px 0;'>{$data['institucion']}</td>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 8px 0;'><strong>Tipo:</strong></td>
+                                    <td style='padding: 8px 0;'>{$data['tipo_institucion']}</td>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 8px 0;'><strong>Estado:</strong></td>
+                                    <td style='padding: 8px 0;'>{$data['estado']}</td>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 8px 0;'><strong>Ciudad:</strong></td>
+                                    <td style='padding: 8px 0;'>{$data['ciudad']}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div style='background: white; padding: 20px; margin-bottom: 20px; border-radius: 5px; border-left: 4px solid #3498db;'>
+                            <h2 style='margin-top: 0; color: #3498db;'>Información de Contacto</h2>
+                            <table style='width: 100%; border-collapse: collapse;'>
+                                <tr>
+                                    <td style='padding: 8px 0; width: 40%;'><strong>Nombre:</strong></td>
+                                    <td style='padding: 8px 0;'>{$data['nombre']}</td>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 8px 0;'><strong>Puesto:</strong></td>
+                                    <td style='padding: 8px 0;'>{$data['puesto']}</td>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 8px 0;'><strong>Email Oficial:</strong></td>
+                                    <td style='padding: 8px 0;'><a href='mailto:{$data['email_oficial']}'>{$data['email_oficial']}</a></td>
+                                </tr>
+                                " . (!empty($data['email_alterno']) ? "
+                                <tr>
+                                    <td style='padding: 8px 0;'><strong>Email Alterno:</strong></td>
+                                    <td style='padding: 8px 0;'><a href='mailto:{$data['email_alterno']}'>{$data['email_alterno']}</a></td>
+                                </tr>
+                                " : "") . "
+                                <tr>
+                                    <td style='padding: 8px 0;'><strong>Teléfono Oficina:</strong></td>
+                                    <td style='padding: 8px 0;'>{$data['telefono_oficina']}" . (!empty($data['extension']) ? " Ext. {$data['extension']}" : "") . "</td>
+                                </tr>
+                                " . (!empty($data['telefono_celular']) ? "
+                                <tr>
+                                    <td style='padding: 8px 0;'><strong>Teléfono Celular:</strong></td>
+                                    <td style='padding: 8px 0;'>{$data['telefono_celular']}</td>
+                                </tr>
+                                " : "") . "
+                            </table>
+                        </div>
+                        
+                        <div style='background: white; padding: 20px; margin-bottom: 20px; border-radius: 5px; border-left: 4px solid #27ae60;'>
+                            <h2 style='margin-top: 0; color: #27ae60;'>Productos Solicitados</h2>
+                            <p style='margin-top: 0;'><strong>Total de productos:</strong> " . count($cart_products) . "</p>
+                            {$productos_html}
+                        </div>
+                        
+                        " . (!empty($data['fecha_compra_aprox']) || !empty($data['presupuesto_estimado']) || !empty($data['observaciones']) ? "
+                        <div style='background: white; padding: 20px; margin-bottom: 20px; border-radius: 5px; border-left: 4px solid #f39c12;'>
+                            <h2 style='margin-top: 0; color: #f39c12;'>Información Adicional</h2>
+                            " . (!empty($data['fecha_compra_aprox']) ? "
+                            <p><strong>Fecha Aproximada de Compra:</strong> " . date('d/m/Y', strtotime($data['fecha_compra_aprox'])) . "</p>
+                            " : "") . "
+                            " . (!empty($data['presupuesto_estimado']) ? "
+                            <p><strong>Presupuesto Estimado:</strong> $" . number_format($data['presupuesto_estimado'], 2) . " MXN</p>
+                            " : "") . "
+                            " . (!empty($data['observaciones']) ? "
+                            <p><strong>Observaciones:</strong></p>
+                            <p style='background: #f9f9f9; padding: 10px; border-radius: 5px;'>{$data['observaciones']}</p>
+                            " : "") . "
+                        </div>
+                        " : "") . "
+                        
+                        <div style='text-align: center; margin: 30px 0;'>
+                            <a href='" . SITE_URL . "/admin/cotizaciones/view.php?id={$cotizacion_id}' 
+                               style='background: #e74c3c; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;'>
+                                Ver Cotización en el Sistema
+                            </a>
+                        </div>
+                        
+                        <hr style='border: none; border-top: 1px solid #ddd; margin: 30px 0;'>
+                        
+                        <p style='font-size: 12px; color: #666; text-align: center;'>
+                            Este es un correo automático generado por el sistema de cotizaciones de Aramed y Laboratorios.<br>
+                            Fecha y hora: " . date('d/m/Y H:i:s') . "
+                        </p>
+                    </div>
+                </body>
+                </html>
+            ";
+            
+            $emailResult = sendEmail(CONTACT_EMAIL, $adminSubject, $adminMessage);
+            if (!$emailResult['success']) {
+                error_log("Error enviando email de notificación al admin: " . $emailResult['message']);
+            }
+        } catch (Exception $e) {
+            error_log("Error enviando email de notificación al admin: " . $e->getMessage());
         }
         
         $response = [
