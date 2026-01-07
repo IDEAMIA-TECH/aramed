@@ -11,9 +11,31 @@
  * @copyright  2025 Aramed y Laboratorios
  */
 
+// Iniciar logging de debug
+$menu_debug_log_file = __DIR__ . '/../../logs/menu-debug.log';
+$menu_debug_log = function($message) use ($menu_debug_log_file) {
+    $timestamp = date('Y-m-d H:i:s');
+    $log_message = "[$timestamp] $message\n";
+    @file_put_contents($menu_debug_log_file, $log_message, FILE_APPEND);
+};
+
+$menu_debug_log("=== INICIO admin_menu.php ===");
+$menu_debug_log("REQUEST_URI: " . ($_SERVER['REQUEST_URI'] ?? 'NOT SET'));
+$menu_debug_log("PHP_SELF: " . ($_SERVER['PHP_SELF'] ?? 'NOT SET'));
+
 // Cargar funciones RBAC si existen
 if (file_exists(__DIR__ . '/../../includes/rbac_functions.php')) {
-    require_once __DIR__ . '/../../includes/rbac_functions.php';
+    $menu_debug_log("Cargando rbac_functions.php...");
+    try {
+        require_once __DIR__ . '/../../includes/rbac_functions.php';
+        $menu_debug_log("rbac_functions.php cargado exitosamente");
+    } catch (Exception $e) {
+        $menu_debug_log("Error cargando rbac_functions.php: " . $e->getMessage());
+    } catch (Error $e) {
+        $menu_debug_log("Error fatal cargando rbac_functions.php: " . $e->getMessage());
+    }
+} else {
+    $menu_debug_log("rbac_functions.php no existe");
 }
 
 // Obtener información del usuario actual
@@ -30,7 +52,17 @@ $is_admin = ($current_user['rol'] === 'admin');
 // Obtener permisos del usuario actual (si RBAC está disponible)
 $user_permissions = [];
 if (function_exists('getUserPermissions') && isset($current_user['id'])) {
-    $user_permissions = getUserPermissions($current_user['id']);
+    $menu_debug_log("Obteniendo permisos del usuario ID: " . $current_user['id']);
+    try {
+        $user_permissions = getUserPermissions($current_user['id']);
+        $menu_debug_log("Permisos obtenidos: " . count($user_permissions) . " módulos");
+    } catch (Exception $e) {
+        $menu_debug_log("Error obteniendo permisos: " . $e->getMessage());
+    } catch (Error $e) {
+        $menu_debug_log("Error fatal obteniendo permisos: " . $e->getMessage());
+    }
+} else {
+    $menu_debug_log("getUserPermissions no disponible o user_id no establecido");
 }
 
 // Función helper para verificar si el usuario puede ver un módulo
@@ -511,21 +543,31 @@ function getLogoPath($current_dir, $base_path) {
             <!-- SEO (Solo Admin) -->
             <?php 
             // Verificar permisos SEO de forma segura
+            $menu_debug_log("Verificando permisos SEO...");
             $can_see_seo = false;
             if ($is_admin) {
                 // Si es admin, siempre puede ver SEO
                 $can_see_seo = true;
+                $menu_debug_log("Usuario es admin, puede ver SEO");
             } elseif (function_exists('hasPermission') && isset($_SESSION['admin_user_id'])) {
                 // Si no es admin, verificar permisos (pero solo si la función existe y hay user_id)
+                $menu_debug_log("Verificando permiso SEO con hasPermission...");
                 try {
                     $can_see_seo = hasPermission($_SESSION['admin_user_id'], 'seo', 'ver');
+                    $menu_debug_log("hasPermission retornó: " . ($can_see_seo ? 'true' : 'false'));
                 } catch (Exception $e) {
-                    error_log("Error verificando permiso SEO en menu: " . $e->getMessage());
+                    $error_msg = "Error verificando permiso SEO en menu: " . $e->getMessage();
+                    $menu_debug_log($error_msg);
+                    error_log($error_msg);
                     $can_see_seo = false;
                 } catch (Error $e) {
-                    error_log("Error fatal verificando permiso SEO en menu: " . $e->getMessage());
+                    $error_msg = "Error fatal verificando permiso SEO en menu: " . $e->getMessage();
+                    $menu_debug_log($error_msg);
+                    error_log($error_msg);
                     $can_see_seo = false;
                 }
+            } else {
+                $menu_debug_log("hasPermission no disponible o user_id no establecido");
             }
             ?>
             <?php if ($can_see_seo): ?>
@@ -827,3 +869,9 @@ div.nav-item div.ms-3 {
     color: white !important;
 }
 </style>
+<?php
+// Finalizar logging del menú
+if (isset($menu_debug_log)) {
+    $menu_debug_log("=== FIN admin_menu.php ===");
+}
+?>

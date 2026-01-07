@@ -11,47 +11,81 @@
  * @copyright  2025 Aramed y Laboratorios
  */
 
+// Iniciar logging de debug
+$debug_log_file = __DIR__ . '/../../logs/config-debug.log';
+$debug_log = function($message) use ($debug_log_file) {
+    $timestamp = date('Y-m-d H:i:s');
+    $log_message = "[$timestamp] $message\n";
+    @file_put_contents($debug_log_file, $log_message, FILE_APPEND);
+};
+
+$debug_log("=== INICIO config.php ===");
+$debug_log("REQUEST_URI: " . ($_SERVER['REQUEST_URI'] ?? 'NOT SET'));
+$debug_log("PHP_SELF: " . ($_SERVER['PHP_SELF'] ?? 'NOT SET'));
+
 // Iniciar buffer de salida para evitar problemas con headers
 if (!ob_get_level()) {
     ob_start();
+    $debug_log("Output buffer iniciado");
 }
 
 // Definir constante del sitio
 define('ARAMED_SITE', true);
+$debug_log("ARAMED_SITE definido");
 
 // Iniciar sesión si no está iniciada (antes de cualquier redirección)
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+    $debug_log("Sesión iniciada");
+} else {
+    $debug_log("Sesión ya estaba iniciada");
 }
 
 // Cargar configuración y verificar autenticación
 try {
+    $debug_log("Cargando config.php...");
     require_once __DIR__ . '/../../includes/config.php';
+    $debug_log("config.php cargado exitosamente");
 } catch (Exception $e) {
-    error_log("Error cargando config.php: " . $e->getMessage());
+    $error_msg = "Error cargando config.php: " . $e->getMessage();
+    $debug_log($error_msg);
+    error_log($error_msg);
     die('Error de configuración');
 }
 
 try {
+    $debug_log("Cargando functions.php...");
     require_once __DIR__ . '/../../includes/functions.php';
+    $debug_log("functions.php cargado exitosamente");
 } catch (Exception $e) {
-    error_log("Error cargando functions.php: " . $e->getMessage());
+    $error_msg = "Error cargando functions.php: " . $e->getMessage();
+    $debug_log($error_msg);
+    error_log($error_msg);
     die('Error cargando funciones');
 }
 
 try {
+    $debug_log("Cargando connection.php...");
     require_once __DIR__ . '/../../includes/connection.php';
+    $debug_log("connection.php cargado exitosamente");
 } catch (Exception $e) {
-    error_log("Error cargando connection.php: " . $e->getMessage());
+    $error_msg = "Error cargando connection.php: " . $e->getMessage();
+    $debug_log($error_msg);
+    error_log($error_msg);
     die('Error de conexión');
 }
 
 try {
+    $debug_log("Cargando auth_check.php...");
     require_once __DIR__ . '/../auth_check.php';
+    $debug_log("auth_check.php cargado exitosamente");
 } catch (Exception $e) {
-    error_log("Error cargando auth_check.php: " . $e->getMessage());
+    $error_msg = "Error cargando auth_check.php: " . $e->getMessage();
+    $debug_log($error_msg);
+    error_log($error_msg);
     // Si auth_check falla, verificar manualmente
     if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+        $debug_log("Usuario no autenticado, redirigiendo a login");
         header('Location: /admin/login.php');
         exit;
     }
@@ -59,12 +93,15 @@ try {
 
 // Verificar que el usuario sea admin (SEO es solo para admin)
 $user_role = $_SESSION['admin_rol'] ?? 'editor';
+$debug_log("User role: " . $user_role);
 if ($user_role !== 'admin') {
+    $debug_log("Usuario no es admin, redirigiendo a sin-permiso");
     // Construir URL absoluta para evitar problemas con subdirectorios
     $sin_permiso_url = '/admin/sin-permiso.php?modulo=' . urlencode('seo') . '&accion=' . urlencode('editar');
     header('Location: ' . $sin_permiso_url);
     exit;
 }
+$debug_log("Usuario es admin, continuando...");
 
 // Verificar permisos RBAC
 // Ya verificamos que es admin arriba, así que checkPermission debería pasar
@@ -286,7 +323,23 @@ $current_dir = 'seo';
 <body>
     <div class="container-fluid">
         <div class="row">
-            <?php include __DIR__ . '/../includes/admin_menu.php'; ?>
+            <?php 
+            $debug_log("Incluyendo admin_menu.php...");
+            try {
+                include __DIR__ . '/../includes/admin_menu.php';
+                $debug_log("admin_menu.php incluido exitosamente");
+            } catch (Exception $e) {
+                $error_msg = "Error incluyendo admin_menu.php: " . $e->getMessage();
+                $debug_log($error_msg);
+                error_log($error_msg);
+                echo "<div class='alert alert-danger'>Error cargando el menú: " . htmlspecialchars($e->getMessage()) . "</div>";
+            } catch (Error $e) {
+                $error_msg = "Error fatal incluyendo admin_menu.php: " . $e->getMessage();
+                $debug_log($error_msg);
+                error_log($error_msg);
+                echo "<div class='alert alert-danger'>Error fatal cargando el menú: " . htmlspecialchars($e->getMessage()) . "</div>";
+            }
+            ?>
             
             <div class="col-md-9 admin-content">
                 <!-- Header -->
@@ -495,4 +548,14 @@ $current_dir = 'seo';
     </script>
 </body>
 </html>
+<?php
+// Finalizar logging
+if (isset($debug_log)) {
+    $debug_log("=== FIN config.php ===");
+    // Limpiar buffer si hay algo
+    if (ob_get_level() > 0) {
+        ob_end_flush();
+    }
+}
+?>
 
