@@ -213,6 +213,9 @@ try {
         // ENVIAR EMAIL 1: CONFIRMACIÓN AL CLIENTE
         // ========================================
         try {
+            // URL del logo de la empresa
+            $logo_url = SITE_URL . '/assets/images/design/logo.png';
+            
             $clientSubject = "Confirmación de Solicitud de Cotización - {$folio}";
             $clientMessage = "
                 <!DOCTYPE html>
@@ -223,7 +226,11 @@ try {
                 </head>
                 <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;'>
                     <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;'>
-                        <h1 style='color: white; margin: 0;'>¡Solicitud Recibida!</h1>
+                        <img src='{$logo_url}' 
+                             alt='" . SITE_NAME . "' 
+                             style='max-width: 200px; height: auto; margin-bottom: 20px; background: white; padding: 15px; border-radius: 8px;'
+                             onerror='this.style.display=\"none\"'>
+                        <h1 style='color: white; margin: 0; font-size: 24px;'>¡Solicitud Recibida!</h1>
                     </div>
                     
                     <div style='background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;'>
