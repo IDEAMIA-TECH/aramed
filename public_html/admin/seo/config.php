@@ -62,25 +62,19 @@ if ($user_role !== 'admin') {
 }
 
 // Verificar permisos RBAC
-// IMPORTANTE: No usar checkPermission con redirect=true aquí porque puede causar 403
-// Ya verificamos que es admin arriba, así que solo verificamos permisos sin redirigir
+// Ya verificamos que es admin arriba, así que checkPermission debería pasar
+// Pero si hay un error, no bloquear el acceso (módulo nuevo o no configurado)
 if (function_exists('checkPermission')) {
     try {
-        // Verificar permiso sin redirigir (redirect=false)
-        // Si no tiene permiso, solo retorna false, no redirige
-        $tiene_permiso = checkPermission('seo', 'editar', false);
-        
-        // Si no tiene permiso Y no es admin (aunque ya verificamos arriba), mostrar error
-        if (!$tiene_permiso && $user_role !== 'admin') {
-            // Solo en este caso redirigir manualmente
-            $sin_permiso_url = '/admin/sin-permiso.php?modulo=' . urlencode('seo') . '&accion=' . urlencode('editar');
-            header('Location: ' . $sin_permiso_url);
-            exit;
-        }
+        // Usar el mismo patrón que seo/index.php
+        checkPermission('seo', 'editar');
     } catch (Exception $e) {
         error_log("Error en checkPermission: " . $e->getMessage());
         // Continuar si hay error en permisos (módulo nuevo o no configurado)
         // Si el usuario es admin, siempre permitir acceso
+    } catch (Error $e) {
+        error_log("Error fatal en checkPermission: " . $e->getMessage());
+        // Continuar si hay error fatal
     }
 }
 
