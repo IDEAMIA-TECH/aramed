@@ -11,7 +11,12 @@ define('ARAMED_SITE', true);
 // Cargar configuración y verificar autenticación
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/functions.php';
+require_once __DIR__ . '/../../includes/connection.php';
 require_once __DIR__ . '/../auth_check.php';
+
+// Variables para el menú
+$current_page = 'image-manager.php';
+$current_dir = 'blog';
 ?>
 <!DOCTYPE html>
 <html lang="es-MX">
