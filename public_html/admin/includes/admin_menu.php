@@ -370,16 +370,16 @@ function getLogoPath($current_dir, $base_path) {
                 <?php if ($is_catalogo): ?>
                 <!-- SUBMENÚ CATÁLOGO - DEBERÍA SER VISIBLE -->
                 <div class="ms-3 mt-1 catalogo-submenu" style="display: block !important; visibility: visible !important; opacity: 1 !important; height: auto !important; padding: 0.5rem 0 !important;">
-                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php" style="display: block !important; visibility: visible !important; color: #212529 !important;">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('catalogo/index.php', $base_path); ?>" style="display: block !important; visibility: visible !important; color: #212529 !important;">
                         <i class="bi bi-speedometer2 me-2"></i>Dashboard
                     </a>
-                    <a class="<?php echo getNavLinkClass('productos/index.php', $current_page, $current_dir); ?> nav-link-sm" href="productos/index.php" style="display: block !important; visibility: visible !important; color: #212529 !important;">
+                    <a class="<?php echo getNavLinkClass('productos/index.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('catalogo/productos/index.php', $base_path); ?>" style="display: block !important; visibility: visible !important; color: #212529 !important;">
                         <i class="bi bi-box me-2"></i>Productos
                     </a>
-                    <a class="<?php echo getNavLinkClass('categorias.php', $current_page, $current_dir); ?> nav-link-sm" href="categorias.php" style="display: block !important; visibility: visible !important; color: #212529 !important;">
+                    <a class="<?php echo getNavLinkClass('categorias.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('catalogo/categorias.php', $base_path); ?>" style="display: block !important; visibility: visible !important; color: #212529 !important;">
                         <i class="bi bi-folder me-2"></i>Categorías
                     </a>
-                    <a class="<?php echo getNavLinkClass('marcas.php', $current_page, $current_dir); ?> nav-link-sm" href="marcas.php" style="display: block !important; visibility: visible !important; color: #212529 !important;">
+                    <a class="<?php echo getNavLinkClass('marcas.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('catalogo/marcas.php', $base_path); ?>" style="display: block !important; visibility: visible !important; color: #212529 !important;">
                         <i class="bi bi-tags me-2"></i>Marcas
                     </a>
                 </div>
