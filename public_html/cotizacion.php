@@ -139,15 +139,33 @@ $pageUrl = SITE_URL . '/cotizacion.php';
                             <div class="cart-item" data-product-id="<?php echo $product['id']; ?>">
                                 <div class="row align-items-center">
                                     <div class="col-md-2">
-                                        <?php if (!empty($product['imagen_url'])): ?>
-                                        <img src="<?php echo imageUrl($product['imagen_url']); ?>" 
-                                             alt="<?php echo esc($product['nombre']); ?>" 
-                                             class="cart-item-image">
-                                        <?php else: ?>
-                                        <img src="<?php echo imageUrl('design/placeholder-product.jpg'); ?>" 
-                                             alt="Producto" 
-                                             class="cart-item-image">
-                                        <?php endif; ?>
+                                        <?php
+                                        // Usar imagen real de la base de datos si existe
+                                        if (!empty($product['imagen_url'])) {
+                                            $imagen_real = $product['imagen_url'];
+                                            // Convertir ruta relativa a URL completa
+                                            if (strpos($imagen_real, '/assets/') === 0) {
+                                                $imagen_real = SITE_URL . $imagen_real;
+                                            } elseif (strpos($imagen_real, 'http://') === 0 || strpos($imagen_real, 'https://') === 0) {
+                                                // Ya es una URL completa
+                                                // No hacer nada
+                                            } else {
+                                                // Usar imageUrl para rutas relativas
+                                                $imagen_real = imageUrl($imagen_real);
+                                            }
+                                            echo '<img src="' . esc($imagen_real) . '" 
+                                                     alt="' . esc($product['nombre']) . '" 
+                                                     class="cart-item-image"
+                                                     loading="lazy"
+                                                     onerror="this.src=\'' . imageUrl('design/placeholder-product.jpg') . '\'">';
+                                        } else {
+                                            // Fallback: usar imagen placeholder
+                                            echo '<img src="' . imageUrl('design/placeholder-product.jpg') . '" 
+                                                     alt="Producto" 
+                                                     class="cart-item-image"
+                                                     loading="lazy">';
+                                        }
+                                        ?>
                                     </div>
                                     <div class="col-md-6">
                                         <h5 class="mb-1"><?php echo esc($product['nombre']); ?></h5>
