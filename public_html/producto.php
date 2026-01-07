@@ -517,11 +517,15 @@ $breadcrumb = [
                         <!-- Acciones -->
                         <div class="producto-actions mb-4">
                             <div class="d-flex gap-3 flex-wrap">
-                                <a href="#newsletter" class="btn btn-primary btn-lg flex-fill">
+                                <button type="button" 
+                                        class="btn btn-primary btn-lg flex-fill add-to-cart-btn" 
+                                        data-product-id="<?php echo $product['id']; ?>"
+                                        data-product-nombre="<?php echo esc($product['nombre']); ?>"
+                                        data-product-codigo="<?php echo esc($product['codigo'] ?? ''); ?>">
                                     <i class="bi bi-cart-plus me-2"></i>
-                                    Solicitar Cotización
-                                </a>
-                                <a href="#newsletter" class="btn btn-outline-primary btn-lg">
+                                    Agregar a Cotización
+                                </button>
+                                <a href="<?php echo siteUrl('index.php#newsletter'); ?>" class="btn btn-outline-primary btn-lg">
                                     <i class="bi bi-chat-left-text me-2"></i>
                                     Consultar
                                 </a>
@@ -787,6 +791,94 @@ $breadcrumb = [
                 console.log('✅ Carrusel de producto inicializado correctamente');
             } else {
                 console.error('Swiper no está disponible');
+            }
+        });
+        
+        // Manejar botón de agregar al carrito
+        document.querySelectorAll('.add-to-cart-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const productId = this.dataset.productId;
+                const productNombre = this.dataset.productNombre;
+                const productCodigo = this.dataset.productCodigo || '';
+                
+                // Deshabilitar botón temporalmente
+                const originalHTML = this.innerHTML;
+                const originalText = this.textContent.trim();
+                this.disabled = true;
+                this.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Agregando...';
+                
+                fetch('includes/cart_handler.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        action: 'add',
+                        producto_id: productId,
+                        producto_nombre: productNombre,
+                        producto_codigo: productCodigo,
+                        cantidad: 1
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Mostrar éxito
+                        this.innerHTML = '<i class="bi bi-check-circle me-2"></i>Agregado';
+                        this.classList.remove('btn-primary');
+                        this.classList.add('btn-success');
+                        
+                        // Actualizar contador del carrito
+                        updateCartBadge(data.cart_count);
+                        
+                        // Restaurar después de 2 segundos
+                        setTimeout(() => {
+                            this.innerHTML = originalHTML;
+                            this.classList.remove('btn-success');
+                            this.classList.add('btn-primary');
+                            this.disabled = false;
+                        }, 2000);
+                        
+                        // Opcional: mostrar notificación
+                        if (typeof showToast !== 'undefined') {
+                            showToast('Producto agregado al carrito', 'success');
+                        }
+                    } else {
+                        alert('Error: ' + data.message);
+                        this.innerHTML = originalHTML;
+                        this.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al agregar producto al carrito');
+                    this.innerHTML = originalHTML;
+                    this.disabled = false;
+                });
+            });
+        });
+        
+        // Función para actualizar badge del carrito
+        function updateCartBadge(count) {
+            const badge = document.getElementById('cart-badge');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'inline-block' : 'none';
+            }
+        }
+        
+        // Cargar contador inicial del carrito
+        fetch('includes/cart_handler.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({ action: 'get' })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateCartBadge(data.cart_count);
             }
         });
     </script>

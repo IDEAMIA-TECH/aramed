@@ -707,11 +707,14 @@ function buildFilterUrl($params = []) {
                                                    title="Ver Detalles">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <a href="<?php echo siteUrl('index.php#newsletter'); ?>" 
-                                                   class="btn btn-primary btn-sm" 
-                                                   title="Solicitar Cotización">
+                                                <button type="button" 
+                                                        class="btn btn-primary btn-sm add-to-cart-btn" 
+                                                        data-product-id="<?php echo $product['id']; ?>"
+                                                        data-product-nombre="<?php echo esc($product['nombre']); ?>"
+                                                        data-product-codigo="<?php echo esc($product['codigo'] ?? ''); ?>"
+                                                        title="Agregar a Cotización">
                                                     <i class="bi bi-cart-plus"></i>
-                                                </a>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -883,6 +886,93 @@ function buildFilterUrl($params = []) {
             if (typeof AramedCatalogo !== 'undefined') {
                 AramedCatalogo.init();
             }
+            
+            // Manejar botones de agregar al carrito
+            document.querySelectorAll('.add-to-cart-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const productId = this.dataset.productId;
+                    const productNombre = this.dataset.productNombre;
+                    const productCodigo = this.dataset.productCodigo || '';
+                    
+                    // Deshabilitar botón temporalmente
+                    const originalHTML = this.innerHTML;
+                    this.disabled = true;
+                    this.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+                    
+                    fetch('includes/cart_handler.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            action: 'add',
+                            producto_id: productId,
+                            producto_nombre: productNombre,
+                            producto_codigo: productCodigo,
+                            cantidad: 1
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Mostrar notificación
+                            this.innerHTML = '<i class="bi bi-check-circle"></i>';
+                            this.classList.remove('btn-primary');
+                            this.classList.add('btn-success');
+                            
+                            // Actualizar contador del carrito en navbar
+                            updateCartBadge(data.cart_count);
+                            
+                            // Mostrar mensaje
+                            setTimeout(() => {
+                                this.innerHTML = originalHTML;
+                                this.classList.remove('btn-success');
+                                this.classList.add('btn-primary');
+                                this.disabled = false;
+                            }, 2000);
+                            
+                            // Opcional: mostrar toast
+                            if (typeof showToast !== 'undefined') {
+                                showToast('Producto agregado al carrito', 'success');
+                            }
+                        } else {
+                            alert('Error: ' + data.message);
+                            this.innerHTML = originalHTML;
+                            this.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error al agregar producto al carrito');
+                        this.innerHTML = originalHTML;
+                        this.disabled = false;
+                    });
+                });
+            });
+            
+            // Función para actualizar badge del carrito
+            function updateCartBadge(count) {
+                const badge = document.getElementById('cart-badge');
+                if (badge) {
+                    badge.textContent = count;
+                    badge.style.display = count > 0 ? 'inline-block' : 'none';
+                }
+            }
+            
+            // Cargar contador inicial del carrito
+            fetch('includes/cart_handler.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({ action: 'get' })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateCartBadge(data.cart_count);
+                }
+            });
         });
     </script>
     

@@ -4,6 +4,18 @@
  */
 if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
 
+// Iniciar sesión si no está iniciada (para el carrito)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Cargar funciones del carrito si existe
+$cart_count = 0;
+if (file_exists(__DIR__ . '/cart_functions.php')) {
+    require_once __DIR__ . '/cart_functions.php';
+    $cart_count = getCartCount();
+}
+
 // Detectar página actual
 $current_page = basename($_SERVER['PHP_SELF']);
 $current_section = '';
@@ -95,8 +107,25 @@ function getPageLink($href, $current_page) {
                     <hr class="my-3">
                 </li>
                 
-                <!-- CTA Button -->
+                <!-- Carrito de Cotización -->
                 <li class="nav-item ms-lg-3">
+                    <a href="<?php echo siteUrl('cotizacion.php'); ?>" class="btn btn-outline-primary px-3 py-2 position-relative">
+                        <i class="bi bi-cart me-2"></i>
+                        <span class="d-none d-lg-inline">Cotización</span>
+                        <?php if ($cart_count > 0): ?>
+                        <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            <?php echo $cart_count; ?>
+                        </span>
+                        <?php else: ?>
+                        <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
+                            0
+                        </span>
+                        <?php endif; ?>
+                    </a>
+                </li>
+                
+                <!-- CTA Button -->
+                <li class="nav-item ms-lg-2">
                     <a href="<?php echo getPageLink('#newsletter', $current_page); ?>" class="btn btn-primary px-4 py-2 w-100 w-lg-auto shadow-sm">
                         <i class="bi bi-envelope me-2"></i>
                         Contáctanos
