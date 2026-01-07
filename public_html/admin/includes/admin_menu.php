@@ -186,20 +186,53 @@ function adminUrl($path, $base_path = '') {
 }
 
 // Función para determinar si un enlace está activo
-function isActive($target_page, $current_page, $current_dir) {
-    // Si estamos en la raíz del admin
-    if (empty($current_dir)) {
-        return $target_page === $current_page;
+function isActive($target_page, $current_page, $current_dir, $root_only = false) {
+    // Normalizar las rutas para comparación
+    $target_normalized = str_replace('\\', '/', $target_page);
+    $target_normalized = trim($target_normalized, '/');
+    $target_basename = basename($target_normalized);
+    $target_has_path = (strpos($target_normalized, '/') !== false);
+    
+    // Si root_only es true, este enlace solo puede estar activo en la raíz
+    if ($root_only) {
+        return empty($current_dir) && !$target_has_path && ($target_basename === $current_page);
     }
     
-    // Si estamos en un subdirectorio, comparar solo el nombre del archivo
-    return basename($target_page) === $current_page;
+    // CASO 1: Estamos en la raíz del admin (current_dir está vacío)
+    // Ejemplo: admin/index.php
+    if (empty($current_dir)) {
+        // Solo los enlaces sin path (ej: 'index.php') pueden estar activos
+        // Los enlaces con path (ej: 'home/index.php') NO pueden estar activos en la raíz
+        return !$target_has_path && ($target_basename === $current_page);
+    }
+    
+    // CASO 2: Estamos en un subdirectorio (ej: admin/home/index.php)
+    // current_dir = 'home', current_page = 'index.php'
+    
+    // SUBCASO 2A: Target tiene un path con directorio (ej: 'home/index.php', 'catalogo/index.php')
+    // Este es un enlace principal del menú (no un submenú)
+    if ($target_has_path) {
+        // Extraer el directorio del target
+        $target_dir = dirname($target_normalized);
+        $target_file = basename($target_normalized);
+        
+        // Solo está activo si:
+        // 1. El directorio del target coincide con current_dir
+        // 2. El archivo del target coincide con current_page
+        return ($target_dir === $current_dir) && ($target_file === $current_page);
+    }
+    
+    // SUBCASO 2B: Target es solo un archivo sin path (ej: 'banners.php', 'index.php')
+    // Esto es un enlace de submenú dentro del directorio actual
+    // Solo está activo si el nombre del archivo coincide con current_page
+    // (ya sabemos que estamos en el directorio correcto porque current_dir no está vacío)
+    return ($target_basename === $current_page);
 }
 
 // Función para generar clases CSS del enlace
-function getNavLinkClass($target_page, $current_page, $current_dir) {
+function getNavLinkClass($target_page, $current_page, $current_dir, $root_only = false) {
     $classes = ['nav-link'];
-    if (isActive($target_page, $current_page, $current_dir)) {
+    if (isActive($target_page, $current_page, $current_dir, $root_only)) {
         $classes[] = 'active';
     }
     return implode(' ', $classes);
@@ -250,7 +283,8 @@ function getLogoPath($current_dir, $base_path) {
         
         <nav class="nav flex-column">
             <!-- Dashboard -->
-            <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('index.php', $base_path); ?>">
+            <!-- Solo activo si estamos en la raíz del admin -->
+            <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir, true); ?>" href="<?php echo adminUrl('index.php', $base_path); ?>">
                 <i class="bi bi-speedometer2 me-2"></i>Dashboard
             </a>
             
