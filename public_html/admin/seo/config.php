@@ -11,6 +11,11 @@
  * @copyright  2025 Aramed y Laboratorios
  */
 
+// Iniciar buffer de salida para evitar problemas con headers
+if (!ob_get_level()) {
+    ob_start();
+}
+
 // Definir constante del sitio
 define('ARAMED_SITE', true);
 
