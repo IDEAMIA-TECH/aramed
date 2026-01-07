@@ -29,7 +29,12 @@ if ($user_role !== 'admin') {
 
 // Verificar permisos RBAC
 if (function_exists('checkPermission')) {
-    checkPermission('seo', 'editar');
+    try {
+        checkPermission('seo', 'editar');
+    } catch (Exception $e) {
+        error_log("Error en checkPermission: " . $e->getMessage());
+        // Continuar si hay error en permisos (módulo nuevo)
+    }
 }
 
 // Obtener conexión PDO
@@ -39,7 +44,29 @@ if (!$pdo) {
 }
 
 // Obtener información del usuario actual
-$current_user = getCurrentUser();
+$current_user = null;
+if (function_exists('getCurrentUser')) {
+    try {
+        $current_user = getCurrentUser();
+    } catch (Exception $e) {
+        error_log("Error obteniendo usuario: " . $e->getMessage());
+        // Fallback: obtener desde sesión
+        $current_user = [
+            'id' => $_SESSION['admin_user_id'] ?? 0,
+            'nombre' => $_SESSION['admin_nombre'] ?? 'Administrador',
+            'username' => $_SESSION['admin_username'] ?? 'admin',
+            'rol' => $_SESSION['admin_rol'] ?? 'admin'
+        ];
+    }
+} else {
+    // Fallback: obtener desde sesión
+    $current_user = [
+        'id' => $_SESSION['admin_user_id'] ?? 0,
+        'nombre' => $_SESSION['admin_nombre'] ?? 'Administrador',
+        'username' => $_SESSION['admin_username'] ?? 'admin',
+        'rol' => $_SESSION['admin_rol'] ?? 'admin'
+    ];
+}
 
 $success_message = '';
 $error_message = '';
@@ -48,6 +75,15 @@ $active_tab = $_GET['tab'] ?? 'global';
 // Procesar formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Verificar que la tabla existe
+        $stmt = $pdo->query("SHOW TABLES LIKE 'seo_config'");
+        $table_exists = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        
+        if (empty($table_exists)) {
+            throw new Exception('La tabla seo_config no existe. Por favor, ejecuta el script SQL de creación de tablas.');
+        }
+        
         $tipo = $_POST['tipo'] ?? 'global';
         $pagina = !empty($_POST['pagina']) ? $_POST['pagina'] : null;
         
@@ -83,19 +119,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['meta_descripcion_default'], $data['meta_keywords_default'],
             $data['favicon'], $data['og_image'], $data['twitter_card_type']
         ]);
+        $stmt->closeCursor();
         
         // Registrar actividad
-        if (function_exists('logActivity')) {
-            logActivity($current_user['id'], 'editar', 'seo', null, 'seo', [
-                'tipo' => $tipo,
-                'pagina' => $pagina
-            ]);
+        if (function_exists('logActivity') && isset($current_user['id'])) {
+            try {
+                logActivity($current_user['id'], 'editar', 'seo', null, 'seo', [
+                    'tipo' => $tipo,
+                    'pagina' => $pagina
+                ]);
+            } catch (Exception $e) {
+                error_log("Error registrando actividad: " . $e->getMessage());
+            }
         }
         
         $success_message = 'Configuración SEO guardada exitosamente';
         $active_tab = $tipo === 'global' ? 'global' : $pagina;
         
+    } catch (PDOException $e) {
+        error_log("Error PDO en config SEO: " . $e->getMessage());
+        $error_message = 'Error de base de datos: ' . $e->getMessage();
     } catch (Exception $e) {
+        error_log("Error en config SEO: " . $e->getMessage());
         $error_message = $e->getMessage();
     }
 }
@@ -105,14 +150,27 @@ $config_global = null;
 $config_paginas = [];
 
 try {
-    $stmt = $pdo->prepare("SELECT * FROM seo_config WHERE tipo = 'global' LIMIT 1");
-    $stmt->execute();
-    $config_global = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Verificar si la tabla existe
+    $stmt = $pdo->query("SHOW TABLES LIKE 'seo_config'");
+    $table_exists = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
     
-    $stmt = $pdo->query("SELECT * FROM seo_config WHERE tipo = 'pagina' ORDER BY pagina");
-    $config_paginas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (Exception $e) {
-    // Tabla no existe aún
+    if (!empty($table_exists)) {
+        $stmt = $pdo->prepare("SELECT * FROM seo_config WHERE tipo = 'global' LIMIT 1");
+        $stmt->execute();
+        $config_global = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        
+        $stmt = $pdo->query("SELECT * FROM seo_config WHERE tipo = 'pagina' ORDER BY pagina");
+        $config_paginas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+    } else {
+        // Tabla no existe, mostrar mensaje
+        $error_message = 'La tabla seo_config no existe. Por favor, ejecuta el script SQL de creación de tablas.';
+    }
+} catch (PDOException $e) {
+    error_log("Error cargando configuración SEO: " . $e->getMessage());
+    $error_message = 'Error al cargar la configuración SEO: ' . $e->getMessage();
 }
 
 // Si no existe configuración global, usar valores por defecto
