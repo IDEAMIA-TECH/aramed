@@ -153,6 +153,15 @@ function getCartProductsInfo() {
     }
     
     try {
+        // Cargar connection.php si getDB no existe
+        if (!function_exists('getDB')) {
+            if (file_exists(__DIR__ . '/connection.php')) {
+                require_once __DIR__ . '/connection.php';
+            } else {
+                return [];
+            }
+        }
+        
         $pdo = getDB();
         if (!$pdo) {
             return [];

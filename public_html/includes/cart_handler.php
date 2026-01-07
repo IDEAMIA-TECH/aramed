@@ -11,6 +11,11 @@
  * @copyright  2025 Aramed y Laboratorios
  */
 
+// Definir constante para permitir carga de funciones
+if (!defined('ARAMED_SITE')) {
+    define('ARAMED_SITE', true);
+}
+
 // Iniciar sesión
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
