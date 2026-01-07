@@ -509,7 +509,26 @@ function getLogoPath($current_dir, $base_path) {
             <?php endif; ?>
             
             <!-- SEO (Solo Admin) -->
-            <?php if ($is_admin && function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'seo', 'ver')): ?>
+            <?php 
+            // Verificar permisos SEO de forma segura
+            $can_see_seo = false;
+            if ($is_admin) {
+                // Si es admin, siempre puede ver SEO
+                $can_see_seo = true;
+            } elseif (function_exists('hasPermission') && isset($_SESSION['admin_user_id'])) {
+                // Si no es admin, verificar permisos (pero solo si la función existe y hay user_id)
+                try {
+                    $can_see_seo = hasPermission($_SESSION['admin_user_id'], 'seo', 'ver');
+                } catch (Exception $e) {
+                    error_log("Error verificando permiso SEO en menu: " . $e->getMessage());
+                    $can_see_seo = false;
+                } catch (Error $e) {
+                    error_log("Error fatal verificando permiso SEO en menu: " . $e->getMessage());
+                    $can_see_seo = false;
+                }
+            }
+            ?>
+            <?php if ($can_see_seo): ?>
             <div class="nav-item">
                 <a class="<?php echo getNavLinkClass('seo/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('seo/index.php', $base_path); ?>">
                     <i class="bi bi-search me-2"></i>SEO & Metadatos
