@@ -137,9 +137,18 @@
 # ========================================
 
 # Proteger archivos sensibles
-<FilesMatch "(^\.htaccess|^\.env|^config\.php|\.sql|\.log|\.md)$">
+# NOTA: Solo bloquear config.php en la raíz, no en subdirectorios admin
+<FilesMatch "(^\.htaccess|^\.env|\.sql|\.log|\.md)$">
     Order allow,deny
     Deny from all
+</FilesMatch>
+
+# Bloquear config.php solo en la raíz (no en admin/)
+<FilesMatch "^config\.php$">
+    <If "%{REQUEST_URI} !~ m#^/admin/#">
+        Order allow,deny
+        Deny from all
+    </If>
 </FilesMatch>
 
 # Proteger directorios
