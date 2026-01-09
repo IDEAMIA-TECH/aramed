@@ -244,7 +244,10 @@ $current_dir = 'newsletter';
                                     
                                     <div class="mb-3">
                                         <label class="form-label">Contenido HTML *</label>
-                                        <textarea class="form-control" name="contenido_html" id="contenido_html" rows="10" required><?php echo esc($editing['contenido_html'] ?? ''); ?></textarea>
+                                        <textarea class="form-control" name="contenido_html" id="contenido_html" rows="10"><?php echo esc($editing['contenido_html'] ?? ''); ?></textarea>
+                                        <div class="invalid-feedback" id="contenido_html_error" style="display: none;">
+                                            El contenido HTML es obligatorio
+                                        </div>
                                     </div>
                                     
                                     <div class="mb-3">
@@ -467,9 +470,63 @@ $current_dir = 'newsletter';
             }, 5000);
         }
         
-        // Validar JSON antes de enviar el formulario
+        // Validar formulario antes de enviar
         document.querySelector('form').addEventListener('submit', function(e) {
+            let isValid = true;
+            
+            // Validar JSON
             if (!validateJSON()) {
+                isValid = false;
+            }
+            
+            // Validar contenido HTML (TinyMCE)
+            const contenidoHTML = tinymce.get('contenido_html');
+            if (contenidoHTML) {
+                const content = contenidoHTML.getContent();
+                if (!content || content.trim() === '' || content === '<p></p>' || content === '<p><br></p>') {
+                    isValid = false;
+                    const errorDiv = document.getElementById('contenido_html_error');
+                    if (errorDiv) {
+                        errorDiv.style.display = 'block';
+                    }
+                    // Enfocar el editor de TinyMCE
+                    contenidoHTML.focus();
+                } else {
+                    // Sincronizar contenido con textarea original
+                    contenidoHTML.save();
+                    const errorDiv = document.getElementById('contenido_html_error');
+                    if (errorDiv) {
+                        errorDiv.style.display = 'none';
+                    }
+                }
+            } else {
+                // Si TinyMCE no está cargado, validar textarea directamente
+                const textarea = document.getElementById('contenido_html');
+                if (textarea && (!textarea.value || textarea.value.trim() === '')) {
+                    isValid = false;
+                    const errorDiv = document.getElementById('contenido_html_error');
+                    if (errorDiv) {
+                        errorDiv.style.display = 'block';
+                    }
+                    textarea.focus();
+                }
+            }
+            
+            // Validar nombre
+            const nombre = document.querySelector('input[name="nombre"]');
+            if (nombre && (!nombre.value || nombre.value.trim() === '')) {
+                isValid = false;
+                nombre.focus();
+            }
+            
+            // Validar asunto
+            const asunto = document.querySelector('input[name="asunto"]');
+            if (asunto && (!asunto.value || asunto.value.trim() === '')) {
+                isValid = false;
+                asunto.focus();
+            }
+            
+            if (!isValid) {
                 e.preventDefault();
                 return false;
             }
