@@ -147,7 +147,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     // Variables del sistema
                     $contenido_html = str_replace('{{nombre_institucion}}', getConfig('empresa_nombre', SITE_NAME), $contenido_html);
-                    $contenido_html = str_replace('{{logo_url}}', siteUrl('assets/images/design/logo.png'), $contenido_html);
+                    $logo_url = siteUrl('assets/images/design/logo.png');
+                    // Asegurar que el logo sea URL absoluta
+                    if (strpos($logo_url, 'http') !== 0) {
+                        $logo_url = (defined('SITE_URL') ? SITE_URL : 'https://aramedylaboratorio.com') . '/' . ltrim($logo_url, '/');
+                    }
+                    $contenido_html = str_replace('{{logo_url}}', $logo_url, $contenido_html);
+                    
+                    // Convertir TODAS las URLs de imágenes a absolutas (necesario para emails)
+                    // Buscar todas las etiquetas <img> y convertir sus src a URLs absolutas
+                    $site_url_full = defined('SITE_URL') ? SITE_URL : 'https://aramedylaboratorio.com';
+                    $contenido_html = preg_replace_callback(
+                        '/<img\s+([^>]*\s+)?src=["\']([^"\']+)["\']([^>]*)>/i',
+                        function($matches) use ($site_url_full) {
+                            $before = $matches[1] ?? '';
+                            $src = $matches[2] ?? '';
+                            $after = $matches[3] ?? '';
+                            
+                            // Si ya es una URL absoluta completa (http:// o https://), no cambiar
+                            if (strpos($src, 'http://') === 0 || strpos($src, 'https://') === 0) {
+                                return $matches[0];
+                            }
+                            
+                            // Si empieza con /, agregar dominio completo
+                            if (strpos($src, '/') === 0) {
+                                $src = $site_url_full . $src;
+                            } else {
+                                // Si es relativa, construir ruta completa
+                                $src = preg_replace('#^(assets/images/)#', '', $src);
+                                $src = $site_url_full . '/assets/images/' . ltrim($src, '/');
+                            }
+                            
+                            return '<img ' . $before . 'src="' . htmlspecialchars($src) . '"' . $after . '>';
+                        },
+                        $contenido_html
+                    );
                     
                     // Agregar tracking de links (reemplazar todos los links con links de tracking)
                     if ($envio_id) {

@@ -106,22 +106,40 @@ try {
     
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Normalizar URLs de imágenes
+    // Normalizar URLs de imágenes - DEBE ser URL absoluta completa para emails
+    $site_url = defined('SITE_URL') ? SITE_URL : 'https://aramedylaboratorio.com';
+    
     foreach ($products as &$product) {
         if (!empty($product['imagen_principal'])) {
-            if (function_exists('imageUrl')) {
-                $product['imagen_principal'] = imageUrl($product['imagen_principal']);
+            $img_path = $product['imagen_principal'];
+            
+            // Si ya es una URL completa (http:// o https://), usar tal cual
+            if (strpos($img_path, 'http://') === 0 || strpos($img_path, 'https://') === 0) {
+                $product['imagen_principal'] = $img_path;
             } else {
-                // Fallback: construir URL manualmente
-                if (strpos($product['imagen_principal'], 'http') === 0) {
-                    // Ya es una URL completa
-                } elseif (strpos($product['imagen_principal'], '/assets/') === 0) {
-                    // Ya tiene la ruta correcta
-                    $product['imagen_principal'] = (defined('SITE_URL') ? SITE_URL : 'https://aramedylaboratorio.com') . $product['imagen_principal'];
+                // Normalizar la ruta primero
+                if (function_exists('imageUrl')) {
+                    $img_path = imageUrl($img_path);
+                }
+                
+                // Si imageUrl() devolvió una URL relativa, convertirla a absoluta
+                if (strpos($img_path, 'http') !== 0) {
+                    // Remover /assets/images/ si está duplicado
+                    $img_path = preg_replace('#^/assets/images/#', '', $img_path);
+                    $img_path = preg_replace('#^assets/images/#', '', $img_path);
+                    
+                    // Construir URL absoluta completa
+                    if (strpos($img_path, '/') === 0) {
+                        $product['imagen_principal'] = $site_url . $img_path;
+                    } else {
+                        $product['imagen_principal'] = $site_url . '/assets/images/' . ltrim($img_path, '/');
+                    }
                 } else {
-                    $product['imagen_principal'] = (defined('SITE_URL') ? SITE_URL : 'https://aramedylaboratorio.com') . '/assets/images/' . ltrim($product['imagen_principal'], '/');
+                    $product['imagen_principal'] = $img_path;
                 }
             }
+        } else {
+            $product['imagen_principal'] = '';
         }
     }
     

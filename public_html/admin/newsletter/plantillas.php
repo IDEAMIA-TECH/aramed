@@ -695,11 +695,39 @@ $current_dir = 'newsletter';
                             console.log('✅ Productos encontrados:', data.products.length);
                             let html = '<div class="row g-3">';
                             data.products.forEach(product => {
-                                const productName = (product.nombre || 'Sin nombre').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
-                                const productImage = (product.imagen_principal || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                                const productDesc = (product.descripcion_corta || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ').substring(0, 100);
-                                const productCode = (product.codigo || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                                const productMarca = (product.marca_nombre || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                                // Escapar correctamente para HTML y JavaScript
+                                const productName = (product.nombre || 'Sin nombre')
+                                    .replace(/\\/g, '\\\\')
+                                    .replace(/'/g, "\\'")
+                                    .replace(/"/g, '&quot;')
+                                    .replace(/\n/g, ' ')
+                                    .replace(/\r/g, '');
+                                
+                                const productImage = (product.imagen_principal || '')
+                                    .replace(/\\/g, '\\\\')
+                                    .replace(/'/g, "\\'")
+                                    .replace(/"/g, '&quot;');
+                                
+                                const productDesc = (product.descripcion_corta || '')
+                                    .replace(/\\/g, '\\\\')
+                                    .replace(/'/g, "\\'")
+                                    .replace(/"/g, '&quot;')
+                                    .replace(/\n/g, ' ')
+                                    .replace(/\r/g, '')
+                                    .substring(0, 100);
+                                
+                                const productCode = (product.codigo || '')
+                                    .replace(/\\/g, '\\\\')
+                                    .replace(/'/g, "\\'")
+                                    .replace(/"/g, '&quot;');
+                                
+                                const productMarca = (product.marca_nombre || '')
+                                    .replace(/\\/g, '\\\\')
+                                    .replace(/'/g, "\\'")
+                                    .replace(/"/g, '&quot;');
+                                
+                                // URL absoluta de la imagen para el popup
+                                const imageUrlForPopup = productImage || '';
                                 
                                 html += `
                                     <div class="col-md-6">
@@ -708,7 +736,7 @@ $current_dir = 'newsletter';
                                              onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
                                              onclick="insertProduct(${product.id}, '${productName}', '${productImage}', '${productDesc}')">
                                             <div class="card-body">
-                                                ${productImage ? `<img src="${productImage}" class="img-fluid mb-2" style="max-height: 100px; object-fit: cover; width: 100%; border-radius: 4px;" alt="${productName}" onerror="this.style.display='none'">` : '<div style="height: 100px; background: #f8f9fa; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;"><i class="bi bi-image text-muted" style="font-size: 2rem;"></i></div>'}
+                                                ${imageUrlForPopup ? `<img src="${imageUrlForPopup}" class="img-fluid mb-2" style="max-height: 100px; object-fit: cover; width: 100%; border-radius: 4px;" alt="${product.nombre || 'Producto'}" onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div style=\\'height: 100px; background: #f8f9fa; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;\\'><i class=\\'bi bi-image text-muted\\' style=\\'font-size: 2rem;\\'></i></div>' + this.parentElement.innerHTML;">` : '<div style="height: 100px; background: #f8f9fa; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;"><i class="bi bi-image text-muted" style="font-size: 2rem;"></i></div>'}
                                                 <h6 class="card-title mb-2">${product.nombre || 'Sin nombre'}</h6>
                                                 ${productCode ? `<small class="text-muted d-block mb-1"><strong>Código:</strong> ${productCode}</small>` : ''}
                                                 ${productMarca ? `<small class="text-muted d-block mb-1"><strong>Marca:</strong> ${productMarca}</small>` : ''}
@@ -742,30 +770,82 @@ $current_dir = 'newsletter';
                 return;
             }
             
-            // Escapar comillas y caracteres especiales
-            const safeName = (productName || 'Producto').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-            const safeImage = (productImage || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-            const safeDesc = (productDescription || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+            console.log('📦 Insertando producto:', {
+                id: productId,
+                name: productName,
+                image: productImage,
+                desc: productDescription
+            });
+            
+            // Escapar comillas y caracteres especiales para HTML (no para JavaScript)
+            // Para el HTML que se insertará, solo necesitamos escapar comillas dobles
+            const safeNameForHTML = (productName || 'Producto')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            
+            // URL de imagen debe ser absoluta completa (con https://) para emails
+            let imageUrlForEmail = productImage || '';
+            
+            // Si la imagen no es una URL absoluta completa, convertirla
+            if (imageUrlForEmail && !imageUrlForEmail.match(/^https?:\/\//)) {
+                // Si empieza con /, agregar dominio
+                if (imageUrlForEmail.startsWith('/')) {
+                    imageUrlForEmail = 'https://aramedylaboratorio.com' + imageUrlForEmail;
+                } else {
+                    // Si no, agregar ruta completa
+                    imageUrlForEmail = 'https://aramedylaboratorio.com/assets/images/' + imageUrlForEmail.replace(/^(assets\/images\/)/, '');
+                }
+            }
+            
+            const safeImageForHTML = imageUrlForEmail
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+            
+            const safeDescForHTML = (productDescription || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .replace(/\n/g, '<br>');
             
             // Generar HTML del producto para email (compatible con email clients)
-            const productHTML = `
+            // IMPORTANTE: Usar URLs absolutas completas para imágenes en emails
+            const productHTML = imageUrlForEmail ? `
 <div style="border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; margin: 20px 0; background-color: #ffffff;">
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
         <tr>
-            ${safeImage ? `
             <td style="width: 150px; padding-right: 20px; vertical-align: top;">
-                <img src="${safeImage}" alt="${safeName}" style="max-width: 150px; height: auto; border-radius: 4px; display: block;" />
+                <img src="${safeImageForHTML}" alt="${safeNameForHTML}" style="max-width: 150px; height: auto; border-radius: 4px; display: block; border: 1px solid #e9ecef;" />
             </td>
-            ` : ''}
             <td style="vertical-align: top;">
-                <h3 style="margin: 0 0 10px 0; color: #0066cc; font-size: 18px; font-weight: bold;">${safeName}</h3>
-                ${safeDesc ? `<p style="margin: 0 0 15px 0; color: #666666; font-size: 14px; line-height: 1.6;">${safeDesc}</p>` : ''}
+                <h3 style="margin: 0 0 10px 0; color: #0066cc; font-size: 18px; font-weight: bold;">${safeNameForHTML}</h3>
+                ${safeDescForHTML ? `<p style="margin: 0 0 15px 0; color: #666666; font-size: 14px; line-height: 1.6;">${safeDescForHTML}</p>` : ''}
+                <a href="https://aramedylaboratorio.com/producto.php?id=${productId}" style="display: inline-block; padding: 10px 20px; background-color: #0066cc; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: 600; font-size: 14px;">Ver Producto</a>
+            </td>
+        </tr>
+    </table>
+</div>
+            `.trim() : `
+<div style="border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; margin: 20px 0; background-color: #ffffff;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+            <td style="vertical-align: top;">
+                <h3 style="margin: 0 0 10px 0; color: #0066cc; font-size: 18px; font-weight: bold;">${safeNameForHTML}</h3>
+                ${safeDescForHTML ? `<p style="margin: 0 0 15px 0; color: #666666; font-size: 14px; line-height: 1.6;">${safeDescForHTML}</p>` : ''}
                 <a href="https://aramedylaboratorio.com/producto.php?id=${productId}" style="display: inline-block; padding: 10px 20px; background-color: #0066cc; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: 600; font-size: 14px;">Ver Producto</a>
             </td>
         </tr>
     </table>
 </div>
             `.trim();
+            
+            console.log('✅ HTML generado:', productHTML.substring(0, 200) + '...');
             
             // Insertar en TinyMCE
             tinyMCEEditor.insertContent(productHTML);
