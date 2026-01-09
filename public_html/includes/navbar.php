@@ -58,14 +58,17 @@ if (function_exists('getDB')) {
                     // Construir href completo
                     $href = $item['href'];
                     if (!empty($href)) {
-                        // Si es una ancla (#), agregar la URL base
-                        if (strpos($href, '#') === 0) {
+                        // Si ya es una URL completa (http/https), usar tal cual
+                        if (strpos($href, 'http://') === 0 || strpos($href, 'https://') === 0) {
+                            // Ya es una URL completa, usar tal cual
+                        } elseif (strpos($href, '#') === 0) {
+                            // Si es una ancla (#), agregar la URL base
                             $href = siteUrl() . $href;
-                        } elseif (strpos($href, '/') === 0 && strpos($href, 'http') !== 0) {
-                            // Si comienza con /, construir URL completa
-                            $href = siteUrl() . ltrim($href, '/');
-                        } elseif (strpos($href, 'http') !== 0) {
-                            // Si no tiene protocolo, asumir que es relativo
+                        } elseif (strpos($href, '/') === 0) {
+                            // Si comienza con /, construir URL completa (mantener la barra)
+                            $href = siteUrl() . $href;
+                        } else {
+                            // Si no tiene protocolo ni barra inicial, asumir que es relativo
                             $href = siteUrl($href);
                         }
                     } else {
