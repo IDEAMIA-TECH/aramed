@@ -185,12 +185,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
                     
-                    // Enviar email
+                    // Preparar opciones para el template base
+                    $template_options = [
+                        'unsubscribe_url' => $link_desuscripcion,
+                        'unsubscribe_token' => md5($destinatario['email'])
+                    ];
+                    
+                    // Enviar email con template base
                     $result = sendEmail(
                         $destinatario['email'],
                         $asunto_email,
                         $contenido_html,
-                        $destinatario['nombre'] ?? ''
+                        $destinatario['nombre'] ?? '',
+                        [],
+                        true, // Usar template base
+                        $template_options
                     );
                     
                     // Actualizar registro de envío con resultado

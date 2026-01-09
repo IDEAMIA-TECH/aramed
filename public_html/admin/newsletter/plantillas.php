@@ -243,11 +243,20 @@ $current_dir = 'newsletter';
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label">Contenido HTML *</label>
-                                        <textarea class="form-control" name="contenido_html" id="contenido_html" rows="10"><?php echo esc($editing['contenido_html'] ?? ''); ?></textarea>
+                                        <label class="form-label">
+                                            Contenido HTML *
+                                            <button type="button" class="btn btn-sm btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#productModal">
+                                                <i class="bi bi-plus-circle me-1"></i>Insertar Producto
+                                            </button>
+                                        </label>
+                                        <textarea class="form-control" name="contenido_html" id="contenido_html" rows="15"><?php echo esc($editing['contenido_html'] ?? ''); ?></textarea>
                                         <div class="invalid-feedback" id="contenido_html_error" style="display: none;">
                                             El contenido HTML es obligatorio
                                         </div>
+                                        <small class="form-text text-muted">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            Puedes insertar productos del catálogo usando el botón "Insertar Producto" arriba.
+                                        </small>
                                     </div>
                                     
                                     <div class="mb-3">
@@ -399,16 +408,49 @@ $current_dir = 'newsletter';
         </div>
     </div>
     
+    <!-- Modal para Seleccionar Productos -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="productModalLabel">
+                        <i class="bi bi-box-seam me-2"></i>Seleccionar Producto para Promocionar
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="productSearch" placeholder="Buscar producto por nombre, código o SKU...">
+                    </div>
+                    <div id="productsList" style="max-height: 400px; overflow-y: auto;">
+                        <div class="text-center py-4">
+                            <i class="bi bi-search display-4 text-muted mb-3"></i>
+                            <p class="text-muted">Busca un producto para insertarlo en la plantilla</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        let tinyMCEEditor = null;
+        
         // Inicializar TinyMCE
         tinymce.init({
             selector: '#contenido_html',
-            height: 400,
+            height: 500,
             menubar: false,
             plugins: 'code preview',
             toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | code preview',
-            content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; }'
+            content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; }',
+            setup: function(editor) {
+                tinyMCEEditor = editor;
+            }
         });
         
         // Variables predefinidas
@@ -531,6 +573,130 @@ $current_dir = 'newsletter';
                 return false;
             }
         });
+        
+        // ========================================
+        // FUNCIONALIDAD DE BÚSQUEDA DE PRODUCTOS
+        // ========================================
+        let searchTimeout;
+        
+        // Event listener para búsqueda de productos
+        const productSearchInput = document.getElementById('productSearch');
+        if (productSearchInput) {
+            productSearchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                const query = this.value.trim();
+                
+                const productsList = document.getElementById('productsList');
+                
+                if (query.length < 2) {
+                    productsList.innerHTML = '<div class="text-center py-4"><i class="bi bi-search display-4 text-muted mb-3"></i><p class="text-muted">Escribe al menos 2 caracteres para buscar</p></div>';
+                    return;
+                }
+                
+                searchTimeout = setTimeout(() => {
+                    searchProducts(query);
+                }, 300);
+            });
+        }
+        
+        // Función para buscar productos
+        function searchProducts(query) {
+            const productsList = document.getElementById('productsList');
+            productsList.innerHTML = '<div class="text-center py-4"><i class="bi bi-hourglass-split display-4 text-muted mb-3"></i><p class="text-muted">Buscando productos...</p></div>';
+            
+            fetch('/admin/catalogo/productos/search-products.php?q=' + encodeURIComponent(query))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.products && data.products.length > 0) {
+                        let html = '<div class="row g-3">';
+                        data.products.forEach(product => {
+                            const productName = (product.nombre || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                            const productImage = (product.imagen_principal || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                            const productDesc = (product.descripcion_corta || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+                            
+                            html += `
+                                <div class="col-md-6">
+                                    <div class="card product-card h-100" style="cursor: pointer; transition: transform 0.2s;" 
+                                         onmouseover="this.style.transform='scale(1.02)'" 
+                                         onmouseout="this.style.transform='scale(1)'"
+                                         onclick="insertProduct(${product.id}, '${productName}', '${productImage}', '${productDesc}')">
+                                        <div class="card-body">
+                                            ${product.imagen_principal ? `<img src="${product.imagen_principal}" class="img-fluid mb-2" style="max-height: 100px; object-fit: cover; width: 100%; border-radius: 4px;" alt="${productName}">` : '<div style="height: 100px; background: #f8f9fa; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;"><i class="bi bi-image text-muted" style="font-size: 2rem;"></i></div>'}
+                                            <h6 class="card-title">${product.nombre || 'Sin nombre'}</h6>
+                                            ${product.codigo ? `<small class="text-muted d-block mb-1">Código: ${product.codigo}</small>` : ''}
+                                            ${product.marca_nombre ? `<small class="text-muted d-block mb-1">Marca: ${product.marca_nombre}</small>` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                        productsList.innerHTML = html;
+                    } else {
+                        productsList.innerHTML = '<div class="text-center py-4"><i class="bi bi-inbox display-4 text-muted mb-3"></i><p class="text-muted">No se encontraron productos</p></div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    productsList.innerHTML = '<div class="alert alert-danger">Error al buscar productos. Por favor intenta nuevamente.</div>';
+                });
+        }
+        
+        // Función para insertar producto en el editor
+        function insertProduct(productId, productName, productImage, productDescription) {
+            if (!tinyMCEEditor) {
+                alert('El editor no está listo. Por favor espera un momento.');
+                return;
+            }
+            
+            // Escapar comillas y caracteres especiales
+            const safeName = (productName || 'Producto').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            const safeImage = (productImage || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            const safeDesc = (productDescription || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+            
+            // Generar HTML del producto para email (compatible con email clients)
+            const productHTML = `
+<div style="border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; margin: 20px 0; background-color: #ffffff;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+            ${safeImage ? `
+            <td style="width: 150px; padding-right: 20px; vertical-align: top;">
+                <img src="${safeImage}" alt="${safeName}" style="max-width: 150px; height: auto; border-radius: 4px; display: block;" />
+            </td>
+            ` : ''}
+            <td style="vertical-align: top;">
+                <h3 style="margin: 0 0 10px 0; color: #0066cc; font-size: 18px; font-weight: bold;">${safeName}</h3>
+                ${safeDesc ? `<p style="margin: 0 0 15px 0; color: #666666; font-size: 14px; line-height: 1.6;">${safeDesc}</p>` : ''}
+                <a href="https://aramedylaboratorio.com/producto.php?id=${productId}" style="display: inline-block; padding: 10px 20px; background-color: #0066cc; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: 600; font-size: 14px;">Ver Producto</a>
+            </td>
+        </tr>
+    </table>
+</div>
+            `.trim();
+            
+            // Insertar en TinyMCE
+            tinyMCEEditor.insertContent(productHTML);
+            
+            // Cerrar modal
+            const modalElement = document.getElementById('productModal');
+            if (modalElement) {
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                if (modal) {
+                    modal.hide();
+                }
+            }
+            
+            // Limpiar búsqueda
+            if (productSearchInput) {
+                productSearchInput.value = '';
+            }
+            const productsList = document.getElementById('productsList');
+            if (productsList) {
+                productsList.innerHTML = '<div class="text-center py-4"><i class="bi bi-search display-4 text-muted mb-3"></i><p class="text-muted">Busca un producto para insertarlo en la plantilla</p></div>';
+            }
+            
+            showAlert('Producto insertado correctamente en la plantilla.', 'success');
+        }
     </script>
 </body>
 </html>

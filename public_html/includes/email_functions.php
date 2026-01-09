@@ -43,15 +43,38 @@ if (file_exists(INCLUDES_PATH . '/library/phpmailer/class.phpmailer.php')) {
  * @param string $body Cuerpo del mensaje (HTML)
  * @param string $toName Nombre del destinatario (opcional)
  * @param array $attachments Array de archivos adjuntos (opcional)
+ * @param bool $use_template_base Si es true, envuelve el contenido con el template base (logo, footer, etc.)
+ * @param array $template_options Opciones para el template base (unsubscribe_url, etc.)
  * @return array ['success' => bool, 'message' => string]
  */
-function sendEmail($to, $subject, $body, $toName = '', $attachments = []) {
+function sendEmail($to, $subject, $body, $toName = '', $attachments = [], $use_template_base = true, $template_options = []) {
     global $phpmailerAvailable;
+    
+    // Aplicar template base si está habilitado
+    if ($use_template_base) {
+        // Cargar función de template base si existe
+        $template_base_file = defined('INCLUDES_PATH') ? INCLUDES_PATH . '/email_template_base.php' : __DIR__ . '/email_template_base.php';
+        if (file_exists($template_base_file) && !function_exists('getEmailTemplateBase')) {
+            require_once $template_base_file;
+        }
+        
+        // Si la función existe, usar el template base
+        if (function_exists('getEmailTemplateBase')) {
+            // Agregar URL de desuscripción si no está en opciones
+            if (empty($template_options['unsubscribe_url'])) {
+                $template_options['unsubscribe_url'] = isset($template_options['unsubscribe_token']) 
+                    ? (function_exists('siteUrl') ? siteUrl('desuscribir.php?token=' . $template_options['unsubscribe_token']) : '') 
+                    : '';
+            }
+            $body = getEmailTemplateBase($body, $template_options);
+        }
+    }
     
     // LOG: Inicio del envío
     debugLog("===== EMAIL SEND ATTEMPT =====");
     debugLog("To: " . $to);
     debugLog("Subject: " . $subject);
+    debugLog("Use Template Base: " . ($use_template_base ? 'YES' : 'NO'));
     debugLog("PHPMailer Available: " . ($phpmailerAvailable ? 'YES' : 'NO'));
     debugLog("SMTP Host: " . SMTP_HOST);
     debugLog("SMTP Port: " . SMTP_PORT);
