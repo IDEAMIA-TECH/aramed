@@ -584,6 +584,9 @@ $fuentes = $stmt_fuentes->fetchAll(PDO::FETCH_COLUMN);
                             <a href="newsletter/plantillas.php" class="btn btn-outline-info">
                                 <i class="bi bi-file-earmark-code me-2"></i>Plantillas HTML
                             </a>
+                            <a href="newsletter/campanas.php" class="btn btn-primary">
+                                <i class="bi bi-send me-2"></i>Crear Campaña
+                            </a>
                             <a href="newsletter/config.php" class="btn btn-outline-secondary">
                                 <i class="bi bi-gear me-2"></i>Configuración
                             </a>
