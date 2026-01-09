@@ -75,22 +75,7 @@ try {
     // Buscar productos - Usar CONCAT para simplificar
     $search_term = '%' . $query . '%';
     
-    // Primero verificar si hay productos publicados
-    $check_stmt = $pdo->query("SELECT COUNT(*) as total FROM catalogo_productos WHERE estado = 'publicado'");
-    $check_result = $check_stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if ($check_result['total'] == 0) {
-        echo json_encode([
-            'success' => true,
-            'products' => [],
-            'count' => 0,
-            'message' => 'No hay productos publicados en el catálogo',
-            'query' => $query
-        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        exit;
-    }
-    
-    // Buscar productos usando múltiples parámetros
+    // Buscar productos usando múltiples parámetros (estado = 'activo' según el sistema)
     $sql = "SELECT p.id, p.nombre, p.codigo, p.slug, p.descripcion_corta, 
                    p.imagen_principal, p.estado,
                    COALESCE(m.nombre, '') as marca_nombre,
@@ -98,7 +83,7 @@ try {
             FROM catalogo_productos p
             LEFT JOIN catalogo_marcas m ON p.marca_id = m.id
             LEFT JOIN catalogo_categorias c ON p.categoria_id = c.id
-            WHERE p.estado = 'publicado' 
+            WHERE p.estado = 'activo' 
             AND (
                 p.nombre LIKE ? 
                 OR p.codigo LIKE ? 
