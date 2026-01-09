@@ -628,6 +628,15 @@ function getLogoPath($current_dir, $base_path) {
             </div>
             <?php endif; ?>
             
+            <!-- Menú Principal -->
+            <?php if ($is_admin && canSeeModule('apariencia', $user_permissions)): ?>
+            <div class="nav-item">
+                <a class="<?php echo getNavLinkClass('menu/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('menu/index.php', $base_path); ?>">
+                    <i class="bi bi-list-ul me-2"></i>Menú Principal
+                </a>
+            </div>
+            <?php endif; ?>
+            
             <!-- Configuración (Solo Admin) -->
             <?php if ($is_admin && canSeeModule('configuracion', $user_permissions)): ?>
             <a class="<?php echo getNavLinkClass('configuracion/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('configuracion/index.php', $base_path); ?>">

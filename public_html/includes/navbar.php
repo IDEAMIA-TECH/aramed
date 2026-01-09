@@ -40,14 +40,63 @@ switch ($current_page) {
         $current_section = 'home';
 }
 
-// Configurar menú de navegación
-$nav_items = [
-    ['label' => 'Inicio', 'href' => siteUrl(), 'icon' => 'house', 'section' => 'home'],
-    ['label' => 'Catálogo', 'href' => siteUrl('catalogo.php'), 'icon' => 'grid-3x3-gap', 'section' => 'catalogo'],
-    ['label' => 'Blog', 'href' => siteUrl('blog.php'), 'icon' => 'newspaper', 'section' => 'blog'],
-    ['label' => 'Proyectos', 'href' => siteUrl('proyectos.php'), 'icon' => 'folder', 'section' => 'proyectos'],
-    ['label' => 'Aliados', 'href' => siteUrl() . '#aliados', 'icon' => 'people', 'section' => 'aliados'],
-];
+// Configurar menú de navegación desde la base de datos
+$nav_items = [];
+
+// Intentar cargar desde la base de datos
+if (function_exists('getDB')) {
+    try {
+        $pdo = getDB();
+        if ($pdo) {
+            // Verificar si la tabla existe
+            $table_exists = $pdo->query("SHOW TABLES LIKE 'menu_config'")->fetch();
+            if ($table_exists) {
+                $stmt = $pdo->query("SELECT * FROM menu_config WHERE visible = 1 ORDER BY orden ASC, id ASC");
+                $db_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                foreach ($db_items as $item) {
+                    // Construir href completo
+                    $href = $item['href'];
+                    if (!empty($href)) {
+                        // Si es una ancla (#), agregar la URL base
+                        if (strpos($href, '#') === 0) {
+                            $href = siteUrl() . $href;
+                        } elseif (strpos($href, '/') === 0 && strpos($href, 'http') !== 0) {
+                            // Si comienza con /, construir URL completa
+                            $href = siteUrl() . ltrim($href, '/');
+                        } elseif (strpos($href, 'http') !== 0) {
+                            // Si no tiene protocolo, asumir que es relativo
+                            $href = siteUrl($href);
+                        }
+                    } else {
+                        $href = siteUrl();
+                    }
+                    
+                    $nav_items[] = [
+                        'label' => $item['label'],
+                        'href' => $href,
+                        'icon' => $item['icon'],
+                        'section' => $item['section'] ?? $item['item_key']
+                    ];
+                }
+            }
+        }
+    } catch (Exception $e) {
+        // Si hay error, usar configuración por defecto
+        error_log("Error cargando menú desde BD: " . $e->getMessage());
+    }
+}
+
+// Fallback a configuración por defecto si no hay items desde BD
+if (empty($nav_items)) {
+    $nav_items = [
+        ['label' => 'Inicio', 'href' => siteUrl(), 'icon' => 'house', 'section' => 'home'],
+        ['label' => 'Catálogo', 'href' => siteUrl('catalogo.php'), 'icon' => 'grid-3x3-gap', 'section' => 'catalogo'],
+        ['label' => 'Blog', 'href' => siteUrl('blog.php'), 'icon' => 'newspaper', 'section' => 'blog'],
+        ['label' => 'Proyectos', 'href' => siteUrl('proyectos.php'), 'icon' => 'folder', 'section' => 'proyectos'],
+        ['label' => 'Aliados', 'href' => siteUrl() . '#aliados', 'icon' => 'people', 'section' => 'aliados'],
+    ];
+}
 
 // Función para generar enlaces que funcionen en todas las páginas
 function getPageLink($href, $current_page) {

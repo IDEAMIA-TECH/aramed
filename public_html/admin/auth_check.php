@@ -24,15 +24,8 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
     }
     
-    // Redirigir al login
-    $login_url = 'login.php';
-    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-        $login_url = 'https://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/login.php';
-    } else {
-        $login_url = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/login.php';
-    }
-    
-    header('Location: ' . $login_url);
+    // Redirigir al login (usar ruta absoluta desde /admin/)
+    header('Location: /admin/login.php');
     exit;
 }
 
@@ -45,8 +38,8 @@ if (isset($_SESSION['admin_last_activity']) &&
     session_unset();
     session_destroy();
     
-    // Redirigir al login
-    header('Location: login.php?expired=1');
+    // Redirigir al login (usar ruta absoluta desde /admin/)
+    header('Location: /admin/login.php?expired=1');
     exit;
 }
 
@@ -107,7 +100,7 @@ if (isset($_SESSION['admin_user_id']) && function_exists('getDB')) {
                 if ($bloqueado) {
                     session_unset();
                     session_destroy();
-                    header('Location: login.php?bloqueado=1');
+                    header('Location: /admin/login.php?bloqueado=1');
                     exit;
                 }
             }
@@ -154,7 +147,7 @@ function getCurrentUser() {
 function adminLogout() {
     session_unset();
     session_destroy();
-    header('Location: login.php?logout=1');
+    header('Location: /admin/login.php?logout=1');
     exit;
 }
 ?>
