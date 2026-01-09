@@ -479,20 +479,36 @@ function getLogoPath($current_dir, $base_path) {
                 <a class="<?php echo getNavLinkClass('newsletter-simple.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('newsletter-simple.php', $base_path); ?>">
                     <i class="bi bi-newspaper me-2"></i>Newsletter
                 </a>
-                <?php if ($current_dir === 'newsletter'): ?>
+                <?php if ($current_dir === 'newsletter' || $current_page === 'newsletter-simple.php' || $current_page === 'campanas.php' || $current_page === 'campana-detalle.php'): ?>
                 <div class="ms-3 mt-1" style="display: block !important; visibility: visible !important;">
-                    <a class="<?php echo getNavLinkClass('import.php', $current_page, $current_dir); ?> nav-link-sm" href="import.php" style="color: #212529 !important;">
-                        <i class="bi bi-upload me-2"></i>Importar CSV
+                    <a class="<?php echo getNavLinkClass('newsletter-simple.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('newsletter-simple.php', $base_path); ?>" style="color: #212529 !important;">
+                        <i class="bi bi-list-ul me-2"></i>Suscriptores
                     </a>
-                    <a class="<?php echo getNavLinkClass('export.php', $current_page, $current_dir); ?> nav-link-sm" href="export.php" style="color: #212529 !important;">
-                        <i class="bi bi-download me-2"></i>Exportar CSV
+                    <?php if (function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'newsletter', 'crear')): ?>
+                    <a class="<?php echo getNavLinkClass('campanas.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('newsletter/campanas.php', $base_path); ?>" style="color: #212529 !important;">
+                        <i class="bi bi-send me-2"></i>Campañas
                     </a>
-                    <a class="<?php echo getNavLinkClass('plantillas.php', $current_page, $current_dir); ?> nav-link-sm" href="plantillas.php" style="color: #212529 !important;">
+                    <?php endif; ?>
+                    <?php if (function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'newsletter', 'editar')): ?>
+                    <a class="<?php echo getNavLinkClass('plantillas.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('newsletter/plantillas.php', $base_path); ?>" style="color: #212529 !important;">
                         <i class="bi bi-file-earmark-code me-2"></i>Plantillas
                     </a>
-                    <a class="<?php echo getNavLinkClass('config.php', $current_page, $current_dir); ?> nav-link-sm" href="config.php" style="color: #212529 !important;">
+                    <?php endif; ?>
+                    <?php if (function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'newsletter', 'importar')): ?>
+                    <a class="<?php echo getNavLinkClass('import.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('newsletter/import.php', $base_path); ?>" style="color: #212529 !important;">
+                        <i class="bi bi-upload me-2"></i>Importar CSV
+                    </a>
+                    <?php endif; ?>
+                    <?php if (function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'newsletter', 'exportar')): ?>
+                    <a class="<?php echo getNavLinkClass('export.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('newsletter/export.php', $base_path); ?>" style="color: #212529 !important;">
+                        <i class="bi bi-download me-2"></i>Exportar CSV
+                    </a>
+                    <?php endif; ?>
+                    <?php if (function_exists('hasPermission') && hasPermission($_SESSION['admin_user_id'] ?? 0, 'newsletter', 'editar')): ?>
+                    <a class="<?php echo getNavLinkClass('config.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('newsletter/config.php', $base_path); ?>" style="color: #212529 !important;">
                         <i class="bi bi-gear me-2"></i>Configuración
                     </a>
+                    <?php endif; ?>
                 </div>
                 <?php endif; ?>
             </div>

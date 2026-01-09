@@ -84,9 +84,10 @@ ON DUPLICATE KEY UPDATE descripcion = VALUES(descripcion);
 -- Newsletter
 INSERT INTO `permisos` (`modulo`, `accion`, `descripcion`) VALUES
 ('newsletter', 'ver', 'Ver suscriptores del newsletter'),
+('newsletter', 'crear', 'Crear campañas de newsletter'),
 ('newsletter', 'importar', 'Importar suscriptores desde CSV'),
 ('newsletter', 'exportar', 'Exportar suscriptores a CSV'),
-('newsletter', 'editar', 'Editar suscriptores del newsletter')
+('newsletter', 'editar', 'Editar suscriptores y plantillas del newsletter')
 ON DUPLICATE KEY UPDATE descripcion = VALUES(descripcion);
 
 -- Analytics
