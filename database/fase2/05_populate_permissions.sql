@@ -115,6 +115,18 @@ INSERT INTO `permisos` (`modulo`, `accion`, `descripcion`) VALUES
 ('configuracion', 'editar', 'Editar configuración del sitio')
 ON DUPLICATE KEY UPDATE descripcion = VALUES(descripcion);
 
+-- Apariencia
+INSERT INTO `permisos` (`modulo`, `accion`, `descripcion`) VALUES
+('apariencia', 'ver', 'Ver módulos de apariencia'),
+('apariencia', 'editar', 'Editar configuración de apariencia y menú')
+ON DUPLICATE KEY UPDATE descripcion = VALUES(descripcion);
+
+-- Menú Principal
+INSERT INTO `permisos` (`modulo`, `accion`, `descripcion`) VALUES
+('menu', 'ver', 'Ver configuración del menú principal'),
+('menu', 'editar', 'Editar elementos del menú principal')
+ON DUPLICATE KEY UPDATE descripcion = VALUES(descripcion);
+
 -- ========================================
 -- ASIGNAR TODOS LOS PERMISOS AL ROL 'admin'
 -- ========================================

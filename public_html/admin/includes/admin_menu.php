@@ -604,36 +604,30 @@ function getLogoPath($current_dir, $base_path) {
             <?php endif; ?>
             
             <!-- Apariencia & Módulos (Solo Admin) -->
-            <?php if ($is_admin && canSeeModule('configuracion', $user_permissions)): ?>
+            <?php if ($is_admin && canSeeModule('apariencia', $user_permissions)): ?>
             <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('apariencia/index.php', $current_page, $current_dir); ?>" href="/admin/apariencia/index.php">
+                <a class="<?php echo getNavLinkClass('apariencia/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('apariencia/index.php', $base_path); ?>">
                     <i class="bi bi-palette me-2"></i>Apariencia & Módulos
                 </a>
-                <?php if ($current_dir === 'apariencia'): ?>
+                <?php if ($current_dir === 'apariencia' || $current_dir === 'menu'): ?>
                 <div class="ms-3 mt-1" style="display: block !important; visibility: visible !important;">
-                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="index.php" style="color: #212529 !important;">
+                    <a class="<?php echo getNavLinkClass('index.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('apariencia/index.php', $base_path); ?>" style="color: #212529 !important;">
                         <i class="bi bi-speedometer2 me-2"></i>Dashboard
                     </a>
-                    <a class="<?php echo getNavLinkClass('secciones.php', $current_page, $current_dir); ?> nav-link-sm" href="secciones.php" style="color: #212529 !important;">
+                    <a class="<?php echo getNavLinkClass('secciones.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('apariencia/secciones.php', $base_path); ?>" style="color: #212529 !important;">
                         <i class="bi bi-layout-text-window me-2"></i>Secciones
                     </a>
-                    <a class="<?php echo getNavLinkClass('paginas.php', $current_page, $current_dir); ?> nav-link-sm" href="paginas.php" style="color: #212529 !important;">
+                    <a class="<?php echo getNavLinkClass('paginas.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('apariencia/paginas.php', $base_path); ?>" style="color: #212529 !important;">
                         <i class="bi bi-file-earmark-text me-2"></i>Páginas Estáticas
                     </a>
-                    <a class="<?php echo getNavLinkClass('vista-previa.php', $current_page, $current_dir); ?> nav-link-sm" href="vista-previa.php" style="color: #212529 !important;">
+                    <a class="<?php echo getNavLinkClass('vista-previa.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('apariencia/vista-previa.php', $base_path); ?>" style="color: #212529 !important;">
                         <i class="bi bi-eye me-2"></i>Vista Previa
+                    </a>
+                    <a class="<?php echo getNavLinkClass('menu/index.php', $current_page, $current_dir); ?> nav-link-sm" href="<?php echo adminUrl('menu/index.php', $base_path); ?>" style="color: #212529 !important;">
+                        <i class="bi bi-list-ul me-2"></i>Menú Principal
                     </a>
                 </div>
                 <?php endif; ?>
-            </div>
-            <?php endif; ?>
-            
-            <!-- Menú Principal -->
-            <?php if ($is_admin && canSeeModule('apariencia', $user_permissions)): ?>
-            <div class="nav-item">
-                <a class="<?php echo getNavLinkClass('menu/index.php', $current_page, $current_dir); ?>" href="<?php echo adminUrl('menu/index.php', $base_path); ?>">
-                    <i class="bi bi-list-ul me-2"></i>Menú Principal
-                </a>
             </div>
             <?php endif; ?>
             

@@ -22,7 +22,15 @@ require_once __DIR__ . '/../auth_check.php';
 
 // Verificar permisos RBAC
 if (function_exists('checkPermission')) {
-    checkPermission('apariencia', 'editar');
+    // Intentar con permiso específico de menu, fallback a apariencia
+    if (function_exists('hasPermission') && isset($_SESSION['admin_user_id'])) {
+        $has_menu_permission = hasPermission($_SESSION['admin_user_id'], 'menu', 'editar');
+        if (!$has_menu_permission) {
+            checkPermission('apariencia', 'editar');
+        }
+    } else {
+        checkPermission('apariencia', 'editar');
+    }
 }
 
 // Obtener conexión PDO
