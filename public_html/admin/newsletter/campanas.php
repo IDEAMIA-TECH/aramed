@@ -109,6 +109,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $fallidos = 0;
                 
                 foreach ($destinatarios as $destinatario) {
+                    // Crear registro de envío ANTES de enviar (para tener el ID para tracking)
+                    $envio_id = null;
+                    if ($tabla_envios_existe) {
+                        $sql_envio_pre = "INSERT INTO newsletter_envios (campana_id, destinatario_id, email, estado, enviado_at) 
+                                         VALUES (?, ?, ?, 'enviado', NOW())";
+                        $stmt_envio_pre = $pdo->prepare($sql_envio_pre);
+                        $stmt_envio_pre->execute([$campana_id, $destinatario['id'], $destinatario['email']]);
+                        $envio_id = $pdo->lastInsertId();
+                    }
+                    
                     // Reemplazar variables en el contenido
                     $contenido_html = $plantilla['contenido_html'];
                     $asunto_email = $asunto_final;
@@ -117,7 +127,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $contenido_html = str_replace('{{nombre_contacto}}', $destinatario['nombre'] ?? 'Usuario', $contenido_html);
                     $contenido_html = str_replace('{{email_contacto}}', $destinatario['email'], $contenido_html);
                     $contenido_html = str_replace('{{fecha_actual}}', date('d/m/Y'), $contenido_html);
-                    $contenido_html = str_replace('{{link_desuscripcion}}', siteUrl('desuscribir.php?token=' . md5($destinatario['email'])), $contenido_html);
+                    
+                    // Link de desuscripción con tracking
+                    if ($envio_id) {
+                        $link_desuscripcion = siteUrl('track-click.php?e=' . $envio_id . '&c=' . $campana_id . '&url=' . urlencode('desuscribir.php?token=' . md5($destinatario['email'])));
+                    } else {
+                        // Fallback sin tracking
+                        $link_desuscripcion = siteUrl('desuscribir.php?token=' . md5($destinatario['email']));
+                    }
+                    $contenido_html = str_replace('{{link_desuscripcion}}', $link_desuscripcion, $contenido_html);
                     
                     // Reemplazar variables personalizadas
                     if (is_array($variables)) {
@@ -131,6 +149,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $contenido_html = str_replace('{{nombre_institucion}}', getConfig('empresa_nombre', SITE_NAME), $contenido_html);
                     $contenido_html = str_replace('{{logo_url}}', siteUrl('assets/images/design/logo.png'), $contenido_html);
                     
+                    // Agregar tracking de links (reemplazar todos los links con links de tracking)
+                    if ($envio_id) {
+                        // Encontrar todos los links <a href="...">
+                        $contenido_html = preg_replace_callback(
+                            '/<a\s+([^>]*\s+)?href=["\']([^"\']+)["\']([^>]*)>/i',
+                            function($matches) use ($envio_id, $campana_id) {
+                                $before = $matches[1] ?? '';
+                                $url = $matches[2];
+                                $after = $matches[3] ?? '';
+                                
+                                // No trackear links de tracking ni mailto: ni anchors
+                                if (strpos($url, 'track-') !== false || strpos($url, 'mailto:') === 0 || strpos($url, '#') === 0) {
+                                    return $matches[0];
+                                }
+                                
+                                // Crear link de tracking
+                                $tracking_url = siteUrl('track-click.php?e=' . $envio_id . '&c=' . $campana_id . '&url=' . urlencode($url));
+                                return '<a ' . $before . 'href="' . htmlspecialchars($tracking_url) . '"' . $after . '>';
+                            },
+                            $contenido_html
+                        );
+                    }
+                    
+                    // Agregar pixel de tracking al final del HTML (antes de </body> o al final)
+                    if ($envio_id) {
+                        $tracking_url = siteUrl('track-email.php?e=' . $envio_id . '&c=' . $campana_id . '&a=open');
+                        $tracking_pixel = '<img src="' . htmlspecialchars($tracking_url) . '" width="1" height="1" style="display:none;" alt="" />';
+                        
+                        // Insertar antes de </body> o al final del HTML
+                        if (stripos($contenido_html, '</body>') !== false) {
+                            $contenido_html = str_replace('</body>', $tracking_pixel . '</body>', $contenido_html);
+                        } else {
+                            $contenido_html .= $tracking_pixel;
+                        }
+                    }
+                    
                     // Enviar email
                     $result = sendEmail(
                         $destinatario['email'],
@@ -139,18 +193,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $destinatario['nombre'] ?? ''
                     );
                     
-                    // Registrar resultado (solo si la tabla existe)
-                    if ($tabla_envios_existe) {
-                        $sql_envio = "INSERT INTO newsletter_envios (campana_id, destinatario_id, email, estado, mensaje_error, enviado_at) 
-                                     VALUES (?, ?, ?, ?, ?, NOW())";
-                        $stmt_envio = $pdo->prepare($sql_envio);
-                        
+                    // Actualizar registro de envío con resultado
+                    if ($tabla_envios_existe && $envio_id) {
                         if ($result['success']) {
                             $enviados++;
-                            $stmt_envio->execute([$campana_id, $destinatario['id'], $destinatario['email'], 'enviado', null]);
+                            // Ya está marcado como enviado arriba, no necesita actualización
                         } else {
                             $fallidos++;
-                            $stmt_envio->execute([$campana_id, $destinatario['id'], $destinatario['email'], 'fallido', $result['message']]);
+                            $sql_update_envio = "UPDATE newsletter_envios SET estado = 'fallido', mensaje_error = ? WHERE id = ?";
+                            $stmt_update_envio = $pdo->prepare($sql_update_envio);
+                            $stmt_update_envio->execute([$result['message'], $envio_id]);
                         }
                     } else {
                         // Sin tabla de envíos, solo contar
@@ -473,12 +525,17 @@ $current_dir = 'newsletter';
                                         <th>Estado</th>
                                         <th>Creada por</th>
                                         <th>Fecha</th>
+                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach ($campanas as $campana): ?>
                                     <tr>
-                                        <td><?php echo esc($campana['nombre']); ?></td>
+                                        <td>
+                                            <a href="campana-detalle.php?id=<?php echo $campana['id']; ?>" class="text-decoration-none">
+                                                <?php echo esc($campana['nombre']); ?>
+                                            </a>
+                                        </td>
                                         <td>Plantilla #<?php echo $campana['plantilla_id']; ?></td>
                                         <td><?php echo number_format($campana['total_destinatarios']); ?></td>
                                         <td class="text-success"><?php echo number_format($campana['enviados']); ?></td>
@@ -490,6 +547,11 @@ $current_dir = 'newsletter';
                                         </td>
                                         <td><?php echo esc($campana['creador_nombre'] ?? 'N/A'); ?></td>
                                         <td><?php echo date('d/m/Y H:i', strtotime($campana['created_at'])); ?></td>
+                                        <td>
+                                            <a href="campana-detalle.php?id=<?php echo $campana['id']; ?>" class="btn btn-sm btn-primary" title="Ver Detalle">
+                                                <i class="bi bi-eye"></i> Ver Métricas
+                                            </a>
+                                        </td>
                                     </tr>
                                     <?php endforeach; ?>
                                 </tbody>
