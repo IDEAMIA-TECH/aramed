@@ -42,6 +42,7 @@ switch ($current_page) {
 
 // Configurar menú de navegación desde la base de datos
 $nav_items = [];
+$catalogo_visible = false; // Variable para verificar si el catálogo está visible
 
 // Intentar cargar desde la base de datos
 if (function_exists('getDB')) {
@@ -55,6 +56,11 @@ if (function_exists('getDB')) {
                 $db_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 foreach ($db_items as $item) {
+                    // Verificar si el catálogo está visible
+                    if ($item['item_key'] === 'catalogo' || $item['section'] === 'catalogo') {
+                        $catalogo_visible = true;
+                    }
+                    
                     // Construir href completo
                     $href = $item['href'];
                     if (!empty($href)) {
@@ -99,6 +105,18 @@ if (empty($nav_items)) {
         ['label' => 'Proyectos', 'href' => siteUrl('proyectos.php'), 'icon' => 'folder', 'section' => 'proyectos'],
         ['label' => 'Aliados', 'href' => siteUrl() . '#aliados', 'icon' => 'people', 'section' => 'aliados'],
     ];
+    // En el fallback, el catálogo siempre está visible
+    $catalogo_visible = true;
+} else {
+    // Si hay items desde BD pero no se detectó catálogo, verificar nuevamente en los items procesados
+    if (!$catalogo_visible) {
+        foreach ($nav_items as $item) {
+            if (isset($item['section']) && ($item['section'] === 'catalogo' || strpos($item['href'], 'catalogo') !== false)) {
+                $catalogo_visible = true;
+                break;
+            }
+        }
+    }
 }
 
 // Función para generar enlaces que funcionen en todas las páginas
@@ -159,7 +177,8 @@ function getPageLink($href, $current_page) {
                     <hr class="my-3">
                 </li>
                 
-                <!-- Carrito de Cotización -->
+                <!-- Carrito de Cotización (solo visible si el catálogo está visible) -->
+                <?php if ($catalogo_visible): ?>
                 <li class="nav-item ms-lg-3">
                     <a href="<?php echo siteUrl('cotizacion.php'); ?>" class="btn btn-outline-primary px-3 py-2 position-relative">
                         <i class="bi bi-cart me-2"></i>
@@ -175,6 +194,7 @@ function getPageLink($href, $current_page) {
                         <?php endif; ?>
                     </a>
                 </li>
+                <?php endif; ?>
                 
                 <!-- CTA Button -->
                 <li class="nav-item ms-lg-2">
