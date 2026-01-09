@@ -579,14 +579,77 @@ $current_dir = 'newsletter';
         // ========================================
         let searchTimeout;
         
-        // Event listener para búsqueda de productos
-        const productSearchInput = document.getElementById('productSearch');
-        if (productSearchInput) {
-            productSearchInput.addEventListener('input', function() {
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📋 DOM cargado, inicializando búsqueda de productos...');
+            
+            // Registrar event listener cuando el modal se muestre
+            const productModal = document.getElementById('productModal');
+            if (productModal) {
+                console.log('✅ Modal encontrado');
+                
+                productModal.addEventListener('shown.bs.modal', function() {
+                    console.log('✅ Modal de productos abierto');
+                    const productSearchInput = document.getElementById('productSearch');
+                    if (productSearchInput) {
+                        // Enfocar el input
+                        productSearchInput.focus();
+                        console.log('✅ Input de búsqueda encontrado y enfocado');
+                    } else {
+                        console.error('❌ productSearchInput no encontrado');
+                    }
+                });
+                
+                productModal.addEventListener('hidden.bs.modal', function() {
+                    console.log('🔒 Modal cerrado, limpiando...');
+                    // Limpiar al cerrar el modal
+                    const productSearchInput = document.getElementById('productSearch');
+                    if (productSearchInput) {
+                        productSearchInput.value = '';
+                    }
+                    const productsList = document.getElementById('productsList');
+                    if (productsList) {
+                        productsList.innerHTML = '<div class="text-center py-4"><i class="bi bi-search display-4 text-muted mb-3"></i><p class="text-muted">Busca un producto para insertarlo en la plantilla</p></div>';
+                    }
+                });
+            } else {
+                console.error('❌ Modal productModal no encontrado');
+            }
+            
+            // Event listener para búsqueda (usar delegación de eventos)
+            document.addEventListener('input', function(e) {
+                if (e.target && e.target.id === 'productSearch') {
+                    clearTimeout(searchTimeout);
+                    const query = e.target.value.trim();
+                    
+                    const productsList = document.getElementById('productsList');
+                    if (!productsList) {
+                        console.error('❌ productsList no encontrado');
+                        return;
+                    }
+                    
+                    if (query.length < 2) {
+                        productsList.innerHTML = '<div class="text-center py-4"><i class="bi bi-search display-4 text-muted mb-3"></i><p class="text-muted">Escribe al menos 2 caracteres para buscar</p></div>';
+                        return;
+                    }
+                    
+                    console.log('🔍 Iniciando búsqueda de productos con query:', query);
+                    searchTimeout = setTimeout(() => {
+                        searchProducts(query);
+                    }, 300);
+                }
+            });
+        });
+        
+        // También registrar directamente (por si el DOM ya está listo)
+        const productSearchInputDirect = document.getElementById('productSearch');
+        if (productSearchInputDirect) {
+            productSearchInputDirect.addEventListener('input', function(e) {
                 clearTimeout(searchTimeout);
-                const query = this.value.trim();
+                const query = e.target.value.trim();
                 
                 const productsList = document.getElementById('productsList');
+                if (!productsList) return;
                 
                 if (query.length < 2) {
                     productsList.innerHTML = '<div class="text-center py-4"><i class="bi bi-search display-4 text-muted mb-3"></i><p class="text-muted">Escribe al menos 2 caracteres para buscar</p></div>';
@@ -601,44 +664,74 @@ $current_dir = 'newsletter';
         
         // Función para buscar productos
         function searchProducts(query) {
+            console.log('🔍 Buscando productos con query:', query);
             const productsList = document.getElementById('productsList');
+            
+            if (!productsList) {
+                console.error('❌ productsList no encontrado');
+                return;
+            }
+            
             productsList.innerHTML = '<div class="text-center py-4"><i class="bi bi-hourglass-split display-4 text-muted mb-3"></i><p class="text-muted">Buscando productos...</p></div>';
             
-            fetch('/admin/catalogo/productos/search-products.php?q=' + encodeURIComponent(query))
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success && data.products && data.products.length > 0) {
-                        let html = '<div class="row g-3">';
-                        data.products.forEach(product => {
-                            const productName = (product.nombre || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                            const productImage = (product.imagen_principal || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                            const productDesc = (product.descripcion_corta || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
-                            
-                            html += `
-                                <div class="col-md-6">
-                                    <div class="card product-card h-100" style="cursor: pointer; transition: transform 0.2s;" 
-                                         onmouseover="this.style.transform='scale(1.02)'" 
-                                         onmouseout="this.style.transform='scale(1)'"
-                                         onclick="insertProduct(${product.id}, '${productName}', '${productImage}', '${productDesc}')">
-                                        <div class="card-body">
-                                            ${product.imagen_principal ? `<img src="${product.imagen_principal}" class="img-fluid mb-2" style="max-height: 100px; object-fit: cover; width: 100%; border-radius: 4px;" alt="${productName}">` : '<div style="height: 100px; background: #f8f9fa; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;"><i class="bi bi-image text-muted" style="font-size: 2rem;"></i></div>'}
-                                            <h6 class="card-title">${product.nombre || 'Sin nombre'}</h6>
-                                            ${product.codigo ? `<small class="text-muted d-block mb-1">Código: ${product.codigo}</small>` : ''}
-                                            ${product.marca_nombre ? `<small class="text-muted d-block mb-1">Marca: ${product.marca_nombre}</small>` : ''}
+            const url = '/admin/catalogo/productos/search-products.php?q=' + encodeURIComponent(query);
+            console.log('📡 URL de búsqueda:', url);
+            
+            fetch(url)
+                .then(response => {
+                    console.log('📥 Respuesta recibida:', response.status, response.statusText);
+                    if (!response.ok) {
+                        throw new Error('HTTP error! status: ' + response.status);
+                    }
+                    return response.text(); // Primero obtener como texto para verificar
+                })
+                .then(text => {
+                    console.log('📄 Respuesta raw:', text.substring(0, 200));
+                    try {
+                        const data = JSON.parse(text);
+                        console.log('✅ JSON parseado:', data);
+                        
+                        if (data.success && data.products && data.products.length > 0) {
+                            console.log('✅ Productos encontrados:', data.products.length);
+                            let html = '<div class="row g-3">';
+                            data.products.forEach(product => {
+                                const productName = (product.nombre || 'Sin nombre').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+                                const productImage = (product.imagen_principal || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                                const productDesc = (product.descripcion_corta || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, ' ').substring(0, 100);
+                                const productCode = (product.codigo || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                                const productMarca = (product.marca_nombre || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                                
+                                html += `
+                                    <div class="col-md-6">
+                                        <div class="card product-card h-100" style="cursor: pointer; transition: transform 0.2s; border: 1px solid #dee2e6;" 
+                                             onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.1)'" 
+                                             onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'"
+                                             onclick="insertProduct(${product.id}, '${productName}', '${productImage}', '${productDesc}')">
+                                            <div class="card-body">
+                                                ${productImage ? `<img src="${productImage}" class="img-fluid mb-2" style="max-height: 100px; object-fit: cover; width: 100%; border-radius: 4px;" alt="${productName}" onerror="this.style.display='none'">` : '<div style="height: 100px; background: #f8f9fa; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;"><i class="bi bi-image text-muted" style="font-size: 2rem;"></i></div>'}
+                                                <h6 class="card-title mb-2">${product.nombre || 'Sin nombre'}</h6>
+                                                ${productCode ? `<small class="text-muted d-block mb-1"><strong>Código:</strong> ${productCode}</small>` : ''}
+                                                ${productMarca ? `<small class="text-muted d-block mb-1"><strong>Marca:</strong> ${productMarca}</small>` : ''}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            `;
-                        });
-                        html += '</div>';
-                        productsList.innerHTML = html;
-                    } else {
-                        productsList.innerHTML = '<div class="text-center py-4"><i class="bi bi-inbox display-4 text-muted mb-3"></i><p class="text-muted">No se encontraron productos</p></div>';
+                                `;
+                            });
+                            html += '</div>';
+                            productsList.innerHTML = html;
+                        } else {
+                            console.log('⚠️ No se encontraron productos');
+                            productsList.innerHTML = '<div class="text-center py-4"><i class="bi bi-inbox display-4 text-muted mb-3"></i><p class="text-muted">No se encontraron productos</p><small class="text-muted">Intenta con otro término de búsqueda</small></div>';
+                        }
+                    } catch (e) {
+                        console.error('❌ Error parseando JSON:', e);
+                        console.error('📄 Texto recibido:', text);
+                        productsList.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>Error al procesar respuesta del servidor. Revisa la consola para más detalles.</div>';
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    productsList.innerHTML = '<div class="alert alert-danger">Error al buscar productos. Por favor intenta nuevamente.</div>';
+                    console.error('❌ Error en fetch:', error);
+                    productsList.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>Error al buscar productos: ' + error.message + '</div>';
                 });
         }
         
