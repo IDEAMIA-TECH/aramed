@@ -55,6 +55,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception('Nombre, asunto y contenido HTML son obligatorios');
             }
             
+            // Validar que variables sea un JSON válido
+            if (!empty($variables) && $variables !== '{}') {
+                $decoded = json_decode($variables, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new Exception('El campo Variables debe ser un JSON válido. Error: ' . json_last_error_msg());
+                }
+                // Re-encode para asegurar formato consistente
+                $variables = json_encode($decoded, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            }
+            
             if ($action === 'create') {
                 $sql = "INSERT INTO newsletter_templates (nombre, asunto, contenido_html, contenido_texto, variables, estado) 
                         VALUES (?, ?, ?, ?, ?, ?)";
@@ -244,10 +254,64 @@ $current_dir = 'newsletter';
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label">Variables Disponibles (JSON)</label>
-                                        <textarea class="form-control" name="variables" rows="3" 
-                                                  placeholder='{"variable1": "Descripción", "variable2": "Descripción"}'><?php echo esc($editing['variables'] ?? '{}'); ?></textarea>
-                                        <small class="form-text text-muted">Define las variables que se pueden usar en la plantilla</small>
+                                        <label class="form-label">
+                                            Variables Disponibles (JSON)
+                                            <button type="button" class="btn btn-sm btn-outline-info ms-2" data-bs-toggle="collapse" data-bs-target="#variablesHelp" aria-expanded="false">
+                                                <i class="bi bi-question-circle me-1"></i>Ayuda
+                                            </button>
+                                        </label>
+                                        
+                                        <!-- Ayuda colapsable -->
+                                        <div class="collapse mb-2" id="variablesHelp">
+                                            <div class="card card-body bg-light">
+                                                <h6 class="mb-2"><i class="bi bi-info-circle me-2"></i>¿Cómo usar las variables?</h6>
+                                                <p class="mb-2">Define las variables que puedes usar en tu plantilla HTML usando la sintaxis <code>{{nombre_variable}}</code></p>
+                                                <p class="mb-2"><strong>Ejemplo en HTML:</strong></p>
+                                                <pre class="bg-white p-2 rounded"><code>&lt;h1&gt;Hola {{nombre_contacto}}&lt;/h1&gt;
+&lt;p&gt;Bienvenido a {{nombre_institucion}}&lt;/p&gt;</code></pre>
+                                                <p class="mb-0"><strong>Formato JSON:</strong> Cada variable debe tener un nombre y una descripción.</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <?php
+                                        // Variables por defecto si está vacío
+                                        $default_variables_json = [
+                                            "nombre_contacto" => "Nombre del contacto",
+                                            "email_contacto" => "Email del contacto",
+                                            "nombre_institucion" => "Nombre de la institución",
+                                            "mensaje_personalizado" => "Mensaje personalizado",
+                                            "asunto" => "Asunto del email",
+                                            "link_desuscripcion" => "Link para desuscripción",
+                                            "fecha_actual" => "Fecha actual",
+                                            "logo_url" => "URL del logo"
+                                        ];
+                                        $default_variables = json_encode($default_variables_json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+                                        
+                                        $variables_value = $editing['variables'] ?? '';
+                                        
+                                        // Si está vacío o es null, usar valores por defecto
+                                        if (empty($variables_value) || $variables_value === '{}' || $variables_value === 'null' || trim($variables_value) === '') {
+                                            $variables_value = $default_variables;
+                                        } else {
+                                            // Intentar formatear el JSON si es válido
+                                            $decoded = json_decode($variables_value, true);
+                                            if (json_last_error() === JSON_ERROR_NONE) {
+                                                $variables_value = json_encode($decoded, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+                                            }
+                                        }
+                                        ?>
+                                        <textarea class="form-control font-monospace" name="variables" id="variables_field" rows="10" 
+                                                  placeholder='{"variable1": "Descripción", "variable2": "Descripción"}'><?php echo esc($variables_value); ?></textarea>
+                                        <small class="form-text text-muted">
+                                            <strong>Variables comunes:</strong> Usa <code>{{nombre_variable}}</code> en el contenido HTML para reemplazar valores dinámicos.
+                                            <br>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="loadDefaultVariables()">
+                                                <i class="bi bi-arrow-clockwise me-1"></i>Cargar Variables Predefinidas
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-info mt-2" onclick="validateJSON()">
+                                                <i class="bi bi-check-circle me-1"></i>Validar JSON
+                                            </button>
+                                        </small>
                                     </div>
                                     
                                     <div class="mb-3">
@@ -342,6 +406,73 @@ $current_dir = 'newsletter';
             plugins: 'code preview',
             toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | code preview',
             content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; }'
+        });
+        
+        // Variables predefinidas
+        const defaultVariables = {
+            "nombre_contacto": "Nombre del contacto",
+            "email_contacto": "Email del contacto",
+            "nombre_institucion": "Nombre de la institución",
+            "mensaje_personalizado": "Mensaje personalizado",
+            "asunto": "Asunto del email",
+            "link_desuscripcion": "Link para desuscripción",
+            "fecha_actual": "Fecha actual",
+            "logo_url": "URL del logo"
+        };
+        
+        // Función para cargar variables predefinidas
+        function loadDefaultVariables() {
+            const variablesField = document.getElementById('variables_field');
+            const formatted = JSON.stringify(defaultVariables, null, 4);
+            variablesField.value = formatted;
+            
+            // Mostrar mensaje de confirmación
+            showAlert('Variables predefinidas cargadas. Puedes editarlas según tus necesidades.', 'info');
+        }
+        
+        // Función para validar JSON
+        function validateJSON() {
+            const variablesField = document.getElementById('variables_field');
+            const value = variablesField.value.trim();
+            
+            if (!value || value === '{}') {
+                showAlert('El campo está vacío. Usa "Cargar Variables Predefinidas" para empezar.', 'warning');
+                return false;
+            }
+            
+            try {
+                const parsed = JSON.parse(value);
+                // Re-formatear con indentación
+                variablesField.value = JSON.stringify(parsed, null, 4);
+                showAlert('✓ JSON válido y formateado correctamente.', 'success');
+                return true;
+            } catch (e) {
+                showAlert('✗ Error en JSON: ' + e.message, 'danger');
+                return false;
+            }
+        }
+        
+        // Función para mostrar alertas
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show mt-2`;
+            alertDiv.innerHTML = `<i class="bi bi-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+            
+            const variablesField = document.getElementById('variables_field');
+            const parent = variablesField.parentElement;
+            parent.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+        
+        // Validar JSON antes de enviar el formulario
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (!validateJSON()) {
+                e.preventDefault();
+                return false;
+            }
         });
     </script>
 </body>
