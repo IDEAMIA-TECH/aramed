@@ -315,11 +315,11 @@ $pageImage = imageUrl('design/logo-og.jpg');
     }
     </script>
     
-    <?php if (RECAPTCHA_ENABLED): ?>
+    <?php if (defined('RECAPTCHA_ENABLED') && RECAPTCHA_ENABLED && !empty(RECAPTCHA_SITE_KEY)): ?>
     <!-- ========================================
-         GOOGLE reCAPTCHA v3
+         GOOGLE reCAPTCHA v2 (para formularios)
          ======================================== -->
-    <script src="https://www.google.com/recaptcha/api.js?render=<?php echo RECAPTCHA_SITE_KEY; ?>" defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <?php endif; ?>
     
     <!-- ========================================
@@ -2493,6 +2493,21 @@ $pageImage = imageUrl('design/logo-og.jpg');
                         
                         <form id="newsletterForm" action="includes/newsletter_handler.php" method="POST" novalidate>
                             
+                            <!-- Honeypot field (oculto para bots) -->
+                            <input type="text" 
+                                   id="website_url" 
+                                   name="website_url" 
+                                   tabindex="-1" 
+                                   autocomplete="off" 
+                                   style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;"
+                                   aria-hidden="true">
+                            
+                            <!-- Timestamp para validación de tiempo mínimo -->
+                            <input type="hidden" 
+                                   id="form_timestamp" 
+                                   name="form_timestamp" 
+                                   value="<?php echo time(); ?>">
+                            
                             <div class="row g-4">
                                 
                                 <!-- Institución -->
@@ -2775,6 +2790,14 @@ $pageImage = imageUrl('design/logo-og.jpg');
                                         <div class="invalid-feedback">Debes aceptar la política de privacidad.</div>
                                     </div>
                                 </div>
+                                
+                                <!-- reCAPTCHA (si está habilitado) -->
+                                <?php if (defined('RECAPTCHA_ENABLED') && RECAPTCHA_ENABLED && !empty(RECAPTCHA_SITE_KEY)): ?>
+                                <div class="col-12">
+                                    <div class="g-recaptcha" data-sitekey="<?php echo esc(RECAPTCHA_SITE_KEY); ?>" data-size="normal"></div>
+                                    <div class="invalid-feedback d-none" id="recaptcha-error">Por favor, completa la verificación de seguridad.</div>
+                                </div>
+                                <?php endif; ?>
                                 
                                 <!-- Submit Button -->
                                 <div class="col-12 text-center mt-4">

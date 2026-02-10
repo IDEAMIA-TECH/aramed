@@ -112,6 +112,150 @@ $response = [
 ];
 
 try {
+    // ========================================
+    // PROTECCIÓN ANTI-SPAM
+    // ========================================
+    
+    // 1. Honeypot: Si el campo oculto está lleno, es un bot
+    if (!empty($_POST['website_url'])) {
+        error_log("SPAM DETECTED: Honeypot field filled. IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+        throw new Exception("Error de validación. Por favor, recarga la página e intenta de nuevo.");
+    }
+    
+    // 2. Validación de tiempo mínimo (al menos 3 segundos desde carga de página)
+    $form_timestamp = intval($_POST['form_timestamp'] ?? 0);
+    $current_time = time();
+    $time_elapsed = $current_time - $form_timestamp;
+    
+    if ($form_timestamp === 0) {
+        error_log("SPAM DETECTED: Missing form timestamp. IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+        throw new Exception("Error de validación. Por favor, recarga la página e intenta de nuevo.");
+    }
+    
+    if ($time_elapsed < 3) {
+        error_log("SPAM DETECTED: Form submitted too quickly ({$time_elapsed}s). IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+        throw new Exception("Por favor, tómate un momento para completar el formulario antes de enviarlo.");
+    }
+    
+    // Validar que no se envíe demasiado rápido (máximo 30 segundos también es sospechoso si tiene mucho contenido)
+    if ($time_elapsed > 3600) {
+        error_log("SPAM DETECTED: Form timestamp too old ({$time_elapsed}s). IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+        throw new Exception("La sesión ha expirado. Por favor, recarga la página e intenta de nuevo.");
+    }
+    
+    // 3. Rate limiting: Verificar envíos recientes desde la misma IP
+    $ip_address = $_SERVER['REMOTE_ADDR'] ?? '';
+    $rate_limit_check = $pdo->prepare("
+        SELECT COUNT(*) as count 
+        FROM newsletter_subscriptions 
+        WHERE ip_address = ? 
+        AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+    ");
+    $rate_limit_check->execute([$ip_address]);
+    $recent_submissions = $rate_limit_check->fetch();
+    
+    if ($recent_submissions && intval($recent_submissions['count']) >= 3) {
+        error_log("SPAM DETECTED: Rate limit exceeded. IP: {$ip_address} - {$recent_submissions['count']} submissions in last hour");
+        throw new Exception("Has enviado demasiadas solicitudes recientemente. Por favor, intenta de nuevo más tarde.");
+    }
+    
+    // 4. Validación de reCAPTCHA si está habilitado
+    if (defined('RECAPTCHA_ENABLED') && RECAPTCHA_ENABLED && !empty(RECAPTCHA_SECRET_KEY)) {
+        $recaptcha_token = $_POST['g-recaptcha-response'] ?? '';
+        
+        if (empty($recaptcha_token)) {
+            error_log("SPAM DETECTED: Missing reCAPTCHA token. IP: " . $ip_address);
+            throw new Exception("Por favor, completa la verificación de seguridad.");
+        }
+        
+        // Verificar reCAPTCHA con Google
+        $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+        $recaptcha_data = [
+            'secret' => RECAPTCHA_SECRET_KEY,
+            'response' => $recaptcha_token,
+            'remoteip' => $ip_address
+        ];
+        
+        $recaptcha_options = [
+            'http' => [
+                'method' => 'POST',
+                'header' => 'Content-type: application/x-www-form-urlencoded',
+                'content' => http_build_query($recaptcha_data)
+            ]
+        ];
+        
+        $recaptcha_context = stream_context_create($recaptcha_options);
+        $recaptcha_result = @file_get_contents($recaptcha_url, false, $recaptcha_context);
+        
+        if ($recaptcha_result === false) {
+            error_log("SPAM CHECK: Failed to verify reCAPTCHA. IP: " . $ip_address);
+            throw new Exception("Error al verificar la seguridad. Por favor, intenta de nuevo.");
+        }
+        
+        $recaptcha_response = json_decode($recaptcha_result, true);
+        
+        if (!isset($recaptcha_response['success']) || !$recaptcha_response['success']) {
+            error_log("SPAM DETECTED: reCAPTCHA verification failed. IP: " . $ip_address);
+            throw new Exception("La verificación de seguridad falló. Por favor, intenta de nuevo.");
+        }
+        
+        // Verificar score si es reCAPTCHA v3 (score < 0.5 es sospechoso)
+        if (isset($recaptcha_response['score']) && $recaptcha_response['score'] < 0.5) {
+            error_log("SPAM DETECTED: Low reCAPTCHA score ({$recaptcha_response['score']}). IP: " . $ip_address);
+            throw new Exception("La verificación de seguridad falló. Por favor, intenta de nuevo.");
+        }
+    }
+    
+    // 5. Validación de patrones sospechosos en campos
+    $suspicious_patterns = [
+        '/http[s]?:\/\//i',  // URLs en campos de texto
+        '/www\./i',          // Referencias a sitios web
+        '/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i', // Múltiples emails
+        '/\b(viagra|cialis|casino|poker|loan|credit|debt)\b/i', // Palabras spam comunes
+    ];
+    
+    $text_fields_to_check = [
+        'institucion' => $_POST['institucion'] ?? '',
+        'nombre' => $_POST['nombre'] ?? '',
+        'puesto' => $_POST['puesto'] ?? '',
+        'observaciones' => $_POST['observaciones'] ?? ''
+    ];
+    
+    foreach ($text_fields_to_check as $field_name => $field_value) {
+        foreach ($suspicious_patterns as $pattern) {
+            if (preg_match($pattern, $field_value)) {
+                error_log("SPAM DETECTED: Suspicious pattern in field '{$field_name}'. IP: " . $ip_address);
+                throw new Exception("El formulario contiene información no válida. Por favor, revisa los datos ingresados.");
+            }
+        }
+    }
+    
+    // 6. Validación de User-Agent (debe existir)
+    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    if (empty($user_agent) || strlen($user_agent) < 10) {
+        error_log("SPAM DETECTED: Missing or suspicious User-Agent. IP: " . $ip_address);
+        throw new Exception("Error de validación. Por favor, recarga la página e intenta de nuevo.");
+    }
+    
+    // 7. Validación de longitud de campos (evitar envíos vacíos o demasiado largos)
+    $max_lengths = [
+        'institucion' => 200,
+        'nombre' => 100,
+        'puesto' => 100,
+        'observaciones' => 2000
+    ];
+    
+    foreach ($max_lengths as $field => $max_len) {
+        if (isset($_POST[$field]) && strlen($_POST[$field]) > $max_len) {
+            error_log("SPAM DETECTED: Field '{$field}' exceeds max length. IP: " . $ip_address);
+            throw new Exception("El campo contiene demasiado texto. Por favor, acorta el contenido.");
+        }
+    }
+    
+    // ========================================
+    // VALIDACIÓN NORMAL DE DATOS
+    // ========================================
+    
     // Sanitizar y validar datos
     $data = [
         'institucion' => sanitizeInput($_POST['institucion'] ?? ''),
@@ -131,8 +275,8 @@ try {
         'compra_anio' => sanitizeInput($_POST['compra_anio'] ?? ''),
         'observaciones' => sanitizeInput($_POST['observaciones'] ?? ''),
         'privacidad' => isset($_POST['privacidad']) ? 1 : 0,
-        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
-        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
+        'ip_address' => $ip_address,
+        'user_agent' => $user_agent
     ];
     
     // Validaciones obligatorias

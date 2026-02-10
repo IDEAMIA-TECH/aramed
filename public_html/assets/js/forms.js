@@ -147,6 +147,20 @@
                 return;
             }
             
+            // Inicializar timestamp cuando se carga la página
+            const timestampField = document.getElementById('form_timestamp');
+            if (timestampField) {
+                timestampField.value = Math.floor(Date.now() / 1000);
+            }
+            
+            // Ocultar campo honeypot si existe
+            const honeypotField = document.getElementById('website_url');
+            if (honeypotField) {
+                honeypotField.style.display = 'none';
+                honeypotField.setAttribute('tabindex', '-1');
+                honeypotField.setAttribute('autocomplete', 'off');
+            }
+            
             // Tipo de institución - mostrar campo adicional dinámico
             const tipoInstitucion = document.getElementById('tipo_institucion');
             const campoAdicionalWrapper = document.getElementById('campo_adicional_wrapper');
@@ -188,6 +202,26 @@
                         firstInvalid.focus();
                     }
                     return;
+                }
+                
+                // Validar reCAPTCHA si está presente
+                const recaptchaElement = document.querySelector('.g-recaptcha');
+                if (recaptchaElement) {
+                    const recaptchaResponse = grecaptcha.getResponse();
+                    if (!recaptchaResponse || recaptchaResponse.length === 0) {
+                        const recaptchaError = document.getElementById('recaptcha-error');
+                        if (recaptchaError) {
+                            recaptchaError.classList.remove('d-none');
+                            recaptchaError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                        return;
+                    }
+                }
+                
+                // Actualizar timestamp antes de enviar
+                const timestampField = document.getElementById('form_timestamp');
+                if (timestampField) {
+                    timestampField.value = Math.floor(Date.now() / 1000);
                 }
                 
                 const formData = new FormData(newsletterForm);
