@@ -18,6 +18,9 @@ define('ARAMED_SITE', true);
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/connection.php';
+if (file_exists(__DIR__ . '/../includes/email_functions.php')) {
+    require_once __DIR__ . '/../includes/email_functions.php';
+}
 
 // Iniciar sesión si no está iniciada
 if (session_status() === PHP_SESSION_NONE) {
@@ -64,15 +67,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'request') {
                 $stmt->execute([$token, $expira, $usuario['id']]);
                 
                 // Enviar email con el enlace de recuperación
-                $reset_link = SITE_URL . '/admin/recuperar-password.php?token=' . $token;
+                $reset_link = (defined('SITE_URL') ? rtrim(SITE_URL, '/') : 'https://aramedylaboratorio.com') . '/admin/recuperar-password.php?token=' . urlencode($token);
+                $nombre_usuario = $usuario['nombre'] ?? $usuario['email'];
                 
-                // Aquí deberías usar tu sistema de envío de emails
-                // Por ahora, solo mostramos el mensaje
-                $mensaje = 'Se ha enviado un enlace de recuperación a tu email. El enlace expira en 1 hora.';
-                $tipo_mensaje = 'success';
+                $email_enviado = false;
+                if (function_exists('sendEmail')) {
+                    $asunto = 'Recuperar contraseña - ' . (defined('SITE_NAME') ? SITE_NAME : 'Admin');
+                    $cuerpo = '
+                        <p>Hola ' . htmlspecialchars($nombre_usuario) . ',</p>
+                        <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta de administración.</p>
+                        <p><strong>Haz clic en el siguiente enlace para elegir una nueva contraseña:</strong></p>
+                        <p style="margin: 20px 0;"><a href="' . $reset_link . '" style="display: inline-block; padding: 12px 24px; background: #667eea; color: #fff; text-decoration: none; border-radius: 8px;">Restablecer contraseña</a></p>
+                        <p>O copia y pega este enlace en tu navegador:</p>
+                        <p style="word-break: break-all; color: #666;">' . htmlspecialchars($reset_link) . '</p>
+                        <p>Este enlace expira en <strong>1 hora</strong>. Si no solicitaste este cambio, puedes ignorar este correo.</p>
+                        <p>Saludos,<br>' . (defined('SITE_NAME') ? SITE_NAME : 'El equipo') . '</p>
+                    ';
+                    $resultado = sendEmail($usuario['email'], $asunto, $cuerpo, $nombre_usuario, [], true, []);
+                    $email_enviado = !empty($resultado['success']);
+                    if (!$email_enviado) {
+                        error_log('Recuperar contraseña: fallo envío email a ' . $usuario['email'] . ' - ' . ($resultado['message'] ?? 'unknown'));
+                    }
+                }
                 
-                // En desarrollo, mostrar el enlace
-                if (ENVIRONMENT === 'development') {
+                if ($email_enviado) {
+                    $mensaje = 'Se ha enviado un enlace de recuperación a tu email. Revisa tu bandeja (y carpeta de spam). El enlace expira en 1 hora.';
+                    $tipo_mensaje = 'success';
+                } else {
+                    $mensaje = 'No pudimos enviar el correo en este momento. Por favor intenta más tarde o contacta al administrador.';
+                    $tipo_mensaje = 'warning';
+                }
+                
+                // En desarrollo, mostrar el enlace aunque falle el envío
+                if (defined('ENVIRONMENT') && ENVIRONMENT === 'development') {
                     $mensaje .= '<br><br><strong>Enlace de recuperación (solo en desarrollo):</strong><br>';
                     $mensaje .= '<a href="' . $reset_link . '">' . $reset_link . '</a>';
                 }
