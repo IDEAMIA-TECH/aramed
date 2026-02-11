@@ -35,7 +35,11 @@ if (empty($slug)) {
 
 if (empty($slug)) {
     header('HTTP/1.0 404 Not Found');
-    include __DIR__ . '/404.php';
+    if (file_exists(__DIR__ . '/404.php')) {
+        include __DIR__ . '/404.php';
+    } else {
+        echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>404</title></head><body><h1>Página no encontrada</h1><p><a href="' . (defined('SITE_URL') ? SITE_URL : '/') . '">Ir al inicio</a></p></body></html>';
+    }
     exit;
 }
 
@@ -54,13 +58,20 @@ try {
     
     if (!$pagina) {
         header('HTTP/1.0 404 Not Found');
-        include __DIR__ . '/404.php';
+        if (file_exists(__DIR__ . '/404.php')) {
+            include __DIR__ . '/404.php';
+        } else {
+            echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>404</title></head><body><h1>Página no encontrada</h1><p><a href="' . (defined('SITE_URL') ? SITE_URL : '/') . '">Ir al inicio</a></p></body></html>';
+        }
         exit;
     }
 } catch (Exception $e) {
-    // Tabla puede no existir
     header('HTTP/1.0 404 Not Found');
-    include __DIR__ . '/404.php';
+    if (file_exists(__DIR__ . '/404.php')) {
+        include __DIR__ . '/404.php';
+    } else {
+        echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>404</title></head><body><h1>Página no encontrada</h1><p><a href="' . (defined('SITE_URL') ? SITE_URL : '/') . '">Ir al inicio</a></p></body></html>';
+    }
     exit;
 }
 
@@ -70,8 +81,10 @@ $pageDescription = !empty($pagina['meta_descripcion']) ? $pagina['meta_descripci
 $pageKeywords = !empty($pagina['meta_keywords']) ? $pagina['meta_keywords'] : SITE_KEYWORDS;
 $pageUrl = SITE_URL . '/' . $pagina['slug'];
 $pageImage = !empty($pagina['imagen_principal']) ? imageUrl($pagina['imagen_principal']) : imageUrl('design/logo-og.jpg');
+// Para que el navbar marque como activo este ítem
+$current_static_slug = $pagina['slug'];
 
-// Cargar header
+// Cargar header (incluye head + navbar con estilos)
 include __DIR__ . '/includes/header.php';
 ?>
 
@@ -135,4 +148,10 @@ include __DIR__ . '/includes/header.php';
 // Cargar footer
 include __DIR__ . '/includes/footer.php';
 ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <?php if (function_exists('assetUrl')): ?>
+    <script src="<?php echo assetUrl('js/main.js'); ?>?v=<?php echo time(); ?>"></script>
+    <?php endif; ?>
+</body>
+</html>
 

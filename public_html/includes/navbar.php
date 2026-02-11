@@ -20,24 +20,29 @@ if (file_exists(__DIR__ . '/cart_functions.php')) {
 $current_page = basename($_SERVER['PHP_SELF']);
 $current_section = '';
 
-// Determinar sección activa basada en la página actual
-switch ($current_page) {
-    case 'index.php':
-        $current_section = 'home';
-        break;
-    case 'catalogo.php':
-        $current_section = 'catalogo';
-        break;
-    case 'blog.php':
-    case 'blog-detalle.php':
-        $current_section = 'blog';
-        break;
-    case 'proyectos.php':
-    case 'proyecto.php':
-        $current_section = 'proyectos';
-        break;
-    default:
-        $current_section = 'home';
+// Si estamos en una página estática, la sección es el slug (lo define pagina.php antes de incluir header)
+if ($current_page === 'pagina.php' && !empty($current_static_slug)) {
+    $current_section = $current_static_slug;
+} else {
+    // Determinar sección activa basada en la página actual
+    switch ($current_page) {
+        case 'index.php':
+            $current_section = 'home';
+            break;
+        case 'catalogo.php':
+            $current_section = 'catalogo';
+            break;
+        case 'blog.php':
+        case 'blog-detalle.php':
+            $current_section = 'blog';
+            break;
+        case 'proyectos.php':
+        case 'proyecto.php':
+            $current_section = 'proyectos';
+            break;
+        default:
+            $current_section = 'home';
+    }
 }
 
 // Configurar menú de navegación desde la base de datos
@@ -86,6 +91,19 @@ if (function_exists('getDB')) {
                         'href' => $href,
                         'icon' => $item['icon'],
                         'section' => $item['section'] ?? $item['item_key']
+                    ];
+                }
+            }
+            // Páginas estáticas con "mostrar en menú" (publicadas)
+            $paginas_table = $pdo->query("SHOW TABLES LIKE 'paginas_estaticas'")->fetch();
+            if ($paginas_table) {
+                $stmt_pag = $pdo->query("SELECT slug, COALESCE(NULLIF(TRIM(menu_label), ''), titulo) AS menu_label FROM paginas_estaticas WHERE estado = 'publicado' AND mostrar_en_menu = 1 ORDER BY titulo ASC");
+                while ($row = $stmt_pag->fetch(PDO::FETCH_ASSOC)) {
+                    $nav_items[] = [
+                        'label' => $row['menu_label'],
+                        'href' => rtrim(siteUrl(), '/') . '/' . $row['slug'],
+                        'icon' => 'file-text',
+                        'section' => $row['slug']
                     ];
                 }
             }
