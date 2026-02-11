@@ -286,6 +286,29 @@ $current_dir = 'configuracion';
                                     </div>
                                 </div>
                                 
+                                <h5 class="mt-4 mb-3"><i class="bi bi-layout-text-sidebar-reverse me-2"></i>Pie de página (Footer)</h5>
+                                <p class="text-muted small mb-3">Estos datos se muestran en el footer del sitio público (descripción, horario de atención).</p>
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label">Descripción (Footer)</label>
+                                        <textarea class="form-control" name="config[empresa_descripcion]" rows="3" 
+                                                  placeholder="Texto breve que aparece en la sección «Sobre nosotros» del footer"><?php echo esc($config_empresa['empresa_descripcion'] ?? SITE_DESCRIPTION); ?></textarea>
+                                        <small class="form-text text-muted">Descripción corta de la empresa en el pie de página.</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Horario entre semana</label>
+                                        <input type="text" class="form-control" name="config[empresa_horario_semana]" 
+                                               value="<?php echo esc($config_empresa['empresa_horario_semana'] ?? SCHEDULE_WEEKDAY); ?>"
+                                               placeholder="Ej: Lunes a Viernes: 9:00–14:00 y 16:00–19:00">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Horario sábados</label>
+                                        <input type="text" class="form-control" name="config[empresa_horario_sabado]" 
+                                               value="<?php echo esc($config_empresa['empresa_horario_sabado'] ?? SCHEDULE_SATURDAY); ?>"
+                                               placeholder="Ej: Sábados: 10:00–14:00">
+                                    </div>
+                                </div>
+                                
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-check-circle me-2"></i>Guardar Configuración
                                 </button>

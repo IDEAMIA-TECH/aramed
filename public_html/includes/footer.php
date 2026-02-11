@@ -62,7 +62,7 @@ if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
                              class="mb-3 footer-logo"
                              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%2250%22%3E%3Ctext x=%2210%22 y=%2235%22 font-family=%22Arial%22 font-size=%2224%22 font-weight=%22bold%22 fill=%22%23ffffff%22%3EAramed%3C/text%3E%3C/svg%3E';">
                         <p class="text-white-75 mb-3">
-                            <?php echo esc(SITE_DESCRIPTION); ?>
+                            <?php echo esc(function_exists('getConfig') ? getConfig('empresa_descripcion', SITE_DESCRIPTION) : SITE_DESCRIPTION); ?>
                         </p>
                         <div class="footer-certifications">
                             <p class="small text-white-50 mb-2"><i class="bi bi-award-fill text-primary me-2"></i>+20 años de experiencia</p>
@@ -96,14 +96,22 @@ if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
                     </ul>
                     
                     <h6 class="footer-title mb-3 mt-4">Horario</h6>
+                    <?php
+                    $footer_horario_semana = function_exists('getConfig') ? getConfig('empresa_horario_semana', defined('SCHEDULE_WEEKDAY') ? SCHEDULE_WEEKDAY : 'Lun - Vie: 9:00 - 19:00') : (defined('SCHEDULE_WEEKDAY') ? SCHEDULE_WEEKDAY : 'Lun - Vie: 9:00 - 19:00');
+                    $footer_horario_sabado = function_exists('getConfig') ? getConfig('empresa_horario_sabado', defined('SCHEDULE_SATURDAY') ? SCHEDULE_SATURDAY : 'Sábados: 10:00 - 14:00') : (defined('SCHEDULE_SATURDAY') ? SCHEDULE_SATURDAY : 'Sábados: 10:00 - 14:00');
+                    ?>
+                    <?php if (!empty($footer_horario_semana)): ?>
                     <p class="small text-white-75 mb-1">
                         <i class="bi bi-clock text-primary me-2"></i>
-                        Lun - Vie: 9:00 - 19:00
+                        <?php echo esc($footer_horario_semana); ?>
                     </p>
+                    <?php endif; ?>
+                    <?php if (!empty($footer_horario_sabado)): ?>
                     <p class="small text-white-75 mb-0">
                         <i class="bi bi-clock text-primary me-2"></i>
-                        Sábados: 10:00 - 14:00
+                        <?php echo esc($footer_horario_sabado); ?>
                     </p>
+                    <?php endif; ?>
                 </div>
                 
                 <!-- Columna 4: Contacto -->
