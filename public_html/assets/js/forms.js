@@ -218,11 +218,8 @@
                     }
                 }
                 
-                // Actualizar timestamp antes de enviar
-                const timestampField = document.getElementById('form_timestamp');
-                if (timestampField) {
-                    timestampField.value = Math.floor(Date.now() / 1000);
-                }
+                // NO actualizar form_timestamp aquí: debe conservar el valor de carga de página
+                // para la validación anti-spam (mínimo 3 segundos desde que se cargó el formulario)
                 
                 const formData = new FormData(newsletterForm);
                 
