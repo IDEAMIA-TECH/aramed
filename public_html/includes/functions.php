@@ -952,3 +952,23 @@ function renderSEOMetaTags($title = '', $description = '', $keywords = '', $imag
     return $html;
 }
 
+/**
+ * IP del cliente (Cloudflare / proxy / REMOTE_ADDR)
+ */
+function getClientIpAddress() {
+    $candidates = ['HTTP_CF_CONNECTING_IP', 'HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'];
+    foreach ($candidates as $key) {
+        if (empty($_SERVER[$key])) {
+            continue;
+        }
+        $raw = $_SERVER[$key];
+        if (strpos($raw, ',') !== false) {
+            $raw = trim(explode(',', $raw)[0]);
+        }
+        if (filter_var($raw, FILTER_VALIDATE_IP)) {
+            return $raw;
+        }
+    }
+    return $_SERVER['REMOTE_ADDR'] ?? '';
+}
+

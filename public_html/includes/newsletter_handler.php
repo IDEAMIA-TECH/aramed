@@ -144,7 +144,7 @@ try {
     }
     
     // 3. Rate limiting: Verificar envíos recientes desde la misma IP
-    $ip_address = $_SERVER['REMOTE_ADDR'] ?? '';
+    $ip_address = function_exists('getClientIpAddress') ? getClientIpAddress() : ($_SERVER['REMOTE_ADDR'] ?? '');
     $rate_limit_check = $pdo->prepare("
         SELECT COUNT(*) as count 
         FROM newsletter_subscriptions 

@@ -143,10 +143,12 @@ define('MAIL_FROM_NAME', SITE_NAME);
 // ========================================
 // GOOGLE reCAPTCHA v3
 // ========================================
+// Imprescindible contra bots masivos en el boletín del pie y recomendado en el cotizador.
+// Crear claves en https://www.google.com/recaptcha/admin (tipo "v3", dominio aramedylaboratorio.com)
 
 define('RECAPTCHA_SITE_KEY', ''); // Configurar
 define('RECAPTCHA_SECRET_KEY', ''); // Configurar
-define('RECAPTCHA_ENABLED', false); // Activar cuando esté configurado
+define('RECAPTCHA_ENABLED', false); // Poner true y las claves arriba para activar verificación
 
 // ========================================
 // CONFIGURACIÓN DE SESIONES

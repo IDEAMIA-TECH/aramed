@@ -26,7 +26,9 @@ if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
                         <strong>Error:</strong> <span id="footer-newsletter-error-message"></span>
                     </div>
                     
-                    <form class="newsletter-form d-flex gap-2" id="footerNewsletterForm" action="includes/newsletter_simple_handler.php" method="POST">
+                    <form class="newsletter-form d-flex gap-2 flex-wrap" id="footerNewsletterForm" action="<?php echo esc(siteUrl('includes/newsletter_simple_handler.php')); ?>" method="POST" data-recaptcha="<?php echo (defined('RECAPTCHA_ENABLED') && RECAPTCHA_ENABLED && !empty(RECAPTCHA_SITE_KEY)) ? '1' : '0'; ?>">
+                        <input type="text" name="footer_company_fax" id="footer_company_fax" value="" tabindex="-1" autocomplete="off" class="position-absolute" style="left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
+                        <input type="hidden" name="form_timestamp" id="footer_form_timestamp" value="<?php echo (int) time(); ?>">
                         <input type="email" 
                                class="form-control" 
                                name="email"
@@ -394,98 +396,89 @@ if (!defined('ARAMED_SITE')) die('Acceso directo no permitido');
 }
 </style>
 
+<?php if (defined('RECAPTCHA_ENABLED') && RECAPTCHA_ENABLED && !empty(RECAPTCHA_SITE_KEY)): ?>
+<script src="https://www.google.com/recaptcha/api.js?render=<?php echo esc(RECAPTCHA_SITE_KEY); ?>"></script>
+<?php endif; ?>
 <script>
-// Footer Newsletter Form
 document.addEventListener('DOMContentLoaded', function() {
-    const footerForm = document.getElementById('footerNewsletterForm');
-    
-    if (footerForm) {
-        footerForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = this.querySelector('input[type="email"]').value;
-            const btn = this.querySelector('button[type="submit"]');
-            const originalText = btn.innerHTML;
-            
-            // Cambiar texto del botón
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
-            btn.disabled = true;
-            
-            // Simular envío (reemplazar con llamada AJAX real en producción)
-            setTimeout(() => {
-                // Success feedback
-                btn.innerHTML = '<i class="bi bi-check-circle me-2"></i>¡Suscrito!';
-                btn.classList.remove('btn-light');
-                btn.classList.add('btn-success');
-                
-                // Reset form
-                this.reset();
-                
-                // Restore button after 2 seconds
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.classList.remove('btn-success');
-                    btn.classList.add('btn-light');
-                    btn.disabled = false;
-                }, 2000);
-                
-                // Alert (temporal - reemplazar con modal o toast)
-                if (typeof AramedForms !== 'undefined') {
-                    AramedForms.showAlert('¡Gracias por suscribirte! Te mantendremos informado.', 'success');
-                }
-            }, 1500);
-        });
-    }
-    
-    // Manejar formulario del footer newsletter
     const footerNewsletterForm = document.getElementById('footerNewsletterForm');
-    if (footerNewsletterForm) {
-        footerNewsletterForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const submitBtn = document.getElementById('footer-newsletter-submit');
-            const loadingBtn = document.getElementById('footer-newsletter-loading');
-            const successAlert = document.getElementById('footer-newsletter-success');
-            const errorAlert = document.getElementById('footer-newsletter-error');
-            const successMessage = document.getElementById('footer-newsletter-success-message');
-            const errorMessage = document.getElementById('footer-newsletter-error-message');
-            
-            // Ocultar mensajes anteriores
-            successAlert.classList.add('d-none');
-            errorAlert.classList.add('d-none');
-            
-            // Mostrar loading
-            submitBtn.classList.add('d-none');
-            loadingBtn.classList.remove('d-none');
-            
-            // Enviar petición
-            fetch('includes/newsletter_simple_handler.php', {
+    if (!footerNewsletterForm) {
+        return;
+    }
+
+    const tsField = document.getElementById('footer_form_timestamp');
+    if (tsField) {
+        tsField.value = Math.floor(Date.now() / 1000);
+    }
+
+    const endpoint = <?php echo json_encode(siteUrl('includes/newsletter_simple_handler.php'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+    const recaptchaOn = footerNewsletterForm.getAttribute('data-recaptcha') === '1';
+    const recaptchaSiteKey = <?php echo json_encode(defined('RECAPTCHA_SITE_KEY') ? RECAPTCHA_SITE_KEY : '', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+
+    footerNewsletterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const form = this;
+        const submitBtn = document.getElementById('footer-newsletter-submit');
+        const loadingBtn = document.getElementById('footer-newsletter-loading');
+        const successAlert = document.getElementById('footer-newsletter-success');
+        const errorAlert = document.getElementById('footer-newsletter-error');
+        const successMessage = document.getElementById('footer-newsletter-success-message');
+        const errorMessage = document.getElementById('footer-newsletter-error-message');
+
+        successAlert.classList.add('d-none');
+        errorAlert.classList.add('d-none');
+
+        submitBtn.classList.add('d-none');
+        loadingBtn.classList.remove('d-none');
+
+        function sendForm(formData) {
+            return fetch(endpoint, {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
                 if (data.success) {
                     successMessage.textContent = data.message;
                     successAlert.classList.remove('d-none');
-                    this.reset(); // Limpiar formulario
+                    form.reset();
+                    if (tsField) {
+                        tsField.value = Math.floor(Date.now() / 1000);
+                    }
                 } else {
-                    errorMessage.textContent = data.message;
+                    errorMessage.textContent = data.message || 'No se pudo completar la suscripción.';
                     errorAlert.classList.remove('d-none');
                 }
             })
-            .catch(error => {
+            .catch(function() {
                 errorMessage.textContent = 'Error de conexión. Por favor, intenta de nuevo.';
                 errorAlert.classList.remove('d-none');
             })
-            .finally(() => {
-                // Ocultar loading
+            .finally(function() {
                 submitBtn.classList.remove('d-none');
                 loadingBtn.classList.add('d-none');
             });
-        });
-    }
+        }
+
+        const formData = new FormData(form);
+
+        if (recaptchaOn && recaptchaSiteKey && typeof grecaptcha !== 'undefined') {
+            grecaptcha.ready(function() {
+                grecaptcha.execute(recaptchaSiteKey, { action: 'footer_newsletter' }).then(function(token) {
+                    formData.append('g-recaptcha-response', token);
+                    sendForm(formData);
+                }).catch(function() {
+                    errorMessage.textContent = 'Error de verificación. Recarga la página e intenta de nuevo.';
+                    errorAlert.classList.remove('d-none');
+                    submitBtn.classList.remove('d-none');
+                    loadingBtn.classList.add('d-none');
+                });
+            });
+        } else {
+            sendForm(formData);
+        }
+    });
 });
 </script>
 
