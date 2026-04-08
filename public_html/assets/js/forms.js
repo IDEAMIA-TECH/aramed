@@ -204,29 +204,52 @@
                     return;
                 }
                 
-                // Validar reCAPTCHA si está presente
-                const recaptchaElement = document.querySelector('.g-recaptcha');
-                if (recaptchaElement) {
-                    const recaptchaResponse = grecaptcha.getResponse();
-                    if (!recaptchaResponse || recaptchaResponse.length === 0) {
-                        const recaptchaError = document.getElementById('recaptcha-error');
-                        if (recaptchaError) {
-                            recaptchaError.classList.remove('d-none');
-                            recaptchaError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const siteKey = newsletterForm.getAttribute('data-recaptcha-site-key');
+                let formData = new FormData(newsletterForm);
+
+                if (siteKey && typeof grecaptcha !== 'undefined') {
+                    try {
+                        const token = await new Promise(function(resolve, reject) {
+                            grecaptcha.ready(function() {
+                                grecaptcha.execute(siteKey, { action: 'newsletter_cotizador' }).then(resolve).catch(reject);
+                            });
+                        });
+                        if (typeof formData.set === 'function') {
+                            formData.set('g-recaptcha-response', token);
+                        } else {
+                            formData.append('g-recaptcha-response', token);
                         }
+                    } catch (recaptchaErr) {
+                        errorMessage.textContent = 'No se pudo verificar la seguridad. Recarga la página e intenta de nuevo.';
+                        errorAlert.classList.remove('d-none');
+                        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         return;
                     }
+                } else {
+                    const recaptchaElement = document.querySelector('.g-recaptcha');
+                    if (recaptchaElement && typeof grecaptcha !== 'undefined') {
+                        const recaptchaResponse = grecaptcha.getResponse();
+                        if (!recaptchaResponse || recaptchaResponse.length === 0) {
+                            const recaptchaError = document.getElementById('recaptcha-error');
+                            if (recaptchaError) {
+                                recaptchaError.classList.remove('d-none');
+                                recaptchaError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                            return;
+                        }
+                        if (typeof formData.set === 'function') {
+                            formData.set('g-recaptcha-response', recaptchaResponse);
+                        } else {
+                            formData.append('g-recaptcha-response', recaptchaResponse);
+                        }
+                    }
                 }
-                
-                // NO actualizar form_timestamp aquí: debe conservar el valor de carga de página
-                // para la validación anti-spam (mínimo 3 segundos desde que se cargó el formulario)
-                
-                const formData = new FormData(newsletterForm);
-                
-                // Mostrar estado de carga
+
+                // form_timestamp no se actualiza aquí (anti-spam en servidor)
+
                 submitBtn.classList.add('d-none');
                 loadingBtn.classList.remove('d-none');
-                
+
                 try {
                     console.log('📤 Enviando formulario a:', newsletterForm.action);
                     console.log('📋 Datos del formulario:', Object.fromEntries(formData));
