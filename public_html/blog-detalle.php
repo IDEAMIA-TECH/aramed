@@ -85,36 +85,70 @@ $mensaje_comentario = '';
 $tipo_mensaje = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_comentario'])) {
-    $nombre = sanitizeInput($_POST['nombre'] ?? '');
-    $email = sanitizeInput($_POST['email'] ?? '');
-    $comentario = sanitizeInput($_POST['comentario'] ?? '');
-    
-    if (!empty($nombre) && !empty($email) && !empty($comentario)) {
-        $sql_insert_comentario = "
-            INSERT INTO blog_comentarios (articulo_id, nombre, email, comentario, ip_address, user_agent, estado, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, 'pendiente', NOW())
-        ";
-        
-        $stmt_insert = $pdo->prepare($sql_insert_comentario);
-        $resultado = $stmt_insert->execute([
-            $articulo['id'],
-            $nombre,
-            $email,
-            $comentario,
-            $_SERVER['REMOTE_ADDR'] ?? '',
-            $_SERVER['HTTP_USER_AGENT'] ?? ''
-        ]);
-        
-        if ($resultado) {
-            $mensaje_comentario = 'Tu comentario ha sido enviado y está pendiente de moderación.';
-            $tipo_mensaje = 'success';
-        } else {
-            $mensaje_comentario = 'Error al enviar el comentario. Inténtalo de nuevo.';
-            $tipo_mensaje = 'danger';
-        }
+    $ip_post = function_exists('getClientIpAddress') ? getClientIpAddress() : ($_SERVER['REMOTE_ADDR'] ?? '');
+
+    if (!empty($_POST['comment_company_fax'])) {
+        $mensaje_comentario = 'No se pudo enviar el comentario.';
+        $tipo_mensaje = 'danger';
     } else {
-        $mensaje_comentario = 'Por favor completa todos los campos.';
-        $tipo_mensaje = 'warning';
+        $nombre = sanitizeInput($_POST['nombre'] ?? '');
+        $email = sanitizeEmail($_POST['email'] ?? '');
+        if ($email === null) {
+            $email = '';
+        }
+        $comentario = sanitizeInput($_POST['comentario'] ?? '');
+        $fid = (int)($_POST['articulo_id'] ?? 0);
+
+        $fts = (int)($_POST['form_timestamp'] ?? 0);
+        $telapsed = time() - $fts;
+        $time_ok = $fts > 0 && $telapsed >= 3 && $telapsed <= 7200;
+
+        if (!$time_ok) {
+            $mensaje_comentario = 'Sesión expirada o envío demasiado rápido. Recarga la página.';
+            $tipo_mensaje = 'danger';
+        } elseif ($fid !== (int) $articulo['id']) {
+            $mensaje_comentario = 'Solicitud no válida.';
+            $tipo_mensaje = 'danger';
+        } elseif (!empty($nombre) && !empty($email) && !empty($comentario)) {
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL) || aramed_is_disposable_email_domain($email)
+                || aramed_text_has_obvious_spam_patterns($comentario) || aramed_text_has_obvious_spam_patterns($nombre)) {
+                $mensaje_comentario = 'Revisa el correo o el texto del comentario.';
+                $tipo_mensaje = 'danger';
+            } else {
+                $stmt_r = $pdo->prepare('SELECT COUNT(*) FROM blog_comentarios WHERE ip_address = ? AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)');
+                $stmt_r->execute([$ip_post]);
+                if ((int) $stmt_r->fetchColumn() >= 5) {
+                    $mensaje_comentario = 'Demasiados comentarios recientes. Intenta más tarde.';
+                    $tipo_mensaje = 'danger';
+                } else {
+                    $sql_insert_comentario = "
+                        INSERT INTO blog_comentarios (articulo_id, nombre, email, comentario, ip_address, user_agent, estado, created_at)
+                        VALUES (?, ?, ?, ?, ?, ?, 'pendiente', NOW())
+                    ";
+
+                    $stmt_insert = $pdo->prepare($sql_insert_comentario);
+                    $resultado = $stmt_insert->execute([
+                        $articulo['id'],
+                        $nombre,
+                        $email,
+                        $comentario,
+                        $ip_post,
+                        $_SERVER['HTTP_USER_AGENT'] ?? ''
+                    ]);
+
+                    if ($resultado) {
+                        $mensaje_comentario = 'Tu comentario ha sido enviado y está pendiente de moderación.';
+                        $tipo_mensaje = 'success';
+                    } else {
+                        $mensaje_comentario = 'Error al enviar el comentario. Inténtalo de nuevo.';
+                        $tipo_mensaje = 'danger';
+                    }
+                }
+            }
+        } else {
+            $mensaje_comentario = 'Por favor completa todos los campos.';
+            $tipo_mensaje = 'warning';
+        }
     }
 }
 ?>
@@ -195,6 +229,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_comentario']))
     <link rel="stylesheet" href="<?php echo assetUrl('css/main.css'); ?>?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="<?php echo assetUrl('css/blog.css'); ?>?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="<?php echo assetUrl('css/responsive.css'); ?>?v=<?php echo time(); ?>">
+
+    <?php if (defined('RECAPTCHA_ENABLED') && RECAPTCHA_ENABLED && !empty(RECAPTCHA_SITE_KEY)): ?>
+    <script src="https://www.google.com/recaptcha/api.js?render=<?php echo esc(RECAPTCHA_SITE_KEY); ?>"></script>
+    <?php endif; ?>
     
     <style>
         .article-hero {
@@ -418,7 +456,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_comentario']))
                             </div>
                             <?php endif; ?>
                             
-                            <form method="POST">
+                            <form method="POST" id="commentForm"<?php if (defined('RECAPTCHA_ENABLED') && RECAPTCHA_ENABLED && !empty(RECAPTCHA_SITE_KEY)): ?> data-recaptcha-site-key="<?php echo esc(RECAPTCHA_SITE_KEY); ?>"<?php endif; ?>>
+                                <input type="hidden" name="articulo_id" value="<?php echo (int) $articulo['id']; ?>">
+                                <input type="text" name="comment_company_fax" tabindex="-1" autocomplete="off" class="position-absolute" style="left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
+                                <input type="hidden" name="form_timestamp" id="blog_comment_form_timestamp" value="<?php echo (int) time(); ?>">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="nombre" class="form-label">Nombre *</label>

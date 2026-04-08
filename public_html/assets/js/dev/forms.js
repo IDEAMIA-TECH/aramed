@@ -54,6 +54,14 @@
                 console.log('ℹ️ Formulario de contacto no encontrado');
                 return;
             }
+
+            const contactModal = document.getElementById('contactModal');
+            const tsField = document.getElementById('contact_form_timestamp');
+            if (contactModal && tsField) {
+                contactModal.addEventListener('shown.bs.modal', function() {
+                    tsField.value = Math.floor(Date.now() / 1000);
+                });
+            }
             
             // Elementos de UI
             const submitBtn = document.getElementById('contact-submit-btn');
@@ -80,6 +88,16 @@
                     }
                     return;
                 }
+
+                const siteKey = contactForm.getAttribute('data-recaptcha-site-key');
+
+                async function sendContact(formData) {
+                    const response = await fetch(contactForm.action, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    return response.json();
+                }
                 
                 const formData = new FormData(contactForm);
                 
@@ -88,12 +106,22 @@
                 if (loadingBtn) loadingBtn.classList.remove('d-none');
                 
                 try {
-                    const response = await fetch(contactForm.action, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    const data = await response.json();
+                    let data;
+                    if (siteKey && typeof grecaptcha !== 'undefined') {
+                        const token = await new Promise(function(resolve, reject) {
+                            grecaptcha.ready(function() {
+                                grecaptcha.execute(siteKey, { action: 'contact_modal' }).then(resolve).catch(reject);
+                            });
+                        });
+                        if (typeof formData.set === 'function') {
+                            formData.set('g-recaptcha-response', token);
+                        } else {
+                            formData.append('g-recaptcha-response', token);
+                        }
+                        data = await sendContact(formData);
+                    } else {
+                        data = await sendContact(formData);
+                    }
                     
                     if (data.success) {
                         // Mostrar mensaje de éxito

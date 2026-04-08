@@ -154,56 +154,16 @@ try {
     $rate_limit_check->execute([$ip_address]);
     $recent_submissions = $rate_limit_check->fetch();
     
-    if ($recent_submissions && intval($recent_submissions['count']) >= 3) {
+    if ($recent_submissions && intval($recent_submissions['count']) >= 2) {
         error_log("SPAM DETECTED: Rate limit exceeded. IP: {$ip_address} - {$recent_submissions['count']} submissions in last hour");
         throw new Exception("Has enviado demasiadas solicitudes recientemente. Por favor, intenta de nuevo más tarde.");
     }
     
-    // 4. Validación de reCAPTCHA si está habilitado
-    if (defined('RECAPTCHA_ENABLED') && RECAPTCHA_ENABLED && !empty(RECAPTCHA_SECRET_KEY)) {
-        $recaptcha_token = $_POST['g-recaptcha-response'] ?? '';
-        
-        if (empty($recaptcha_token)) {
-            error_log("SPAM DETECTED: Missing reCAPTCHA token. IP: " . $ip_address);
-            throw new Exception("Por favor, completa la verificación de seguridad.");
-        }
-        
-        // Verificar reCAPTCHA con Google
-        $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
-        $recaptcha_data = [
-            'secret' => RECAPTCHA_SECRET_KEY,
-            'response' => $recaptcha_token,
-            'remoteip' => $ip_address
-        ];
-        
-        $recaptcha_options = [
-            'http' => [
-                'method' => 'POST',
-                'header' => 'Content-type: application/x-www-form-urlencoded',
-                'content' => http_build_query($recaptcha_data)
-            ]
-        ];
-        
-        $recaptcha_context = stream_context_create($recaptcha_options);
-        $recaptcha_result = @file_get_contents($recaptcha_url, false, $recaptcha_context);
-        
-        if ($recaptcha_result === false) {
-            error_log("SPAM CHECK: Failed to verify reCAPTCHA. IP: " . $ip_address);
-            throw new Exception("Error al verificar la seguridad. Por favor, intenta de nuevo.");
-        }
-        
-        $recaptcha_response = json_decode($recaptcha_result, true);
-        
-        if (!isset($recaptcha_response['success']) || !$recaptcha_response['success']) {
-            error_log("SPAM DETECTED: reCAPTCHA verification failed. IP: " . $ip_address);
-            throw new Exception("La verificación de seguridad falló. Por favor, intenta de nuevo.");
-        }
-        
-        // Verificar score si es reCAPTCHA v3 (score < 0.5 es sospechoso)
-        if (isset($recaptcha_response['score']) && $recaptcha_response['score'] < 0.5) {
-            error_log("SPAM DETECTED: Low reCAPTCHA score ({$recaptcha_response['score']}). IP: " . $ip_address);
-            throw new Exception("La verificación de seguridad falló. Por favor, intenta de nuevo.");
-        }
+    // 4. reCAPTCHA v3 (umbral RECAPTCHA_MIN_SCORE en config.php)
+    $recaptcha_check = aramed_verify_recaptcha_v3($_POST['g-recaptcha-response'] ?? '', $ip_address);
+    if (!$recaptcha_check['ok']) {
+        error_log('SPAM DETECTED: reCAPTCHA ' . ($recaptcha_check['reason'] ?? '') . ' score=' . ($recaptcha_check['score'] ?? 'n/a') . " IP: {$ip_address}");
+        throw new Exception("La verificación de seguridad falló. Por favor, intenta de nuevo.");
     }
     
     // 5. Validación de patrones sospechosos en campos
@@ -310,6 +270,14 @@ try {
     // Validar email alterno si se proporcionó
     if ($data['email_alterno'] && !filter_var($data['email_alterno'], FILTER_VALIDATE_EMAIL)) {
         throw new Exception("El correo alterno no es válido.");
+    }
+
+    if (aramed_is_disposable_email_domain($data['email_oficial'])) {
+        error_log("SPAM DETECTED: disposable email. IP: {$ip_address}");
+        throw new Exception('Usa un correo válido (no servicios de correo temporal).');
+    }
+    if (!empty($data['email_alterno']) && aramed_is_disposable_email_domain($data['email_alterno'])) {
+        throw new Exception('El correo alterno no puede ser de un servicio temporal.');
     }
     
     // Preparar fecha aproximada de compra

@@ -118,6 +118,10 @@ const AramedBlog = {
     // Inicializar formulario de comentarios
     initCommentForm: function() {
         if (this.elements.commentForm) {
+            var ts = document.getElementById('blog_comment_form_timestamp');
+            if (ts) {
+                ts.value = Math.floor(Date.now() / 1000);
+            }
             this.elements.commentForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 this.submitComment();
@@ -235,35 +239,65 @@ const AramedBlog = {
     submitComment: function() {
         if (!this.elements.commentForm) return;
 
-        const formData = new FormData(this.elements.commentForm);
-        const submitBtn = this.elements.commentForm.querySelector('button[type="submit"]');
+        const form = this.elements.commentForm;
+        const formData = new FormData(form);
+        const submitBtn = form.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
+        const siteKey = form.getAttribute('data-recaptcha-site-key');
 
-        // Mostrar estado de carga
         submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
         submitBtn.disabled = true;
 
-        fetch('includes/blog_comment_handler.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
+        const send = (fd) => {
+            return fetch('includes/blog_comment_handler.php', {
+                method: 'POST',
+                body: fd
+            }).then((response) => response.json());
+        };
+
+        const done = (data) => {
             if (data.success) {
                 this.showCommentSuccess();
-                this.elements.commentForm.reset();
+                form.reset();
+                var ts = document.getElementById('blog_comment_form_timestamp');
+                if (ts) {
+                    ts.value = Math.floor(Date.now() / 1000);
+                }
             } else {
                 this.showCommentError(data.message);
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            this.showCommentError('Error de conexión. Por favor, intenta de nuevo.');
-        })
-        .finally(() => {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        });
+        };
+
+        const fail = (msg) => {
+            this.showCommentError(msg || 'Error de conexión. Por favor, intenta de nuevo.');
+        };
+
+        if (siteKey && typeof grecaptcha !== 'undefined') {
+            grecaptcha.ready(() => {
+                grecaptcha.execute(siteKey, { action: 'blog_comment' }).then((token) => {
+                    if (typeof formData.set === 'function') {
+                        formData.set('g-recaptcha-response', token);
+                    } else {
+                        formData.append('g-recaptcha-response', token);
+                    }
+                    return send(formData);
+                }).then(done).catch((error) => {
+                    console.error('Error:', error);
+                    fail('No se pudo verificar la seguridad. Recarga la página.');
+                }).finally(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                });
+            });
+        } else {
+            send(formData).then(done).catch((error) => {
+                console.error('Error:', error);
+                fail();
+            }).finally(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        }
     },
 
     // Mostrar éxito de comentario

@@ -15,6 +15,7 @@
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/connection.php';
+require_once __DIR__ . '/email_functions.php';
 
 // Configurar headers para JSON
 header('Content-Type: application/json');
@@ -30,6 +31,37 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
+    $pdo = getDB();
+    if (!$pdo) {
+        throw new Exception('Error de conexión a la base de datos');
+    }
+
+    $ip_address = function_exists('getClientIpAddress') ? getClientIpAddress() : ($_SERVER['REMOTE_ADDR'] ?? '');
+
+    if (!empty($_POST['comment_company_fax'])) {
+        error_log("SPAM [blog_comment]: honeypot. IP: {$ip_address}");
+        throw new Exception('No se pudo enviar el comentario.');
+    }
+
+    $form_ts = isset($_POST['form_timestamp']) ? (int) $_POST['form_timestamp'] : 0;
+    $elapsed = time() - $form_ts;
+    if ($form_ts > 0 && ($elapsed < 3 || $elapsed > 7200)) {
+        error_log("SPAM [blog_comment]: timestamp. IP: {$ip_address}");
+        throw new Exception('Sesión inválida. Recarga el artículo e intenta de nuevo.');
+    }
+
+    $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    if (strlen($ua) < 12) {
+        error_log("SPAM [blog_comment]: UA. IP: {$ip_address}");
+        throw new Exception('No se pudo validar el envío.');
+    }
+
+    $rc_cm = aramed_verify_recaptcha_v3($_POST['g-recaptcha-response'] ?? '', $ip_address);
+    if (!$rc_cm['ok']) {
+        error_log('SPAM [blog_comment]: reCAPTCHA ' . ($rc_cm['reason'] ?? '') . " IP: {$ip_address}");
+        throw new Exception('La verificación de seguridad falló. Recarga e intenta de nuevo.');
+    }
+
     // Obtener y validar datos
     $articulo_id = isset($_POST['articulo_id']) ? (int)$_POST['articulo_id'] : 0;
     $nombre = isset($_POST['nombre']) ? sanitizeInput($_POST['nombre']) : '';
@@ -49,8 +81,25 @@ try {
         throw new Exception('Email inválido');
     }
 
+    if (aramed_is_disposable_email_domain($email)) {
+        error_log("SPAM [blog_comment]: disposable. IP: {$ip_address}");
+        throw new Exception('Usa un correo válido (no temporal).');
+    }
+
     if (empty($comentario) || strlen($comentario) < 10) {
         throw new Exception('El comentario debe tener al menos 10 caracteres');
+    }
+
+    if (aramed_text_has_obvious_spam_patterns($comentario) || aramed_text_has_obvious_spam_patterns($nombre)) {
+        error_log("SPAM [blog_comment]: patrones. IP: {$ip_address}");
+        throw new Exception('El comentario contiene texto no permitido.');
+    }
+
+    $stmt_rate = $pdo->prepare('SELECT COUNT(*) FROM blog_comentarios WHERE ip_address = ? AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)');
+    $stmt_rate->execute([$ip_address]);
+    if ((int) $stmt_rate->fetchColumn() >= 5) {
+        error_log("SPAM [blog_comment]: límite hora. IP: {$ip_address}");
+        throw new Exception('Demasiados comentarios recientes. Intenta más tarde.');
     }
 
     // Verificar que el artículo existe y está publicado
@@ -63,9 +112,7 @@ try {
         throw new Exception('Artículo no encontrado o no disponible');
     }
 
-    // Obtener IP y User Agent
-    $ip_address = $_SERVER['REMOTE_ADDR'] ?? '';
-    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    $user_agent = $ua;
 
     // Insertar comentario
     $sql_comentario = "
@@ -91,9 +138,8 @@ try {
 
     $comentario_id = $pdo->lastInsertId();
 
-    // Enviar notificación por email (opcional)
     if (defined('CONTACT_EMAIL') && !empty(CONTACT_EMAIL)) {
-        $this->sendCommentNotification($articulo, $nombre, $email, $comentario, $comentario_id);
+        sendCommentNotification($articulo, $nombre, $email, $comentario, $comentario_id);
     }
 
     // Respuesta exitosa

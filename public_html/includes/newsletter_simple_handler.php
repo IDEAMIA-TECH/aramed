@@ -47,32 +47,6 @@ $response = [
     'message' => ''
 ];
 
-/** Dominios de correo temporal / desechable frecuentes en spam */
-function newsletter_simple_is_disposable_domain($email) {
-    $email = strtolower(trim($email));
-    if (strpos($email, '@') === false) {
-        return false;
-    }
-    $domain = substr(strrchr($email, '@'), 1);
-    $blocked = [
-        'mailinator.com', 'guerrillamail.com', 'guerrillamail.org', 'sharklasers.com',
-        'yopmail.com', 'yopmail.fr', 'tempmail.com', 'temp-mail.org', 'dispostable.com',
-        'maildrop.cc', 'trashmail.com', 'getnada.com', '10minutemail.com', '10minutemail.net',
-        'fakeinbox.com', 'mohmal.com', 'throwaway.email', 'emailondeck.com', 'mailnesia.com',
-        'tempail.com', 'mintemail.com', 'spam4.me', 'bccto.me', 'discard.email',
-        'mailcatch.com', 'mailnull.com', 'spamgourmet.com', 'mytrashmail.com',
-    ];
-    foreach ($blocked as $b) {
-        if ($domain === $b) {
-            return true;
-        }
-        if (strlen($domain) > strlen($b) && substr($domain, -(strlen($b) + 1)) === '.' . $b) {
-            return true;
-        }
-    }
-    return false;
-}
-
 try {
     $ip_address = function_exists('getClientIpAddress') ? getClientIpAddress() : ($_SERVER['REMOTE_ADDR'] ?? '');
 
@@ -124,41 +98,10 @@ try {
         throw new Exception("Has enviado demasiadas solicitudes. Intenta mañana.");
     }
 
-    // --- reCAPTCHA v3 (recomendado en producción: activar en config.php) ---
-    if (defined('RECAPTCHA_ENABLED') && RECAPTCHA_ENABLED && !empty(RECAPTCHA_SECRET_KEY)) {
-        $recaptcha_token = $_POST['g-recaptcha-response'] ?? '';
-        if ($recaptcha_token === '') {
-            error_log("SPAM [newsletter_simple]: sin token reCAPTCHA. IP: {$ip_address}");
-            throw new Exception("Verificación de seguridad incompleta. Recarga la página.");
-        }
-        $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
-        $recaptcha_data = [
-            'secret' => RECAPTCHA_SECRET_KEY,
-            'response' => $recaptcha_token,
-            'remoteip' => $ip_address,
-        ];
-        $ctx = stream_context_create([
-            'http' => [
-                'method' => 'POST',
-                'header' => 'Content-type: application/x-www-form-urlencoded',
-                'content' => http_build_query($recaptcha_data),
-                'timeout' => 8,
-            ],
-        ]);
-        $recaptcha_result = @file_get_contents($recaptcha_url, false, $ctx);
-        if ($recaptcha_result === false) {
-            error_log("SPAM [newsletter_simple]: fallo al verificar reCAPTCHA. IP: {$ip_address}");
-            throw new Exception("Error de verificación. Intenta de nuevo en un momento.");
-        }
-        $recaptcha_response = json_decode($recaptcha_result, true);
-        if (empty($recaptcha_response['success'])) {
-            error_log("SPAM [newsletter_simple]: reCAPTCHA rechazado. IP: {$ip_address}");
-            throw new Exception("La verificación de seguridad falló. Intenta de nuevo.");
-        }
-        if (isset($recaptcha_response['score']) && $recaptcha_response['score'] < 0.35) {
-            error_log("SPAM [newsletter_simple]: score bajo ({$recaptcha_response['score']}). IP: {$ip_address}");
-            throw new Exception("No pudimos validar tu solicitud. Intenta de nuevo más tarde.");
-        }
+    $recaptcha_ns = aramed_verify_recaptcha_v3($_POST['g-recaptcha-response'] ?? '', $ip_address);
+    if (!$recaptcha_ns['ok']) {
+        error_log('SPAM [newsletter_simple]: reCAPTCHA ' . ($recaptcha_ns['reason'] ?? '') . " IP: {$ip_address}");
+        throw new Exception('La verificación de seguridad falló. Recarga la página e intenta de nuevo.');
     }
 
     $email = sanitizeEmail($_POST['email'] ?? '');
@@ -177,7 +120,7 @@ try {
         throw new Exception("El correo electrónico no es válido.");
     }
 
-    if (newsletter_simple_is_disposable_domain($email)) {
+    if (aramed_is_disposable_email_domain($email)) {
         error_log("SPAM [newsletter_simple]: dominio desechable. IP: {$ip_address} Email: {$email}");
         throw new Exception("Usa un correo corporativo o personal válido (no correos temporales).");
     }

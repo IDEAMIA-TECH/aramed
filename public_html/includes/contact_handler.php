@@ -70,6 +70,48 @@ $response = [
 ];
 
 try {
+    $ip_address = function_exists('getClientIpAddress') ? getClientIpAddress() : ($_SERVER['REMOTE_ADDR'] ?? '');
+
+    if (!empty($_POST['contact_company_fax'])) {
+        error_log("SPAM [contact]: honeypot. IP: {$ip_address}");
+        throw new Exception('No se pudo enviar el mensaje. Intenta de nuevo.');
+    }
+
+    $form_timestamp = intval($_POST['form_timestamp'] ?? 0);
+    $time_elapsed = time() - $form_timestamp;
+    if ($form_timestamp === 0 || $time_elapsed < 3) {
+        error_log("SPAM [contact]: tiempo inválido ({$time_elapsed}s). IP: {$ip_address}");
+        throw new Exception('Por favor espera unos segundos antes de enviar.');
+    }
+    if ($time_elapsed > 7200) {
+        throw new Exception('La página lleva mucho tiempo abierta. Recarga e intenta de nuevo.');
+    }
+
+    $user_agent_check = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    if (strlen($user_agent_check) < 12) {
+        error_log("SPAM [contact]: User-Agent sospechoso. IP: {$ip_address}");
+        throw new Exception('No se pudo validar el envío. Intenta con otro navegador.');
+    }
+
+    $recaptcha_check = aramed_verify_recaptcha_v3($_POST['g-recaptcha-response'] ?? '', $ip_address);
+    if (!$recaptcha_check['ok']) {
+        error_log('SPAM [contact]: reCAPTCHA ' . ($recaptcha_check['reason'] ?? '') . ' score=' . ($recaptcha_check['score'] ?? 'n/a') . " IP: {$ip_address}");
+        throw new Exception('La verificación de seguridad falló. Recarga la página e intenta de nuevo.');
+    }
+
+    $stmt_rate_h = $pdo->prepare('SELECT COUNT(*) FROM contact_messages WHERE ip_address = ? AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)');
+    $stmt_rate_h->execute([$ip_address]);
+    if ((int) $stmt_rate_h->fetchColumn() >= 4) {
+        error_log("SPAM [contact]: límite por hora. IP: {$ip_address}");
+        throw new Exception('Has enviado demasiados mensajes recientemente. Intenta más tarde.');
+    }
+    $stmt_rate_d = $pdo->prepare('SELECT COUNT(*) FROM contact_messages WHERE ip_address = ? AND created_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)');
+    $stmt_rate_d->execute([$ip_address]);
+    if ((int) $stmt_rate_d->fetchColumn() >= 15) {
+        error_log("SPAM [contact]: límite diario. IP: {$ip_address}");
+        throw new Exception('Has alcanzado el límite de mensajes por hoy. Contacta por teléfono si es urgente.');
+    }
+
     // Sanitizar y validar datos
     $data = [
         'nombre' => sanitizeInput($_POST['nombre'] ?? ''),
@@ -78,8 +120,8 @@ try {
         'institucion' => sanitizeInput($_POST['institucion'] ?? ''),
         'asunto' => sanitizeInput($_POST['asunto'] ?? ''),
         'mensaje' => sanitizeInput($_POST['mensaje'] ?? ''),
-        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
-        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
+        'ip_address' => $ip_address,
+        'user_agent' => $user_agent_check
     ];
     
     // Validaciones obligatorias
@@ -100,6 +142,18 @@ try {
     // Validar email
     if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
         throw new Exception("El correo electrónico no es válido.");
+    }
+
+    if (aramed_is_disposable_email_domain($data['email'])) {
+        error_log("SPAM [contact]: email desechable. IP: {$ip_address}");
+        throw new Exception('Usa un correo válido (no servicios de correo temporal).');
+    }
+
+    foreach (['nombre' => $data['nombre'], 'asunto' => $data['asunto'], 'mensaje' => $data['mensaje'], 'institucion' => $data['institucion']] as $field => $val) {
+        if (aramed_text_has_obvious_spam_patterns($val)) {
+            error_log("SPAM [contact]: patrón en {$field}. IP: {$ip_address}");
+            throw new Exception('El mensaje contiene texto no permitido. Revísalo e intenta de nuevo.');
+        }
     }
     
     // Validar longitud del mensaje

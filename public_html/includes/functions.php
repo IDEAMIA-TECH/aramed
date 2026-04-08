@@ -972,3 +972,94 @@ function getClientIpAddress() {
     return $_SERVER['REMOTE_ADDR'] ?? '';
 }
 
+/**
+ * Dominios de correo temporal / desechable (spam).
+ */
+function aramed_is_disposable_email_domain($email) {
+    $email = strtolower(trim((string) $email));
+    if (strpos($email, '@') === false) {
+        return false;
+    }
+    $domain = substr(strrchr($email, '@'), 1);
+    $blocked = [
+        'mailinator.com', 'guerrillamail.com', 'guerrillamail.org', 'sharklasers.com',
+        'yopmail.com', 'yopmail.fr', 'tempmail.com', 'temp-mail.org', 'dispostable.com',
+        'maildrop.cc', 'trashmail.com', 'getnada.com', '10minutemail.com', '10minutemail.net',
+        'fakeinbox.com', 'mohmal.com', 'throwaway.email', 'emailondeck.com', 'mailnesia.com',
+        'tempail.com', 'mintemail.com', 'spam4.me', 'bccto.me', 'discard.email',
+        'mailcatch.com', 'mailnull.com', 'spamgourmet.com', 'mytrashmail.com',
+        'moakt.com', 'tmpmail.org', 'byom.de', 'mail.tm', 'inboxkitten.com',
+    ];
+    foreach ($blocked as $b) {
+        if ($domain === $b) {
+            return true;
+        }
+        if (strlen($domain) > strlen($b) && substr($domain, -(strlen($b) + 1)) === '.' . $b) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Verifica reCAPTCHA v3. Si está desactivado en config, devuelve ok sin llamar a Google.
+ *
+ * @return array{ok:bool, score:?float, reason:?string}
+ */
+function aramed_verify_recaptcha_v3($token, $ip_address) {
+    if (!defined('RECAPTCHA_ENABLED') || !RECAPTCHA_ENABLED || empty(RECAPTCHA_SECRET_KEY)) {
+        return ['ok' => true, 'score' => null, 'reason' => null];
+    }
+    $min = defined('RECAPTCHA_MIN_SCORE') ? (float) RECAPTCHA_MIN_SCORE : 0.55;
+    $token = is_string($token) ? trim($token) : '';
+    if ($token === '') {
+        return ['ok' => false, 'score' => null, 'reason' => 'missing_token'];
+    }
+    $recaptcha_data = [
+        'secret' => RECAPTCHA_SECRET_KEY,
+        'response' => $token,
+        'remoteip' => $ip_address,
+    ];
+    $ctx = stream_context_create([
+        'http' => [
+            'method' => 'POST',
+            'header' => 'Content-type: application/x-www-form-urlencoded',
+            'content' => http_build_query($recaptcha_data),
+            'timeout' => 8,
+        ],
+    ]);
+    $raw = @file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $ctx);
+    if ($raw === false) {
+        return ['ok' => false, 'score' => null, 'reason' => 'verify_request_failed'];
+    }
+    $json = json_decode($raw, true);
+    if (!is_array($json) || empty($json['success'])) {
+        return ['ok' => false, 'score' => null, 'reason' => 'verify_rejected'];
+    }
+    $score = isset($json['score']) ? (float) $json['score'] : null;
+    if ($score !== null && $score < $min) {
+        return ['ok' => false, 'score' => $score, 'reason' => 'low_score'];
+    }
+    return ['ok' => true, 'score' => $score, 'reason' => null];
+}
+
+/**
+ * Patrones típicos de spam en textos libres (mensajes, observaciones).
+ */
+function aramed_text_has_obvious_spam_patterns($text) {
+    if ($text === null || $text === '') {
+        return false;
+    }
+    $patterns = [
+        '/https?:\/\//i',
+        '/www\.[a-z0-9\-]+\.[a-z]{2,}/i',
+        '/\b(viagra|cialis|casino|poker|bitcoin|crypto[\s\-]*wallet|seo[\s\-]*service|click\s+here|unsubscribe)\b/i',
+    ];
+    foreach ($patterns as $p) {
+        if (preg_match($p, $text)) {
+            return true;
+        }
+    }
+    return substr_count(strtolower($text), '@') >= 2;
+}
+

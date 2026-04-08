@@ -76,6 +76,10 @@ $pageUrl = SITE_URL . '/cotizacion.php';
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?php echo assetUrl('css/main.css'); ?>?v=<?php echo time(); ?>">
+
+    <?php if (defined('RECAPTCHA_ENABLED') && RECAPTCHA_ENABLED && !empty(RECAPTCHA_SITE_KEY)): ?>
+    <script src="https://www.google.com/recaptcha/api.js?render=<?php echo esc(RECAPTCHA_SITE_KEY); ?>"></script>
+    <?php endif; ?>
     
     <style>
         .cart-item {
@@ -211,7 +215,9 @@ $pageUrl = SITE_URL . '/cotizacion.php';
                             </h5>
                         </div>
                         <div class="card-body">
-                            <form id="quote-form" method="POST">
+                            <form id="quote-form" method="POST"<?php if (defined('RECAPTCHA_ENABLED') && RECAPTCHA_ENABLED && !empty(RECAPTCHA_SITE_KEY)): ?> data-recaptcha-site-key="<?php echo esc(RECAPTCHA_SITE_KEY); ?>"<?php endif; ?>>
+                                <input type="text" name="website_url" id="quote_website_url" value="" tabindex="-1" autocomplete="off" class="position-absolute" style="left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
+                                <input type="hidden" name="form_timestamp" id="quote_form_timestamp" value="<?php echo (int) time(); ?>">
                                 
                                 <!-- Institución -->
                                 <div class="mb-3">
@@ -401,29 +407,35 @@ $pageUrl = SITE_URL . '/cotizacion.php';
             });
         });
         
-        // Manejar envío del formulario de cotización
+        (function() {
+            var quoteTs = document.getElementById('quote_form_timestamp');
+            if (quoteTs) {
+                quoteTs.value = Math.floor(Date.now() / 1000);
+            }
+        })();
+
         document.getElementById('quote-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const form = this;
             const submitBtn = form.querySelector('button[type="submit"]');
             const originalHTML = submitBtn.innerHTML;
+            const siteKey = form.getAttribute('data-recaptcha-site-key');
             
-            // Deshabilitar botón
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Enviando...';
-            
-            // Obtener datos del formulario
-            const formData = new FormData(form);
-            
-            fetch('includes/quote_handler.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
+
+            function postQuote(formData) {
+                return fetch('includes/quote_handler.php', {
+                    method: 'POST',
+                    body: formData
+                }).then(function(response) { return response.json(); });
+            }
+
+            var formData = new FormData(form);
+
+            function onResult(data) {
                 if (data.success) {
-                    // Redirigir a página de confirmación
                     if (data.redirect) {
                         window.location.href = data.redirect;
                     } else {
@@ -434,13 +446,34 @@ $pageUrl = SITE_URL . '/cotizacion.php';
                     submitBtn.innerHTML = originalHTML;
                     submitBtn.disabled = false;
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
+            }
+
+            function onFail() {
                 alert('Error al enviar la cotización. Por favor, intenta nuevamente.');
                 submitBtn.innerHTML = originalHTML;
                 submitBtn.disabled = false;
-            });
+            }
+
+            if (siteKey && typeof grecaptcha !== 'undefined') {
+                grecaptcha.ready(function() {
+                    grecaptcha.execute(siteKey, { action: 'quote_cart' }).then(function(token) {
+                        if (typeof formData.set === 'function') {
+                            formData.set('g-recaptcha-response', token);
+                        } else {
+                            formData.append('g-recaptcha-response', token);
+                        }
+                        return postQuote(formData);
+                    }).then(onResult).catch(function(err) {
+                        console.error(err);
+                        onFail();
+                    });
+                });
+            } else {
+                postQuote(formData).then(onResult).catch(function(err) {
+                    console.error(err);
+                    onFail();
+                });
+            }
         });
     </script>
 </body>

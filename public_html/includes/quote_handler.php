@@ -60,6 +60,35 @@ try {
     if (empty($cart_products)) {
         throw new Exception('No hay productos en el carrito');
     }
+
+    $ip_address = function_exists('getClientIpAddress') ? getClientIpAddress() : ($_SERVER['REMOTE_ADDR'] ?? '');
+
+    if (!empty($_POST['website_url'])) {
+        error_log("SPAM [quote]: honeypot. IP: {$ip_address}");
+        throw new Exception('No se pudo procesar la solicitud. Intenta de nuevo.');
+    }
+
+    $form_ts = intval($_POST['form_timestamp'] ?? 0);
+    $elapsed = time() - $form_ts;
+    if ($form_ts === 0 || $elapsed < 3) {
+        error_log("SPAM [quote]: tiempo inválido ({$elapsed}s). IP: {$ip_address}");
+        throw new Exception('Por favor espera unos segundos antes de enviar.');
+    }
+    if ($elapsed > 7200) {
+        throw new Exception('La página lleva mucho tiempo abierta. Recarga e intenta de nuevo.');
+    }
+
+    $ua_quote = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    if (strlen($ua_quote) < 12) {
+        error_log("SPAM [quote]: User-Agent sospechoso. IP: {$ip_address}");
+        throw new Exception('No se pudo validar el envío. Intenta con otro navegador.');
+    }
+
+    $rc_quote = aramed_verify_recaptcha_v3($_POST['g-recaptcha-response'] ?? '', $ip_address);
+    if (!$rc_quote['ok']) {
+        error_log('SPAM [quote]: reCAPTCHA ' . ($rc_quote['reason'] ?? '') . " IP: {$ip_address}");
+        throw new Exception('La verificación de seguridad falló. Recarga la página e intenta de nuevo.');
+    }
     
     // Sanitizar y validar datos
     $data = [
@@ -79,8 +108,8 @@ try {
         'presupuesto_estimado' => !empty($_POST['presupuesto_estimado']) ? (float)$_POST['presupuesto_estimado'] : null,
         'observaciones' => sanitizeInput($_POST['observaciones'] ?? ''),
         'privacidad' => isset($_POST['privacidad']) ? 1 : 0,
-        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
-        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
+        'ip_address' => $ip_address,
+        'user_agent' => $ua_quote
     ];
     
     // Validaciones obligatorias
@@ -99,7 +128,7 @@ try {
         if (empty($data[$field])) {
             throw new Exception("El campo '{$label}' es obligatorio.");
         }
-        }
+    }
     
     // Validar privacidad
     if ($data['privacidad'] !== 1) {
@@ -115,11 +144,33 @@ try {
     if ($data['email_alterno'] && !filter_var($data['email_alterno'], FILTER_VALIDATE_EMAIL)) {
         throw new Exception("El correo alterno no es válido.");
     }
+
+    if (aramed_is_disposable_email_domain($data['email_oficial'])) {
+        error_log("SPAM [quote]: email desechable. IP: {$ip_address}");
+        throw new Exception('Usa un correo oficial válido (no correos temporales).');
+    }
+    if (!empty($data['email_alterno']) && aramed_is_disposable_email_domain($data['email_alterno'])) {
+        throw new Exception('El correo alterno no puede ser de un servicio temporal.');
+    }
+
+    foreach (['institucion', 'nombre', 'puesto', 'observaciones'] as $spam_field) {
+        if (aramed_text_has_obvious_spam_patterns($data[$spam_field])) {
+            error_log("SPAM [quote]: patrón en {$spam_field}. IP: {$ip_address}");
+            throw new Exception('Hay texto no permitido en el formulario. Revísalo e intenta de nuevo.');
+        }
+    }
     
     // Obtener conexión
     $pdo = getDB();
     if (!$pdo) {
         throw new Exception('Error de conexión a la base de datos');
+    }
+
+    $stmt_qrate = $pdo->prepare('SELECT COUNT(*) FROM cotizaciones WHERE ip_address = ? AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)');
+    $stmt_qrate->execute([$ip_address]);
+    if ((int) $stmt_qrate->fetchColumn() >= 3) {
+        error_log("SPAM [quote]: límite hora. IP: {$ip_address}");
+        throw new Exception('Hay demasiadas solicitudes desde tu conexión. Intenta más tarde.');
     }
     
     // Iniciar transacción

@@ -149,6 +149,8 @@ define('MAIL_FROM_NAME', SITE_NAME);
 define('RECAPTCHA_SITE_KEY', '6LeW1a0sAAAAAJty71qwcJmGe4gfDr5BdRzAiKu7');
 define('RECAPTCHA_SECRET_KEY', '6LeW1a0sAAAAAJeFQ52GOHNoyd7oLLeo3r9tjSw9');
 define('RECAPTCHA_ENABLED', true);
+// Umbral v3 (0.0–1.0). Subir a 0.6–0.7 si aún entra spam; bajar si bloquea usuarios reales.
+define('RECAPTCHA_MIN_SCORE', 0.55);
 
 // ========================================
 // CONFIGURACIÓN DE SESIONES

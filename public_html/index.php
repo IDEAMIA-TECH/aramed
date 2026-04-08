@@ -2654,7 +2654,9 @@ $pageImage = imageUrl('design/logo-og.jpg');
                     </div>
                     
                     <!-- Contact Form -->
-                    <form id="contactForm" action="includes/contact_handler.php" method="POST" novalidate>
+                    <form id="contactForm" action="includes/contact_handler.php" method="POST" novalidate<?php if (defined('RECAPTCHA_ENABLED') && RECAPTCHA_ENABLED && !empty(RECAPTCHA_SITE_KEY)): ?> data-recaptcha-site-key="<?php echo esc(RECAPTCHA_SITE_KEY); ?>"<?php endif; ?>>
+                        <input type="text" name="contact_company_fax" id="contact_company_fax" value="" tabindex="-1" autocomplete="off" class="position-absolute" style="left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
+                        <input type="hidden" name="form_timestamp" id="contact_form_timestamp" value="<?php echo (int) time(); ?>">
                         <div class="row g-3">
                             
                             <!-- Nombre -->
