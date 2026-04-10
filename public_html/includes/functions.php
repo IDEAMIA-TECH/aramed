@@ -973,6 +973,67 @@ function getClientIpAddress() {
 }
 
 /**
+ * Indica si el username del admin debe regenerarse al cambiar el correo
+ * (p. ej. se generó desde el email o está vacío). No afecta cuentas con usuario propio tipo "admin".
+ */
+function aramed_admin_username_derived_from_email($email, $username) {
+    $email = trim((string) $email);
+    $username = trim((string) $username);
+    if ($username === '') {
+        return true;
+    }
+    if (strcasecmp($username, $email) === 0) {
+        return true;
+    }
+    if (strlen($email) >= 1 && strcasecmp($username, substr($email, 0, 50)) === 0) {
+        return true;
+    }
+    $local = strtolower(explode('@', $email, 2)[0] ?? '');
+    return $local !== '' && strcasecmp($username, $local) === 0;
+}
+
+/**
+ * Genera un username único para admin_usuarios (VARCHAR(50) UNIQUE), a partir del correo.
+ *
+ * @param PDO $pdo
+ * @param string $email
+ * @param int|null $exceptUserId En UPDATE, excluir este id al comprobar duplicados
+ */
+function aramed_admin_generate_unique_username(PDO $pdo, $email, $exceptUserId = null) {
+    $email = trim((string) $email);
+    $local = strtolower(explode('@', $email, 2)[0] ?? '');
+    $local = preg_replace('/[^a-z0-9._-]/', '', $local);
+    if ($local === '') {
+        $local = 'usuario';
+    }
+    $base = substr($local, 0, 50);
+    $n = 0;
+    while ($n < 10000) {
+        $suffix = $n === 0 ? '' : ('_' . $n);
+        $room = 50 - strlen($suffix);
+        if ($room < 1) {
+            $room = 1;
+        }
+        $candidate = substr($base, 0, $room) . $suffix;
+        if (strlen($candidate) > 50) {
+            $candidate = substr($candidate, 0, 50);
+        }
+        if ($exceptUserId !== null) {
+            $stmt = $pdo->prepare('SELECT id FROM admin_usuarios WHERE username = ? AND id != ?');
+            $stmt->execute([$candidate, (int) $exceptUserId]);
+        } else {
+            $stmt = $pdo->prepare('SELECT id FROM admin_usuarios WHERE username = ?');
+            $stmt->execute([$candidate]);
+        }
+        if (!$stmt->fetch()) {
+            return $candidate;
+        }
+        $n++;
+    }
+    throw new Exception('No se pudo generar un nombre de usuario único.');
+}
+
+/**
  * Dominios de correo temporal / desechable (spam).
  */
 function aramed_is_disposable_email_domain($email) {

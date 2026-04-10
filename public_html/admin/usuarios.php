@@ -133,10 +133,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== 'delete') {
                 throw new Exception('El email ya está registrado');
             }
             
+            $username = aramed_admin_generate_unique_username($pdo, $email);
+            
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
             
-            $stmt = $pdo->prepare("INSERT INTO admin_usuarios (nombre, email, password_hash, rol, estado, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
-            $stmt->execute([$nombre, $email, $password_hash, $rol, $estado]);
+            $stmt = $pdo->prepare("INSERT INTO admin_usuarios (username, nombre, email, password_hash, rol, estado, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+            $stmt->execute([$username, $nombre, $email, $password_hash, $rol, $estado]);
             
             $success_message = 'Usuario creado exitosamente';
             $action = 'list';
@@ -163,8 +165,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action !== 'delete') {
                 throw new Exception('El email ya está registrado por otro usuario');
             }
             
-            $stmt = $pdo->prepare("UPDATE admin_usuarios SET nombre = ?, email = ?, rol = ?, estado = ?, updated_at = NOW() WHERE id = ?");
-            $stmt->execute([$nombre, $email, $rol, $estado, $id]);
+            $stmt = $pdo->prepare("SELECT email, username FROM admin_usuarios WHERE id = ?");
+            $stmt->execute([$id]);
+            $prev = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$prev) {
+                throw new Exception('Usuario no encontrado');
+            }
+            
+            $username = $prev['username'] ?? '';
+            if (trim((string) $username) === '') {
+                $username = aramed_admin_generate_unique_username($pdo, $email, (int) $id);
+            } elseif (strcasecmp(trim($prev['email']), trim($email)) !== 0
+                && aramed_admin_username_derived_from_email($prev['email'], $username)) {
+                $username = aramed_admin_generate_unique_username($pdo, $email, (int) $id);
+            }
+            
+            $stmt = $pdo->prepare("UPDATE admin_usuarios SET nombre = ?, email = ?, username = ?, rol = ?, estado = ?, updated_at = NOW() WHERE id = ?");
+            $stmt->execute([$nombre, $email, $username, $rol, $estado, $id]);
             
             $success_message = 'Usuario actualizado exitosamente';
             $action = 'list';
