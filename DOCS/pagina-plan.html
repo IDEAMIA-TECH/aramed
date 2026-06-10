@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programa de Crecimiento Comercial y Mercadotecnia Digital | ARAMED 2026–2027</title>
+  <meta name="description" content="Propuesta de operación digital continua para convertir la plataforma IDEAMIA en el principal canal comercial de ARAMED.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0066cc;
+      --primary-dark: #004d99;
+      --primary-light: #e8f2fc;
+      --accent: #0891b2;
+      --accent-soft: #ecfeff;
+      --dark: #1a252f;
+      --dark-soft: #2c3e50;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --surface: #ffffff;
+      --bg: #f1f5f9;
+      --success: #059669;
+      --gold: #d97706;
+      --radius: 16px;
+      --shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+      --nav-h: 72px;
+      --font-head: 'Montserrat', system-ui, sans-serif;
+      --font-body: 'Open Sans', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 24px); }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { color: var(--primary-dark); }
+
+    .container {
+      width: min(1140px, 92vw);
+      margin-inline: auto;
+    }
+
+    /* —— Nav —— */
+    .site-nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: var(--nav-h);
+      z-index: 1000;
+      background: rgba(26, 37, 47, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      transition: box-shadow 0.25s ease;
+    }
+    .site-nav.scrolled { box-shadow: var(--shadow-lg); }
+    .site-nav .inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #fff;
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .brand img { height: 40px; width: auto; }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 1rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.85);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.35rem 0;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+      .nav-toggle { display: block; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: var(--nav-h);
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: var(--dark);
+        padding: 1rem 1.5rem 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+      }
+      .nav-links.open { display: flex; }
+    }
+
+    /* —— Hero —— */
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      color: #fff;
+      padding: calc(var(--nav-h) + 3rem) 0 4rem;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(115deg, rgba(26,37,47,0.94) 0%, rgba(0,102,204,0.78) 55%, rgba(8,145,178,0.55) 100%),
+        url('../public_html/assets/images/hero/aramedylaboratorio.jpg') center/cover no-repeat;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 780px; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin: 0 0 1rem;
+    }
+    .hero-lead {
+      font-size: 1.15rem;
+      opacity: 0.92;
+      margin-bottom: 2rem;
+      max-width: 640px;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.5rem;
+      border-radius: 999px;
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary {
+      background: #fff;
+      color: var(--primary-dark);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    .btn-primary:hover { transform: translateY(-2px); color: var(--primary-dark); }
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.5);
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+    /* —— Sections —— */
+    section { padding: 5rem 0; }
+    section:nth-child(even) { background: var(--surface); }
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--primary);
+      font-family: var(--font-head);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(1.75rem, 3vw, 2.35rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 0 0 1rem;
+      color: var(--dark);
+    }
+    .section-intro {
+      color: var(--text-muted);
+      max-width: 720px;
+      margin-bottom: 2.5rem;
+      font-size: 1.08rem;
+    }
+
+    /* —— Split blocks —— */
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    @media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
+    .split.reverse .split-media { order: 2; }
+    @media (max-width: 900px) { .split.reverse .split-media { order: 0; } }
+
+    .media-frame {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      aspect-ratio: 4/3;
+      background: var(--primary-light);
+    }
+    .media-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* —— Capability grid —— */
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .cap-card {
+      background: var(--surface);
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius);
+      padding: 1.25rem 1.35rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .cap-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow);
+    }
+    .cap-icon {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+    .cap-card strong {
+      display: block;
+      font-family: var(--font-head);
+      font-size: 0.95rem;
+      margin-bottom: 0.15rem;
+    }
+    .cap-card span { font-size: 0.88rem; color: var(--text-muted); }
+
+    /* —— Alert / insight —— */
+    .insight {
+      background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+      border-left: 4px solid var(--gold);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 1.5rem 1.75rem;
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .insight i { font-size: 1.5rem; color: var(--gold); flex-shrink: 0; margin-top: 0.15rem; }
+    .insight p { margin: 0; color: #78350f; }
+
+    /* —— Objectives —— */
+    .obj-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .obj-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+      border-top: 4px solid var(--primary);
+      height: 100%;
+    }
+    .obj-num {
+      font-family: var(--font-head);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary-light);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .obj-card h3 {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      margin: 0 0 0.75rem;
+    }
+    .obj-card ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+    .obj-card ul li { margin-bottom: 0.35rem; }
+    .metric-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: #ecfdf5;
+      color: var(--success);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      margin-top: 0.75rem;
+    }
+
+    /* —— Service blocks —— */
+    .service-block {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2rem;
+      align-items: start;
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
+      border: 1px solid #e2e8f0;
+    }
+    @media (max-width: 768px) {
+      .service-block { grid-template-columns: 1fr; }
+    }
+    .service-thumb {
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 16/10;
+    }
+    .service-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .service-head {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .service-head .num {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #fff;
+      font-family: var(--font-head);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+    .service-head h3 {
+      margin: 0;
+      font-family: var(--font-head);
+      font-size: 1.15rem;
+    }
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      list-style: none;
+      padding: 0;
+      margin: 0.75rem 0 0;
+    }
+    .tag-list li {
+      background: var(--bg);
+      border: 1px solid #e2e8f0;
+      padding: 0.3rem 0.65rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .sub-block { margin-top: 1rem; }
+    .sub-block h4 {
+      font-family: var(--font-head);
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin: 0 0 0.5rem;
+    }
+
+    /* —— Regions —— */
+    .phase-banner {
+      background: linear-gradient(135deg, var(--dark) 0%, var(--dark-soft) 100%);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+    }
+    .phase-banner h3 {
+      font-family: var(--font-head);
+      margin: 0 0 0.5rem;
+      font-size: 1.5rem;
+    }
+    .phase-banner p { opacity: 0.85; margin: 0; }
+    .region-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .region-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 1.25rem;
+      border: 1px solid #e2e8f0;
+    }
+    .region-card h4 {
+      font-family: var(--font-head);
+      font-size: 0.95rem;
+      margin: 0 0 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--primary);
+    }
+    .region-card ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .region-card li { padding: 0.2rem 0; }
+    .big-stat {
+      text-align: center;
+      background: var(--accent-soft);
+      border: 2px solid #a5f3fc;
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .big-stat .value {
+      font-family: var(--font-head);
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .big-stat .label { color: var(--text-muted); margin-top: 0.5rem; }
+
+    /* —— Deliverables —— */
+    .deliver-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .deliver-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: var(--surface);
+      padding: 1rem 1.15rem;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      font-weight: 500;
+      font-size: 0.92rem;
+    }
+    .deliver-item i {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* —— Pricing —— */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+    @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; } }
+    .price-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 2rem 1.75rem;
+      border: 2px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .price-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .price-card.featured {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-lg);
+    }
+    .price-card.featured::before {
+      content: 'Recomendado';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: #fff;
+      font-family: var(--font-head);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.35rem 1rem;
+      border-radius: 999px;
+    }
+    .price-card h3 {
+      font-family: var(--font-head);
+      font-size: 1.35rem;
+      margin: 0 0 0.5rem;
+    }
+    .price-card .desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+    .price-range {
+      font-family: var(--font-head);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 0.25rem;
+    }
+    .price-range small {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .price-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .price-card.featured .price-icon {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* —— Footer —— */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.75);
+      padding: 3rem 0 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    footer .logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    footer img { height: 44px; opacity: 0.95; }
+    footer strong { color: #fff; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @media print {
+      .site-nav, .nav-toggle, .hero-actions { display: none !important; }
+      .hero { min-height: auto; padding-top: 2rem; page-break-after: always; }
+      section { page-break-inside: avoid; }
+      .price-card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav" id="siteNav" aria-label="Navegación principal">
+    <div class="container inner">
+      <a class="brand" href="#inicio">
+        <img src="../public_html/assets/images/design/logo.png" alt="Aramed y Laboratorios">
+        <span>Plan 2026–2027</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+        <i class="bi bi-list"></i>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#situacion">Situación</a></li>
+        <li><a href="#objetivos">Objetivos</a></li>
+        <li><a href="#alcance">Alcance</a></li>
+        <li><a href="#fase2">Fase 2</a></li>
+        <li><a href="#entregables">Entregables</a></li>
+        <li><a href="#planes">Planes</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="hero" id="inicio">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="container hero-content reveal">
+      <div class="hero-badge">
+        <i class="bi bi-graph-up-arrow"></i>
+        Propuesta estratégica · IDEAMIA Tech
+      </div>
+      <h1>Programa de Crecimiento Comercial y Mercadotecnia Digital</h1>
+      <p class="hero-lead">
+        Convertir la plataforma digital de ARAMED en el <strong>principal canal de generación de oportunidades comerciales</strong>,
+        fortaleciendo la marca, ampliando la cobertura nacional y generando demanda constante para las líneas de producto representadas.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#alcance"><i class="bi bi-play-circle"></i> Ver alcance</a>
+        <a class="btn btn-outline" href="#planes"><i class="bi bi-currency-dollar"></i> Planes comerciales</a>
+      </div>
+    </div>
+  </header>
+
+  <section id="situacion">
+    <div class="container">
+      <div class="split reveal">
+        <div>
+          <span class="section-label"><i class="bi bi-check2-circle"></i> Situación actual</span>
+          <h2 class="section-title">La base tecnológica ya está lista</h2>
+          <p class="section-intro">
+            ARAMED cuenta hoy con una plataforma robusta desarrollada por IDEAMIA Tech. El siguiente paso es operarla con estrategia continua.
+          </p>
+          <div class="cap-grid">
+            <div class="cap-card">
+              <div class="cap-icon"><i class="bi bi-window-stack"></i></div>
+              <div><strong>Plataforma web administrable</strong><span>CMS corporativo completo</span></div>
+            </div>
+            <div class="cap-card">
+              <div class="cap-icon"><i class="bi bi-journal-richtext"></i></div>
+              <div><strong>Blog profesional</strong><span>Publicación y programación</span></div>
+            </div>
+            <div class="cap-card">
+              <div class="cap-icon"><i class="bi bi-search"></i></div>
+              <div><strong>SEO Manager</strong><span>Metadatos, sitemap, schema</span></div>
+            </div>
+            <div class="cap-card">
+              <div class="cap-icon"><i class="bi bi-envelope-heart"></i></div>
+              <div><strong>Newsletter &amp; campañas</strong><span>Email marketing integrado</span></div>
+            </div>
+            <div class="cap-card">
+              <div class="cap-icon"><i class="bi bi-person-lines-fill"></i></div>
+              <div><strong>Gestión de leads</strong><span>Formularios y cotizaciones</span></div>
+            </div>
+            <div class="cap-card">
+              <div class="cap-icon"><i class="bi bi-bar-chart-line"></i></div>
+              <div><strong>Analytics</strong><span>Conversion tracking GA4</span></div>
+            </div>
+            <div class="cap-card">
+              <div class="cap-icon"><i class="bi bi-box-seam"></i></div>
+              <div><strong>Catálogo digital</strong><span>Productos y fichas técnicas</span></div>
+            </div>
+            <div class="cap-card">
+              <div class="cap-icon"><i class="bi bi-trophy"></i></div>
+              <div><strong>Casos de éxito</strong><span>Proyectos y evidencia</span></div>
+            </div>
+            <div class="cap-card">
+              <div class="cap-icon"><i class="bi bi-clock-history"></i></div>
+              <div><strong>Automatización</strong><span>Contenidos programados</span></div>
+            </div>
+          </div>
+          <div class="insight">
+            <i class="bi bi-lightbulb"></i>
+            <p><strong>Clave:</strong> una plataforma sin estrategia de contenidos y captación produce muy poco retorno. Se requiere operación continua para generar resultados.</p>
+          </div>
+        </div>
+        <div class="media-frame">
+          <img src="../public_html/assets/images/hero/hero-hal-s5301.jpg" alt="Simulación médica de alta fidelidad — tecnología ARAMED">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="objetivos">
+    <div class="container">
+      <span class="section-label reveal"><i class="bi bi-bullseye"></i> Objetivos estratégicos</span>
+      <h2 class="section-title reveal">Cuatro metas para escalar el negocio</h2>
+      <div class="obj-grid reveal">
+        <article class="obj-card">
+          <div class="obj-num">01</div>
+          <h3>Visibilidad en educación en salud</h3>
+          <ul>
+            <li>Medicina</li>
+            <li>Enfermería</li>
+            <li>Odontología</li>
+            <li>Simulación clínica</li>
+            <li>Emergencias médicas</li>
+            <li>Especialidades biomédicas</li>
+          </ul>
+        </article>
+        <article class="obj-card">
+          <div class="obj-num">02</div>
+          <h3>Leads calificados</h3>
+          <p style="color:var(--text-muted);font-size:0.92rem;margin:0 0 0.5rem;">Incrementar la generación de contactos con intención de compra.</p>
+          <span class="metric-pill"><i class="bi bi-arrow-up-right"></i> +30% leads año 1</span>
+          <span class="metric-pill" style="margin-left:0.35rem;"><i class="bi bi-arrow-up-right"></i> +50% año 2</span>
+        </article>
+        <article class="obj-card">
+          <div class="obj-num">03</div>
+          <h3>Demanda diversificada</h3>
+          <ul>
+            <li>Universidades medianas</li>
+            <li>Instituciones privadas</li>
+            <li>Centros de simulación</li>
+            <li>Hospitales escuela</li>
+          </ul>
+        </article>
+        <article class="obj-card">
+          <div class="obj-num">04</div>
+          <h3>Liderazgo nacional</h3>
+          <p style="color:var(--text-muted);font-size:0.92rem;margin:0;">Posicionar a ARAMED como referente en simulación médica y educación en salud en México.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="alcance">
+    <div class="container">
+      <span class="section-label reveal"><i class="bi bi-grid-1x2"></i> Alcance IDEAMIA Tech</span>
+      <h2 class="section-title reveal">Operación integral de mercadotecnia digital</h2>
+      <p class="section-intro reveal">Siete pilares de ejecución mensual sobre la plataforma ya desarrollada.</p>
+
+      <article class="service-block reveal">
+        <div class="service-thumb">
+          <img src="../public_html/assets/images/hero/aramedylaboratorio.jpg" alt="Administración del sitio web ARAMED">
+        </div>
+        <div>
+          <div class="service-head">
+            <span class="num">1</span>
+            <h3>Administración integral del sitio web</h3>
+          </div>
+          <p style="color:var(--text-muted);margin:0;">Operación continua del home, catálogo, blog y casos de éxito.</p>
+          <div class="sub-block">
+            <h4>Home</h4>
+            <ul class="tag-list">
+              <li>Banners</li><li>CTAs</li><li>Promociones</li><li>Aliados</li><li>Servicios</li><li>Productos destacados</li>
+            </ul>
+          </div>
+          <div class="sub-block">
+            <h4>Catálogo · Blog · Casos de éxito</h4>
+            <ul class="tag-list">
+              <li>Nuevos productos</li><li>SEO en fichas</li><li>Planeación editorial</li><li>Evidencia fotográfica</li><li>Videos</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="service-block reveal">
+        <div class="service-thumb">
+          <img src="../public_html/assets/images/productos/anatomage-table.jpg" alt="Contenido educativo y Anatomage">
+        </div>
+        <div>
+          <div class="service-head">
+            <span class="num">2</span>
+            <h3>Estrategia de contenidos</h3>
+          </div>
+          <p style="color:var(--text-muted);margin:0 0 0.75rem;">Producción mensual de artículos SEO especializados.</p>
+          <ul class="tag-list">
+            <li>Tendencias en simulación médica</li>
+            <li>Acreditaciones COMAEM</li>
+            <li>Laboratorios de enfermería</li>
+            <li>Centros de simulación clínica</li>
+            <li>Anatomage y tecnología educativa</li>
+            <li>Simulación para odontología</li>
+          </ul>
+          <span class="metric-pill" style="margin-top:1rem;"><i class="bi bi-calendar3"></i> Meta: 4 a 8 artículos / mes</span>
+        </div>
+      </article>
+
+      <article class="service-block reveal">
+        <div class="service-thumb">
+          <img src="../public_html/assets/images/productos/immersive-echo.jpg" alt="Redes sociales y contenido visual">
+        </div>
+        <div>
+          <div class="service-head">
+            <span class="num">3</span>
+            <h3>Administración de redes sociales</h3>
+          </div>
+          <div class="sub-block">
+            <h4>Canales</h4>
+            <ul class="tag-list">
+              <li><i class="bi bi-facebook"></i> Facebook</li>
+              <li><i class="bi bi-instagram"></i> Instagram</li>
+              <li><i class="bi bi-linkedin"></i> LinkedIn</li>
+              <li><i class="bi bi-youtube"></i> YouTube</li>
+            </ul>
+          </div>
+          <div class="sub-block">
+            <h4>Contenido &amp; frecuencia</h4>
+            <ul class="tag-list">
+              <li>Casos de éxito</li><li>Productos</li><li>Eventos</li><li>Capacitaciones</li><li>Testimoniales</li><li>Lanzamientos</li>
+            </ul>
+            <span class="metric-pill" style="margin-top:1rem;"><i class="bi bi-send"></i> 12 a 20 publicaciones / mes</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="service-block reveal">
+        <div class="service-thumb">
+          <img src="../public_html/assets/images/productos/adam-x.jpg" alt="Generación de leads digitales">
+        </div>
+        <div>
+          <div class="service-head">
+            <span class="num">4</span>
+            <h3>Generación de leads</h3>
+          </div>
+          <p style="color:var(--text-muted);margin:0 0 0.75rem;">Automatización dentro del sistema desarrollado.</p>
+          <ul class="tag-list">
+            <li>Formularios web</li><li>Newsletter</li><li>Landing pages</li><li>Descarga de catálogos</li><li>Registro a webinars</li><li>Registro a eventos</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="service-block reveal">
+        <div class="service-thumb">
+          <img src="../public_html/assets/images/design/logo-email.png" alt="Email marketing ARAMED">
+        </div>
+        <div>
+          <div class="service-head">
+            <span class="num">5</span>
+            <h3>Email marketing</h3>
+          </div>
+          <p style="color:var(--text-muted);margin:0 0 0.75rem;">Módulo de campañas y plantillas desarrollado por IDEAMIA.</p>
+          <div class="sub-block">
+            <h4>Campañas</h4>
+            <ul class="tag-list"><li>Lanzamientos</li><li>Eventos</li><li>Congresos</li><li>Nuevos productos</li><li>Casos de éxito</li></ul>
+          </div>
+          <div class="sub-block">
+            <h4>Automatizaciones</h4>
+            <ul class="tag-list"><li>Bienvenida</li><li>Seguimiento</li><li>Nutrición de prospectos</li><li>Recuperación de oportunidades</li></ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="service-block reveal">
+        <div class="service-thumb">
+          <img src="../public_html/assets/images/aliados/3-Anatomage.webp" alt="SEO y posicionamiento">
+        </div>
+        <div>
+          <div class="service-head">
+            <span class="num">6</span>
+            <h3>SEO continuo</h3>
+          </div>
+          <ul class="tag-list">
+            <li>Metadatos</li><li>Schema</li><li>Sitemap</li><li>Robots</li><li>Redirecciones</li>
+          </ul>
+          <div class="sub-block">
+            <h4>Términos objetivo</h4>
+            <ul class="tag-list">
+              <li>Simulación médica</li><li>Simuladores médicos</li><li>Anatomage México</li>
+              <li>Laboratorio de enfermería</li><li>Simulación clínica</li><li>Equipamiento médico universitario</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="service-block reveal">
+        <div class="service-thumb">
+          <img src="../public_html/assets/images/hero/hero-victoria-s2200.jpg" alt="Analítica y dirección comercial">
+        </div>
+        <div>
+          <div class="service-head">
+            <span class="num">7</span>
+            <h3>Analítica y dirección comercial</h3>
+          </div>
+          <p style="color:var(--text-muted);margin:0 0 1rem;">Reporte ejecutivo mensual para marketing, ventas y dirección.</p>
+          <div class="sub-block">
+            <h4>Marketing</h4>
+            <ul class="tag-list"><li>Visitantes</li><li>Conversiones</li><li>Leads</li><li>Fuentes de tráfico</li></ul>
+          </div>
+          <div class="sub-block">
+            <h4>Comercial</h4>
+            <ul class="tag-list"><li>Leads generados</li><li>Leads calificados</li><li>Oportunidades</li><li>Conversión</li></ul>
+          </div>
+          <div class="sub-block">
+            <h4>Dirección</h4>
+            <ul class="tag-list"><li>ROI</li><li>CAC estimado</li><li>Tendencias</li><li>Recomendaciones</li></ul>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="fase2">
+    <div class="container">
+      <div class="phase-banner reveal">
+        <h3><i class="bi bi-geo-alt"></i> Fase 2 — Crecimiento comercial</h3>
+        <p>Basado en el estudio estratégico entregado por Isaac Arrayales.</p>
+      </div>
+
+      <div class="split reveal" style="margin-bottom:2.5rem;">
+        <div class="big-stat" style="margin-bottom:0;">
+          <div class="value">1,500+</div>
+          <div class="label">Registros segmentados — base nacional</div>
+          <p style="font-size:0.88rem;color:var(--text-muted);margin:1rem 0 0;">Universidades · Medicina · Enfermería · Odontología · Hospitales escuela</p>
+        </div>
+        <div class="media-frame" style="aspect-ratio:16/10;">
+          <img src="../public_html/assets/images/hero/hero-susie-s2400.jpg" alt="Cobertura nacional en simulación clínica">
+        </div>
+      </div>
+
+      <h3 class="section-title reveal" style="font-size:1.35rem;margin-bottom:1.25rem;">Regionalización digital</h3>
+      <div class="region-grid reveal">
+        <div class="region-card">
+          <h4><i class="bi bi-pin-map"></i> Zona Centro</h4>
+          <ul><li>CDMX</li><li>Edo. México</li><li>Morelos</li></ul>
+        </div>
+        <div class="region-card">
+          <h4><i class="bi bi-pin-map"></i> Zona Sur</h4>
+          <ul><li>Puebla</li><li>Veracruz</li><li>Chiapas</li></ul>
+        </div>
+        <div class="region-card">
+          <h4><i class="bi bi-pin-map"></i> Zona Bajío</h4>
+          <ul><li>Querétaro</li><li>Guanajuato</li><li>Jalisco</li><li>Michoacán</li></ul>
+        </div>
+        <div class="region-card">
+          <h4><i class="bi bi-pin-map"></i> Zona Noreste</h4>
+          <ul><li>Nuevo León</li><li>Coahuila</li><li>Tamaulipas</li></ul>
+        </div>
+        <div class="region-card">
+          <h4><i class="bi bi-pin-map"></i> Zona Noroeste</h4>
+          <ul><li>Sonora</li><li>Chihuahua</li><li>Sinaloa</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="entregables">
+    <div class="container">
+      <span class="section-label reveal"><i class="bi bi-clipboard-check"></i> Entregables</span>
+      <h2 class="section-title reveal">Compromiso mensual</h2>
+      <div class="deliver-grid reveal">
+        <div class="deliver-item"><i class="bi bi-file-earmark-bar-graph"></i> Reporte ejecutivo</div>
+        <div class="deliver-item"><i class="bi bi-search"></i> Reporte SEO</div>
+        <div class="deliver-item"><i class="bi bi-share"></i> Reporte redes sociales</div>
+        <div class="deliver-item"><i class="bi bi-funnel"></i> Reporte leads</div>
+        <div class="deliver-item"><i class="bi bi-camera-video"></i> Reunión mensual estratégica</div>
+        <div class="deliver-item"><i class="bi bi-calendar-week"></i> Calendario editorial</div>
+        <div class="deliver-item"><i class="bi bi-calendar-check"></i> Publicaciones programadas</div>
+        <div class="deliver-item"><i class="bi bi-envelope-paper"></i> Campañas de email marketing</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="planes">
+    <div class="container">
+      <span class="section-label reveal"><i class="bi bi-tags"></i> Esquema comercial</span>
+      <h2 class="section-title reveal">Planes recomendados</h2>
+      <p class="section-intro reveal">Inversión mensual en MXN. Escalable según objetivos de crecimiento.</p>
+
+      <div class="pricing-grid reveal">
+        <article class="price-card">
+          <div class="price-icon"><i class="bi bi-layers"></i></div>
+          <h3>Plan Essential</h3>
+          <p class="desc">Administración web + SEO continuo para mantener presencia y posicionamiento base.</p>
+          <div class="price-range">$18,000 – $25,000<small>MXN / mes</small></div>
+        </article>
+
+        <article class="price-card">
+          <div class="price-icon"><i class="bi bi-rocket-takeoff"></i></div>
+          <h3>Plan Growth</h3>
+          <p class="desc">Web + SEO + redes sociales + blog + newsletter para acelerar captación orgánica.</p>
+          <div class="price-range">$35,000 – $55,000<small>MXN / mes</small></div>
+        </article>
+
+        <article class="price-card featured">
+          <div class="price-icon"><i class="bi bi-graph-up-arrow"></i></div>
+          <h3>Plan Revenue Growth</h3>
+          <p class="desc">Web + SEO + redes + blog + campañas + automatización + dirección comercial digital.</p>
+          <div class="price-range">$65,000 – $95,000<small>MXN / mes</small></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="logos">
+        <img src="../public_html/assets/images/design/logo-obscuro.png" alt="Aramed y Laboratorios">
+      </div>
+      <p><strong>ARAMED y Laboratorios</strong> · Programa 2026–2027</p>
+      <p>Operación digital por <strong>IDEAMIA Tech</strong> · Propuesta de crecimiento comercial</p>
+      <p style="margin-top:1rem;opacity:0.6;font-size:0.82rem;">Documento generado a partir del plan estratégico · Confidencial</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var nav = document.getElementById('siteNav');
+      var toggle = document.getElementById('navToggle');
+      var links = document.getElementById('navLinks');
+
+      window.addEventListener('scroll', function () {
+        nav.classList.toggle('scrolled', window.scrollY > 40);
+      }, { passive: true });
+
+      toggle.addEventListener('click', function () {
+        var open = links.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.innerHTML = open ? '<i class="bi bi-x-lg"></i>' : '<i class="bi bi-list"></i>';
+      });
+
+      links.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          links.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.innerHTML = '<i class="bi bi-list"></i>';
+        });
+      });
+
+      if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(function (el) {
+          observer.observe(el);
+        });
+      } else {
+        document.querySelectorAll('.reveal').forEach(function (el) {
+          el.classList.add('visible');
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
