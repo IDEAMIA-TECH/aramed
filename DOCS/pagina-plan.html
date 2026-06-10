@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es-MX">
+<html lang="es-MX" id="htmlRoot">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Programa de Crecimiento Comercial y Mercadotecnia Digital | ARAMED 2026–2027</title>
-  <meta name="description" content="Propuesta de operación digital continua para convertir la plataforma IDEAMIA en el principal canal comercial de ARAMED.">
+  <meta name="description" id="metaDescription" content="Propuesta de operación digital continua para convertir la plataforma IDEAMIA en el principal canal comercial de ARAMED.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -111,6 +111,42 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .lang-switch button {
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,0.75);
+      font-family: var(--font-head);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      line-height: 1.2;
+    }
+    .lang-switch button:hover { color: #fff; }
+    .lang-switch button.active {
+      background: #fff;
+      color: var(--primary-dark);
+    }
+    .lang-switch button .bi { font-size: 0.85rem; margin-right: 0.2rem; }
 
     @media (max-width: 900px) {
       .nav-toggle { display: block; }
@@ -539,7 +575,7 @@
       box-shadow: var(--shadow-lg);
     }
     .price-card.featured::before {
-      content: 'Recomendado';
+      content: attr(data-featured-label);
       position: absolute;
       top: -12px;
       left: 50%;
@@ -622,7 +658,7 @@
     .reveal.visible { opacity: 1; transform: none; }
 
     @media print {
-      .site-nav, .nav-toggle, .hero-actions { display: none !important; }
+      .site-nav, .nav-toggle, .lang-switch, .hero-actions { display: none !important; }
       .hero { min-height: auto; padding-top: 2rem; page-break-after: always; }
       section { page-break-inside: avoid; }
       .price-card { break-inside: avoid; }
@@ -631,23 +667,29 @@
 </head>
 <body>
 
-  <nav class="site-nav" id="siteNav" aria-label="Navegación principal">
+  <nav class="site-nav" id="siteNav" data-i18n-attr="aria-label:nav.aria">
     <div class="container inner">
       <a class="brand" href="#inicio">
         <img src="https://aramedylaboratorio.com/assets/images/design/logo.png" alt="Aramed y Laboratorios">
-        <span>Plan 2026–2027</span>
+        <span data-i18n="nav.plan">Plan 2026–2027</span>
       </a>
-      <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
-        <i class="bi bi-list"></i>
-      </button>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#situacion">Situación</a></li>
-        <li><a href="#objetivos">Objetivos</a></li>
-        <li><a href="#alcance">Alcance</a></li>
-        <li><a href="#fase2">Fase 2</a></li>
-        <li><a href="#entregables">Entregables</a></li>
-        <li><a href="#planes">Planes</a></li>
-      </ul>
+      <div class="nav-right">
+        <div class="lang-switch" id="langSwitch" role="group" data-i18n-attr="aria-label:lang.aria">
+          <button type="button" class="lang-btn active" data-lang="es" aria-pressed="true"><i class="bi bi-translate"></i> ES</button>
+          <button type="button" class="lang-btn" data-lang="en" aria-pressed="false"><i class="bi bi-translate"></i> EN</button>
+        </div>
+        <button class="nav-toggle" id="navToggle" data-i18n-attr="aria-label:nav.menuOpen" aria-expanded="false">
+          <i class="bi bi-list"></i>
+        </button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#situacion" data-i18n="nav.situacion">Situación</a></li>
+          <li><a href="#objetivos" data-i18n="nav.objetivos">Objetivos</a></li>
+          <li><a href="#alcance" data-i18n="nav.alcance">Alcance</a></li>
+          <li><a href="#fase2" data-i18n="nav.fase2">Fase 2</a></li>
+          <li><a href="#entregables" data-i18n="nav.entregables">Entregables</a></li>
+          <li><a href="#planes" data-i18n="nav.planes">Planes</a></li>
+        </ul>
+      </div>
     </div>
   </nav>
 
@@ -656,16 +698,16 @@
     <div class="container hero-content reveal">
       <div class="hero-badge">
         <i class="bi bi-graph-up-arrow"></i>
-        Propuesta estratégica · IDEAMIA Tech
+        <span data-i18n="hero.badge">Propuesta estratégica · IDEAMIA Tech</span>
       </div>
-      <h1>Programa de Crecimiento Comercial y Mercadotecnia Digital</h1>
-      <p class="hero-lead">
+      <h1 data-i18n="hero.title">Programa de Crecimiento Comercial y Mercadotecnia Digital</h1>
+      <p class="hero-lead" data-i18n-html="hero.lead">
         Convertir la plataforma digital de ARAMED en el <strong>principal canal de generación de oportunidades comerciales</strong>,
         fortaleciendo la marca, ampliando la cobertura nacional y generando demanda constante para las líneas de producto representadas.
       </p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="#alcance"><i class="bi bi-play-circle"></i> Ver alcance</a>
-        <a class="btn btn-outline" href="#planes"><i class="bi bi-currency-dollar"></i> Planes comerciales</a>
+        <a class="btn btn-primary" href="#alcance"><i class="bi bi-play-circle"></i> <span data-i18n="hero.ctaScope">Ver alcance</span></a>
+        <a class="btn btn-outline" href="#planes"><i class="bi bi-currency-dollar"></i> <span data-i18n="hero.ctaPlans">Planes comerciales</span></a>
       </div>
     </div>
   </header>
@@ -674,56 +716,56 @@
     <div class="container">
       <div class="split reveal">
         <div>
-          <span class="section-label"><i class="bi bi-check2-circle"></i> Situación actual</span>
-          <h2 class="section-title">La base tecnológica ya está lista</h2>
-          <p class="section-intro">
+          <span class="section-label"><i class="bi bi-check2-circle"></i> <span data-i18n="sit.label">Situación actual</span></span>
+          <h2 class="section-title" data-i18n="sit.title">La base tecnológica ya está lista</h2>
+          <p class="section-intro" data-i18n="sit.intro">
             ARAMED cuenta hoy con una plataforma robusta desarrollada por IDEAMIA Tech. El siguiente paso es operarla con estrategia continua.
           </p>
           <div class="cap-grid">
             <div class="cap-card">
               <div class="cap-icon"><i class="bi bi-window-stack"></i></div>
-              <div><strong>Plataforma web administrable</strong><span>CMS corporativo completo</span></div>
+              <div><strong data-i18n="sit.cap1t">Plataforma web administrable</strong><span data-i18n="sit.cap1d">CMS corporativo completo</span></div>
             </div>
             <div class="cap-card">
               <div class="cap-icon"><i class="bi bi-journal-richtext"></i></div>
-              <div><strong>Blog profesional</strong><span>Publicación y programación</span></div>
+              <div><strong data-i18n="sit.cap2t">Blog profesional</strong><span data-i18n="sit.cap2d">Publicación y programación</span></div>
             </div>
             <div class="cap-card">
               <div class="cap-icon"><i class="bi bi-search"></i></div>
-              <div><strong>SEO Manager</strong><span>Metadatos, sitemap, schema</span></div>
+              <div><strong data-i18n="sit.cap3t">SEO Manager</strong><span data-i18n="sit.cap3d">Metadatos, sitemap, schema</span></div>
             </div>
             <div class="cap-card">
               <div class="cap-icon"><i class="bi bi-envelope-heart"></i></div>
-              <div><strong>Newsletter &amp; campañas</strong><span>Email marketing integrado</span></div>
+              <div><strong data-i18n="sit.cap4t">Newsletter &amp; campañas</strong><span data-i18n="sit.cap4d">Email marketing integrado</span></div>
             </div>
             <div class="cap-card">
               <div class="cap-icon"><i class="bi bi-person-lines-fill"></i></div>
-              <div><strong>Gestión de leads</strong><span>Formularios y cotizaciones</span></div>
+              <div><strong data-i18n="sit.cap5t">Gestión de leads</strong><span data-i18n="sit.cap5d">Formularios y cotizaciones</span></div>
             </div>
             <div class="cap-card">
               <div class="cap-icon"><i class="bi bi-bar-chart-line"></i></div>
-              <div><strong>Analytics</strong><span>Conversion tracking GA4</span></div>
+              <div><strong data-i18n="sit.cap6t">Analytics</strong><span data-i18n="sit.cap6d">Conversion tracking GA4</span></div>
             </div>
             <div class="cap-card">
               <div class="cap-icon"><i class="bi bi-box-seam"></i></div>
-              <div><strong>Catálogo digital</strong><span>Productos y fichas técnicas</span></div>
+              <div><strong data-i18n="sit.cap7t">Catálogo digital</strong><span data-i18n="sit.cap7d">Productos y fichas técnicas</span></div>
             </div>
             <div class="cap-card">
               <div class="cap-icon"><i class="bi bi-trophy"></i></div>
-              <div><strong>Casos de éxito</strong><span>Proyectos y evidencia</span></div>
+              <div><strong data-i18n="sit.cap8t">Casos de éxito</strong><span data-i18n="sit.cap8d">Proyectos y evidencia</span></div>
             </div>
             <div class="cap-card">
               <div class="cap-icon"><i class="bi bi-clock-history"></i></div>
-              <div><strong>Automatización</strong><span>Contenidos programados</span></div>
+              <div><strong data-i18n="sit.cap9t">Automatización</strong><span data-i18n="sit.cap9d">Contenidos programados</span></div>
             </div>
           </div>
           <div class="insight">
             <i class="bi bi-lightbulb"></i>
-            <p><strong>Clave:</strong> una plataforma sin estrategia de contenidos y captación produce muy poco retorno. Se requiere operación continua para generar resultados.</p>
+            <p data-i18n-html="sit.insight"><strong>Clave:</strong> una plataforma sin estrategia de contenidos y captación produce muy poco retorno. Se requiere operación continua para generar resultados.</p>
           </div>
         </div>
         <div class="media-frame">
-          <img src="https://aramedylaboratorio.com/assets/images/hero/hero-hal-s5301.jpg" alt="Simulación médica de alta fidelidad — tecnología ARAMED">
+          <img src="https://aramedylaboratorio.com/assets/images/hero/hero-hal-s5301.jpg" data-i18n-alt="sit.imgAlt" alt="Simulación médica de alta fidelidad — tecnología ARAMED">
         </div>
       </div>
     </div>
@@ -731,42 +773,42 @@
 
   <section id="objetivos">
     <div class="container">
-      <span class="section-label reveal"><i class="bi bi-bullseye"></i> Objetivos estratégicos</span>
-      <h2 class="section-title reveal">Cuatro metas para escalar el negocio</h2>
+      <span class="section-label reveal"><i class="bi bi-bullseye"></i> <span data-i18n="obj.label">Objetivos estratégicos</span></span>
+      <h2 class="section-title reveal" data-i18n="obj.title">Cuatro metas para escalar el negocio</h2>
       <div class="obj-grid reveal">
         <article class="obj-card">
           <div class="obj-num">01</div>
-          <h3>Visibilidad en educación en salud</h3>
+          <h3 data-i18n="obj.c1t">Visibilidad en educación en salud</h3>
           <ul>
-            <li>Medicina</li>
-            <li>Enfermería</li>
-            <li>Odontología</li>
-            <li>Simulación clínica</li>
-            <li>Emergencias médicas</li>
-            <li>Especialidades biomédicas</li>
+            <li data-i18n="obj.c1i1">Medicina</li>
+            <li data-i18n="obj.c1i2">Enfermería</li>
+            <li data-i18n="obj.c1i3">Odontología</li>
+            <li data-i18n="obj.c1i4">Simulación clínica</li>
+            <li data-i18n="obj.c1i5">Emergencias médicas</li>
+            <li data-i18n="obj.c1i6">Especialidades biomédicas</li>
           </ul>
         </article>
         <article class="obj-card">
           <div class="obj-num">02</div>
-          <h3>Leads calificados</h3>
-          <p style="color:var(--text-muted);font-size:0.92rem;margin:0 0 0.5rem;">Incrementar la generación de contactos con intención de compra.</p>
-          <span class="metric-pill"><i class="bi bi-arrow-up-right"></i> +30% leads año 1</span>
-          <span class="metric-pill" style="margin-left:0.35rem;"><i class="bi bi-arrow-up-right"></i> +50% año 2</span>
+          <h3 data-i18n="obj.c2t">Leads calificados</h3>
+          <p style="color:var(--text-muted);font-size:0.92rem;margin:0 0 0.5rem;" data-i18n="obj.c2d">Incrementar la generación de contactos con intención de compra.</p>
+          <span class="metric-pill"><i class="bi bi-arrow-up-right"></i> <span data-i18n="obj.c2m1">+30% leads año 1</span></span>
+          <span class="metric-pill" style="margin-left:0.35rem;"><i class="bi bi-arrow-up-right"></i> <span data-i18n="obj.c2m2">+50% año 2</span></span>
         </article>
         <article class="obj-card">
           <div class="obj-num">03</div>
-          <h3>Demanda diversificada</h3>
+          <h3 data-i18n="obj.c3t">Demanda diversificada</h3>
           <ul>
-            <li>Universidades medianas</li>
-            <li>Instituciones privadas</li>
-            <li>Centros de simulación</li>
-            <li>Hospitales escuela</li>
+            <li data-i18n="obj.c3i1">Universidades medianas</li>
+            <li data-i18n="obj.c3i2">Instituciones privadas</li>
+            <li data-i18n="obj.c3i3">Centros de simulación</li>
+            <li data-i18n="obj.c3i4">Hospitales escuela</li>
           </ul>
         </article>
         <article class="obj-card">
           <div class="obj-num">04</div>
-          <h3>Liderazgo nacional</h3>
-          <p style="color:var(--text-muted);font-size:0.92rem;margin:0;">Posicionar a ARAMED como referente en simulación médica y educación en salud en México.</p>
+          <h3 data-i18n="obj.c4t">Liderazgo nacional</h3>
+          <p style="color:var(--text-muted);font-size:0.92rem;margin:0;" data-i18n="obj.c4d">Posicionar a ARAMED como referente en simulación médica y educación en salud en México.</p>
         </article>
       </div>
     </div>
@@ -774,30 +816,30 @@
 
   <section id="alcance">
     <div class="container">
-      <span class="section-label reveal"><i class="bi bi-grid-1x2"></i> Alcance IDEAMIA Tech</span>
-      <h2 class="section-title reveal">Operación integral de mercadotecnia digital</h2>
-      <p class="section-intro reveal">Siete pilares de ejecución mensual sobre la plataforma ya desarrollada.</p>
+      <span class="section-label reveal"><i class="bi bi-grid-1x2"></i> <span data-i18n="scope.label">Alcance IDEAMIA Tech</span></span>
+      <h2 class="section-title reveal" data-i18n="scope.title">Operación integral de mercadotecnia digital</h2>
+      <p class="section-intro reveal" data-i18n="scope.intro">Siete pilares de ejecución mensual sobre la plataforma ya desarrollada.</p>
 
       <article class="service-block reveal">
         <div class="service-thumb">
-          <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=900&auto=format&fit=crop&q=80" alt="Panel de administración web y gestión de contenidos CMS" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=900&auto=format&fit=crop&q=80" data-i18n-alt="scope.s1img" alt="Panel de administración web y gestión de contenidos CMS" loading="lazy">
         </div>
         <div>
           <div class="service-head">
             <span class="num">1</span>
-            <h3>Administración integral del sitio web</h3>
+            <h3 data-i18n="scope.s1t">Administración integral del sitio web</h3>
           </div>
-          <p style="color:var(--text-muted);margin:0;">Operación continua del home, catálogo, blog y casos de éxito.</p>
+          <p style="color:var(--text-muted);margin:0;" data-i18n="scope.s1d">Operación continua del home, catálogo, blog y casos de éxito.</p>
           <div class="sub-block">
-            <h4>Home</h4>
+            <h4 data-i18n="scope.s1h1">Home</h4>
             <ul class="tag-list">
-              <li>Banners</li><li>CTAs</li><li>Promociones</li><li>Aliados</li><li>Servicios</li><li>Productos destacados</li>
+              <li data-i18n="scope.s1t1">Banners</li><li data-i18n="scope.s1t2">CTAs</li><li data-i18n="scope.s1t3">Promociones</li><li data-i18n="scope.s1t4">Aliados</li><li data-i18n="scope.s1t5">Servicios</li><li data-i18n="scope.s1t6">Productos destacados</li>
             </ul>
           </div>
           <div class="sub-block">
-            <h4>Catálogo · Blog · Casos de éxito</h4>
+            <h4 data-i18n="scope.s1h2">Catálogo · Blog · Casos de éxito</h4>
             <ul class="tag-list">
-              <li>Nuevos productos</li><li>SEO en fichas</li><li>Planeación editorial</li><li>Evidencia fotográfica</li><li>Videos</li>
+              <li data-i18n="scope.s1t7">Nuevos productos</li><li data-i18n="scope.s1t8">SEO en fichas</li><li data-i18n="scope.s1t9">Planeación editorial</li><li data-i18n="scope.s1t10">Evidencia fotográfica</li><li data-i18n="scope.s1t11">Videos</li>
             </ul>
           </div>
         </div>
@@ -805,37 +847,37 @@
 
       <article class="service-block reveal">
         <div class="service-thumb">
-          <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900&auto=format&fit=crop&q=80" alt="Redacción de artículos especializados en educación médica y simulación clínica" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900&auto=format&fit=crop&q=80" data-i18n-alt="scope.s2img" alt="Redacción de artículos especializados en educación médica y simulación clínica" loading="lazy">
         </div>
         <div>
           <div class="service-head">
             <span class="num">2</span>
-            <h3>Estrategia de contenidos</h3>
+            <h3 data-i18n="scope.s2t">Estrategia de contenidos</h3>
           </div>
-          <p style="color:var(--text-muted);margin:0 0 0.75rem;">Producción mensual de artículos SEO especializados.</p>
+          <p style="color:var(--text-muted);margin:0 0 0.75rem;" data-i18n="scope.s2d">Producción mensual de artículos SEO especializados.</p>
           <ul class="tag-list">
-            <li>Tendencias en simulación médica</li>
-            <li>Acreditaciones COMAEM</li>
-            <li>Laboratorios de enfermería</li>
-            <li>Centros de simulación clínica</li>
-            <li>Anatomage y tecnología educativa</li>
-            <li>Simulación para odontología</li>
+            <li data-i18n="scope.s2i1">Tendencias en simulación médica</li>
+            <li data-i18n="scope.s2i2">Acreditaciones COMAEM</li>
+            <li data-i18n="scope.s2i3">Laboratorios de enfermería</li>
+            <li data-i18n="scope.s2i4">Centros de simulación clínica</li>
+            <li data-i18n="scope.s2i5">Anatomage y tecnología educativa</li>
+            <li data-i18n="scope.s2i6">Simulación para odontología</li>
           </ul>
-          <span class="metric-pill" style="margin-top:1rem;"><i class="bi bi-calendar3"></i> Meta: 4 a 8 artículos / mes</span>
+          <span class="metric-pill" style="margin-top:1rem;"><i class="bi bi-calendar3"></i> <span data-i18n="scope.s2m">Meta: 4 a 8 artículos / mes</span></span>
         </div>
       </article>
 
       <article class="service-block reveal">
         <div class="service-thumb">
-          <img src="https://images.unsplash.com/photo-1611262588024-d12430b98920?w=900&auto=format&fit=crop&q=80" alt="Gestión de redes sociales: Facebook, Instagram, LinkedIn y YouTube" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1611262588024-d12430b98920?w=900&auto=format&fit=crop&q=80" data-i18n-alt="scope.s3img" alt="Gestión de redes sociales: Facebook, Instagram, LinkedIn y YouTube" loading="lazy">
         </div>
         <div>
           <div class="service-head">
             <span class="num">3</span>
-            <h3>Administración de redes sociales</h3>
+            <h3 data-i18n="scope.s3t">Administración de redes sociales</h3>
           </div>
           <div class="sub-block">
-            <h4>Canales</h4>
+            <h4 data-i18n="scope.s3h1">Canales</h4>
             <ul class="tag-list">
               <li><i class="bi bi-facebook"></i> Facebook</li>
               <li><i class="bi bi-instagram"></i> Instagram</li>
@@ -844,69 +886,69 @@
             </ul>
           </div>
           <div class="sub-block">
-            <h4>Contenido &amp; frecuencia</h4>
+            <h4 data-i18n="scope.s3h2">Contenido &amp; frecuencia</h4>
             <ul class="tag-list">
-              <li>Casos de éxito</li><li>Productos</li><li>Eventos</li><li>Capacitaciones</li><li>Testimoniales</li><li>Lanzamientos</li>
+              <li data-i18n="scope.s3i1">Casos de éxito</li><li data-i18n="scope.s3i2">Productos</li><li data-i18n="scope.s3i3">Eventos</li><li data-i18n="scope.s3i4">Capacitaciones</li><li data-i18n="scope.s3i5">Testimoniales</li><li data-i18n="scope.s3i6">Lanzamientos</li>
             </ul>
-            <span class="metric-pill" style="margin-top:1rem;"><i class="bi bi-send"></i> 12 a 20 publicaciones / mes</span>
+            <span class="metric-pill" style="margin-top:1rem;"><i class="bi bi-send"></i> <span data-i18n="scope.s3m">12 a 20 publicaciones / mes</span></span>
           </div>
         </div>
       </article>
 
       <article class="service-block reveal">
         <div class="service-thumb">
-          <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=900&auto=format&fit=crop&q=80" alt="Captación de leads: formularios web, registros y automatización comercial" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=900&auto=format&fit=crop&q=80" data-i18n-alt="scope.s4img" alt="Captación de leads: formularios web, registros y automatización comercial" loading="lazy">
         </div>
         <div>
           <div class="service-head">
             <span class="num">4</span>
-            <h3>Generación de leads</h3>
+            <h3 data-i18n="scope.s4t">Generación de leads</h3>
           </div>
-          <p style="color:var(--text-muted);margin:0 0 0.75rem;">Automatización dentro del sistema desarrollado.</p>
+          <p style="color:var(--text-muted);margin:0 0 0.75rem;" data-i18n="scope.s4d">Automatización dentro del sistema desarrollado.</p>
           <ul class="tag-list">
-            <li>Formularios web</li><li>Newsletter</li><li>Landing pages</li><li>Descarga de catálogos</li><li>Registro a webinars</li><li>Registro a eventos</li>
+            <li data-i18n="scope.s4i1">Formularios web</li><li data-i18n="scope.s4i2">Newsletter</li><li data-i18n="scope.s4i3">Landing pages</li><li data-i18n="scope.s4i4">Descarga de catálogos</li><li data-i18n="scope.s4i5">Registro a webinars</li><li data-i18n="scope.s4i6">Registro a eventos</li>
           </ul>
         </div>
       </article>
 
       <article class="service-block reveal">
         <div class="service-thumb">
-          <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=900&auto=format&fit=crop&q=80" alt="Campañas de email marketing y automatización de correos" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=900&auto=format&fit=crop&q=80" data-i18n-alt="scope.s5img" alt="Campañas de email marketing y automatización de correos" loading="lazy">
         </div>
         <div>
           <div class="service-head">
             <span class="num">5</span>
-            <h3>Email marketing</h3>
+            <h3 data-i18n="scope.s5t">Email marketing</h3>
           </div>
-          <p style="color:var(--text-muted);margin:0 0 0.75rem;">Módulo de campañas y plantillas desarrollado por IDEAMIA.</p>
+          <p style="color:var(--text-muted);margin:0 0 0.75rem;" data-i18n="scope.s5d">Módulo de campañas y plantillas desarrollado por IDEAMIA.</p>
           <div class="sub-block">
-            <h4>Campañas</h4>
-            <ul class="tag-list"><li>Lanzamientos</li><li>Eventos</li><li>Congresos</li><li>Nuevos productos</li><li>Casos de éxito</li></ul>
+            <h4 data-i18n="scope.s5h1">Campañas</h4>
+            <ul class="tag-list"><li data-i18n="scope.s5i1">Lanzamientos</li><li data-i18n="scope.s5i2">Eventos</li><li data-i18n="scope.s5i3">Congresos</li><li data-i18n="scope.s5i4">Nuevos productos</li><li data-i18n="scope.s5i5">Casos de éxito</li></ul>
           </div>
           <div class="sub-block">
-            <h4>Automatizaciones</h4>
-            <ul class="tag-list"><li>Bienvenida</li><li>Seguimiento</li><li>Nutrición de prospectos</li><li>Recuperación de oportunidades</li></ul>
+            <h4 data-i18n="scope.s5h2">Automatizaciones</h4>
+            <ul class="tag-list"><li data-i18n="scope.s5i6">Bienvenida</li><li data-i18n="scope.s5i7">Seguimiento</li><li data-i18n="scope.s5i8">Nutrición de prospectos</li><li data-i18n="scope.s5i9">Recuperación de oportunidades</li></ul>
           </div>
         </div>
       </article>
 
       <article class="service-block reveal">
         <div class="service-thumb">
-          <img src="https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=900&auto=format&fit=crop&q=80" alt="SEO continuo: posicionamiento en buscadores y visibilidad digital" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=900&auto=format&fit=crop&q=80" data-i18n-alt="scope.s6img" alt="SEO continuo: posicionamiento en buscadores y visibilidad digital" loading="lazy">
         </div>
         <div>
           <div class="service-head">
             <span class="num">6</span>
-            <h3>SEO continuo</h3>
+            <h3 data-i18n="scope.s6t">SEO continuo</h3>
           </div>
           <ul class="tag-list">
-            <li>Metadatos</li><li>Schema</li><li>Sitemap</li><li>Robots</li><li>Redirecciones</li>
+            <li data-i18n="scope.s6i1">Metadatos</li><li data-i18n="scope.s6i2">Schema</li><li data-i18n="scope.s6i3">Sitemap</li><li data-i18n="scope.s6i4">Robots</li><li data-i18n="scope.s6i5">Redirecciones</li>
           </ul>
           <div class="sub-block">
-            <h4>Términos objetivo</h4>
+            <h4 data-i18n="scope.s6h1">Términos objetivo</h4>
             <ul class="tag-list">
-              <li>Simulación médica</li><li>Simuladores médicos</li><li>Anatomage México</li>
-              <li>Laboratorio de enfermería</li><li>Simulación clínica</li><li>Equipamiento médico universitario</li>
+              <li data-i18n="scope.s6i6">Simulación médica</li><li data-i18n="scope.s6i7">Simuladores médicos</li><li data-i18n="scope.s6i8">Anatomage México</li>
+              <li data-i18n="scope.s6i9">Laboratorio de enfermería</li><li data-i18n="scope.s6i10">Simulación clínica</li><li data-i18n="scope.s6i11">Equipamiento médico universitario</li>
             </ul>
           </div>
         </div>
@@ -914,25 +956,25 @@
 
       <article class="service-block reveal">
         <div class="service-thumb">
-          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&auto=format&fit=crop&q=80" alt="Dashboard de analítica, KPIs comerciales y reportes ejecutivos" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&auto=format&fit=crop&q=80" data-i18n-alt="scope.s7img" alt="Dashboard de analítica, KPIs comerciales y reportes ejecutivos" loading="lazy">
         </div>
         <div>
           <div class="service-head">
             <span class="num">7</span>
-            <h3>Analítica y dirección comercial</h3>
+            <h3 data-i18n="scope.s7t">Analítica y dirección comercial</h3>
           </div>
-          <p style="color:var(--text-muted);margin:0 0 1rem;">Reporte ejecutivo mensual para marketing, ventas y dirección.</p>
+          <p style="color:var(--text-muted);margin:0 0 1rem;" data-i18n="scope.s7d">Reporte ejecutivo mensual para marketing, ventas y dirección.</p>
           <div class="sub-block">
-            <h4>Marketing</h4>
-            <ul class="tag-list"><li>Visitantes</li><li>Conversiones</li><li>Leads</li><li>Fuentes de tráfico</li></ul>
-          </div>
-          <div class="sub-block">
-            <h4>Comercial</h4>
-            <ul class="tag-list"><li>Leads generados</li><li>Leads calificados</li><li>Oportunidades</li><li>Conversión</li></ul>
+            <h4 data-i18n="scope.s7h1">Marketing</h4>
+            <ul class="tag-list"><li data-i18n="scope.s7i1">Visitantes</li><li data-i18n="scope.s7i2">Conversiones</li><li data-i18n="scope.s7i3">Leads</li><li data-i18n="scope.s7i4">Fuentes de tráfico</li></ul>
           </div>
           <div class="sub-block">
-            <h4>Dirección</h4>
-            <ul class="tag-list"><li>ROI</li><li>CAC estimado</li><li>Tendencias</li><li>Recomendaciones</li></ul>
+            <h4 data-i18n="scope.s7h2">Comercial</h4>
+            <ul class="tag-list"><li data-i18n="scope.s7i5">Leads generados</li><li data-i18n="scope.s7i6">Leads calificados</li><li data-i18n="scope.s7i7">Oportunidades</li><li data-i18n="scope.s7i8">Conversión</li></ul>
+          </div>
+          <div class="sub-block">
+            <h4 data-i18n="scope.s7h3">Dirección</h4>
+            <ul class="tag-list"><li data-i18n="scope.s7i9">ROI</li><li data-i18n="scope.s7i10">CAC estimado</li><li data-i18n="scope.s7i11">Tendencias</li><li data-i18n="scope.s7i12">Recomendaciones</li></ul>
           </div>
         </div>
       </article>
@@ -942,41 +984,41 @@
   <section id="fase2">
     <div class="container">
       <div class="phase-banner reveal">
-        <h3><i class="bi bi-geo-alt"></i> Fase 2 — Crecimiento comercial</h3>
-        <p>Basado en el estudio estratégico entregado por Isaac Arrayales.</p>
+        <h3><i class="bi bi-geo-alt"></i> <span data-i18n="fase2.banner">Fase 2 — Crecimiento comercial</span></h3>
+        <p data-i18n="fase2.bannerSub">Basado en el estudio estratégico entregado por Isaac Arrayales.</p>
       </div>
 
       <div class="split reveal" style="margin-bottom:2.5rem;">
         <div class="big-stat" style="margin-bottom:0;">
           <div class="value">1,500+</div>
-          <div class="label">Registros segmentados — base nacional</div>
-          <p style="font-size:0.88rem;color:var(--text-muted);margin:1rem 0 0;">Universidades · Medicina · Enfermería · Odontología · Hospitales escuela</p>
+          <div class="label" data-i18n="fase2.statLabel">Registros segmentados — base nacional</div>
+          <p style="font-size:0.88rem;color:var(--text-muted);margin:1rem 0 0;" data-i18n="fase2.statSub">Universidades · Medicina · Enfermería · Odontología · Hospitales escuela</p>
         </div>
         <div class="media-frame" style="aspect-ratio:16/10;">
-          <img src="https://aramedylaboratorio.com/assets/images/hero/hero-susie-s2400.jpg" alt="Cobertura nacional en simulación clínica">
+          <img src="https://aramedylaboratorio.com/assets/images/hero/hero-susie-s2400.jpg" data-i18n-alt="fase2.imgAlt" alt="Cobertura nacional en simulación clínica">
         </div>
       </div>
 
-      <h3 class="section-title reveal" style="font-size:1.35rem;margin-bottom:1.25rem;">Regionalización digital</h3>
+      <h3 class="section-title reveal" style="font-size:1.35rem;margin-bottom:1.25rem;" data-i18n="fase2.regTitle">Regionalización digital</h3>
       <div class="region-grid reveal">
         <div class="region-card">
-          <h4><i class="bi bi-pin-map"></i> Zona Centro</h4>
+          <h4><i class="bi bi-pin-map"></i> <span data-i18n="fase2.r1">Zona Centro</span></h4>
           <ul><li>CDMX</li><li>Edo. México</li><li>Morelos</li></ul>
         </div>
         <div class="region-card">
-          <h4><i class="bi bi-pin-map"></i> Zona Sur</h4>
+          <h4><i class="bi bi-pin-map"></i> <span data-i18n="fase2.r2">Zona Sur</span></h4>
           <ul><li>Puebla</li><li>Veracruz</li><li>Chiapas</li></ul>
         </div>
         <div class="region-card">
-          <h4><i class="bi bi-pin-map"></i> Zona Bajío</h4>
+          <h4><i class="bi bi-pin-map"></i> <span data-i18n="fase2.r3">Zona Bajío</span></h4>
           <ul><li>Querétaro</li><li>Guanajuato</li><li>Jalisco</li><li>Michoacán</li></ul>
         </div>
         <div class="region-card">
-          <h4><i class="bi bi-pin-map"></i> Zona Noreste</h4>
+          <h4><i class="bi bi-pin-map"></i> <span data-i18n="fase2.r4">Zona Noreste</span></h4>
           <ul><li>Nuevo León</li><li>Coahuila</li><li>Tamaulipas</li></ul>
         </div>
         <div class="region-card">
-          <h4><i class="bi bi-pin-map"></i> Zona Noroeste</h4>
+          <h4><i class="bi bi-pin-map"></i> <span data-i18n="fase2.r5">Zona Noroeste</span></h4>
           <ul><li>Sonora</li><li>Chihuahua</li><li>Sinaloa</li></ul>
         </div>
       </div>
@@ -985,47 +1027,47 @@
 
   <section id="entregables">
     <div class="container">
-      <span class="section-label reveal"><i class="bi bi-clipboard-check"></i> Entregables</span>
-      <h2 class="section-title reveal">Compromiso mensual</h2>
+      <span class="section-label reveal"><i class="bi bi-clipboard-check"></i> <span data-i18n="deliver.label">Entregables</span></span>
+      <h2 class="section-title reveal" data-i18n="deliver.title">Compromiso mensual</h2>
       <div class="deliver-grid reveal">
-        <div class="deliver-item"><i class="bi bi-file-earmark-bar-graph"></i> Reporte ejecutivo</div>
-        <div class="deliver-item"><i class="bi bi-search"></i> Reporte SEO</div>
-        <div class="deliver-item"><i class="bi bi-share"></i> Reporte redes sociales</div>
-        <div class="deliver-item"><i class="bi bi-funnel"></i> Reporte leads</div>
-        <div class="deliver-item"><i class="bi bi-camera-video"></i> Reunión mensual estratégica</div>
-        <div class="deliver-item"><i class="bi bi-calendar-week"></i> Calendario editorial</div>
-        <div class="deliver-item"><i class="bi bi-calendar-check"></i> Publicaciones programadas</div>
-        <div class="deliver-item"><i class="bi bi-envelope-paper"></i> Campañas de email marketing</div>
+        <div class="deliver-item"><i class="bi bi-file-earmark-bar-graph"></i> <span data-i18n="deliver.i1">Reporte ejecutivo</span></div>
+        <div class="deliver-item"><i class="bi bi-search"></i> <span data-i18n="deliver.i2">Reporte SEO</span></div>
+        <div class="deliver-item"><i class="bi bi-share"></i> <span data-i18n="deliver.i3">Reporte redes sociales</span></div>
+        <div class="deliver-item"><i class="bi bi-funnel"></i> <span data-i18n="deliver.i4">Reporte leads</span></div>
+        <div class="deliver-item"><i class="bi bi-camera-video"></i> <span data-i18n="deliver.i5">Reunión mensual estratégica</span></div>
+        <div class="deliver-item"><i class="bi bi-calendar-week"></i> <span data-i18n="deliver.i6">Calendario editorial</span></div>
+        <div class="deliver-item"><i class="bi bi-calendar-check"></i> <span data-i18n="deliver.i7">Publicaciones programadas</span></div>
+        <div class="deliver-item"><i class="bi bi-envelope-paper"></i> <span data-i18n="deliver.i8">Campañas de email marketing</span></div>
       </div>
     </div>
   </section>
 
   <section id="planes">
     <div class="container">
-      <span class="section-label reveal"><i class="bi bi-tags"></i> Esquema comercial</span>
-      <h2 class="section-title reveal">Planes recomendados</h2>
-      <p class="section-intro reveal">Inversión mensual en MXN. Escalable según objetivos de crecimiento.</p>
+      <span class="section-label reveal"><i class="bi bi-tags"></i> <span data-i18n="plans.label">Esquema comercial</span></span>
+      <h2 class="section-title reveal" data-i18n="plans.title">Planes recomendados</h2>
+      <p class="section-intro reveal" data-i18n="plans.intro">Inversión mensual en MXN. Escalable según objetivos de crecimiento.</p>
 
       <div class="pricing-grid reveal">
         <article class="price-card">
           <div class="price-icon"><i class="bi bi-layers"></i></div>
-          <h3>Plan Essential</h3>
-          <p class="desc">Administración web + SEO continuo para mantener presencia y posicionamiento base.</p>
-          <div class="price-range">$18,000 – $25,000<small>MXN / mes</small></div>
+          <h3 data-i18n="plans.p1n">Plan Essential</h3>
+          <p class="desc" data-i18n="plans.p1d">Administración web + SEO continuo para mantener presencia y posicionamiento base.</p>
+          <div class="price-range">$18,000 – $25,000<small data-i18n="plans.perMonth">MXN / mes</small></div>
         </article>
 
         <article class="price-card">
           <div class="price-icon"><i class="bi bi-rocket-takeoff"></i></div>
-          <h3>Plan Growth</h3>
-          <p class="desc">Web + SEO + redes sociales + blog + newsletter para acelerar captación orgánica.</p>
-          <div class="price-range">$35,000 – $55,000<small>MXN / mes</small></div>
+          <h3 data-i18n="plans.p2n">Plan Growth</h3>
+          <p class="desc" data-i18n="plans.p2d">Web + SEO + redes sociales + blog + newsletter para acelerar captación orgánica.</p>
+          <div class="price-range">$35,000 – $55,000<small data-i18n="plans.perMonth">MXN / mes</small></div>
         </article>
 
-        <article class="price-card featured">
+        <article class="price-card featured" id="featuredPlan" data-featured-label="Recomendado">
           <div class="price-icon"><i class="bi bi-graph-up-arrow"></i></div>
-          <h3>Plan Revenue Growth</h3>
-          <p class="desc">Web + SEO + redes + blog + campañas + automatización + dirección comercial digital.</p>
-          <div class="price-range">$65,000 – $95,000<small>MXN / mes</small></div>
+          <h3 data-i18n="plans.p3n">Plan Revenue Growth</h3>
+          <p class="desc" data-i18n="plans.p3d">Web + SEO + redes + blog + campañas + automatización + dirección comercial digital.</p>
+          <div class="price-range">$65,000 – $95,000<small data-i18n="plans.perMonth">MXN / mes</small></div>
         </article>
       </div>
     </div>
@@ -1036,12 +1078,13 @@
       <div class="logos">
         <img src="https://aramedylaboratorio.com/assets/images/design/logo-obscuro.png" alt="Aramed y Laboratorios">
       </div>
-      <p><strong>ARAMED y Laboratorios</strong> · Programa 2026–2027</p>
-      <p>Operación digital por <strong>IDEAMIA Tech</strong> · Propuesta de crecimiento comercial</p>
-      <p style="margin-top:1rem;opacity:0.6;font-size:0.82rem;">Documento generado a partir del plan estratégico · Confidencial</p>
+      <p data-i18n-html="footer.l1"><strong>ARAMED y Laboratorios</strong> · Programa 2026–2027</p>
+      <p data-i18n-html="footer.l2">Operación digital por <strong>IDEAMIA Tech</strong> · Propuesta de crecimiento comercial</p>
+      <p style="margin-top:1rem;opacity:0.6;font-size:0.82rem;" data-i18n="footer.l3">Documento generado a partir del plan estratégico · Confidencial</p>
     </div>
   </footer>
 
+  <script src="pagina-plan-i18n.js"></script>
   <script>
     (function () {
       var nav = document.getElementById('siteNav');
